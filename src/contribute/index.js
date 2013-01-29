@@ -555,7 +555,8 @@ var Repo = Class(function () {
 				return cb(err);
 			}
 			
-			cb(null, versions[0].getNext());
+			var latestVersion = versions && versions[0] || new Version({channel: channel});
+			cb(null, latestVersion.getNext());
 		});
 	}
 });
