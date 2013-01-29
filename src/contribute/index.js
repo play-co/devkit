@@ -194,7 +194,9 @@ _commands.release = Class(function () {
 				}
 
 				// tag all submodules
-				repo.git('tag', tag, f());
+				if (!argv.test) {
+					repo.git('tag', tag, f());
+				}
 			});
 			
 			logger.log("committing", paths.join(' '));
@@ -203,13 +205,14 @@ _commands.release = Class(function () {
 			sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
 		}, function () {
 			// commit the submodules and package.json
-			sdkRepo.git('commit', '-m', "Releasing version " + tag, f());
-			console.log("committing...");
+			if (!argv.test) {
+				sdkRepo.git('commit', '-m', "Releasing version " + tag, f());
+			}
 		}, function () {
 			// push the commits to development remote
 			forEachRepo(function (repo) {
 				if (repo.release) {
-					repo.log("pushing to", repo.remote, repo.releaseBranch); // TODO
+					repo.log("pushing to", repo.remote, repo.releaseBranch);
 					if (!argv.test) {
 						repo.git('push', '-f', repo.remote, repo.release.branch, f());
 					}
@@ -219,7 +222,7 @@ _commands.release = Class(function () {
 			// push the tags to development remote
 			forEachRepo(function (repo) {
 				if (repo.release) {
-					repo.log("pushing", tag, "to", repo.remote); // TODO
+					repo.log("pushing", tag, "to", repo.remote);
 					if (!argv.test) {
 						repo.git('push', repo.remote, tag, f());
 					}
@@ -555,7 +558,8 @@ var Repo = Class(function () {
 				return cb(err);
 			}
 			
-			cb(null, versions[0].getNext());
+			var latestVersion = versions && versions[0] || new Version({channel: channel});
+			cb(null, latestVersion.getNext());
 		});
 	}
 });
