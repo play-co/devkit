@@ -1,0 +1,269 @@
+fontEditorTopHeight = 160px
+fontEditorLeftCol = 340px
+fontEditorPadding = 15px
+
+#fontEditorTopWrapper
+	position absolute
+	top fontEditorPadding
+	left fontEditorPadding
+	right fontEditorPadding
+	height fontEditorTopHeight
+
+#fontEditorLeftCol
+	position absolute
+	top fontEditorTopHeight + 2 * fontEditorPadding
+	left fontEditorPadding
+	width fontEditorLeftCol
+	bottom fontEditorPadding
+	overflow auto
+
+	padding fontEditorPadding
+
+#fontEditorRightCol
+	position absolute
+	top fontEditorTopHeight + 2 * fontEditorPadding
+	left fontEditorLeftCol + 2 * fontEditorPadding
+	bottom fontEditorPadding
+	right fontEditorPadding
+
+.fontContentLeftExtraSize {
+	width: 350px;
+}
+.mainSubPanel .fontContentRightExtraSize {
+	padding-left: 340px;
+}
+.mainSubPanel .fontContentRow {
+	padding-top: 170px;
+}
+
+.fontContentLeftExtraSize .statusLabel {
+	margin-left: 8px;
+	width: 100%;
+	color: #E0E0E0;
+}
+
+#fontEditorNoFont {
+	position: relative;
+	width: 100%;
+}
+#fontEditorNoFont #fontNoneLabel {
+	font-weight: bold;
+	text-shadow: 1px 1px 0px #CCC;
+	font-size: 12px;
+}
+
+#fontEditorTopWrapper #fontPreview {
+	float: left;
+	overflow: hidden;
+	width: fontEditorLeftCol;
+	height: 100%;
+	padding: 4px 0 0 4px;
+}
+
+#fontEditorTopWrapper #fontPreviewSettings {
+	float: left;
+	overflow: hidden;
+	width: 160px;
+	height: 100%;
+	margin-left: fontEditorPadding;
+}
+
+#fontEditorTopWrapper #fontPreviewSettings .fontPreviewOptionLabel {
+	color: #E0E0E0;
+}
+#fontEditorTopWrapper #fontPreviewSettings .fontPreviewLabel {
+	font-size: 12px;
+	font-weight: bold;
+	margin: 8px 0 0 8px;
+	color: #909090;
+	text-shadow: 1px 1px 0px #000000;
+}
+#fontEditorTopWrapper #fontPreviewSettings .row {
+	width: 100%;
+	height: 32px;
+	font-size: 80%;
+	margin: 8px 0 0 8px;
+}
+#fontEditorTopWrapper #fontPreviewSettings #fontPreviewBackground {
+	padding: 2px;
+	width: 65px;
+	margin-left: 8px;
+}
+#fontEditorTopWrapper #create {
+	float: right;
+}
+
+#characterListWrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	padding: 4px 0 0 4px;
+	border-radius: 5px;
+}
+
+#fontSettingsScrollWrapper {
+	float: left;
+	width: 320px;
+	height: 100%;
+	overflow: auto;
+	border: 1px solid #BEBEBE;
+	border-radius: 3px;
+	box-shadow: inset 0 0 3px #000;
+	margin-right: 4px;
+}
+
+#fontProgressWrapper,
+#fontFinishedWrapper,
+#fontOptionsWrapper {
+	float: left;
+	width: 290px;
+	height: 100%;
+}
+#fontProgressWrapper .label ,
+#fontFinishedWrapper .label {
+	margin: 20px 0;
+	color: #E0E0E0;
+}
+#fontProgressWrapper .progressWrapper {
+	width: 290px;
+	height: 50px;
+}
+#fontProgressWrapper,
+#fontFinishedWrapper {
+	display: none;
+}
+#fontProgressWrapper img,
+#fontFinishedWrapper img {
+	float: left;
+	margin: 10px 0 0 85px;
+}
+#fontProgressWrapper #progressLabel {
+	float: left;
+	margin: 15px 0 0 10px;
+	color: #E0E0E0;
+}
+
+.fontGroup .label
+	float: right
+
+.fontGroup
+	margin 10px auto
+	width: 296px;
+	border: 2px solid #BBB;
+	border-width: 0 0 1px 0;
+	padding-bottom: 10px;
+
+.fontGroup.center {
+	text-align: center;
+}
+
+.fontGroup #checkbox {
+	margin: 0 4px 0 0;
+}
+.fontGroup .button {
+/*	margin: 10px 0 10px 17px;*/
+	width: 160px;
+}
+.fontGroup #list {
+	margin: 10px 0 8px 10px;
+}
+.fontGroup .fontColorGroup {
+	width: 296px;
+}
+.fontGroup .fontColorValue {
+	float: left;
+	width: 56px;
+	font-size: 12px;
+	margin-left: 0px;
+	padding: 2px !important;
+	border: 1px solid #FFFFFF;
+	color: #FFFFFF;
+}
+.fontGroup .fontColorAlpha {
+	width: 36px;
+	font-size: 12px;
+	margin: 0 0 4px 0;
+	padding: 2px !important;
+}
+.fontGroup .fontColorAlpha #_input {
+	width: 36px;
+}
+.fontGroup .fontSliderWrapper {
+	float: left;
+	width: 220px;
+}
+.fontGroup .fontColorWrapper {
+	width: 290px;
+	height: 54px;
+}
+.fontGroup #fontDropShadowColor {
+	width: 60px;
+	padding: 2px;
+	border: 1px solid #E0E0E0;
+	color: #E0E0E0;
+}
+.fontGroup .fontRangeGroup {
+}
+
+.fontGroup .fontRangeGroup #rangeLabel {
+	font-style: italic;
+	font-size: 12px;
+	margin-bottom: 8px;
+	color: #E0E0E0;
+}
+.fontGroup .fontRangeGroup button {
+	float: right;
+	background: linear-gradient(bottom, #fff, #bbb);
+	border-radius: 0;
+	border: 1px solid #888;
+	box-shadow: none;
+	padding: 1px 3px 0 3px;
+	color: #222;
+	text-shadow: none;
+	width: 34px;
+	height: 15px;
+	margin-left: 2px;
+	font-size: 10px;
+}
+
+/*** Slider ***/
+.fontGroup .sliderGroup {
+}
+
+.fontGroup .fontSlider {
+	float: left;
+}
+.fontGroup .fontSliderValue {
+	float: left;
+	font-size: 80%;
+	margin: 0px;
+}
+.fontGroup .fontSliderValue #_input {
+	width: 30px;
+	padding: 2px;
+}
+
+#fontOptionsWrapper #fontOptionsDescription,
+#fontOptionsWrapper #fontOutlineDescription {
+	padding: 8px;
+	font-size: 80%;
+}
+#fontOptionsWrapper #fontOptions {
+	padding-bottom: 6px;
+}
+
+/*** Character cell ***/
+.characterCell {
+	font-size: 10px;
+}
+.characterCell #canvas {
+	margin: 2px 2px 0 2px;
+}
+.characterCell .characterName {
+	padding: 2px 0 2px 0;
+}
+.characterCell #name {
+	text-align: center;
+	color: #FFF;
+}

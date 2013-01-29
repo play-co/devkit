@@ -1,0 +1,104 @@
+fontHeaderSize = 160px
+fontPanelMargin = 15px
+fontButtonWidth = 240px
+
+#fontManagerButtons
+	position absolute
+	height fontHeaderSize
+	left fontPanelMargin
+
+#fontListWrapper
+	position absolute
+	top fontHeaderSize + 2 * fontPanelMargin
+	bottom fontPanelMargin
+	left fontPanelMargin
+	right fontPanelMargin
+
+#fontManagerButtons #fontManagerPreview {
+	position absolute
+	left 0px
+	right fontButtonWidth
+	top 0px
+	bottom 0px
+
+	color: #E0E0E0;
+	font 11px Monaco, 'Courier New'
+	font-size: 11px;
+	padding: 4px;
+	overflow: auto;
+}
+
+#fontManagerButtons #fontManagerCanvas {
+	position: absolute;
+	top: 16px;
+	left: 400px;
+	width: 400px;
+	height: 124px;
+	display: none;
+}
+
+#fontManagerConfirmDelete {
+	display: none;
+}
+#fontManagerConfirmDelete #removeFontLabel {
+	float: left;
+	margin-top: 6px;
+}
+#fontManagerConfirmDelete #removeFontYes {
+	margin-left: 40px;
+}
+
+#fontManagerRename {
+	display: none;
+}
+#fontManagerRename #fontRenameLabel,
+#fontManagerRename #fontRenameInput {
+	float: left;
+}
+#fontManagerRename #fontRenameLabel {
+	margin-top: 10px;
+	margin-right: 20px;
+}
+#fontManagerRename #fontRenameMessage {
+	margin-top: 10px;
+	margin-left: 20px;
+}
+#fontManagerRename #fontRenameInput #_input {
+	margin: 2px;
+	margin-right: 20px;
+}
+#fontManagerRename #removeFontOk {
+	margin-left: 40px;
+}
+
+.fontTile {
+	position: absolute;
+	-webkit-transition: 0.25s all ease-in-out;
+	width: 128px;
+	height: 197px;
+	padding: 0;
+	overflow: hidden;
+	color: #FFFFFF;
+}
+.fontTile img {
+	width: 120px;
+}
+.fontTile .fontTileOverview {
+	height: 54px;
+}
+
+.fontRow img {
+	float: left;
+	width: 64px;
+	height: 64px;
+	margin-right: 8px;
+}
+.fontRow .largeRowContent {
+	width: 300px;
+	overflow: hidden;
+}
+.fontRow #previewCanvas {
+	float: left;
+	margin-right: 20px;
+}
+

@@ -1,0 +1,136 @@
+#aboutPane {
+	width: 100%;
+	height: 100%;
+
+	cursor: default;
+	font-size: 11px;
+	font-weight: bold;
+	color: #555558;
+	background: bglight(), -webkit-radial-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+}
+
+#aboutMain .table {
+	width: 100%;
+	height: 100%;
+	display: table;
+}
+
+#aboutPane input[type=checkbox] {
+	margin-right: 5px;
+}
+
+#aboutPane .table-cell {
+	vertical-align: middle;
+	text-align: center;
+	text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1), 0px 1px 0px rgba(255, 255, 255, 0.1);
+}
+
+#aboutPane #bigLogo {
+	background: center center url('/images/largeLogo.png') no-repeat;
+	opacity: 0.3;
+	width: 100%;
+	height: 200px;
+}
+
+#aboutPane #version {
+	font-size: 18px;
+	margin-top: 4px;
+	margin-bottom: 6px;
+}
+
+#aboutPane #lastChecked {
+}
+
+#aboutPane #lastCheckedStatus {
+	display: inline-block;
+}
+
+#aboutPane #updateStatus {
+	margin-bottom: 30px;
+}
+
+#aboutPane #showBeta {
+	display: none;
+}
+
+#aboutPane #more {
+	position: absolute;
+	left: 0;
+	text-size: 80%;
+}
+
+#aboutPane #versionHeader
+	padding 15px
+
+#aboutPane #versionWrapper {
+	overflow auto
+	absoluteBox(45px, 15px, 15px, 15px)
+}
+
+#aboutPane #versions
+	padding 10px 0px
+
+#aboutPane .version {
+	position: absolute;
+	padding: 13px 12px 0px;
+	border-radius: 4px;
+	height: 40px;
+	left: 10px;
+	right: 10px;
+	color #889
+}
+
+#aboutPane .version.current:before {
+	content: "\2192";
+	position: absolute;
+	left: -20px;
+}
+
+#aboutPane .version.selected {
+	background: linear-gradient(bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.15));
+	background: -webkit-linear-gradient(bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.15));
+	background: -moz-linear-gradient(bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.15));
+	box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.2);
+}
+
+#aboutPane .version #switch,
+#aboutPane .version.selected.current #switch {
+	position: absolute;
+	right: 4px;
+	top: 4px;
+	display: none;
+}
+
+#aboutPane .version.selected #switch {
+	display: block;
+}
+
+#aboutPane .version.current {
+	background: linear-gradient(bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.15));
+	background: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.15));
+	background: -moz-linear-gradient(bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.15));
+	box-shadow: 0px 0px 2px rgba(255, 255, 255, 0.2), 0px 1px 0px rgba(255, 255, 255, 0.1), inset 0px 3px 3px rgba(0, 0, 0, 0.05);
+}
+
+#support ul {
+	list-style: none;
+	font-size: 16px;
+	text-align: center;
+}
+
+#support li {
+	display: inline;
+	margin: 20px 10px;
+	
+}
+
+#support a {
+	color: #222;
+	text-decoration: none;
+	padding: 5px 10px;
+	display: inline-block;
+}
+
+#support a:hover {
+	background: rgba(255,255,160,0.5);
+}

@@ -1,0 +1,85 @@
+var EventEmitter = require('events').EventEmitter;
+var fs = require('fs');
+var ff = require('ff');
+var common = require('./common');
+var packageManager = require('./PackageManager');
+
+var logger = new common.Formatter('games');
+
+var ProjectManager = Class(EventEmitter, function () {
+	this.init = function () {
+		this._projectDirs = [];
+		this._projects = {};
+
+		this.loadConfig();
+		common.config.on('change', bind(this, 'loadConfig', true));
+	};
+
+	this.loadConfig = function (reload) {
+		if (this._reloading) { return; }
+		this._reloading = true;
+
+		this._projectDirs = common.config.get('projects') || [];
+
+		var projects = {};
+		var added = [];
+		var removed = merge({}, this._projects);
+		var f = ff(this, function () {
+			this._projectDirs.forEach(function (dir) {
+				var onProjectLoad = f.wait();
+				
+				packageManager.getProject(dir, bind(this, function (err, project) {
+					if (err) {
+						logger.error('Error loading game: at path ' + dir);
+						logger.error(err);
+
+					} else {
+						var id = project.getID();
+						projects[id] = project;
+					}
+
+					// track added and removed projects
+					if (!(id in this._projects)) {
+						if (projects[id]) added.push(projects[id]);
+					} else {
+						delete removed[id];
+					}
+
+					onProjectLoad();
+				}));
+			}, this);
+		}, function () {
+			// override this._projects with new dictionary
+			this._projects = projects;
+
+			// emit add/remove events!
+			added.forEach(function (project) {
+				if (reload) {
+					logger.log('added', project.getID());
+				}
+
+				this.emit('AddProject', project);
+			}, this);
+			
+			Object.keys(removed).forEach(function (id) {
+				if (reload) {
+					logger.log('removed', removed[id].getID());
+				}
+				
+				this.emit('RemoveProject', removed[id]);
+			}, this);
+
+			this._reloading = false;
+		});
+	};
+
+	this.getProjectDirs = function () {
+		return this._projectDirs;
+	};
+
+	this.getProjects = function () {
+		return this._projects;
+	};
+});
+
+module.exports = new ProjectManager();

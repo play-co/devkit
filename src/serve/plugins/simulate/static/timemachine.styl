@@ -1,0 +1,443 @@
+#timeMachine {
+	position: fixed;
+	left: 0px;
+	bottom: 0px;
+	height: 300px;
+	width: 100%;
+	z-index: 100000;
+}
+
+#timeMachine .topTabs {
+	width: 100%;
+	height: 100%;
+}
+#timeMachine .topTabs .tabContainerWrapper {
+	position: absolute;
+	width: 100%;
+	height: 31px;
+	padding: 10px 0px 0px 15px;
+	z-index: 3;
+}
+#timeMachine .topTabs .tabContentsWrapper {
+	position: absolute;
+	background-color: rgb(35, 35, 35);
+	border: 2px solid rgb(42, 42, 42);
+	border-width: 2px 0 0 0;
+	top: 37px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+}
+#timeMachine .topTabs .tabContentsWrapper .mainPanel {
+	border-top-left-radius: 3px;
+}
+#timeMachine .topTabs .tabContainer .tab {
+	position: relative;
+	top: 3px;
+	height: 17px;
+	display: inline-block;
+	margin-right: 1px;
+	padding: 5px 14px 1px;
+	-webkit-border-radius: 4px 4px 0px 0px;
+	border-radius: 4px 4px 0px 0px;
+	cursor: default;
+	font: bold 14px Arial;
+	color: rgb(100, 100, 100);
+	background: -moz-linear-gradient(90deg, rgb(20, 20, 20), rgb(25, 25, 25));
+	background: -webkit-gradient(linear, left bottom, left top, from(rgb(20, 20, 20)), to(rgb(25, 25, 25)));
+}
+#timeMachine .topTabs .tabContainer .tab.selected {
+	top: 1px;
+	height: 21px;
+	border-bottom: none;
+	padding-top: 6px;
+	background: -moz-linear-gradient(90deg, rgb(35, 35, 35), rgb(50, 50, 50));
+	background: -webkit-gradient(linear, left bottom, left top, from(rgb(35, 35, 35)), to(rgb(50, 50, 50)));
+	color: #FFFFFF;
+}
+
+#timeMachine #recordingsListWrapper, #timeMachine #frameListWrapper, #timeMachine #timeLineWrapper {
+	position: absolute;
+	top: 10px;
+	background: #181818;
+	border-top: 1px #FF0000;
+	padding-top: 3px;
+	-moz-box-shadow: inset 0 0 10px #000000;
+	-webkit-box-shadow: inset 0 0 10px #000000;
+	box-shadow: inset 0 0 10px #000000;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+}
+#timeMachine #recordingsListWrapper {
+	position: absolute;
+	top: 10px;
+	bottom: 10px;
+	left: 10px;
+	width: 300px;
+}
+#timeMachine #frameListWrapper {
+	position: absolute;
+	top: 168px;
+	bottom: 10px;
+	left: 320px;
+	right: 10px;
+}
+#timeMachine #timeLineWrapper {
+	position: absolute;
+	top: 10px;
+	height: 120px;
+	left: 320px;
+	right: 10px;
+}
+
+#timeMachine #recordingsList, #timeMachine #frameList {
+	overflow: auto;
+	overflow-x: hidden;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 8px;
+	bottom: 8px;
+}
+
+#timeMachine #timeLine {
+	overflow: auto;
+	overflow-y: hidden;
+	position: absolute;
+	left: 8px;
+	right: 8px;
+	top: 0px;
+	bottom: 0px;
+}
+#timeMachine #timeLine #sizer {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	height: 1px;
+}
+#timeMachine #timeLine #timePos {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	height: 8px;
+}
+#timeMachine #timeLine #screens {
+	position: absolute;
+	left: 20px;
+	top: 25px;
+	pointer-events: none;
+}
+#timeMachine #timeLine #dtGraph {
+	position: absolute;
+	left: 20px;
+	top: 67px;
+	pointer-events: none;
+}
+#timeMachine #timeLine #needle {
+	position: absolute;
+	left: 19px;
+	top: 4px;
+	height: 95px;
+	width: 3px;
+	border: 1px solid #AAA;
+	display: none;
+	pointer-events: none;
+}
+#timeMachine #timeLine .segment {
+	position: absolute;
+	top: 4px;
+	width: 40px;
+	height: 14px;
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+	color: #CCC;
+}
+#timeMachine #timeLine #lineForward {
+	position: absolute;
+	top: 17px;
+	height: 2px;
+	background-color: rgba(150, 150, 150, 0.1);
+	background: -webkit-linear-gradient(left, rgba(255,0,0,0.7) 0%, rgba(0,255,0,0.7) 100%);
+}
+
+#timeMachine #rec,
+#timeMachine #play,
+#timeMachine #resume,
+#timeMachine #pause,
+#timeMachine #stop {
+	position: absolute;
+	top: 138px;
+	width: 40px;
+	height: 19px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 11px;
+	display: none;
+	cursor: pointer;
+}
+#timeMachine #rec {
+	left: 318px;
+}
+#timeMachine #play,
+#timeMachine #resume,
+#timeMachine #pause {
+	left: 362px;
+}
+#timeMachine #stop {
+	left: 406px;
+}
+
+#timeMachine #showTimeLine,
+#timeMachine #showScreens,
+#timeMachine #showDT,
+#timeMachine #targetDesktop,
+#timeMachine #targetDevice {
+	position: absolute;
+	top: 140px;
+	height: 18px;
+	border: 1px solid #000000;
+	border-radius: 9px;
+	border-color: #000 #555 #555 #000;
+	background-color: rgb(32, 32, 32);
+	text-align: center;
+	font-size: 13px;
+	color: #AAA;
+	cursor: pointer;
+}
+
+#timeMachine #showDT {
+	right: 10px;
+	width: 35px;
+}
+#timeMachine #showScreens {
+	right: 50px;
+	width: 70px;
+}
+#timeMachine #showTimeLine {
+	right: 125px;
+	width: 50px;
+}
+
+#timeMachine #targetDesktop {
+	left: 700px;
+	width: 70px;
+	border-radius: 9px 0 0 9px;
+}
+#timeMachine #targetDevice {
+	left: 770px;
+	width: 70px;
+	border-radius: 0 9px 9px 0;
+	border-color: #555 #000 #000 #555;
+	background-color: rgb(50, 50, 50);
+}
+
+#timeMachine #currentTime {
+	position: absolute;
+	left: 460px;
+	top: 140px;
+	color: #AAA;
+	text-align: center;
+	font-weight: normal;
+	font-size: 12px;
+	padding-top: 1px;
+	width: 66px;
+	height: 18px;
+	border: 1px solid #000000;
+	border-radius: 9px;
+	border-color: #000 #555 #555 #000;
+	-moz-box-shadow: inset 0 0 3px #000000;
+	-webkit-box-shadow: inset 0 0 3px #000000;
+}
+
+#timeMachine #timeScaleSlower, #timeMachine #timeScaleFaster {
+	position: absolute;
+	top: 140px;
+	padding-top: 2px;
+	color: #AAA;
+	font-weight: bold;
+	font-size: 12px;
+	width: 30px;
+}
+#timeMachine #timeScaleSlower {
+	left: 536px;
+	text-align: right;
+}
+#timeMachine #timeScaleFaster {
+	left: 652px;
+}
+#timeMachine #timeScale {
+	position: absolute;
+	left: 570px;
+	top: 140px;
+	width: 78px;
+	height: 18px;
+	border: 1px solid #000000;
+	border-radius: 9px;
+	border-color: #000 #555 #555 #000;
+	-moz-box-shadow: inset 0 0 3px #000000;
+	-webkit-box-shadow: inset 0 0 3px #000000;
+	cursor: pointer;
+}
+#timeMachine #timeScale #timeScaleButton {
+	position: absolute;
+	left: 31px;
+	top: 1px;
+	width: 14px;
+	height: 14px;
+	border: 1px solid #000000;
+	border-radius: 6px;
+	border-color: #666 #111 #111 #666;
+	background-color: rgb(38, 38, 38);
+	pointer-events: none;
+}
+
+#timeMachine #targetList {
+	position: absolute;
+	top: 138px;
+	left: 700px;
+	width: 86px;
+	background: #000;
+	color: #FFF;
+	border: 1px solid #000;
+	border-radius: 9px;
+	border-color: #000 #555 #555 #000;
+	-moz-box-shadow: inset 0 0 3px #000000;
+	-webkit-box-shadow: inset 0 0 3px #000000;
+	display: none;
+}
+
+.recordingCell, .frameCell {
+	color: #AAA;
+	font-size: 12px;
+	cursor: pointer;
+	border-top: 1px solid rgba(0,0,0,0);
+	border-bottom: 1px solid rgba(0,0,0,0);
+	padding: 2px 0 2px 10px;
+	font-family: 'Gill Sans';
+	background: rgb(21, 21, 21);
+}
+.recordingCell:nth-child(even),
+.frameCell:nth-child(even) {
+	background: rgb(27, 27, 27);
+}
+.recordingCell.selected {
+	background: #333;
+}
+.frameCell.breakpoint {
+/*	background: #333;*/
+}
+
+.recordingCell .remove,
+.recordingCell .date,
+.recordingCell .time,
+.recordingCell .total,
+.frameCell .indicator,
+.frameCell .index,
+.frameCell .time,
+.frameCell .dt,
+.frameCell .contents {
+	display: inline-block;
+	color: #AAA;
+	font-weight: normal;
+	font-size: 13px;
+	text-shadow: none;
+	text-align: left;
+	margin: 0;
+}
+.frameCell .index {
+	width: 40px;
+	text-align: right;
+}
+.recordingCell .remove {
+	width: 55px;
+	opacity: 0;
+}
+.recordingCell .remove:hover {
+	opacity: 1;
+}
+.recordingCell .total {
+	width: 45px;
+}
+.recordingCell .date,
+.recordingCell .time {
+	width: 70px;
+}
+
+.frameCell .indicator {
+	width: 12px;
+	font-size: 11px;
+}
+.frameCell .time {
+	width: 60px;
+	text-align: right;
+}
+.frameCell .dt {
+	width: 30px;
+	text-align: right;
+}
+.frameCell .contents {
+	margin-left: 10px;
+}
+
+.frameCell.breakpoint .indicator,
+.frameCell.breakpoint .index,
+.frameCell.breakpoint .time,
+.frameCell.breakpoint .dt,
+.frameCell.breakpoint .contents {
+	color: #BBF;
+}
+.frameCell.breakpoint.highlight .indicator,
+.frameCell.breakpoint.highlight .index,
+.frameCell.breakpoint.highlight .time,
+.frameCell.breakpoint.highlight .dt,
+.frameCell.breakpoint.highlight .contents {
+	color: #F00;
+}
+
+#timeMachine #recorder
+	position: absolute;
+	left: 10px;
+	width: 138px;
+	height: 38px;
+	background: linear-gradient(top, rgba(80,80,80,0.5) 0%, rgba(45,45,45,0.1) 100%), url("/images/backgrounds/stripepattern.png");
+
+	background: linear-gradient(top, red, black);
+	background: linear-gradient(bottom, #444, #666);
+	z-index: 1000;
+	display: none;
+	border-radius: 8px 8px 0 0;
+
+#timeMachine #recorder #recStop {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 60px;
+	height: 30px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 11px;
+}
+#timeMachine #recorder #timeWrapper {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	height: 38px;
+	width: 70px;
+}
+#timeMachine #recorder #recTime {
+	color: #AAA;
+	position: absolute;
+	top: 13px;
+	left: 8px;
+	font-weight: normal;
+	font-size: 12px;
+}
+
+#timeMachine #toolBar #timeWrapper {
+	position: absolute;
+	top: 0px;
+	left: 296px;
+	height: 38px;
+	width: 70px;
+}

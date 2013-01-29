@@ -1,0 +1,66 @@
+{
+	"title": "New Project",
+	"appID": "example",
+	"shortName": "example",
+	"description": "",
+	"group": "",
+	"doc": "",
+	"supportedOrientations": [
+		"landscape"
+	],
+	"icons": {
+		"28": "preload/icons/icon28.png",
+		"38": "preload/icons/icon38.png",
+		"48": "preload/icons/icon48.png",
+		"56": "preload/icons/icon56.png",
+		"57": "preload/icons/icon57.png",
+		"72": "preload/icons/icon72.png",
+		"114": "preload/icons/icon114.png",
+		"144": "preload/icons/icon144.png",
+		"512": "preload/icons/icon512.png"
+	},
+	"preload": {
+		"autoHide": true,
+		"img": "preload/splash.png",
+		"iphone": {
+			"launch": "preload/iphone/Default.png",
+			"launchRetina": "preload/iphone/Default@2x.png",
+			"launchRetina4": "preload/iphone/Default-568h@2x.png"
+		},
+		"ipad": {
+			"portrait": "preload/ipad/Default-Portrait~ipad.png",
+			"portraitRetina": "preload/ipad/Default-Portrait@2x~ipad.png",
+			"landscape": "preload/ipad/Default-Landscape~ipad.png",
+			"landscapeRetina": "preload/ipad/Default-Landscape@2x~ipad.png"
+		}
+	},
+	"studio": {
+		"name": "Example Studio Name",
+		"domain": "studio.example.com",
+		"stagingDomain": "staging.example.com"
+	},
+	"resources": {},
+	"targets": {},
+	"groups": {},
+	"android": {
+		"apsalarKey": "",
+		"apsalarSecret": "",
+		"entryPoint": "runtimeNative.launchClient",
+		"flurryKey": "",
+		"tapjoyDaily": {},
+		"tapjoyId": "",
+		"tapjoyKey": "",
+		"versionCode": 1
+	},
+	"ios": {
+		"apsalarKey": "",
+		"apsalarSecret": "",
+		"entryPoint": "runtimeNative.launchClient",
+		"flurryKey": "",
+		"tapjoyId": "",
+		"tapjoyKey": "",
+		"bundleID": "example.bundle",
+		"appleID": "1234567",
+		"version": "1.0.0"
+	}
+}

@@ -1,0 +1,18 @@
+[submodule "lib/jsio"]
+	path = lib/js.io
+	url = git@github.com:gameclosure/js.io.git
+[submodule "lib/timestep"]
+	path = lib/timestep
+	url = git@github.com:gameclosure/timestep
+[submodule "lib/squill"]
+	path = lib/squill
+	url = git@github.com:gameclosure/squill
+[submodule "lib/js-api"]
+	path = lib/js-api
+	url = git@github.com:gameclosure/js-api.git
+[submodule "lib/NativeInspector"]
+	path = lib/NativeInspector
+	url = git@github.com:gameclosure/NativeInspector.git
+[submodule "lib/tealeaf-build"]
+	path = lib/tealeaf-build
+	url = git@github.com:gameclosure/tealeaf-build

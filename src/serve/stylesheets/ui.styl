@@ -1,0 +1,1017 @@
+#gcHeader {
+	position: absolute;
+	right: 0px;
+	left: 0px;
+	z-index: 50;
+}
+
+#logo {
+	position: absolute;
+	left: 65px;
+	bottom: 70px;
+	width: 68px;
+	height: 54px;
+	background: url('/images/logo.png');
+	opacity: 0.5;
+}
+
+.fullHeight {
+	height: 100%;
+}
+
+bglight()
+	url('/images/backgrounds/bglight.png')
+
+bgdark()
+	url('/images/backgrounds/bgdark.png')
+
+absoluteBox(top = 0px, right = 0px, bottom = 0px, left = 0px)
+	position absolute
+	top top
+	bottom bottom
+	left left
+	right right
+
+
+
+// ================================================
+// rules for styling a TabbedPane with tabs on top
+
+.topTabs {
+	width: 100%;
+	height: 100%;
+	background #365187 bgdark()
+}
+
+topTabsHeight = 41px
+
+.topTabs .tabContainerWrapper {
+	position absolute
+	width 100%
+	height topTabsHeight
+	padding 10px 0px 0px 15px
+	z-index 3;
+}
+
+.topTabs .tabContentsWrapper
+	position absolute
+	top topTabsHeight
+	bottom 0px
+	left 0px
+	right 0px
+
+.topTabs .tabContentsWrapper .mainPanel
+	border-top-left-radius 3px
+	box-shadow 0px 0px 3px black
+
+.topTabs .tabContainer .tab {
+	position: relative;
+	top: 3px;
+	height: 27px;
+
+	display: inline-block;
+	margin-right: 1px;
+	padding: 5px 14px 1px;
+	border-radius: 4px 4px 0px 0px;
+	cursor: default;
+	font: bold 14px Arial;
+	color: #585858;
+	text-shadow: 1px 1px 0px #AAA;
+	border-bottom: 1px solid #666;
+	border-top: 1px solid rgba(255, 255, 255, 0.2);
+	box-shadow: 0px -1px 0px rgba(255, 255, 255, 0.3), 0px -2px 3px rgba(0, 0, 0, 0.2);
+	background: linear-gradient(top, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.1)), #B5BABD bglight()
+}
+
+.topTabs .tabContainer .tab.selected {
+	top: 1px;
+	height: 31px;
+	border-bottom: none;
+	padding-top: 6px;
+	background: linear-gradient(bottom, rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 0.4)), bglight()
+	color: #333334;
+	text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
+}
+
+.OverviewPanel {
+	height: 100%;
+	width: 100%;
+	position: relative;
+}
+
+#projectBtn {
+	width: 100%;
+	height: 40px;
+	border-radius: 0px;
+	margin-top: 0px;
+	border-bottom-color: #000;
+	margin-bottom: 5px;
+	box-shadow: 0px 1px 0px #555;
+}
+#newProjectBtn {
+	float: right;
+	margin: 8px;
+}
+
+// ===============================================
+// main tab container
+
+.OverviewPanel .OverviewTabs {
+	position: absolute;
+	z-index: 3;
+	height: 100%;
+	background: linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+}
+
+.OverviewPanel #projectSelector
+	padding-top 20px
+	cursor pointer
+
+.OverviewPanel #projectSelector:hover .project-name
+	text-shadow: 0px 1px 5px rgba(255, 255, 255, 0.5);
+
+.OverviewPanel .OverviewTabs .tabContainer {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	width: 200px;
+	padding-top: 20px;
+	border-right: 1px solid rgba(0, 0, 0, 0.2);
+	box-shadow:
+		rgba(white, 0.1) inset -1px 0px 3px,
+		rgba(black, 1) 0px 0px 3px;
+}
+
+.OverviewPanel .OverviewTabs .separator {
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	margin: 5px 12px;
+}
+
+.OverviewPanel .OverviewTabs .tab {
+	cursor: default;
+	display: block;
+	padding: 5px 7px 7px 12px;
+	color: #777;
+	font-family: Helvetica;
+	font-weight: bold;
+	font-size: 17px;
+	border-bottom: 1px solid transparent;
+	text-shadow: 0px -1px 0px #000, 0px 1px 1px rgba(255,255,255,0.2);
+}
+
+.OverviewPanel .OverviewTabs .tab.selected {
+	box-shadow: inset 0px 0px 2px #000;
+	background: rgba(0, 0, 0, 0.3);
+	border-bottom: 1px solid #444;
+	color: #CCCCCD;
+	text-shadow: 1px 0px 1px #000000;
+}
+
+.tabContents {
+	height: 100%;
+}
+
+// ===============================================
+// main tab contents (plugin tab panes)
+
+.OverviewPanel .OverviewPanes {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 200px;
+	right: 0px;
+	overflow-y: auto;
+	z-index: 1;
+}
+
+.OverviewPanel .subContentsWrapper {
+	position: absolute;
+	width: 100%;
+	top: 0px;
+	padding-top: 28px;
+}
+
+
+.tabPane {
+	overflow: auto;
+	position: relative;
+	height: 100%;
+	overflow-y: auto;
+}
+
+/*** Panel containing the content of the plugin ***/
+
+.mainPanel {
+	absoluteBox()
+	background bglight()
+	border-top 1px solid rgba(255, 255, 255, 0.3)
+}
+
+// .mainPanel {
+// 	padding-top: 41px;
+// }
+
+/*** Top bar with edit options, confirm delete, ect. ***/
+.mainPanel .toolWrapper
+	position: absolute;
+	top: 15px;
+	left: 0px;
+	right: 0px;
+	margin-bottom: 4px;
+	padding: 8px;
+
+.toolWrapper .row {
+	float: left;
+	width: 100%;
+	height: 34px;
+}
+.toolWrapper .rightItem,
+.toolWrapper .filterLabel {
+	float: right;
+	margin-left: 8px;
+}
+.toolWrapper .filterLabel {
+	margin-top: 7px;
+}
+.toolWrapper .filterSelect {
+	margin-top: 6px;
+	width: 150px;
+}
+.toolWrapper .row .viewListButton {
+	background: url('/images/icons/application_view_detail.png') no-repeat, linear-gradient(bottom, #444, #666);
+	background-position: 8px 5px, 0 0;
+	width: 32px;
+	margin-left: 4px;
+}
+.toolWrapper .row .viewTilesButton {
+	background: url('/images/icons/application_view_icons.png') no-repeat, linear-gradient(bottom, #444, #666);
+	background-position: 8px 5px, 0 0;
+	width: 32px;
+	margin-left: 16px;
+}
+.toolWrapper .row .viewExploreButton {
+	background: url('/images/icons/folder_explore.png') no-repeat, linear-gradient(bottom, #444, #666);
+	background-position: 8px 5px, 0 0;
+	width: 32px;
+	margin-left: 10px;
+}
+.toolWrapper .row .viewMenuButton {
+	background: url('/images/icons/add.png') no-repeat, linear-gradient(bottom, #444, #666);
+	background-position: 8px 5px, 0 0;
+	width: 32px;
+	margin-left: 16px;
+}
+.toolWrapper .row .viewTilesButton,
+.toolWrapper .row .viewListButton,
+.toolWrapper .row .viewExploreButton,
+.toolWrapper .row .viewMenuButton {
+	background-position: 6px 5px, 0 0;
+	width: 32px;
+	float: right;
+}
+.toolWrapper .row .viewTilesButton,
+.toolWrapper .row .viewListButton {
+	opacity: 0.5;
+}
+.toolWrapper .row .viewTilesButton.selected,
+.toolWrapper .row .viewListButton.selected {
+	opacity: 1;
+}
+
+.label, .labelBottom, .darkPanel .label, .darkPanel .labelBottom {
+	display: inline-block;
+	font-size: 12px;
+	font-weight: bold;
+	margin-right: 8px;
+}
+.label, .labelBottom {
+	color: #444;
+	text-shadow: 1px 1px 0px #CCC;
+}
+.darkPanel .label, .darkPanel .labelBottom {
+	color: #909090;
+	text-shadow: 1px 1px 0px #000000;
+}
+.smallLabel, .darkPanel .smallLabel {
+	display: inline-block;
+	font-size: 12px;
+	margin-right: 8px;
+}
+.smallLabel {
+	color: #444;
+}
+.darkPanel .smallLabel {
+	color: #E0E0E0;
+}
+.toolWrapper .labelBottom {
+	margin-top: 18px;
+}
+.toolWrapper .text {
+	display: inline-block;
+	margin: 0px;
+}
+
+/*** Bar to make pages without tabs appear the same a pages with tabs ***/
+.topBar {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 41px;
+}
+
+/*** Left bottom small item list ***/
+.mainSubPanel .halfHeightTop,
+.mainSubPanel .halfHeightBottom {
+	height: 50%;
+}
+.mainSubPanel .halfHeightTop {
+	padding-bottom: 4px;
+}
+.mainSubPanel .halfHeightBottom {
+	padding-top: 4px;
+}
+.smallItemListWrapper {
+	float: left;
+	width: 220px;
+	height: 100%;
+	border-radius: 3px;
+}
+.smallItemList {
+	width: 100%;
+	height: 100%;
+	bottom: 100px;
+	cursor: default;
+	padding-top: 5px;
+	overflow: auto;
+}
+
+/*** Bottom / Right bottom item list ***/
+.mainContentWrapperFullPage {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	padding: 41px 0px 0px 0px;
+	overflow: hidden;
+}
+
+.mainContentWrapper {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-bottom: 8px;
+}
+.mainPanel .mainContentLeft,
+.mainSubPanel .mainContentLeft {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 230px;
+	height: 100%;
+	padding-left: 8px;
+	padding-bottom: 8px;
+}
+.mainPanel .mainContentRight,
+.mainSubPanel .mainContentRight {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	padding-left: 240px;
+	padding-right: 8px;
+	padding-bottom: 8px;
+}
+
+.mainPanel .contentNoRows {
+	padding-top: 52px;
+}
+.mainSubPanel .contentNoRows {
+	padding-top: 24px;
+}
+.mainPanel .contentOneRow {
+	padding-top: 86px;
+}
+.mainSubPanel .contentOneRow {
+	padding-top: 58px;
+}
+.mainPanel .contentTwoRows {
+	padding-top: 120px;
+}
+.mainSubPanel .contentTwoRows {
+	padding-top: 92px;
+}
+.mainSubPanel .wizardContentRow {
+	padding-top: 86px;
+}
+
+/*** List with large tiled items ***/
+.largeItemListWrapper, .largeItemListWrapperFull {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	border-radius: 3px;
+	border: 1px solid #bebebe;
+	box-shadow: inset 0 0 3px #000;
+	cursor: default;
+}
+.largeItemListWrapperFull {
+	margin-right: 16px;
+}
+.largeItemList {
+	padding: 1px;
+	border-radius: 4px;
+	-webkit-transform: translate3d(0, 0, 0);
+}
+
+/*** Cell container ***/
+#cellContainerLabel {
+	width: 100%;
+	font-size: 13px;
+	font-weight: bold;
+	color: #E0E0E0;
+	border-width: 0 0 1px 0;
+	padding: 20px 10px 4px 10px;
+	margin: 1px 0px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	background: linear-gradient(top, rgba(200, 200, 255, 0.1), rgba(200, 200, 255, 0.05));
+	box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.4);
+}
+#cellContainer {
+	width: 100%;
+}
+
+/*** Pill buttons ***/
+.pillButtons {
+	padding: 0px 8px;
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+	background: linear-gradient(top, #bebdbd, #9d9c9c);
+	border-radius: 15px;
+	border: 1px solid #b1b0b0;
+	height: 25px;
+	font-size: 10px;
+	font-weight: bold;
+	color: #555;
+	display: inline-block;
+}
+.pillBtnSegment {
+	float: left;
+	width: 23px;
+	text-align: center;
+	padding: 5px 0px 6px 0px;
+	cursor: pointer;
+	border-radius: 2px;
+}
+.pillBtnSegment.selected {
+	background: url('/images/buttons/pillCapSelected.png');
+}
+
+.insetBorder,
+.smallItemList,
+.defaultListStyle {
+	border-radius: 3px;
+	border: 1px solid #B0B0C0;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0px 1px 0px rgba(255, 255, 255, 0.3);
+	cursor: default;
+}
+.defaultListStyle {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	width: 190px;
+	height: 100%;
+	padding-top: 5px;
+}
+
+.defaultCellStyle {
+	cursor: default;
+	padding: 4px 10px 2px;
+	font: 16px;
+	color: #E0E0E0;
+	font-weight: none;
+}
+.defaultCellStyle.selected {
+	background: #606060;
+	color: #FFF;
+}
+
+.defaultCellStyle input {
+	margin-left: 5px;
+}
+
+.monospace {
+	font-family: 'Menlo', Monaco, 'Bitstream Vera Sans Mono', 'Lucida Console', Terminal, monospace;
+}
+
+tr, td { border-spacing: 0px !important; font-size: 1px; }
+
+div#ip {
+	position: absolute;
+	bottom: 15px;
+	left: 10px;
+	right: 12px;
+	font: bold 10px Monaco;
+	z-index: 5;
+	overflow: hidden;
+	text-align: center;
+	padding: 7px 7px 2px 7px;
+
+	color: #232;
+	box-shadow: inset 0px 2px 3px rgba(0, 0, 0, 0.3);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	padding: 5px 7px 2px 7px;
+	border-radius: 4px;
+	background: linear-gradient(bottom, #AAA, #C2C2C0);
+}
+
+.pluginPanel {
+	height: 100%;
+	position: relative;
+	overflow-y: auto;
+}
+
+div::-webkit-scrollbar {
+	width: 12px;
+}
+
+div::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+	border-radius: 10px;
+}
+
+/* Handle */
+div::-webkit-scrollbar-thumb {
+	margin: 1px;
+	border-radius: 10px;
+	background: rgba(100,100,120,0.8); 
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
+div::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(30,30,40,0.4); 
+}
+
+div::-webkit-scrollbar-corner {
+	background: rgba(30,30,40,0.4); 
+}
+
+/*** Color settings ***/
+.darkPanel {
+	border-radius 3px
+	background url('/images/backgrounds/darkpaper.png')
+	box-shadow 0px 1px 2px rgba(255, 255, 255, 0.5)
+}
+
+.topBar,
+.OverviewPanel .tabSubContainer {
+	background: linear-gradient(top, rgba(80, 80, 80, 0.5), rgba(45, 45, 45, 0.1)), url('/images/backgrounds/stripepattern.png');
+}
+
+.OverviewPanel .tabContainer {
+	background: #38393C bgdark();
+}
+
+/*** Large cell ***/
+.largeTile {
+	transition: 0.25s all ease-in-out;
+	font-size: 12px;
+	position: absolute;
+	overflow: hidden;
+	color: #EEE;
+	background: linear-gradient(bottom, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0));
+	border-right: 1px solid rgba(0, 0, 0, 0.3);
+	border-radius: 2px;
+}
+
+.largeTile .largeTileContent {
+	border-bottom-width: 0;
+	padding: 4px;
+}
+.largeTile .largeTileOverview {
+	color: #E0E0E0;
+	padding: 5px 1px;
+	border-width: 1px 0 0 0;
+}
+.largeTile .largeTileOverview div.title {
+	font-weight: bold;
+}
+.largeTile .largeTileOverview div {
+	padding: 0px 4px;
+}
+.largeTile .largeTileOverview div.left {
+	float: left;
+}
+.largeTile .largeTileOverview div.center {
+	text-align: center;
+}
+.largeTile .largeTileOverview div.full {
+	width: 100%;
+	height: 12px;
+}
+.largeTile .largeTileOverview div.right {
+	float: right;
+}
+.largeTile .largeTileOverview div.bold {
+	font-weight: bold;
+}
+.largeTile .largeTileOverview div.italic {
+	font-style: italic;
+}
+.largeTile.selected {
+	background: linear-gradient(bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.25));
+}
+.largeTile.selected .largeTileOverview {
+}
+
+/*** Large row ***/
+.largeRow {
+	transition: 0.25s all ease-in-out;
+	font-size: 12px;
+	overflow: hidden;
+	color: #E0E0E0;
+	width: 100%;
+	height: 70px;
+	padding: 3px;
+	background: linear-gradient(bottom, rgba(255,255,255,0.02), rgba(0,0,0,0.0));
+	border-top: 1px solid rgba(255, 255, 255, 0.05);*/
+	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px -1px 0px rgba(0, 0, 0, 0.05);
+}
+
+.largeRow.selected, .largeRow.uploaded {
+	background: linear-gradient(bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.15));
+}
+
+.largeRow #preview {
+	float: left;
+	width: 64px;
+	height: 64px;
+	margin-right: 8px;
+}
+.largeRow .largeRowContent {
+	float: left;
+	height: 64px;
+	padding-right: 70px;
+}
+.largeRow .largeRowContent .row {
+	float: left;
+	width: 100%;
+	height: 20px;
+}
+.largeRow .largeRowContent .title {
+	font-weight: bold;
+}
+.largeRow .largeRowContent .row div {
+	display: inline-block;
+	margin-right: 16px;
+}
+
+.largeRow .rowOption {
+	position: relative;
+	float: right;
+	font-size: 11px;
+	color: #CCC;
+	text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+	background-repeat: no-repeat;
+	padding: 4px 12px 2px 30px;
+	margin: 36px 8px 0px 0px;
+	height: 24px;
+	border: 1px solid #111;
+	border-radius: 11px;
+	text-align: center;
+	box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.15), 0px 1px 0px rgba(255, 255, 255, 0.04);
+}
+
+.largeRow .rowOption:hover {
+	background: linear-gradient(bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+}
+
+.largeRow .rowOption:active {
+	top: 1px;
+	background: linear-gradient(bottom, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+}
+
+.largeRow .rowOption.selected,
+.largeRow .rowOption.selected:hover {
+	box-shadow: inset 0px -1px 2px rgba(0, 0, 0, 0.15), 0px 1px 0px rgba(255, 255, 255, 0.1);
+	background: linear-gradient(bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+	box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.15), 0px 0px 1px rgba(255, 255, 255, 0.3);
+	color: #FFF;
+	border-color: #222;
+}
+
+.largeRow .rowOption:before {
+	content: '';
+	position: absolute;
+	top: 3px;
+	left: 8px;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background-repeat: none;
+}
+
+.largeRow #delete:before          { background: url('/images/icons/cross.png'); }
+.largeRow #tileProperties:before  { background: url('/images/icons/wrench.png'); }
+.largeRow #editAnimation:before   { background: url('/images/icons/film_edit.png'); }
+.largeRow #removeAnimation:before { background: url('/images/icons/film_delete.png'); }
+.largeRow #editFont:before        { background: url('/images/icons/font.png'); }
+.largeRow #deleteFont:before      { background: url('/images/icons/font_delete.png'); }
+.largeRow #createBitmapFont:before      { background: url('/images/icons/font_add.png'); }
+.largeRow #play:before            { background: url('/images/icons/control_play_blue.png'); }
+.largeRow #accept:before          { background: url('/images/icons/tick.png'); }
+.largeRow #decline:before         { background: url('/images/icons/cross.png'); }
+.largeRow #package:before         { background: url('/images/icons/package_add.png'); }
+.largeRow #packageNo:before       { background: url('/images/icons/package_delete.png'); }
+
+/*** Large tile, large row cell menu button ***/
+.largeTile #cellMenuButton,
+.largeRow #cellMenuButton {
+	float: right;
+	border: 1px solid #808080;
+	width: 15px;
+	height: 15px;
+	background: #606060;
+	opacity: 0.2;
+	margin-bottom: 2px;
+	color: #808080;
+	z-index: 5000;
+	border-radius: 2px;
+}
+.largeTile #cellMenuButton:hover,
+.largeTileRow #cellMenuButton:hover {
+	border: 1px solid #FFFFFF;
+	color: #FFFFFF;
+}
+.largeTile #cellMenuButton div,
+.largeTileRow #cellMenuButton div {
+	text-align: center;
+	font-size: 10px;
+	overflow: hidden;
+}
+.largeTile #cellMenuButton,
+.largeTileRow #cellMenuButton {
+	transition: all 0.2s ease-in-out;
+}
+
+.largeTile #cellMenuButton.highlightCellMenuButton,
+.largeTileRow #cellMenuButton.highlightCellMenuButton {
+	opacity: 1;
+}
+
+/*** Context menu ***/
+.contextMenuOverlay {
+	display: none;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 99999;
+}
+.contextMenu {
+	position: absolute;
+	border: 1px solid #000000;
+	border-color: #FFFFFF #888888 #888888 #FFFFFF;
+	border-radius: 3px;
+	background: #F0F0F0;
+	z-index: 100000;
+	padding: 4px 0 6px 0;
+	box-shadow: 1px 3px 12px rgba(0, 0, 0, 0.4);
+	cursor: default;
+}
+.contextMenu .optionSeparator1,
+.contextMenu .optionSeparator2 {
+	float: left;
+	width: 100%;
+	clear: right;
+}
+.contextMenu .optionSeparator1 {
+	border: 1px solid #D0D0D0;
+	border-width: 1px 0 0 0;
+	margin-top: 8px;
+}
+.contextMenu .optionSeparator2 {
+	border: 1px solid #F8F8F8;
+	border-width: 0 0 1px 0;
+	margin-bottom: 8px;
+}
+.contextMenu .option,
+.contextMenu .checkedOption,
+.contextMenu .uncheckedOption,
+.contextMenu .selectedOption,
+.contextMenu .audioOption,
+.contextMenu .animationOption,
+.contextMenu .fontOption,
+.contextMenu .fontAddOption {
+	float: left;
+	width: 100%;
+	height: 22px;
+	font-size: 14px;
+	color: #000000;
+	padding: 2px 22px 5px;
+	clear: right;
+	border-radius: 2px;
+	background-position: 4px 3px;
+	background-repeat: no-repeat;
+}
+.contextMenu .checkedOption {
+	background-image: url('/images/icons/accept.png');
+}
+.contextMenu .uncheckedOption {
+	background-image: url('/images/icons/cross.png');
+}
+.contextMenu .selectedOption {
+	background-image: url('/images/icons/bullet_blue.png');
+}
+.contextMenu .audioOption {
+	background-image: url('/images/icons/control_play_blue.png');
+}
+.contextMenu .animationOption {
+	background-image: url('/images/icons/film_edit.png');
+}
+.contextMenu .fontOption {
+	background-image: url('/images/icons/font.png');
+}
+.contextMenu .fontAddOption {
+	background-image: url('/images/icons/font_add.png');
+}
+
+.contextMenu .option:hover,
+.contextMenu .audioOption:hover,
+.contextMenu .animationOption:hover,
+.contextMenu .fontOption:hover,
+.contextMenu .fontAddOption:hover {
+	color: #FFFFFF;
+	background-color: #365187;
+}
+
+/** Color, alpha popup ***/
+.colorMenu {
+	border: 1px solid #000000;
+	border-color: #FFFFFF #888888 #888888 #FFFFFF;
+	border-radius: 5px;
+	background: #E0E0E0;
+}
+
+/*** Wizard steps ***/
+.wizardSteps {
+	overflow: hidden;
+	width: 100%;
+	height: 40px;
+}
+.wizardSteps .stepLabel,
+.wizardSteps .stepLabelActive {
+	float: left;
+	margin: 12px 4px 20px 0;
+	padding: 0 0 0 4px;
+	font-size: 12px;
+	font-weight: bold;
+	overflow: hidden;
+	width: 80px;
+}
+.wizardSteps .stepLabel {
+	border: 1px solid #888;
+	border-width: 0 0 3px 0;
+	color: #888;
+}
+.wizardSteps .stepLabelActive {
+	border: 1px solid #FFFFFF;
+	border-width: 0 0 3px 0;
+	color: #FFFFFF;
+}
+.wizardSteps .addStep,
+.wizardSteps .addStepActive {
+	float: left;
+	width: 40px;
+	height: 40px;
+	background-color: rgba(128, 128, 128, 0.2);
+	border-radius: 20px;
+	font-size: 20px;
+	font-weight: bold;
+}
+.wizardSteps .addStep {
+	border: 4px solid #888;
+	color: #888;
+}
+.wizardSteps .addStepActive {
+	border: 4px solid #FFFFFF;
+	color: #FFFFFF;
+}
+.wizardSteps .addStep div,
+.wizardSteps .addStepActive div {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	position: relative;
+	left: 0;
+	top: 0;
+	padding-top: 3px;
+}
+
+.table-row { display: table-row; }
+.table-cell { display: table-cell; }
+
+.hint {
+	position: absolute;
+	background-color: rgba(255, 255, 240, 0.9);
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 8px;
+	padding: 1px 8px 1px 8px;
+	z-index: 10000000;
+	font-size: 12px;
+	white-space: nowrap;
+	display: none;
+}
+
+center()
+	margin-left auto
+	margin-right auto
+
+/**
+ * Game Sidebar
+ */
+
+radius-factor = 5.7 // Apple computes border radius by dividing by 5.7
+large-icon-size = 160
+large-icon-radius = round(large-icon-size / radius-factor)
+
+.project-icon {
+	center()
+	width (large-icon-size)px
+	height (large-icon-size)px
+	margin-bottom 10px
+	display: block;
+	border-radius: unit(large-icon-radius, px);
+	position: relative;
+	background-size: contain;
+}
+
+.project-icon.gloss::after {
+	content: "";
+	position: absolute;
+	z-index: 10;
+	display: block;
+	width: 100%;
+	height: 55%;
+
+	background: linear-gradient(top, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+	border-top-right-radius: 38px;
+	border-top-left-radius: 38px;
+	border-bottom-right-radius: 110px 20px;
+	border-bottom-left-radius: 110px 20px;
+	z-index: 5;
+	box-shadow: inset 0px 2px 1px rgba(255, 255, 255, 0.7);
+}
+
+.hoverable:hover:not(.selected) .project-icon:before
+	content ''
+
+	position: absolute;
+	z-index: 10;
+	display: block;
+	width: 100%;
+	height: 100%;
+
+	background: linear-gradient(top, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1));
+	border-radius unit(large-icon-radius, px)
+	z-index: 5;
+
+.project-name {
+	padding: 0 10px;
+	color: #eee;
+	width: 200px;
+	text-align: center;
+	margin: 0 0 15px;
+	font-size: 18px;
+	text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+	font-family: 'Gill Sans';
+	font-weight: 150;
+}
+
+#simulateButton {
+	display: block;
+	padding: 5px 0;
+	border: 1px solid #555;
+	width: 150px;
+	text-align: center;
+	margin: 10px 0 10px 25px;
+	border-radius: 5px;
+	background: linear-gradient(top, rgba(200, 200, 200, 1), rgba(150, 150, 150, 1));
+	box-shadow: 0px 1px 1px rgba(255, 255, 255, 0.2), 0px -1px 1px rgba(0, 0, 0, 0.2);
+	color: #222;
+	text-shadow: 0px 1px 0px #CCC;
+	cursor: pointer;
+}
+
+#simulateButton:active {
+	background: linear-gradient(top, rgba(150, 150, 150, 1), rgba(170, 170, 170, 1));
+}
