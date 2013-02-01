@@ -1,0 +1,81 @@
+exampleListMargin = 15px
+
+#projectList
+	padding 10px
+
+#exampleList
+	absoluteBox(exampleListMargin, exampleListMargin, exampleListMargin, exampleListMargin)
+	overflow: auto;
+
+#tutorialList
+	absoluteBox(exampleListMargin, exampleListMargin, exampleListMargin, exampleListMargin)
+	overflow: auto;
+
+.exampleProjectCell
+	color #EEE
+	font-size 12px
+	cursor pointer
+	border-top 1px solid rgba(0, 0, 0, 0)
+	border-bottom 1px solid rgba(0, 0, 0, 0)
+	padding 10px
+	font-family 'Gill Sans'
+
+.exampleProjectCell:nth-child(even)
+	background #133
+
+.exampleProjectCell .project-name
+	color #EEF
+	text-shadow none
+	width 200px
+	font-size 15px
+	margin 0
+	text-align left
+
+.exampleProjectCell .project-doc
+	display inline-block
+	color #EEF
+	text-shadow none
+	width 50px
+	font-size 15px
+	margin 0
+	text-align left
+
+// .exampleProjectCell.selected
+// 	background #4b95e6
+// 	color white
+
+.exampleProjectCell.selected .project-name
+	color #EEF
+
+.exampleProjectCell .project-name
+.exampleProjectCell .project-description
+	display inline-block
+	text-overflow: ellipsis;
+
+
+.projectCell
+	position absolute
+	height 230px
+	width 220px
+	padding 20px 10px
+	border-radius 10px
+	border-top 1px solid rgba(0, 0, 0, 0)
+	border-bottom 1px solid rgba(0, 0, 0, 0)
+
+.projectCellhovernot(.selected)
+	cursor pointer
+	text-shadow 0px 1px 5px rgba(255, 255, 255, 0.5)
+
+.projectCell.selected
+	background -webkit-linear-gradient(top, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.05) 100%)
+	box-shadow inset 0px 3px 5px rgba(0, 0, 0, 0.07)
+	border-top 1px solid rgba(0, 0, 0, 0.4)
+	border-bottom 1px solid rgba(255, 255, 255, 0.4)
+	z-index 10
+
+.projectCell.selected .project-name
+	color white
+
+.projectCell.selected .project-icon
+	box-shadow 0px 3px 5px rgba(0, 0, 0, 0.2)
+	text-shadow 0px 3px 5px rgba(0, 0, 0, 0.2)

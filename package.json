@@ -1,0 +1,57 @@
+{
+  "author": "The Game Closure SDK Team",
+  "name": "basil",
+  "description": "Basil - the Game Closure SDK",
+  "version": "0.1.0",
+  "homepage": "http://github.com/gameclosure/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gameclosure/basil.git"
+  },
+  "bin": {
+    "basil": "./bin/basil"
+  },
+  "dependencies": {
+    "read": "~1.0.2",
+    "cli-color": "0.1.7",
+    "express": "3.0.0rc3",
+    "uglify-js": "1.3.x",
+    "wrench": "~1.3.9",
+    "request": "~2.10.0",
+    "jash": "*",
+    "socket.io": "~0.8.2",
+    "paperboy": "~0.0.2",
+    "optimist": "0.3.4",
+    "async": "0.1.22",
+    "ff": "0.0.18",
+    "send": "0.0.3",
+    "mime": "~1.2.7",
+    "filesize": "*",
+    "stylus": ">= 0.29.0",
+    "nib": ">= 0.8.2",
+    "falafel": "0.0.2",
+    "findit": "0.1.2",
+    "underscore": "1.3.3"
+  },
+  "devDependencies": {
+    "chai": "~1.2.0",
+    "express": "~3.0.0rc2",
+    "mocha": "~1.3.2"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "scripts": {
+    "test": "mocha",
+    "test-browser": "node test/browser/server.js"
+  },
+  "private": true,
+  "basil": {
+    "addons": [],
+    "tealeaf-build-tools": "0.2.1",
+    "android": "2.1.0"
+  },
+  "version": "0.1.0",
+  "channel": "release"
+}
