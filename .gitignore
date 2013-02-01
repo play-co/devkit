@@ -1,0 +1,14 @@
+lib/*.jar
+lib/addon-registry/
+.DS_Store
+npm-debug.log
+register.json
+config.json
+.stashes/
+stashes/
+addons/*
+*.keystore
+bin/test/testproject/
+src/serve/public/simulator.css
+src/serve/public/main.css
+node_modules/

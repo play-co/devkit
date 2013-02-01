@@ -1,0 +1,83 @@
+var fs = require('fs');
+var walk = function(dir, done) {
+	var results = [];
+	fs.readdir(dir, function(err, list) {
+		if (err) return done(err);
+		var pending = list.length;
+		if (!pending) return done(null, results);
+		list.forEach(function(file) {
+			file = dir + '/' + file;
+			fs.stat(file, function(err, stat) {
+				if (stat && stat.isDirectory()) {
+					walk(file, function(err, res) {
+						results = results.concat(res);
+						if (!--pending) done(null, results);
+					});
+				} else {
+					results.push(file);
+					if (!--pending) done(null, results);
+				}
+			});
+		});
+	});
+};
+
+
+
+walk('resources/', function (err, files) {
+	files.forEach(function (file) {
+		if (/metadata.json$/.test(file)) {
+			var contents = fs.readFileSync(file);
+			try {
+				contents = JSON.parse(contents);
+			} catch (e) {
+				console.error('Could not rewrite', file);
+				return;
+			}
+
+			var newContents = {};
+			var keys = Object.keys(contents);
+			keys.forEach(function (key) {
+				switch (key) {
+					case 'targets':
+						var targets = {};
+						contents.targets.forEach(function (target) {
+							if (target == 'android' || target == 'ios') {
+								targets['browser-mobile'] = true;
+							} else if (target == 'desktop') {
+								targets['browser-desktop'] = true;
+							} else if (target == 'native-mobile' || target == 'native-tablet') {
+								targets['native-android'] = true;
+								targets['native-ios'] = true;
+							} else {
+								targets[target] = true;
+							}
+						});
+
+						newContents.targets = Object.keys(targets);
+						break;
+					case 'native-tablet':
+					case 'native-mobile':
+						newContents['native-android'] = newContents['native-ios'] = contents[key];
+						break;
+					case 'ios':
+					case 'android':
+						newContents['browser-mobile'] = contents[key];
+						break;
+					case 'desktop':
+						newContents['browser-desktop'] = contents[key];
+						break;
+					default:
+						newContents[key] = contents[key];
+						break;
+				}
+			});
+
+			console.log('======', file);
+			console.log(contents);
+			console.log(JSON.stringify(newContents, null, '\t'));
+
+			fs.writeFileSync(file, JSON.stringify(newContents, null, '\t'));
+		}
+	});
+});

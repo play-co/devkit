@@ -1,0 +1,4 @@
+METHOD=$1
+shift;
+node shims/shimMaker.js -d ../lib/timestep/lib/ $METHOD shims/timestepShims.json $@
+

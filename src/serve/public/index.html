@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Game Closure SDK</title>
+
+<link rel="icon" type="image/png" href="/favicon.png" />
+
+<!-- js.io entry -->
+<script src="/jsio/jsio.js"></script>
+<script>
+window.DEV_MODE = true;
+window.CACHE_QUERY = '_sdk_cache=' + (+new Date());
+//adds the jsio path and sets the entry point for squill.
+//also imports plugins so we can import plugins nicely.
+// eg
+// import about.Pane instead of plugins.about.Pane
+
+jsio.path.add('/jsio/');
+jsio.path.add('/');
+jsio.path.add('/plugins/');
+jsio.path.add('/api/');
+jsio.path.add('/shared/');
+
+var ua = navigator.userAgent;
+if (/iPod|iPhone|iPad|Android|BlackBerry/i.test(ua) || /testMobile/.test(window.location)) {
+	jsio('import .mobileIndex');
+} else {
+	jsio('import .index');
+}
+
+</script>
+
+</head>
+<body>
+</body>
+</html>
