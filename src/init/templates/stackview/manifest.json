@@ -1,0 +1,13 @@
+{
+	"title": "StackView Template",
+	"icons": {
+		"128": "resources/images/icon.png"
+	},
+	"supportedOrientations": [
+		"portrait"
+	],
+	"preload": {
+		"autoHide": true,
+		"img": "resources/images/splash.png"
+	}
+}

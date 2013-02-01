@@ -1,0 +1,272 @@
+#inspector {
+	position: absolute;
+	top: 32px;
+	left: 0px;
+	box-shadow: 0px 0px 5px black;
+	border-right: 1px solid #222;
+	pointer-events: none;
+	bottom: 0px;
+	z-index: 500;
+	opacity: 0;
+
+	font-weight bold
+	transition all 0.25s
+}
+
+#inspector, #inspector input {
+	font-size: 11px;
+}
+
+#inspector #_header
+	position relative
+	background linear-gradient(top, #323334, #18191a)
+	border-bottom 1px solid #111
+	padding 10px 10px 8px 10px
+	font-size 12px
+
+#inspector #_header #_closeBtn
+	background linear-gradient(top, #656565, #444)
+	
+	border none
+	box-shadow 0px 0px 3px #000, inset 1px 1px 1px #555
+	text-shadow 0px -1px 0px #444, 0px 1px 0px #CCC
+	color #AAA
+	
+	padding-top 0px
+	font-size 13px
+
+	z-index: 10;
+	transition: all 0.25s;
+	cursor: pointer;
+
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	bottom: 3px;
+	width: 37px;
+	border-radius: 0px 0px 0px 10px;
+
+#inspector #_tree {
+	color #bbb9ff
+	background #16161b
+	// box-shadow inset -1px 0px 1px rgba(255, 255, 255, 0.1)
+	pointer-events: auto;
+	position: absolute;
+	top: 0px;
+	height: auto;
+	bottom: 0px;
+	overflow: auto;
+	font-weight: bold;
+	padding 10px 10px 10px 0px;
+
+	transition: all 0.25s;
+}
+
+// #inspector button {
+// 	background: rgba(0, 0, 0, 0.9);
+// 	border-radius: 3px;
+// 	border: 1px solid #555;
+// 	box-shadow: 0px 0px 3px #000, inset 1px 1px 1px #333;
+// 	color: #888;
+// 	float: right;
+// 	position: relative;
+// 	z-index: 10;
+// 	transition: all 0.25s;
+// 	cursor: pointer;
+// }
+
+#inspector button.toggled {
+	background: rgba(0, 0, 100, 0.9);
+	border-color: white;
+}
+
+#inspector #_closeBtn:hover {
+	border: 1px solid #999;
+	box-shadow: 0px 0px 3px #000, inset 1px 1px 2px #777;
+	color: #AAA;
+}
+
+#inspector #viewDetails
+	whitespace pre
+	padding 12px 18px 0px
+	color #bbb9ff
+	border-top: 1px solid #333;
+
+#inspector #_tree .label {
+	white-space: nowrap;
+	border-radius: 0px 8px 8px 0px;
+	cursor: pointer;
+	padding: 1px;
+	height: 18px;
+	border-top: 1px solid rgba(255, 255, 0, 0.0);
+}
+
+#inspector #_tree .label span
+	display inline-block
+	padding-top 1px
+
+#inspector #_tree .viewNode.selected > .label {
+	background: linear-gradient(bottom, rgba(80, 80, 200, 0.4), rgba(80, 80, 200, 0.55));
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	color #bbb9ff
+}
+
+#inspector #_tree .viewNode.selected > .label:before {
+	content: "\25C9";
+	float: right;
+	position: relative;
+	top: -1px;
+	left: -2px;
+}
+
+#inspector #_tree .viewNode.highlightParent > .label {
+	background: linear-gradient(top, #222, #1d1d1d);
+	box-shadow: inset -1px 1px 0px rgba(255, 255, 255, 0.1)
+}
+
+#inspector #_tree .viewNode.highlight > .label {
+	background: linear-gradient(top, #3d3d3d, #333);
+	box-shadow: inset -1px 1px 0px rgba(255, 255, 255, 0.1)
+}
+
+#inspector #_tree .toggleBtn {
+	width: 20px;
+
+	display inline-block
+	vertical-align top
+	padding 2px 4px 2px 4px
+	font-size: 8px;
+}
+
+#inspector #_tree .children
+	display none
+
+#inspector #_details {
+	background #26272d
+	//font bold 10px Monaco
+	pointer-events auto
+	user-select auto
+	position absolute
+	top 0px
+	width 320px
+	bottom 0px
+	overflow auto
+	word-wrap break-word
+}
+
+#inspector #_details .propSection {
+	color #bbb9ff
+	font-size 11px
+	font-weight bold
+	margin 0
+	padding 7px 4px 4px 105px
+}
+
+#inspector #_details #detailsScroller,
+#inspector #_details #detailsOverlay
+	position absolute
+	top 88px
+	bottom 10px
+	left 10px
+	right 10px
+	border-radius 8px
+
+#inspector #_details #detailsScroller
+	background #20201e
+	overflow-y auto
+	right 12px
+
+// inset shadow and border goes over content
+#inspector #_details #detailsOverlay
+	pointer-events none
+	z-index 1
+	border 1px solid #141414
+	box-shadow inset 0px 2px 5px rgba(0, 0, 0, 0.3), 0px 0px 1px rgba(255, 255, 255, 0.1)
+
+#inspector #_details #detailsScroller .propRow:nth-child(odd)
+	background #252525
+
+#inspector #_details .propTitle:first-child {
+	min-width: 100px;
+}
+
+#inspector #_details .propTitle
+	border-right 1px solid #151515
+
+	min-width: 60px;
+	text-align: right;
+	font-weight: bold;
+	color: #bbb9ff;
+
+	padding-right: 5px;
+	padding-top: 3px;
+
+#inspector #_details input {
+	background: none;
+	font: bold 10px Monaco;
+	width: 108px;
+	color: #ccca9e;
+	font-weight: bold;
+	margin: 0px 0px -1px 0px;
+	border none
+	padding: 2px 2px 2px 5px;
+
+	box-sizing border-box
+}
+
+#inspector #_details .propRow div
+	display inline-block
+
+#inspector #_details .propRow.propCount2 input
+	width: 55px
+
+#inspector #_details input:focus {
+	position: relative;
+	z-index: 1;
+}
+
+div.list {
+	position: absolute;
+	top: 33px;
+	border: 1px solid #aaa;
+	width: 180px;
+	background: #222;
+	display: none;
+}
+
+div.list div.device {
+	border-bottom: 1px solid #aaa;
+	padding: 5px;
+	cursor: pointer;
+}
+
+div.list div.device:hover {
+	background: #444;
+}
+
+#dropArea {
+	line-height: 120px;
+	font-size: 20px;
+	color: #666;
+	margin-top: 10px;
+	height: 130px;
+	position: absolute;
+	background: #CCC;
+	border: 4px dashed #666;
+	left: 0;
+	right: 0;
+	text-align: center;
+	display: none;
+}
+
+#dropArea.over {
+	background: #eee;
+	border-color: #E33;
+}
+
+button#saveImg {
+	position: absolute;
+	left: 50px;
+	top: 75px;
+	display: none;
+}

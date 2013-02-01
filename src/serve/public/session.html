@@ -1,0 +1,48 @@
+<!doctype html>
+
+<body>
+<script>
+var KEYS = {DEVICE: '_device_token', SESSION: '_session_token'};
+var store = window.localStorage;
+var deviceID = store.getItem(KEYS.DEVICE);
+if (!deviceID) {
+	var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+	var uuid = [];
+	var radix = chars.length;
+	var r;
+	uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+	uuid[14] = '4';
+	for (var i = 0; i < 36; i++) {
+		if (!uuid[i]) {
+			r = 0 | Math.random() * 16;
+			uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r & 0xf];
+		}
+	}
+	deviceID = uuid.join('');
+	
+	window.localStorage.setItem(KEYS.DEVICE, deviceID);
+	if (store.getItem(KEYS.DEVICE) != deviceID) {
+		deviceID = 'unknown';
+	}
+}
+
+window.addEventListener('message', sendCode, false);
+function sendCode(evt) {
+	if (!evt || evt.data == 'getSession') {
+		window.parent.postMessage('getSession<' + JSON.stringify({
+			sessionToken: store.getItem(KEYS.SESSION),
+			deviceID: deviceID,
+			host: window.location.host
+		}) + '>', '*');
+	} else {
+		var result = evt.data.match(/saveToken<(.*)>$/);
+		if (result) {
+			store.setItem(KEYS.SESSION, result[1]);
+			window.parent.postMessage('savedToken', '*');
+		}
+	}
+}
+
+sendCode();
+</script>
+</body>
