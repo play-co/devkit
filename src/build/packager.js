@@ -370,7 +370,7 @@ function getResources(manifest, target, appDir, output, cb) {
 		result.resources.push({
 			basename: path.basename(mapPath, mapExt),
 			ext: mapExt,
-			relative: path.relative(path.resolve(appDir, output), mapPath),
+			relative: useURISlashes(path.relative(path.resolve(appDir, output), mapPath)),
 			fullPath: mapPath
 		});
 
