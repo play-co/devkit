@@ -33,8 +33,10 @@ import util.ajax;
 var PluginGroup = Class(function() {
 	var PRIORITIES = {
 		header: 'a',
-		project: 'b',
-		debug: 'c'
+		main: 'b',
+		project: 'c',
+		debug: 'd',
+		footer: 'z'
 	};
 
 	var DEFAULT_PRIORITY = 'z';
@@ -44,7 +46,7 @@ var PluginGroup = Class(function() {
 		this.priority = PRIORITIES[name] || DEFAULT_PRIORITY;
 	};
 
-	this.add = function(plugin) { this.plugins.push(plugin); };
+	this.add = function(plugin) { this.plugins.push(plugin); console.log(plugin, this.priority); };
 	this.toString = function() { return this.priority; };
 });
 
@@ -229,8 +231,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 
 		// sort the plugins by group
 		var groups = [];
-		plugins.forEach(
-			function(plugin) {
+		plugins.forEach(function(plugin) {
 				var group = groups[plugin.group];
 				if (!group) {
 					group = new PluginGroup(plugin.group);
@@ -239,8 +240,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 				}
 
 				group.add(plugin);
-			}
-		);
+			});
 
 		groups.sort();
 

@@ -43,6 +43,8 @@ var Version = Class(function () {
 
 		this.build = opts.build || 0;
 		this.tag = opts.tag || '';
+
+		this.src = this.toString();
 	};
 
 	this.getNext = function (which) {
@@ -208,7 +210,7 @@ Version.sorterDesc = function (a, b) {
 };
 
 if(module && module.children) {
-	module.exports = Version;	
+	module.exports = Version;
 } else {
 	exports = Version;
 }
