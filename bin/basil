@@ -2,31 +2,35 @@
 
 # Basil command line script, that intercepts update calls.
 
-# concat some paths to find the current dir
-PARTONE=$(dirname $0)
-PARTTWO=$(dirname $(readlink $0))"/../"
-
-if [ -z $BASIL_DEBUG ]; then
-	BASIL_DEBUG=1
-fi
-
-if [ -z $TMPDIR ]; then
-	TMPDIR="/tmp"
-fi
-
-if [[ $PARTTWO == \.* ]]; then
-	BASIL_PATH=$PARTONE"/"$PARTTWO
+if [[ `uname` == MINGW32* ]]; then
+	BASIL_PATH=$(dirname $0)"/../"	
 else
-	BASIL_PATH=$PARTTWO
-fi
+	# concat some paths to find the current dir
+	PARTONE=$(dirname $0)
+	PARTTWO=$(dirname $(readlink $0))"/../"
 
+	if [ -z $BASIL_DEBUG ]; then
+		BASIL_DEBUG=1
+	fi
+
+	if [ -z $TMPDIR ]; then
+		TMPDIR="/tmp"
+	fi
+
+	if [[ $PARTTWO == \.* ]]; then
+		BASIL_PATH=$PARTONE"/"$PARTTWO
+	else
+		BASIL_PATH=$PARTTWO
+	fi
+
+fi
 # clean up old logs
 if [ -e $TMPDIR/basil.log ]; then
 	rm $TMPDIR/basil.log
 fi
 
 EXITC=0
-if [ $BASIL_DEBUG == 1 ]; then
+if [[ $BASIL_DEBUG == 1 ]]; then
 	node $BASIL_PATH"/src/basil" $* 2>&1 | tee $TMPDIR/basil.log
 	EXITC=${PIPESTATUS[0]}
 else
@@ -34,7 +38,7 @@ else
 	EXITC=$?
 fi
 
-if (( ($BASIL_DEBUG == 1) && ($EXITC != 0) && ($EXITC != 42) && ($EXITC != 2) )); then
+if [[(( ($BASIL_DEBUG == 1) && ($EXITC != 0) && ($EXITC != 42) && ($EXITC != 2) ))]]; then
 	# send the logs to us
 	CRASH_LOG=`cat $TMPDIR/basil.log`
 	curl docs.gameclosure.com/basil_crash.php -d "msg=$CRASH_LOG" --silent
