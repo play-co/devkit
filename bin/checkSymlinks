@@ -1,0 +1,110 @@
+#!/usr/bin/env node
+
+// first entry is the source (relative to the destination)
+// second entry is the destination
+
+var path = require('path');
+var fs = require('fs');
+var ff = require('ff');
+
+var base = path.join(path.dirname(__filename), '..');
+
+exports.check = function (cb) {
+	var f = ff(function () {
+			var links = require('../tools/links.json');
+			var i = 0;
+			var next = f();
+			var nextLink = function () {
+			var link = links[i];
+			if (!link) {
+			next();
+			} else {
+			++i;
+			var src = link[0];
+			var dest = path.join(base, link[1]);
+			var f = ff(function () {
+				fs.exists(dest, f.slotPlain());
+				}, function (exists) {
+				var next = f();
+				if (!exists) {
+				createLink(src, dest, next);
+				} else {
+				checkLink(src, dest, next);
+				}
+				})
+			.error(next)
+				.success(nextLink);
+			}
+			};
+			nextLink();
+	}).cb(cb);
+};
+
+function checkLink (src, dest, next) {
+	fs.readlink(dest, function (err, linkString) {
+			if (err) {
+			console.error(err);
+			createLink(src, dest, next);
+			} else if (linkString != src) {
+			console.log('rewriting link', dest, 'to point to', src);
+			createLink(src, dest, next);
+			} else {
+			next();
+			}
+			});
+}
+
+function createLink (src, dest, next) {
+	console.log('creating link', dest);
+
+	try {
+		makeDirsSync(path.dirname(dest));
+	} catch (e) {
+		return next(e);
+	}
+	try {
+		fs.unlinkSync(dest);
+	} catch (e) {
+		//do nothing with this error
+	}
+	fs.symlink(src, dest, 'junction', next);
+}
+
+// based on https://gist.github.com/1053383
+function makeDirsSync (dir) {
+	// normalize and resolve path to an absolute one:
+	// (path.resolve automatically uses the current directory if needed)
+	dir = path.resolve(path.normalize(dir));
+
+	// try to create this directory:
+	try {
+		// XXX hardcoding recommended file mode of 511 (0777 in octal)
+		// (note that octal numbers are disallowed in ES5 strict mode)
+		fs.mkdirSync(dir, 511);
+	} catch (e) {
+		// and if we fail, base action based on why we failed:
+		switch (e.code) {
+
+			// base case: if the path already exists, we're good to go.
+			// TODO account for this path being a file, not a dir?
+			case 'EEXIST':
+				return;
+
+				// recursive case: some directory in the path doesn't exist, so
+				// make this path's parent directory.
+			case 'ENOENT':
+				mkdirpSync(path.dirname(dir));
+				mkdirpSync(dir);
+				break;
+
+			default:
+				throw e;
+		}
+	}
+}
+
+
+// Command line invocation.
+if (require.main === module) {
+	exports.check();
+}

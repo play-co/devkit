@@ -51,7 +51,6 @@ if [[ ! -w "$HOME/.npm" ]]; then
 		echo "Try: sudo chown -R $USER $HOME/.npm"
 		exit 1
 fi
-
 #
 # Install
 #
@@ -75,7 +74,7 @@ if ! git submodule update --init --recursive; then
 		exit 1
 fi
 
-if [ ! -w "/usr/local" ]; then
+if [[ ! -w "/usr/local"  && ! (`uname` == MINGW32*)]]; then
 		error "You need write permissions to /usr/local"
 		echo "Try running: sudo chown -R \$USER /usr/local"
 		exit 1
@@ -115,6 +114,7 @@ fi
 
 echo
 
+node bin/checkSymlinks
 node src/dependencyCheck.js
 
 echo 
