@@ -55,7 +55,7 @@ var VersionCell = Class(squill.Cell, function(supr) {
 	};
 });
 
-var versionData = new squill.models.DataSource({key: 'tag'});
+var versionData = new squill.models.DataSource({key: 'src'});
 
 exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this._def = {
@@ -77,13 +77,6 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 						]},
 					]},
 				]},
-
-				{
-					className: 'support mainPanel',
-					title: 'support',
-					id: 'support'
-				},
-
 				{className: 'mainPanel', title: 'versions', children: [
 					{id: 'versionHeader', children: [{tag: 'span', text: 'current version: '}, {tag: 'span', id: 'aboutVersion'}]},
 					{id: 'versionWrapper', className: 'darkPanel', children: [
@@ -106,7 +99,6 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	});
 
 	this.onSwitchVersion = function(version) {
-		this.hideMore();
 		$.setText(this.lastCheckedStatus, 'Updating... Please wait.');
 		util.ajax.get({
 				url: '/plugins/about/update/',
@@ -127,14 +119,6 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 
 		this.getVersions();
 		this.versions.subscribe('Switch', this, 'onSwitchVersion');
-
-		this.support._el.innerHTML = '<ul class="support">\
-			<li><a href="http://docs.gameclosure.com">Documentation</a></li>\
-			<li><a href="https://gcsdk.zendesk.com/forums">Forum</a></li>\
-			<li><a href="">Mailing List</a></li>\
-			<li><a href="http://webchat.freenode.net/?channels=#gameclosure">IRC</a></li>\
-			<li><a href="mailto:support@gameclosure.com">support@gameclosure.com</a></li>\
-		</ul>';
 	};
 
 	this.getVersions = function() {
@@ -148,6 +132,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		if (!response) {
 			return;
 		}
+
 		var lastChecked = response.info ? response.info.lastChecked : -1;
 		if (lastChecked == -1) {
 			$.setText(this.lastCheckedStatus, 'checking for updates...');
@@ -178,7 +163,11 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		if (!currentVersion) {
 			verStr = 'Version Unknown';
 		} else {
-			verStr = 'Version ' + currentVersion.tag.replace(/-/g, ' ');
+			if (currentVersion.channel == 'release') {
+				verStr = 'Version ' + currentVersion.toString(true); // don't show channel
+			} else {
+				verStr = 'Version ' + currentVersion.toString();
+			}
 		}
 
 		$.setText(this.version, verStr);
