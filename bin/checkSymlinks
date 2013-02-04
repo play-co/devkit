@@ -10,6 +10,8 @@ var ff = require('ff');
 var base = path.join(path.dirname(__filename), '..');
 
 exports.check = function (cb) {
+	var cwd = process.cwd();
+	process.chdir(__dirname);
 	var f = ff(function () {
 			var links = require('../tools/links.json');
 			var i = 0;
@@ -37,7 +39,10 @@ exports.check = function (cb) {
 			}
 			};
 			nextLink();
-	}).cb(cb);
+	}).cb(function () {
+		process.chdir(cwd);
+		cb && cb();
+	});
 };
 
 function checkLink (src, dest, next) {
