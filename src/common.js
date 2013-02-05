@@ -38,6 +38,7 @@ exports.paths = {
 			lib: pathGetter('lib'),
 			sdk: pathGetter('sdk'),
 			build: pathGetter('lib', 'tealeaf-build', 'src'),
+			projects: pathGetter('projects'),
 		};
 
 exports.loadJsio = function () {

@@ -12,3 +12,4 @@ bin/test/testproject/
 src/serve/public/simulator.css
 src/serve/public/main.css
 node_modules/
+projects/*

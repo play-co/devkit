@@ -13,3 +13,6 @@
 [submodule "lib/NativeInspector"]
 	path = lib/NativeInspector
 	url = https://github.com/gameclosure/NativeInspector.git
+[submodule "projects/whack-that-mole"]
+	path = projects/whack-that-mole
+	url = https://github.com/gameclosure/whack-that-mole.git
