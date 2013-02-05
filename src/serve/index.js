@@ -86,7 +86,7 @@ function serveAPI (app) {
 	//syntax checker.
 	//TODO: figure out usage
 	app.post('/.syntax', function(req, res) {
-		var jvmtools = require('../build/src/jvmtools');
+		var jvmtools = require('../build/jvmtools');
 		jvmtools.exec("closure", [
 			"--compilation_level", "WHITESPACE_ONLY",
 			"--jscomp_off", "internetExplorerChecks",
