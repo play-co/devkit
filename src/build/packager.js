@@ -197,8 +197,6 @@ function packageJS (opts, initialImport, appendImport, cb) {
 	
 	compiler.inferOptsFromEntry(initialImport);
 
-	logger.log(opts.target, opts);
-
 	if (!/^native/.test(opts.target)) {
 		compiler.opts.includeJsio = false;
 	}
