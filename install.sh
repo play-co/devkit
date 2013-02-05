@@ -70,6 +70,16 @@ if ! git submodule sync; then
 		exit 1
 fi
 
+# setup for gc internal repositories
+remoteurl=`git config --get remote.origin.url`
+if [[ "$remoteurl" == *gcsdk-priv* ]]; then
+	cd lib/timestep
+	git remote set-url origin "https://github.com/gameclosure/timestep-priv.git"
+	cd ../../lib/gcapi
+	git remote set-url origin "https://github.com/gameclosure/gcapi-priv.git"
+	cd ../../
+fi
+
 if ! git submodule update --init --recursive; then
 		error "Unable to update git submodules"
 		exit 1
