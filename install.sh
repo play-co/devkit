@@ -70,6 +70,8 @@ if ! git submodule sync; then
 		exit 1
 fi
 
+git submodule init
+
 # setup for gc internal repositories
 remoteurl=`git config --get remote.origin.url`
 if [[ "$remoteurl" == *gcsdk-priv* ]]; then
@@ -80,10 +82,7 @@ if [[ "$remoteurl" == *gcsdk-priv* ]]; then
 	cd ../../
 fi
 
-if ! git submodule update --init --recursive; then
-		error "Unable to update git submodules"
-		exit 1
-fi
+git submodule update --init --recursive
 
 if [ ! -w "/usr/local" ]; then
 		error "You need write permissions to /usr/local"
