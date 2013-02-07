@@ -23,6 +23,8 @@ exports.check = function (cb) {
 		} else {
 			++i;
 			var dest = path.join(base, link[1]);
+			//if we are on windows then the src path needs to be provided as a absolute path
+			//in this case the link sources are provided relative to the directory that the destination of the link resides
 			if (isWindows) {
 				var src = path.join(dest,'\\..\\' + link[0]);
 			} else {
@@ -72,8 +74,8 @@ function makeDirsSync (dir) {
 			case 'EEXIST':
 				return;
 
-				// recursive case: some directory in the path doesn't exist, so
-				// make this path's parent directory.
+			// recursive case: some directory in the path doesn't exist, so
+			// make this path's parent directory.
 			case 'ENOENT':
 				fs.mkdirSync(path.dirname(dir));
 				fs.mkdirSync(dir);
