@@ -125,11 +125,12 @@ exports.load = function (app, argv) {
 		}
 	});
 
-	app.get('/simulate/:shortName/:target/loading.png', function (req, res, next) {
+	app.get('/simulate/:shortName/:target/splash/:splash', function (req, res, next) {
 		var projects = common.getProjectList();
 		var project = projects[req.params.shortName];
+		var splash = req.params.splash;
 
-		var img = project && project.manifest.preload && project.manifest.preload.img;
+		var img = project && project.manifest.splash && project.manifest.splash[splash];
 		if (!img) {
 			return next();
 		} else {
@@ -140,6 +141,7 @@ exports.load = function (app, argv) {
 				if (!exists) {
 					next();
 				} else {
+					logger.log("Splash image mapped from", splash, "->", img);
 					fs.createReadStream(img).pipe(res);
 				}
 			}).error(next);

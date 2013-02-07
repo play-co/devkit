@@ -106,7 +106,7 @@ var CONFIG_GLOBAL_TEMPLATE = {
 	servicesURL: null, // String 
 	noRedirect: false, // boolean
 	inviteURLTemplate: null, // String
-	preload: {} // Map<String, String> 
+	splash: {} // Map<String, String> 
 };
 
 // Return a JSON object for the global CONFIG object.
@@ -149,8 +149,8 @@ function getConfigObject (project, opts, target) {
 	
 	logger.log("Using services URL " + config.servicesURL);
 	
-	if (manifest.preload != null) {
-		config.preload = JSON.parse(JSON.stringify(manifest.preload));
+	if (manifest.splash != null) {
+		config.splash = JSON.parse(JSON.stringify(manifest.splash));
 	}
 	
 	var urlOpts = {

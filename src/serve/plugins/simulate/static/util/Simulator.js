@@ -146,7 +146,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 				this.global.ACCESSIBILITY.mute(this.isMuted());
 			});
 
-			this.global.CONFIG.preload.hide = bind(this, 'hideLoadingImage');
+			this.global.CONFIG.splash.hide = bind(this, 'hideLoadingImage');
 
 			// update muted state
 			this.mute(this._isMuted);
