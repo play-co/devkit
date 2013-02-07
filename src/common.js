@@ -24,6 +24,8 @@ var clc = require('cli-color');
 
 var common = exports;
 
+var isWindows = require('os').platform() == 'win32';
+
 function pathGetter () {
 	var base = [__dirname, '..'].concat(Array.prototype.slice.call(arguments));
 	return function () {
@@ -72,7 +74,15 @@ process.on('exit', function () {
 
 // Run a child process inline.
 exports.child = function (prog, args, opts, cont) {
-	var tool = spawn(prog, args, opts);
+	var tool;
+	//If we are on windows commands need to be sent through cmd so
+	//bat scripts can be executed
+	if (isWindows) {
+		var cmdArgs = ['/c', prog].concat(args);
+		tool = spawn('cmd', cmdArgs, opts);
+	} else {
+		tool = spawn(prog, args, opts);
+	}
 	var out = [];
 	var err = [];
 	var formatter = new exports.Formatter(opts.tag || prog, opts.silent, out, err);
@@ -302,7 +312,6 @@ exports.getLocalIP = function (next) {
     var os = require('os');
 	var interfaces = os.networkInterfaces();
 	var ips = [];
-	var isWindows = os.platform() == 'win32';
 
     for (var name in interfaces) {
         if (/en\d+/.test(name) || isWindows) {

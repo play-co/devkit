@@ -98,8 +98,8 @@ function makeDirsSync (dir) {
 				// recursive case: some directory in the path doesn't exist, so
 				// make this path's parent directory.
 			case 'ENOENT':
-				mkdirpSync(path.dirname(dir));
-				mkdirpSync(dir);
+				fs.mkdirSync(path.dirname(dir));
+				fs.mkdirSync(dir);
 				break;
 
 			default:
