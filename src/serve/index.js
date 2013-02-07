@@ -126,7 +126,18 @@ function serveFrontend (app) {
 	var plugins = {};
 	fs.readdirSync(path.join(__dirname, 'plugins')).forEach(function (name) {
 		// Read the manifest.
-		plugins[name] = JSON.parse(fs.readFileSync(path.join(__dirname, 'plugins', name, 'manifest.json')));
+		try {
+			var manifest = path.join(__dirname, 'plugins', name, 'manifest.json');
+			if (fs.existsSync(manifest)) {
+				plugins[name] = JSON.parse(fs.readFileSync(manifest));
+			} else {
+				return;
+			}
+		} catch (e) {
+			logger.warn('Could not load plugin', name);
+			console.error(e);
+			return;
+		}
 
 		// Serve static files.
 		app.use(root + 'plugins/' + name, express.static(path.join(__dirname, 'plugins', name, 'static')));
