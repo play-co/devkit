@@ -7,6 +7,8 @@ var path = require('path');
 var fs = require('fs');
 var ff = require('ff');
 
+var isWindows = require('os').platform() == 'win32';
+
 var base = path.join(path.dirname(__filename), '..');
 
 exports.check = function (cb) {
@@ -22,8 +24,12 @@ exports.check = function (cb) {
 			next();
 			} else {
 			++i;
-			var src = link[0];
 			var dest = path.join(base, link[1]);
+			if (isWindows) {
+				var src = path.join(dest,'\\..\\' + link[0]);
+			} else {
+				var src = link[0];
+			}
 			var f = ff(function () {
 				fs.exists(dest, f.slotPlain());
 				}, function (exists) {
@@ -47,20 +53,23 @@ exports.check = function (cb) {
 
 function checkLink (src, dest, next) {
 	fs.readlink(dest, function (err, linkString) {
-			if (err) {
+		
+		if (err) {
 			console.error(err);
 			createLink(src, dest, next);
-			} else if (linkString != src) {
+		} else if (linkString != src) {
 			console.log('rewriting link', dest, 'to point to', src);
-			createLink(src, dest, next);
-			} else {
+			createLink(src, dest, 'junction', next);
+		} else {
 			next();
-			}
-			});
+		}
+	});
 }
 
 function createLink (src, dest, next) {
-	console.log('creating link', dest);
+	console.log('creating link to', dest);
+	var cwd = process.cwd();
+	process.chdir(__dirname);
 
 	try {
 		makeDirsSync(path.dirname(dest));
