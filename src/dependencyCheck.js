@@ -36,7 +36,7 @@ var BUILD_TOOLS_SRC = common.paths.root('lib/tealeaf-build-tools-{version}.jar')
 var addonManager = require('./AddonManager');
 
 function checkTealeafBuildTools (version, cb) {
-	logger.log("checking for tealeaf-build-tools", version);
+	logger.log("checking for tealeaf-build-tools", version.toString());
 
 	var f = ff(function () {
 		fs.exists(getBuildToolsPath(version), f.slotPlain());
@@ -63,10 +63,10 @@ function checkTealeafBuildToolsLink (version, cb) {
 			}, function (link) {
 				var fileVersion = link.match(/tealeaf-build-tools-(.*?)\.jar/);
 				if (!fileVersion || !version.eq(fileVersion[1])) {
-					logger.log("tealeaf-build-tools", version, "does not exist");
+					logger.log("tealeaf-build-tools", version.toString(), "does not exist");
 					next();
 				} else {
-					logger.log("tealeaf-build-tools", version, "present");
+					logger.log("tealeaf-build-tools", version.toString(), "present");
 					f.done();
 				}
 			});
