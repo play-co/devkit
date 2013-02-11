@@ -343,8 +343,8 @@ function getResources(manifest, target, appDir, output, cb) {
 
 		result.resources = resources.other.map(function (filename) {
 			if (path.basename(filename) === "metadata.json") {
-				var filedata = fs.readFileSync(filename, 'utf8');
 				try {
+					var filedata = fs.readFileSync(filename, 'utf8');
 					var fileobj = JSON.parse(filedata);
 					if (fileobj.package === false) {
 						var filterPath = path.dirname(filename);
@@ -437,6 +437,8 @@ function writeMetadata(opts, dir, json) {
 // Compile resources together and pass a cache object to the next function.
 // runs the spriter and compiles the build code.
 function compileResources (project, opts, target, initialImport, cb) {
+	logger.log("Packaging resources...");
+
 	// Font sheets cannot be sprited; add a metadata.json file for fonts (for compatibility)
 	writeMetadata(opts, "resources/fonts", '{"sprite": false}');
 	writeMetadata(opts, "resources/icons", '{"sprite": false, "package": false}');
@@ -446,7 +448,7 @@ function compileResources (project, opts, target, initialImport, cb) {
 		getResources(project.manifest, target, opts.fullPath, opts.localBuildPath, f());
 		packageJS(opts, initialImport, false, f());
 	}, function (files, jsSrc) {
-		logger.log("finished packaging resources");
+		logger.log("Finished packaging resources");
 
 		// merge results into a single object
 		f({
@@ -454,11 +456,10 @@ function compileResources (project, opts, target, initialImport, cb) {
 			jsSrc: jsSrc
 		})
 	})
-		.cb(cb)
-		.error(function (e) {
-			logger.error("unexpected error when packaging resources");
-			console.error(e);
-		});
+	.cb(cb)
+	.error(function (e) {
+		logger.error("ERROR: While packaging resources:", e);
+	});
 };
 
 /**
