@@ -390,15 +390,21 @@ function getResources(manifest, target, appDir, output, cb) {
 	});
 }
 
+function writeMetadata(dir, json) {
+	var fontsDir = path.join(opts.fullPath, dir);
+	var fontsMetadata = path.join(fontsDir, "metadata.json");
+	if (fs.existsSync(fontsDir) && fs.lstatSync(fontsDir).isDirectory() && !fs.existsSync(fontsMetadata)) {
+		fs.writeFileSync(fontsMetadata, json);
+	}
+}
+
 // Compile resources together and pass a cache object to the next function.
 // runs the spriter and compiles the build code.
 function compileResources (project, opts, target, initialImport, cb) {
 	// Font sheets cannot be sprited; add a metadata.json file for fonts (for compatibility)
-	var fontsDir = path.join(opts.fullPath, "resources/fonts");
-	var fontsMetadata = path.join(fontsDir, "metadata.json");
-	if (fs.existsSync(fontsDir) && fs.lstatSync(fontsDir).isDirectory() && !fs.existsSync(fontsMetadata)) {
-		fs.writeFileSync(fontsMetadata, JSON.stringify({"sprite": false}));
-	}
+	writeMetadata("resources/fonts", '{"sprite": false}');
+	writeMetadata("resources/icons", '{"sprite": false, "package": false}');
+	writeMetadata("resources/splash", '{"sprite": false, "package": false}');
 
 	var f = ff(function () {
 		getResources(project.manifest, target, opts.fullPath, opts.localBuildPath, f());
