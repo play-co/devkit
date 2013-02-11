@@ -339,7 +339,23 @@ function getResources(manifest, target, appDir, output, cb) {
 			};
 		});
 
+		var filteredPaths = [];
+
 		result.resources = resources.other.map(function (filename) {
+			if (path.basename(filename) === "metadata.json") {
+				var filedata = fs.readFileSync(filename, 'utf8');
+				try {
+					var fileobj = JSON.parse(filedata);
+					if (fileobj.package === false) {
+						var filterPath = path.dirname(filename);
+						logger.log("Not packaging resources from", filterPath);
+						filteredPaths.push(filterPath);
+					}
+				} catch (ex) {
+					logger.error("WARNING:", filename, "format is not valid JSON so cannot parse it.");
+				}
+			}
+
 			var ext = path.extname(filename);
 			return {
 				basename: path.basename(filename, ext),
@@ -348,6 +364,26 @@ function getResources(manifest, target, appDir, output, cb) {
 				relative: useURISlashes(filename)
 			};
 		});
+
+		// remove paths that have metadata package:false
+		for (var ii = 0; ii < result.resources.length; ++ii) {
+			var filespec = result.resources[ii];
+			var filename = filespec.relative;
+
+			if (path.basename(filename) === "metadata.json") {
+				logger.log("Did not package the metadata file", filename);
+				result.resources.splice(ii--, 1);
+				continue;
+			}
+
+			for (var fp in filteredPaths) {
+				if (filename.indexOf(filteredPaths[fp]) === 0) {
+					logger.log("Did not package resource", filename);
+					result.resources.splice(ii--, 1);
+					continue;
+				}
+			}
+		}
 
 		var mapPath = path.resolve(fullSpriteDir, resources.map);
 		f(mapPath);
@@ -390,7 +426,7 @@ function getResources(manifest, target, appDir, output, cb) {
 	});
 }
 
-function writeMetadata(dir, json) {
+function writeMetadata(opts, dir, json) {
 	var fontsDir = path.join(opts.fullPath, dir);
 	var fontsMetadata = path.join(fontsDir, "metadata.json");
 	if (fs.existsSync(fontsDir) && fs.lstatSync(fontsDir).isDirectory() && !fs.existsSync(fontsMetadata)) {
@@ -402,9 +438,9 @@ function writeMetadata(dir, json) {
 // runs the spriter and compiles the build code.
 function compileResources (project, opts, target, initialImport, cb) {
 	// Font sheets cannot be sprited; add a metadata.json file for fonts (for compatibility)
-	writeMetadata("resources/fonts", '{"sprite": false}');
-	writeMetadata("resources/icons", '{"sprite": false, "package": false}');
-	writeMetadata("resources/splash", '{"sprite": false, "package": false}');
+	writeMetadata(opts, "resources/fonts", '{"sprite": false}');
+	writeMetadata(opts, "resources/icons", '{"sprite": false, "package": false}');
+	writeMetadata(opts, "resources/splash", '{"sprite": false, "package": false}');
 
 	var f = ff(function () {
 		getResources(project.manifest, target, opts.fullPath, opts.localBuildPath, f());
