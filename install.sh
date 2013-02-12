@@ -67,7 +67,7 @@ echo -e "\nInitializing GC SDK libraries ..."
 
 # setup for gc internal repositories
 remoteurl=`git config --get remote.origin.url`
-PRIV_SUBMODS=false && [[ "$remoteurl" == *gcsdk-priv* ]] && PRIV_SUBMODS=true
+PRIV_SUBMODS=false && [[ "$remoteurl" == *devkit-priv* ]] && PRIV_SUBMODS=true
 if $PRIV_SUBMODS; then
 	echo "Using private submodules..."
 	cp .gitmodules-priv .gitmodules

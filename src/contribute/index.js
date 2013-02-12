@@ -183,7 +183,7 @@ _commands.release = Class(function () {
 		// push all repos to remote
 		// push each branch to release branch of each repo
 
-		var sdkRepo = _repos['gcsdk'];
+		var sdkRepo = _repos['devkit'];
 
 		var tag;
 		var f = ff(function () {
