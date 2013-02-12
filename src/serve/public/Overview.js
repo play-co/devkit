@@ -79,12 +79,12 @@ exports = Class(squill.TabbedPane, function(supr) {
 				tag: 'div',
 				children: [
 					{
-						className: 'project-icon',
+						className: 'projectIcon',
 						id: '_overviewProjectIcon',
 						src: '/images/defaultIcon.png'
 					},
 					{
-						className: 'project-name',
+						className: 'projectName',
 						id: '_overviewProjectName',
 						text: 'no project selected'
 					},
@@ -116,7 +116,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 		} else {
 			project = this.getProjects().getItemForIndex(0);
 		}
-		
+
 		this._currentProject = project;
 
 		this._pluginByTitle = {};
@@ -276,7 +276,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 		if (child.lazyPane) {
 			var paneName = child.lazyPane;
 			child.lazyPane = false;
-			
+
 			// Check that we haven't run this more than once.
 			Constructor = jsio('import ' + paneName);
 			child = new Constructor({
@@ -347,7 +347,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 		if (!project) { return; }
 
 		this._overviewProjectIcon.style.backgroundImage = 'url(' + (project.getIcon(512) || '/images/defaultIcon.png') + ')';
-		
+
 		if (project.manifest.icons.renderGloss) {
 			$.addClass(this._overviewProjectIcon, 'gloss');
 		} else {
