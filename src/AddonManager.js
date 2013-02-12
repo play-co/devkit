@@ -31,7 +31,7 @@ var logger = new common.Formatter('addons');
 var addonPath = common.paths.root("addons");
 
 var REGISTRY_PATH	= common.paths.lib('addon-registry');
-var REGISTRY_URL	= "git@github.com:gameclosure/addon-registry.git";
+var REGISTRY_URL	= "https://github.com/gameclosure/addon-registry";
 
 var AddonManager = Class(EventEmitter, function () {
 
