@@ -232,9 +232,9 @@ _commands.release = Class(function () {
 			// push the commits to development remote
 			forEachRepo(function (repo) {
 				if (repo.release) {
-					repo.log("pushing to", repo.remote, "HEAD:" + repo.releaseBranch); // TODO
+					repo.log("pushing to", repo.remote, "HEAD:" + repo.releaseBranch);
 					if (!argv.test) {
-						repo.git('push', '-f', repo.remote, "HEAD:" + repo.release.branch, f());
+						repo.git('push', '-f', repo.remote, "HEAD:" + repo.releaseBranch, f());
 					}
 				}
 			}, this);
@@ -242,7 +242,7 @@ _commands.release = Class(function () {
 			// push the tags to development remote
 			forEachRepo(function (repo) {
 				if (repo.release) {
-					repo.log("pushing", tag, "to", repo.remote); // TODO
+					repo.log("pushing", tag, "to", repo.remote);
 					if (!argv.test) {
 						repo.git('push', repo.remote, tag, f());
 					}
