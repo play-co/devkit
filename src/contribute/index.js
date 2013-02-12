@@ -268,10 +268,44 @@ _commands.release = Class(function () {
 					}
 				}
 			});
+		}, function () {
+			new _commands.postrelease(argv);
 		}).error(function (err) {
 			logger.error("unexpected error");
 			console.error(err);
 		});
+	}
+});
+
+// try to merge release branch into develop branch
+_commands.postrelease = Class(function () {
+	// checkout remote branch
+	// merge repo into master
+	// push repo to origin
+
+	// TODO: parse repos out of argv
+	this.init = function (argv, cb) {
+		var f = ff(function () {
+			new _commands.status(null, f());
+		}, function () {
+			forEachRepo(function (repo) {
+				if (repo.release) {
+					repo.log("trying to merge ", repo.remote, repo.releaseBranch, 'into', repo.branch);
+
+					if (!argv || !argv.test) {
+						repo.git([
+								['checkout', '-f', repo.getRemoteBranchStr()],
+								['reset', '--hard'],
+								['pull', repo.remote, repo.releaseBranch],
+								['push', repo.remote, "HEAD:" + repo.branch]
+							], f());
+					}
+				}
+			});
+		}).error(function (err) {
+			logger.error("unexpected error");
+			console.error(err);
+		}).cb(cb);
 	}
 });
 
