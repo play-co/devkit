@@ -211,17 +211,23 @@ _commands.release = Class(function () {
 				}
 
 				// tag all submodules
-				repo.git('tag', '-f', tag, f());
+				if (!argv.test) {
+					repo.git('tag', '-f', tag, f());
+				}
 			});
 			
 			logger.log("committing", paths.join(' '));
 
 			// add all submodules
-			sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+			if (!argv.test) {
+				sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+			}
 		}, function () {
 			// commit the submodules and package.json
-			sdkRepo.git('commit', '-m', "Releasing version " + tag, f());
-			console.log("committing...");
+			if (!argv.test) {
+				sdkRepo.git('commit', '-m', "Releasing version " + tag, f());
+				console.log("committing...");
+			}
 		}, function () {
 			// push the commits to development remote
 			forEachRepo(function (repo) {
