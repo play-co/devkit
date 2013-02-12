@@ -55,7 +55,7 @@ var VersionCell = Class(squill.Cell, function(supr) {
 	};
 });
 
-var versionData = new squill.models.DataSource({key: 'tag'});
+var versionData = new squill.models.DataSource({key: 'src'});
 
 exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this._def = {
@@ -176,9 +176,13 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 
 		var verStr;
 		if (!currentVersion) {
-			verStr = 'Version Unknown';
+			verStr = 'Version unknown';
 		} else {
-			verStr = 'Version ' + currentVersion.tag.replace(/-/g, ' ');
+			if (currentVersion.channel == 'release') {
+				verStr = 'Version ' + currentVersion.toString(true); // don't show channel
+			} else {
+				verStr = 'Version ' + currentVersion.toString();
+			}
 		}
 
 		$.setText(this.version, verStr);
