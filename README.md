@@ -1,7 +1,7 @@
 # Install the Game Closure SDK 
 
-	  $ git clone git@github.com:gameclosure/sdk.git
-	  $ cd sdk
+	  $ git clone git@github.com:gameclosure/gcsdk.git
+	  $ cd gcsdk
 	  $ ./install.sh
 
 Type `basil` to begin. At any time, you can update to the latest tag:
@@ -20,7 +20,7 @@ And in your application directory:
 
 ## Build Android
 
-Set `android.root` in config.json to your [android](https://github.com/gameclosure/android) path.
+Set `android.root` in config.json to your [android](https://github.com/gameclosure/native-android) path.
 
 	{
 		"android": {
@@ -38,7 +38,7 @@ Then run:
 
 ## Build iOS
 
-Set `ios.root` in config.json to your [ios](https://github.com/gameclosure/ios) path.
+Set `ios.root` in config.json to your [ios](https://github.com/gameclosure/native-ios) path.
 
 	{
 		"ios": { "root": "your/path" }
