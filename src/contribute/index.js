@@ -187,7 +187,7 @@ _commands.release = Class(function () {
 
 		var tag;
 		var f = ff(function () {
-			sdkRepo.getNextVersion(argv.channel, f());
+			sdkRepo.getNextVersion(argv.channel, argv.type, f());
 		}, function (nextVersion) {
 			tag = nextVersion.toString();
 
@@ -606,13 +606,13 @@ var Repo = Class(function () {
 		});
 	}
 
-	this.getNextVersion = function (channel, cb) {
+	this.getNextVersion = function (channel, which, cb) {
 		this.getVersions(channel, function (err, versions) {
 			if (err) {
 				return cb(err);
 			}
 			
-			cb(null, versions[0].getNext());
+			cb(null, versions[0].getNext(which));
 		});
 	}
 });
