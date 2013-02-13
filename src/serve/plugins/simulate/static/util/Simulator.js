@@ -279,8 +279,11 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		if (params.rotation) {
 			hash.rotation = params.rotation;
 		}
+		if (this._isMuted) {
+			hash.mute = "true";
+		}
 
-		var r = new std.uri('http://localhost/simulate/' + this._appID + '/' + this._params.target + '/')
+		var r = new std.uri('/simulate/' + this._appID + '/' + this._params.target + '/')
 			.addQuery(query)
 			.addHash(hash)
 			.setPort(this._port)
