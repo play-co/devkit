@@ -215,6 +215,30 @@ Version.sorterDesc = function (a, b) {
 	return Version.sorterAsc(b, a);
 };
 
+Version.sorterKey = function (a) {
+	return a.channel + ' ' + pad(a.major) + pad(a.minor) + pad(a.patch) + pad(a.build);
+}
+
+
+var LEN = 8;
+var MAX = 99999999;
+var MIN = -99999999;
+var PAD = "00000000";
+
+function pad (val) {
+	val = ~~val;
+
+	if (val < MIN) { val = MIN; }
+	if (val > MAX) { val = MAX; }
+	if (val < 0) {
+		val *= -1;
+		return '-' + PAD.substring(0, LEN - ('' + val).length) + val;
+	} else {
+		return PAD.substring(0, LEN - ('' + val).length) + val;
+	}
+};
+
+
 if(module && module.children) {
 	module.exports = Version;
 } else {
