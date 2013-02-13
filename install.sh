@@ -65,24 +65,24 @@ fi
 
 echo -e "\nInitializing GC SDK libraries ..."
 
+# setup for gc internal repositories
+remoteurl=`git config --get remote.origin.url`
+PRIV_SUBMODS=false && [[ "$remoteurl" == *devkit-priv* ]] && PRIV_SUBMODS=true
+if $PRIV_SUBMODS; then
+	echo "Using private submodules..."
+	cp .gitmodules-priv .gitmodules
+fi
+
 if ! git submodule sync; then
 		error "Unable to sync git submodules"
 		exit 1
 fi
 
-git submodule init
-
-# setup for gc internal repositories
-remoteurl=`git config --get remote.origin.url`
-if [[ "$remoteurl" == *gcsdk-priv* ]]; then
-	cd lib/timestep
-	git remote set-url origin "https://github.com/gameclosure/timestep-priv.git"
-	cd ../../lib/gcapi
-	git remote set-url origin "https://github.com/gameclosure/gcapi-priv.git"
-	cd ../../
-fi
-
 git submodule update --init --recursive
+
+if $PRIV_SUBMODS; then
+	git checkout .gitmodules
+fi
 
 if [ ! -w "/usr/local" ]; then
 		error "You need write permissions to /usr/local"

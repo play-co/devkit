@@ -161,7 +161,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 
 		var verStr;
 		if (!currentVersion) {
-			verStr = 'Version Unknown';
+			verStr = 'Version unknown';
 		} else {
 			if (currentVersion.channel == 'release') {
 				verStr = 'Version ' + currentVersion.toString(true); // don't show channel

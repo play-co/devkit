@@ -51,10 +51,16 @@ var Version = Class(function () {
 		var clone = new Version(this);
 		if (which == 'major') {
 			clone.major++;
+			clone.minor = 0;
+			clone.patch = 0;
+			clone.build = 0;
 		} else if (which == 'minor') {
 			clone.minor++;
+			clone.build = 0;
+			clone.patch = 0;
 		} else if (which == 'build') {
 			clone.build++;
+			clone.patch = 0;
 		} else {
 			clone.patch++;
 		}

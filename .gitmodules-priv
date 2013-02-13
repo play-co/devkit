@@ -3,16 +3,17 @@
 	url = https://github.com/gameclosure/js.io.git
 [submodule "lib/timestep"]
 	path = lib/timestep
-	url = https://github.com/gameclosure/timestep.git
+	url = https://github.com/gameclosure/timestep-priv.git
 [submodule "lib/squill"]
 	path = lib/squill
 	url = https://github.com/gameclosure/squill.git
 [submodule "lib/gcapi"]
 	path = lib/gcapi
-	url = https://github.com/gameclosure/gcapi.git
+	url = https://github.com/gameclosure/gcapi-priv.git
 [submodule "lib/NativeInspector"]
 	path = lib/NativeInspector
 	url = https://github.com/gameclosure/NativeInspector.git
 [submodule "projects/whack-that-mole"]
 	path = projects/whack-that-mole
 	url = https://github.com/gameclosure/whack-that-mole.git
+
