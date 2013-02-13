@@ -87,7 +87,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 						className: 'projectName',
 						id: '_overviewProjectName',
 						text: 'no project selected'
-					},
+					}
 				]
 			},
 			{
