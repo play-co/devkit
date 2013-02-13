@@ -2,7 +2,7 @@
 	"author": "The Game Closure SDK Team",
 	"name": "basil",
 	"description": "Basil - the Game Closure SDK",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"homepage": "http://github.com/gameclosure/",
 	"repository": {
 		"type": "git",
