@@ -9,6 +9,11 @@
 <title>Game Closure SDK</title>
 <script>
 
+if (!window.console) {
+	window.console = {};
+	window.console.log = window.console.info = window.console.error = window.console.warn = function () {};
+}
+
 window.onload = function () {
 	jsio.__env.checkSyntax = function (code, filename) {
 		var xhr = new XMLHttpRequest();
