@@ -636,24 +636,23 @@ exports.buildChromeFromURI = function(uri) {
 };
 
 var DebugLoggerServer = Class([net.interfaces.Server, lib.PubSub], function () {
-	var name;
-	var sim;
+
 	this.init = function (opts) {
-		name = opts.name;
-		sim = opts.sim;
+		this._name = opts.name;
+		this._sim = opts.sim;
 	};
 
 	this.built = false;
 	this.buildProtocol = function () {
 		this._conn = new net.protocols.Cuppa();
 
+		this._conn.onEvent.subscribe('HIDE_LOADING_IMAGE', this._sim, 'hideLoadingImage');
+
 		this._conn.onEvent.subscribe('APP_READY', this, function (evt) {
 			this.publish('NewConnection', this._conn, evt.args.uid);
 
 			// we want to immediately send the name for logging purposes
-			this._conn.sendEvent('SET_NAME', {name: name});
-
-			sim.hideLoadingImage();
+			this._conn.sendEvent('SET_NAME', {name: this._name});
 		});
 
 		this.built = true;
