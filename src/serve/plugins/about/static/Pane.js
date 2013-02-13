@@ -45,9 +45,9 @@ var VersionCell = Class(squill.Cell, function(supr) {
 	});
 
 	this.render = function() {
-		this.label.setText(this._data.toString());
+		this.label.setText(this._data.version.toString());
 
-		if (this._data == currentVersion) {
+		if (this._data.version == currentVersion) {
 			$.addClass(this._el, 'current');
 		} else {
 			$.removeClass(this._el, 'current');
@@ -55,14 +55,14 @@ var VersionCell = Class(squill.Cell, function(supr) {
 	};
 });
 
-var versionData = new squill.models.DataSource({key: 'src'});
+var versionData = new squill.models.DataSource({key: 'src', sorter: function (v) { return Version.sorterKey(v.version); }});
 
 exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this._def = {
 		id: 'aboutPane',
 		children: [
-			{className: 'topTabs', type: squill.TabbedPane, panes: [
-				{id: 'aboutMain', className: 'mainPanel', title: 'about', children: [
+			{id: 'aboutMain', className: 'mainPanel', title: 'about', children: [
+				{className: 'table-wrapper', children: [
 					{className: 'table', children: [
 						{className: 'table-row', children: [
 							{className: 'table-cell', children: [
@@ -72,16 +72,18 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 									{id: 'updateStatus'},
 									{id: 'lastCheckedStatus'},
 									{id: 'refresh', type: 'button', text: '\u21BB', className: 'circle'}
-								]}
+								]},
+								{id: 'btnSwitchVersion', type: 'button', text: 'switch version'}
 							]}
 						]},
 					]},
 				]},
-				{className: 'mainPanel', title: 'versions', children: [
-					{id: 'versionHeader', children: [{tag: 'span', text: 'current version: '}, {tag: 'span', id: 'aboutVersion'}]},
-					{id: 'versionWrapper', className: 'darkPanel', children: [
+				
+				{id: 'versionWrapper', children: [
+					{id: 'versionHeader', text: 'all versions:'}, // children: [{tag: 'span', text: 'all versions: '}, {tag: 'span', id: 'aboutVersion'}]},
+					{id: 'versionListWrapper', className: 'darkPanel', children: [
 						{id: 'versions', type: 'list', dataSource: versionData, cellCtor: VersionCell, selectable: 'single'}
-					]},
+					]}
 				]}
 			]}
 		]
@@ -96,6 +98,11 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				type: 'json'
 			}, bind(this, 'onVersions'));
 		};
+
+		on.btnSwitchVersion = function () {
+			$.addClass(this._el, 'showVersions');
+			this.versions.needsRender();
+		}
 	});
 
 	this.onSwitchVersion = function(version) {
@@ -154,7 +161,10 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				currentVersion = v;
 			}
 
-			versionData.add(v);
+			versionData.add({
+				version: v,
+				src: v.src
+			});
 		}
 
 		versionData.sort(Version.sorterDesc);
@@ -171,8 +181,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		}
 
 		$.setText(this.version, verStr);
-		$.setText(this.aboutVersion, verStr);
-
+		
 		this._checkUpdates();
 	};
 
@@ -184,9 +193,9 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		var nextVersion = null;
 
 		// find the first non-beta version greater than the current version
-		versionData.forEach(function(v) {
-			if (currentVersion.lt(v)) {
-				nextVersion = v;
+		versionData.forEach(function(data) {
+			if (currentVersion.lt(data.version)) {
+				nextVersion = data.version;
 				return true;
 			}
 		}, this);

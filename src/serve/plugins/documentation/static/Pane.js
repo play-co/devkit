@@ -35,4 +35,6 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 			{tag: 'iframe', src: '//docs.gameclosure.com', style: {border: 0, width: '100%', height: '100%'}}
 		]
 	};
+
+	
 });
