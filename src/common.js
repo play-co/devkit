@@ -309,12 +309,11 @@ fs.exists(CONFIG_PATH, function (exists) {
 
 // Get local IP address.
 exports.getLocalIP = function (next) {
-    var os = require('os');
-	var interfaces = os.networkInterfaces();
+	var interfaces = require('os').networkInterfaces();
 	var ips = [];
 
-    for (var name in interfaces) {
-        if (/en\d+/.test(name) || isWindows) {
+	for (var name in interfaces) {
+		if (/en\d+/.test(name) || isWindows) {
 			for (var i = 0, item; item = interfaces[name][i]; ++i) {
 				// ignore IPv6 and local IPs
 				if (item.family == 'IPv4' && !item.internal) {

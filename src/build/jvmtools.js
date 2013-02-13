@@ -48,13 +48,13 @@ function getJavaProcess () {
 		proc.stdout.once('data', function (data) {
 			// Read hostname:port
 			var parts = String(data).split(':');
-            var ip = parts[0];
-            //check if the ip is returned as all zeros (this happens on windows)
-            if (parts[0] == '0.0.0.0') {
-                //just use localhost instead since connecting to 0.0.0.0
-                //does not work on windows
-                ip = 'localhost';
-            }
+			var ip = parts[0];
+			//check if the ip is returned as all zeros
+			if (parts[0] == '0.0.0.0') {
+				//just use localhost instead since connecting to 0.0.0.0
+				//does not work on windows
+				ip = 'localhost';
+			}
 			connectClient(ip, parts[1]);
 		});
 		proc.stderr.on('data', function (data) {
