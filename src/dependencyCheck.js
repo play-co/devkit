@@ -179,21 +179,6 @@ function run() {
 		addons.forEach(function (addon) {
 			installer.install(addon, null, f.wait());
 		});
-
-		f(package);
-		fs.readdir(common.paths.root('addons'), f());
-	}, function (package, addons) {
-		// check version for all optional addons if they're installed
-		addons.forEach(function (addon) {
-			var onFinish = f();
-			addonManager.install(addon, {}, function (err, res) {
-				if (err && (err.NOT_INSTALLED || err.UNKNOWN_ADDON)) {
-					onFinish(); // don't worry about these errors
-				} else {
-					onFinish(err); // forward unexpected errors
-				}
-			});
-		});
 	}).error(function (err) {
 		logger.error("Error:");
 		console.log(err);
