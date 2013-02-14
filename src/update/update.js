@@ -130,7 +130,7 @@ exports.update = function (tag, next) {
 		common.child('git', ['stash', 'save'], defaultChildArgs, f.wait()); //don't care about output
 	}, function () {
 		console.log("Extracting changes to SDK");
-		common.child('git', ['stash', 'show'], defaultChildArgs, f());
+		common.child('git', ['stash', 'show'], defaultChildArgs, f.wait());
 	}, function (data) {
 		console.log("Save the changes to", stashDir);
 		fs.writeFile(path.join(stashDir, 'stash_'+(new Date())), String(data), f.wait());
