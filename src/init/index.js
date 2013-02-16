@@ -83,8 +83,11 @@ var initProject = function(template, dest){
 	var manPath = path.join(newLocation, "manifest.json");
 	var man = JSON.parse(fs.readFileSync(manPath).toString());
 	man.appID = createUUID();
-	man.shortName = newLocation;
-	man.title = newLocation;
+
+  var project = projectName(dest);
+	man.shortName = project;
+	man.title = project;
+
 	fs.writeFileSync(manPath, JSON.stringify(man, null, '\t'));
 
 	console.log('Created a new ' + template + ' project at ' + newLocation);
@@ -92,3 +95,9 @@ var initProject = function(template, dest){
 	//now register the new project
 	register(newLocation);
 };
+
+var projectName = function(dest) {
+  var folders = dest.split(/\//);
+  return folders[folders.length - 1];
+};
+
