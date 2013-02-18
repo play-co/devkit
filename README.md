@@ -8,7 +8,7 @@ Type `basil` to begin. At any time, you can update to the latest tag:
 
     $ basil update
 
-This gets the latest version, or `basil update -c (beta, social...)` to update
+This gets the latest version, or `basil update -c (alpha, beta...)` to update
 to the latest version of that channel.
 
 Initialize a new project:
