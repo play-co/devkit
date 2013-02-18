@@ -336,6 +336,10 @@ function main () {
 			});
 			break;
 
+		case 'which':
+			console.log(common.paths.root());
+			break;
+
 		case 'compile':
 			require('./compile');
 			break;
