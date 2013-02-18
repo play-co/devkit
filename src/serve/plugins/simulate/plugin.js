@@ -143,7 +143,7 @@ exports.load = function (app, argv) {
 				"landscape1536": "2048x1496"
 			};
 			var outSize = splashSizes[splash];
-			if (project.manifest.splash["universal"] && outSize) {
+			if (project.manifest.splash && project.manifest.splash["universal"] && outSize) {
 				//run the splasher to generate a splash of the desired size
 				logger.log("Splash image mapped from universal ->", splash);
 				var outImg = path.join(project.paths.root,".tempsplash.png");
