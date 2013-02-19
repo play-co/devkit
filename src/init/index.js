@@ -97,7 +97,6 @@ var initProject = function(template, dest){
 };
 
 var projectName = function(dest) {
-  var folders = dest.split(/\//);
-  return folders[folders.length - 1];
+  return path.basename(dest);
 };
 
