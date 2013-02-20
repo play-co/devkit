@@ -84,7 +84,7 @@ var initProject = function(template, dest){
 	var man = JSON.parse(fs.readFileSync(manPath).toString());
 	man.appID = createUUID();
 
-  var project = projectName(dest);
+  var project = path.basename(dest);
 	man.shortName = project;
 	man.title = project;
 
@@ -94,9 +94,5 @@ var initProject = function(template, dest){
 
 	//now register the new project
 	register(newLocation);
-};
-
-var projectName = function(dest) {
-  return path.basename(dest);
 };
 
