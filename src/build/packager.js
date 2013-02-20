@@ -295,7 +295,6 @@ function useURISlashes (str) { return str.replace(regexSlash, '/'); }
 // The spriter sprites images, but also returns a list of resources. It is a
 // tool of many faces.
 function getResources(manifest, target, appDir, output, cb) {
-
 	// object on success to pass to cb(err, res);
 	var result = {};
 
@@ -344,7 +343,7 @@ function getResources(manifest, target, appDir, output, cb) {
 		result.resources = resources.other.map(function (filename) {
 			if (path.basename(filename) === "metadata.json") {
 				try {
-					var filedata = fs.readFileSync(filename, 'utf8');
+					var filedata = fs.readFileSync(path.resolve(appDir, filename), 'utf8');
 					var fileobj = JSON.parse(filedata);
 					if (fileobj.package === false) {
 						var filterPath = path.dirname(filename);
