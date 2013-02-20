@@ -209,6 +209,8 @@ function launchServer () {
 				    logger.error('(dns-sd exited with code ' + code + ")");
 			    }
 		    });
+		  } else {
+		    logger.warn('WARNING: The Test App functionality will not be available as dns-sd is not installed');
 		  }
     });
 	});
