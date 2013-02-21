@@ -31,7 +31,7 @@ var logger = new common.Formatter('addons');
 var addonPath = common.paths.root("addons");
 
 var REGISTRY_PATH	= common.paths.lib('addon-registry');
-var REGISTRY_URL	= "git@github.com:gameclosure/addon-registry.git";
+var REGISTRY_URL	= "https://github.com/gameclosure/addon-registry";
 
 var AddonManager = Class(EventEmitter, function () {
 
@@ -260,8 +260,6 @@ var AddonManager = Class(EventEmitter, function () {
 			logger.log("URL:", url);
 			baseGit('clone', url, addonPath, f());
 		}, function (err) {
-			addonGit('submodule', 'update', '--init', f());
-		}, function () {
 			logger.log("Addon installed!");
 			this.activateVersion(addon, version, f.wait());
 		}).error(function (e) {
@@ -287,9 +285,6 @@ var AddonManager = Class(EventEmitter, function () {
 				logger.log("Could not find", version.toString(), ". Using master");
 				addonGit('checkout', 'master', f.slot());
 			}
-		}, function () {
-			//submodule update init just incase
-			addonGit('submodule', 'update', '--init', '--recursive', f());
 		}, function () {
 			var currentPath = path.join(this.getPath(addon), "index.js");
 			if (!fs.existsSync(currentPath)) {

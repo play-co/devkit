@@ -127,7 +127,7 @@ topTabsHeight = 41px
 	padding-top 20px
 	cursor pointer
 
-.OverviewPanel #projectSelector:hover .project-name
+.OverviewPanel #projectSelector:hover .projectName
 	text-shadow: 0px 1px 5px rgba(255, 255, 255, 0.5);
 
 .OverviewPanel .OverviewTabs .tabContainer {
@@ -544,7 +544,7 @@ div::-webkit-scrollbar {
 }
 
 div::-webkit-scrollbar-track {
-	box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 	border-radius: 10px;
 }
 
@@ -552,16 +552,16 @@ div::-webkit-scrollbar-track {
 div::-webkit-scrollbar-thumb {
 	margin: 1px;
 	border-radius: 10px;
-	background: rgba(100,100,120,0.8); 
-	box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+	background: rgba(100,100,120,0.8);
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }
 
 div::-webkit-scrollbar-thumb:window-inactive {
-	background: rgba(30,30,40,0.4); 
+	background: rgba(30,30,40,0.4);
 }
 
 div::-webkit-scrollbar-corner {
-	background: rgba(30,30,40,0.4); 
+	background: rgba(30,30,40,0.4);
 }
 
 /*** Color settings ***/
@@ -944,7 +944,7 @@ radius-factor = 5.7 // Apple computes border radius by dividing by 5.7
 large-icon-size = 160
 large-icon-radius = round(large-icon-size / radius-factor)
 
-.project-icon {
+.projectIcon {
 	center()
 	width (large-icon-size)px
 	height (large-icon-size)px
@@ -955,7 +955,7 @@ large-icon-radius = round(large-icon-size / radius-factor)
 	background-size: contain;
 }
 
-.project-icon.gloss::after {
+.projectIcon.gloss::after {
 	content: "";
 	position: absolute;
 	z-index: 10;
@@ -972,7 +972,7 @@ large-icon-radius = round(large-icon-size / radius-factor)
 	box-shadow: inset 0px 2px 1px rgba(255, 255, 255, 0.7);
 }
 
-.hoverable:hover:not(.selected) .project-icon:before
+.hoverable:hover:not(.selected) .projectIcon:before
 	content ''
 
 	position: absolute;
@@ -985,7 +985,7 @@ large-icon-radius = round(large-icon-size / radius-factor)
 	border-radius unit(large-icon-radius, px)
 	z-index: 5;
 
-.project-name {
+.projectName {
 	padding: 0 10px;
 	color: #eee;
 	width: 200px;

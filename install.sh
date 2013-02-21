@@ -64,14 +64,23 @@ fi
 
 echo -e "\nInitializing GC SDK libraries ..."
 
+# setup for gc internal repositories
+remoteurl=`git config --get remote.origin.url`
+PRIV_SUBMODS=false && [[ "$remoteurl" == *devkit-priv* ]] && PRIV_SUBMODS=true
+if $PRIV_SUBMODS; then
+	echo "Using private submodules..."
+	cp .gitmodules-priv .gitmodules
+fi
+
 if ! git submodule sync; then
 		error "Unable to sync git submodules"
 		exit 1
 fi
 
-if ! git submodule update --init --recursive; then
-		error "Unable to update git submodules"
-		exit 1
+git submodule update --init --recursive
+
+if $PRIV_SUBMODS; then
+	git checkout .gitmodules
 fi
 
 if [[ ! -w "/usr/local"  && ! (`uname` == MINGW32*)]]; then

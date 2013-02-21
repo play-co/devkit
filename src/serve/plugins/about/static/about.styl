@@ -9,11 +9,31 @@
 	background: bglight(), -webkit-radial-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
 }
 
-#aboutMain .table {
-	width: 100%;
-	height: 100%;
-	display: table;
-}
+#aboutPane .table-wrapper
+	height 100%
+	overflow auto
+
+#aboutPane .table
+	width 100%;
+	height 100%;
+	display table;
+	overflow auto
+
+#aboutPane.showVersions .table-wrapper,
+#aboutPane.showVersions .table
+	height 50%
+
+#aboutPane #versionWrapper
+	display none
+
+	absoluteBox(0px, 15px, 15px, 15px)
+	top: 50%;
+
+#aboutPane.showVersions #versionWrapper
+	display block
+
+#aboutPane.showVersions #btnSwitchVersion
+	display none
 
 #aboutPane input[type=checkbox] {
 	margin-right: 5px;
@@ -59,13 +79,16 @@
 	text-size: 80%;
 }
 
+#aboutPane #btnSwitchVersion
+	margin-top: 40px
+
 #aboutPane #versionHeader
 	padding 15px
+	text-align center
 
-#aboutPane #versionWrapper {
+#aboutPane #versionListWrapper
 	overflow auto
-	absoluteBox(45px, 15px, 15px, 15px)
-}
+	absoluteBox(35px, 15px, 15px, 15px)
 
 #aboutPane #versions
 	padding 10px 0px

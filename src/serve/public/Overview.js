@@ -32,12 +32,14 @@ import util.ajax;
 
 var PluginGroup = Class(function() {
 	var PRIORITIES = {
-		header: 'a',
-		project: 'b',
-		debug: 'c'
+		header: "a",
+		main: "b",
+		project: "c",
+		debug: "d",
+		footer: "z"
 	};
 
-	var DEFAULT_PRIORITY = 'z';
+	var DEFAULT_PRIORITY = "z";
 
 	this.init = function(name) {
 		this.plugins = [];
@@ -57,7 +59,7 @@ var LazyPane = Class(squill.Widget, function(supr) {
 		this.lazyPane = opts.pane;
 		this.css = opts.css;
 
-		supr(this, 'init', arguments);
+		supr(this, "init", arguments);
 	};
 });
 
@@ -68,47 +70,47 @@ var LazyPane = Class(squill.Widget, function(supr) {
 exports = Class(squill.TabbedPane, function(supr) {
 
 	this._def = {
-		className: 'OverviewPanel',
-		contentsWrapperClassName: 'OverviewPanes',
-		tabContainerClassName: 'OverviewTabs',
+		className: "OverviewPanel",
+		contentsWrapperClassName: "OverviewPanes",
+		tabContainerClassName: "OverviewTabs",
 		tabChildren: [
 			{
-				id: 'projectSelector',
-				className: 'hoverable',
-				type: 'button',
-				tag: 'div',
+				id: "projectSelector",
+				className: "hoverable",
+				type: "button",
+				tag: "div",
 				children: [
 					{
-						className: 'project-icon',
-						id: '_overviewProjectIcon',
-						src: '/images/defaultIcon.png'
+						className: "projectIcon",
+						id: "_overviewProjectIcon",
+						src: "/images/defaultIcon.png"
 					},
 					{
-						className: 'project-name',
-						id: '_overviewProjectName',
-						text: 'no project selected'
-					},
+						className: "projectName",
+						id: "_overviewProjectName",
+						text: "no project selected"
+					}
 				]
 			},
 			{
-				id: 'simulateButton',
-				text: 'Simulate',
-				type: 'button'
+				id: "simulateButton",
+				text: "Simulate",
+				type: "button"
 			},
-			{className: 'separator'},
-			{id: 'logo'},
+			{className: "separator"},
+			{id: "logo"},
 			{
-				id: 'ip',
-				className: 'monospace',
+				id: "ip",
+				className: "monospace",
 				children: [
-					{id: 'ipValue', tag: 'span', text: ''}
+					{id: "ipValue", tag: "span", text: ""}
 				]
 			}
 		]
 	};
 
 	this.buildWidget = function() {
-		supr(this, 'buildWidget', arguments);
+		supr(this, "buildWidget", arguments);
 
 		var project = null;
 		if(localStorage.lastProject) {
@@ -116,16 +118,16 @@ exports = Class(squill.TabbedPane, function(supr) {
 		} else {
 			project = this.getProjects().getItemForIndex(0);
 		}
-		
+
 		this._currentProject = project;
 
 		this._pluginByTitle = {};
 
-		this.subscribe('SelectPane', this, function (pane) {
+		this.subscribe("SelectPane", this, function (pane) {
 			localStorage.lastPane = pane._opts.title;
 		});
 
-		this.subscribe('ShowPane', this, function (pane) {
+		this.subscribe("ShowPane", this, function (pane) {
 			this.onShowPane(pane);
 		});
 
@@ -133,8 +135,8 @@ exports = Class(squill.TabbedPane, function(supr) {
 
 		util.ajax.get(
 			{
-				url: '/plugins/',
-				type: 'json'
+				url: "/plugins/",
+				type: "json"
 			},
 			(function () {
 				var that = this;
@@ -142,13 +144,13 @@ exports = Class(squill.TabbedPane, function(supr) {
 					// For now, transform data into a useable form
 					var plugins = [];
 					for (var name in data) {
-						if(name === "simulate") continue;
+						if (name === "simulate") continue;
 
 						plugins.push({
 							lazy: true,
 							group: data[name].scope,
-							'pane': name + '.Pane',
-							'title': data[name].name
+							"pane": name + ".Pane",
+							"title": data[name].name
 
 						});
 					}
@@ -159,7 +161,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 	};
 
 	this.refreshIP = function() {
-		util.ajax.get({url: '/api/ip', type: 'json'}, bind(this, 'onRefreshIP'));
+		util.ajax.get({url: "/api/ip", type: "json"}, bind(this, "onRefreshIP"));
 	};
 
 	this.delegate = new Delegate(function(on) {
@@ -182,7 +184,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 				targetHost = "localhost";
 			}
 
-			var simulateURL = "//" + targetHost + ":" + (+loc.port + 1) + "/simulate/" + proj.id + '/#simulators=[{"name":"Simulator_0","device":"iphone","rotation":'+rot+'}]';
+			var simulateURL = "//" + targetHost + ":" + (+loc.port + 1) + "/simulate/" + proj.id + '/#simulators=[{"name":"Simulator_0","device":"iphone","rotation":'+rot+"}]";
 
 			//var simulateURL = "//" + targetHost + ":" + (+loc.port + 1) + "/simulate/" + proj.id + "/";
 
@@ -198,7 +200,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 		};
 
 		on.projectSelector = function () {
-			this.showPane(this._pluginByTitle['Projects']);
+			this.showPane(this._pluginByTitle["Projects"]);
 		}
 
 		on.ipValue = function()  {
@@ -229,8 +231,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 
 		// sort the plugins by group
 		var groups = [];
-		plugins.forEach(
-			function(plugin) {
+		plugins.forEach(function(plugin) {
 				var group = groups[plugin.group];
 				if (!group) {
 					group = new PluginGroup(plugin.group);
@@ -239,8 +240,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 				}
 
 				group.add(plugin);
-			}
-		);
+			});
 
 		groups.sort();
 
@@ -248,7 +248,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 		var isFirstGroup = true;
 		groups.forEach(function (group) {
 			if (!isFirstGroup) {
-				this.addTabWidget({className: 'separator'});
+				this.addTabWidget({className: "separator"});
 			} else {
 				isFirstGroup = false;
 			}
@@ -276,12 +276,12 @@ exports = Class(squill.TabbedPane, function(supr) {
 		if (child.lazyPane) {
 			var paneName = child.lazyPane;
 			child.lazyPane = false;
-			
+
 			// Check that we haven't run this more than once.
-			Constructor = jsio('import ' + paneName);
+			Constructor = jsio("import " + paneName);
 			child = new Constructor({
 				parent: pane,
-				className: 'pluginPanel'
+				className: "pluginPanel"
 			});
 
 			pane._children[0] = child;
@@ -309,7 +309,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 
 	this.onRefreshIP = function(err, response) {
 		if (!err) {
-			$.setText(this.ipValue, response.ip.join(','));
+			$.setText(this.ipValue, response.ip.join(","));
 		}
 	};
 
@@ -346,12 +346,13 @@ exports = Class(squill.TabbedPane, function(supr) {
 		var project = this._currentProject;
 		if (!project) { return; }
 
-		this._overviewProjectIcon.style.backgroundImage = 'url(' + (project.getIcon(512) || '/images/defaultIcon.png') + ')';
-		
+		this._overviewProjectIcon.style.backgroundImage = "url(" + (project.getIcon(512) || "/images/defaultIcon.png") + ")";
+		this.simulateButton.setLabel(project.manifest.launchTitle || "Simulate");
+
 		if (project.manifest.icons.renderGloss) {
-			$.addClass(this._overviewProjectIcon, 'gloss');
+			$.addClass(this._overviewProjectIcon, "gloss");
 		} else {
-			$.removeClass(this._overviewProjectIcon, 'gloss');
+			$.removeClass(this._overviewProjectIcon, "gloss");
 		}
 
 		$.setText(this._overviewProjectName, project.manifest.title);

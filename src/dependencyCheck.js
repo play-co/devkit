@@ -38,7 +38,7 @@ var addonManager = require('./AddonManager');
 var isWindows = require('os').platform() == 'win32';
 
 function checkTealeafBuildTools (version, cb) {
-	logger.log("checking for tealeaf-build-tools", version);
+	logger.log("checking for tealeaf-build-tools", version.toString());
 
 	var f = ff(function () {
 		fs.exists(getBuildToolsPath(version), f.slotPlain());
@@ -193,21 +193,6 @@ function run() {
 		var addons = package['basil']['addons'];
 		addons.forEach(function (addon) {
 			installer.install(addon, null, f.wait());
-		});
-
-		f(package);
-		fs.readdir(common.paths.root('addons'), f());
-	}, function (package, addons) {
-		// check version for all optional addons if they're installed
-		addons.forEach(function (addon) {
-			var onFinish = f();
-			addonManager.install(addon, {}, function (err, res) {
-				if (err && (err.NOT_INSTALLED || err.UNKNOWN_ADDON)) {
-					onFinish(); // don't worry about these errors
-				} else {
-					onFinish(err); // forward unexpected errors
-				}
-			});
 		});
 	}).error(function (err) {
 		logger.error("Error:");
