@@ -183,11 +183,11 @@ _commands.release = Class(function () {
 		// push all repos to remote
 		// push each branch to release branch of each repo
 
-		var sdkRepo = _repos['gcsdk'];
+		var sdkRepo = _repos['devkit'];
 
 		var tag;
 		var f = ff(function () {
-			sdkRepo.getNextVersion(argv.channel, f());
+			sdkRepo.getNextVersion(argv.channel, argv.type, f());
 		}, function (nextVersion) {
 			tag = nextVersion.toString();
 
@@ -211,24 +211,30 @@ _commands.release = Class(function () {
 				}
 
 				// tag all submodules
-				repo.git('tag', '-f', tag, f());
+				if (!argv.test) {
+					repo.git('tag', '-f', tag, f());
+				}
 			});
 			
 			logger.log("committing", paths.join(' '));
 
 			// add all submodules
-			sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+			if (!argv.test) {
+				sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+			}
 		}, function () {
 			// commit the submodules and package.json
-			sdkRepo.git('commit', '-m', "Releasing version " + tag, f());
-			console.log("committing...");
+			if (!argv.test) {
+				sdkRepo.git('commit', '-m', "Releasing version " + tag, f());
+				console.log("committing...");
+			}
 		}, function () {
 			// push the commits to development remote
 			forEachRepo(function (repo) {
 				if (repo.release) {
-					repo.log("pushing to", repo.remote, "HEAD:" + repo.releaseBranch); // TODO
+					repo.log("pushing to", repo.remote, "HEAD:" + repo.releaseBranch);
 					if (!argv.test) {
-						repo.git('push', '-f', repo.remote, "HEAD:" + repo.release.branch, f());
+						repo.git('push', '-f', repo.remote, "HEAD:" + repo.releaseBranch, f());
 					}
 				}
 			}, this);
@@ -236,7 +242,7 @@ _commands.release = Class(function () {
 			// push the tags to development remote
 			forEachRepo(function (repo) {
 				if (repo.release) {
-					repo.log("pushing", tag, "to", repo.remote); // TODO
+					repo.log("pushing", tag, "to", repo.remote);
 					if (!argv.test) {
 						repo.git('push', repo.remote, tag, f());
 					}
@@ -262,10 +268,44 @@ _commands.release = Class(function () {
 					}
 				}
 			});
+		}, function () {
+			new _commands.postrelease(argv);
 		}).error(function (err) {
 			logger.error("unexpected error");
 			console.error(err);
 		});
+	}
+});
+
+// try to merge release branch into develop branch
+_commands.postrelease = Class(function () {
+	// checkout remote branch
+	// merge repo into master
+	// push repo to origin
+
+	// TODO: parse repos out of argv
+	this.init = function (argv, cb) {
+		var f = ff(function () {
+			new _commands.status(null, f());
+		}, function () {
+			forEachRepo(function (repo) {
+				if (repo.release) {
+					repo.log("trying to merge ", repo.remote, repo.releaseBranch, 'into', repo.branch);
+
+					if (!argv || !argv.test) {
+						repo.git([
+								['checkout', '-f', repo.getRemoteBranchStr()],
+								['reset', '--hard'],
+								['pull', repo.remote, repo.releaseBranch],
+								['push', repo.remote, "HEAD:" + repo.branch]
+							], f());
+					}
+				}
+			});
+		}).error(function (err) {
+			logger.error("unexpected error");
+			console.error(err);
+		}).cb(cb);
 	}
 });
 
@@ -566,13 +606,13 @@ var Repo = Class(function () {
 		});
 	}
 
-	this.getNextVersion = function (channel, cb) {
+	this.getNextVersion = function (channel, which, cb) {
 		this.getVersions(channel, function (err, versions) {
 			if (err) {
 				return cb(err);
 			}
 			
-			cb(null, versions[0].getNext());
+			cb(null, versions[0].getNext(which));
 		});
 	}
 });

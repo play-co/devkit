@@ -69,10 +69,15 @@ function displayHeader () {
 		"Needs more ketchup."
 	].sort(function () { return Math.random() - 0.5; });
 
+	var version = common.sdkVersion.toString();
+	var versionLength = version.length; //clc adds escape chars
+	version = clc.yellow(version);
+
 	var colouredGCText = clc.white.bright("{{") + clc.cyan.bright(" Game Closure SDK ") + clc.white.bright("}}");
 	console.log([
 		"============================================================",
 		"                   " + colouredGCText + "                   ",
+		"                                                            ".substr(0, (60-versionLength)/2) + version,
 		"                                                            ".substr(0, (60-opts[0].length)/2) + opts[0],
 		"------------------------------------------------------------",
 		""].join('\n'));
@@ -263,13 +268,12 @@ if (require.main === module) {
 }
 
 function main () {
-	if (process.argv[2] == 'version' || process.argv[2] == '-v') {
-		return console.log(clc.yellow(common.sdkVersion));
-	}
-
-	// Regular build options.
 	switch (process.argv[2]) {
-		// Unspecific options.
+		case 'version':
+		case '-v':
+		case '--version':
+			console.log(clc.yellow(common.sdkVersion));
+			break;
 
 		case 'serve':
 			displayHeader();
@@ -330,6 +334,10 @@ function main () {
 			}).error(function(e) {
 				logger.err(e);
 			});
+			break;
+
+		case 'which':
+			console.log(common.paths.root());
 			break;
 
 		case 'compile':

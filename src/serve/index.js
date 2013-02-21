@@ -86,7 +86,7 @@ function serveAPI (app) {
 	//syntax checker.
 	//TODO: figure out usage
 	app.post('/.syntax', function(req, res) {
-		var jvmtools = require('../build/src/jvmtools');
+		var jvmtools = require('../build/jvmtools');
 		jvmtools.exec("closure", [
 			"--compilation_level", "WHITESPACE_ONLY",
 			"--jscomp_off", "internetExplorerChecks",
@@ -126,7 +126,18 @@ function serveFrontend (app) {
 	var plugins = {};
 	fs.readdirSync(path.join(__dirname, 'plugins')).forEach(function (name) {
 		// Read the manifest.
-		plugins[name] = JSON.parse(fs.readFileSync(path.join(__dirname, 'plugins', name, 'manifest.json')));
+		try {
+			var manifest = path.join(__dirname, 'plugins', name, 'manifest.json');
+			if (fs.existsSync(manifest)) {
+				plugins[name] = JSON.parse(fs.readFileSync(manifest));
+			} else {
+				return;
+			}
+		} catch (e) {
+			logger.warn('Could not load plugin', name);
+			console.error(e);
+			return;
+		}
 
 		// Serve static files.
 		app.use(root + 'plugins/' + name, express.static(path.join(__dirname, 'plugins', name, 'static')));
@@ -232,7 +243,7 @@ exports.cli = function () {
 	// If current project is a game, try to automatically register it.
 	if (fs.existsSync('./manifest.json')) {
 		logger.log('Serving from project directory, attempting to automatically register..');
-		require('../register').register('.', launchServer);
+		require('../register').register('.', false, launchServer);
 	} 
 	launchServer();
 };
