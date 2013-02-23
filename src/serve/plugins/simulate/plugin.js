@@ -125,13 +125,49 @@ exports.load = function (app, argv) {
 		}
 	});
 
-	app.get('/simulate/:shortName/:target/loading.png', function (req, res, next) {
+	app.get('/simulate/:shortName/:target/splash/:splash', function (req, res, next) {
 		var projects = common.getProjectList();
 		var project = projects[req.params.shortName];
+		var splash = req.params.splash;
 
-		var img = project && project.manifest.preload && project.manifest.preload.img;
+		var img = project && project.manifest.splash && project.manifest.splash[splash];
 		if (!img) {
-			return next();
+			//if the key does not exist in the manifest we need to generate one
+			var splashSizes = {  
+				"portrait480": "320x480",
+				"portrait960": "640x960",
+				"portrait1024": "768x1024",
+				"portrait1136": "640x1136",
+				"portrait2048": "1536x2048",
+				"landscape768": "1024x768",
+				"landscape1536": "2048x1496"
+			};
+			var outSize = splashSizes[splash];
+			if (project.manifest.splash && project.manifest.splash["universal"] && outSize) {
+				//run the splasher to generate a splash of the desired size
+				logger.log("Splash image mapped from universal ->", splash);
+				var outImg = path.join(project.paths.root,".tempsplash.png");
+				build.jvmtools.exec('splasher', [
+					"-i", path.resolve(project.paths.root, project.manifest.splash["universal"]),
+					"-o", outImg,
+					"-resize", outSize,
+					"-rotate", "auto"
+				], function (splasher) {
+					var formatter = new build.common.Formatter('splasher');
+					splasher.on('out', formatter.out);
+					splasher.on('err', formatter.err);
+					splasher.on('end', function (data) {
+						var stream = fs.createReadStream(outImg);
+						stream.pipe(res)
+						stream.on('end', function () {
+							//remove out remporary file
+							fs.unlinkSync(outImg);
+						});
+					})
+				});
+			} else {
+				return next();
+			} 
 		} else {
 			img = path.resolve(project.paths.root, img);
 			var f = ff(function () {
@@ -140,6 +176,7 @@ exports.load = function (app, argv) {
 				if (!exists) {
 					next();
 				} else {
+					logger.log("Splash image mapped from", splash, "->", img);
 					fs.createReadStream(img).pipe(res);
 				}
 			}).error(next);

@@ -146,7 +146,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 				this.global.ACCESSIBILITY.mute(this.isMuted());
 			});
 
-			this.global.CONFIG.preload.hide = bind(this, 'hideLoadingImage');
+			this.global.CONFIG.splash.hide = bind(this, 'hideLoadingImage');
 
 			// update muted state
 			this.mute(this._isMuted);
@@ -292,7 +292,15 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 	};
 
 	this.getLoadingImageURL = function () {
-		return new std.uri(this._params.target + '/loading.png').toString();
+		var splash;
+		if (this._rotation % 2 == 0) {
+			//even amounts of rotations mean portrait
+			splash = "/splash/portrait2048";
+		} else {
+			//oods mean landscape
+			splash = "/splash/landscape1536";
+		}
+		return new std.uri(this._params.target + splash).toString();
 	};
 
 	this.rebuild = function (next) {

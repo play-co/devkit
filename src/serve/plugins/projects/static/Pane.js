@@ -42,7 +42,7 @@ var ProjectCell = Class(squill.Cell, function() {
 		var defaultIcon = '/images/defaultIcon.png';
 		this.icon.style.backgroundImage = 'url(' + (project.getIcon(512) || defaultIcon) + ')';
 
-		if (project.manifest.icons.renderGloss) {
+		if (project.manifest.ios && project.manifest.ios.icons && project.manifest.ios.icons.renderGloss) {
 			$.addClass(this.icon, 'gloss');
 		} else {
 			$.removeClass(this.icon, 'gloss');
