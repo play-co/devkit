@@ -349,7 +349,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 		this._overviewProjectIcon.style.backgroundImage = "url(" + (project.getIcon(512) || "/images/defaultIcon.png") + ")";
 		this.simulateButton.setLabel(project.manifest.launchTitle || "Simulate");
 
-		if (project.manifest.icons.renderGloss) {
+		if (project.manifest.ios && project.manifest.ios.icons && project.manifest.ios.icons.renderGloss) {
 			$.addClass(this._overviewProjectIcon, "gloss");
 		} else {
 			$.removeClass(this._overviewProjectIcon, "gloss");
