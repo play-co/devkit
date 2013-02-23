@@ -36,7 +36,7 @@ var BUILD_TOOLS_SRC = common.paths.root('lib/tealeaf-build-tools-{version}.jar')
 var addonManager = require('./AddonManager');
 
 function checkTealeafBuildTools (version, cb) {
-	logger.log("checking for tealeaf-build-tools", version);
+	logger.log("checking for tealeaf-build-tools", version.toString());
 
 	var f = ff(function () {
 		fs.exists(getBuildToolsPath(version), f.slotPlain());
@@ -63,10 +63,10 @@ function checkTealeafBuildToolsLink (version, cb) {
 			}, function (link) {
 				var fileVersion = link.match(/tealeaf-build-tools-(.*?)\.jar/);
 				if (!fileVersion || !version.eq(fileVersion[1])) {
-					logger.log("tealeaf-build-tools", version, "does not exist");
+					logger.log("tealeaf-build-tools", version.toString(), "does not exist");
 					next();
 				} else {
-					logger.log("tealeaf-build-tools", version, "present");
+					logger.log("tealeaf-build-tools", version.toString(), "present");
 					f.done();
 				}
 			});
@@ -178,21 +178,6 @@ function run() {
 		var addons = package['basil']['addons'];
 		addons.forEach(function (addon) {
 			installer.install(addon, null, f.wait());
-		});
-
-		f(package);
-		fs.readdir(common.paths.root('addons'), f());
-	}, function (package, addons) {
-		// check version for all optional addons if they're installed
-		addons.forEach(function (addon) {
-			var onFinish = f();
-			addonManager.install(addon, {}, function (err, res) {
-				if (err && (err.NOT_INSTALLED || err.UNKNOWN_ADDON)) {
-					onFinish(); // don't worry about these errors
-				} else {
-					onFinish(err); // forward unexpected errors
-				}
-			});
 		});
 	}).error(function (err) {
 		logger.error("Error:");
