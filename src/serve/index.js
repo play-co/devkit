@@ -243,7 +243,7 @@ exports.cli = function () {
 	// If current project is a game, try to automatically register it.
 	if (fs.existsSync('./manifest.json')) {
 		logger.log('Serving from project directory, attempting to automatically register..');
-		require('../register').register('.', launchServer);
+		require('../register').register('.', false, launchServer);
 	} 
 	launchServer();
 };
