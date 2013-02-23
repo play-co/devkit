@@ -49,7 +49,7 @@
 	"private": true,
 	"basil": {
 		"addons": [],
-		"tealeaf-build-tools": "0.2.1",
+		"tealeaf-build-tools": "0.2.2",
 		"android": "2.1.0"
 	},
 	"channel": "release"
