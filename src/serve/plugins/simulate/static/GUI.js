@@ -45,7 +45,7 @@ var GUI = exports = Class(squill.Widget, function(supr) {
 	this.init = function(opts) {
 		supr(this, 'init', arguments);
 
-		this._portManager = new PortManager({ range: '9200-9220 exclusive' });
+		this._portManager = new PortManager({ range: ''+window.location.port + '-' + (window.location.port + 20) + ' exclusive' });
 
 		this._manifest = opts.manifest;
 		this._appID = opts.manifest.appID;
