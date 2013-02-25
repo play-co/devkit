@@ -116,7 +116,7 @@ exports.unregister = function (dirtounreg, next) {
 
 // removes incorrect projects from the register.
 exports.clean = function(next){
-	var register = common.config.get('projects') || {};
+	var register = common.config.get('projects') || [];
 	var cleanCount = 0;
 	for (var ii = 0; ii < register.length; ++ii) {
 		if (!fs.existsSync(path.join(register[ii], './manifest.json'))){
