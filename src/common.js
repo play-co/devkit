@@ -303,7 +303,7 @@ exports.getLocalIP = function (next) {
 	var interfaces = require('os').networkInterfaces();
 	var ips = [];
 	for (var name in interfaces) {
-		if (/en\d+/.test(name)) {
+		if (/e(n|th)\d+/.test(name)) {
 			for (var i = 0, item; item = interfaces[name][i]; ++i) {
 				// ignore IPv6 and local IPs
 				if (item.family == 'IPv4' && !item.internal) {
