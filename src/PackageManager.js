@@ -254,7 +254,7 @@ var GCPackage = (function() {
 			}
 
 			// check if the appID is valid, if not then generate a new one and save the manifest (should never happen)...
-			if (!this.manifest.appID || (typeof this.manifest.appID !== 'string') || (this.manifest.appID.length !== 32)) {
+			if (!this.manifest.appID || (typeof this.manifest.appID !== 'string') || (this.manifest.appID.length < 1)) {
 				this.manifest.appID = createUUID();
 				fs.writeFileSync(this.paths.manifest, serializeConfig(this.manifest));
 			}
