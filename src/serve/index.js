@@ -199,20 +199,14 @@ function launchServer () {
 	common.getLocalIP(function (err, address) {
 		address = address[0];
 
-    fs.exists("dns-sd", function(exists) {
-      if(exists) {
-		    spawn("dns-sd", [
-			    "-P", "basil", "_tealeaf._tcp", "local",
-			    basePort, String(address), String(address), "basil"
-		    ]).on('exit', function (code) {
-			    if (code) {
-				    logger.error('(dns-sd exited with code ' + code + ")");
-			    }
-		    });
-		  } else {
-		    logger.warn('WARNING: The Test App functionality will not be available as dns-sd is not installed');
-		  }
-    });
+		build.jvmtools.exec('jmdns', [
+			'-rs', 'basil', '_tealeaf._tcp', 'local', basePort
+			], function (jmdns) {
+				var formatter = new build.common.Formatter('jmdns');
+				jmdns.on('out', formatter.out);
+				jmdns.on('err', formatter.err);
+				jmdns.on('end', function (data) {})
+			});
 	});
 
 	// Serve
