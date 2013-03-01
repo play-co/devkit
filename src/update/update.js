@@ -127,10 +127,14 @@ exports.update = function (tag, next) {
 		tag = Version.parse(tag);
 	}, function () {
 		console.log(clc.green('Attempting to switch to ' + tag.toString()));
-		common.child('git', ['stash', 'save'], defaultChildArgs, f.wait()); //don't care about output
-	}, function () {
-		console.log("Extracting changes to SDK");
-		common.child('git', ['stash', 'show'], defaultChildArgs, f.slotPlain());
+		common.child('git', ['stash', 'save'], defaultChildArgs, f.slotPlain()); //don't care about output
+	}, function (err) {
+		if (err) {
+			f(err);
+		} else {
+			console.log("Extracting changes to SDK");
+			common.child('git', ['stash', 'show'], defaultChildArgs, f.slotPlain(2));
+		}
 	}, function (err, data) {
 		if (!err && data) {
 			console.log("Save the changes to", stashDir);
