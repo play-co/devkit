@@ -303,30 +303,6 @@ var AddonManager = Class(EventEmitter, function () {
 		}).cb(cb);
 	};
 
-	this.getVersion = function (addon, cb) {
-		var f = ff(this, function () {
-			fs.exists(path.join(this.getPath(addon), '.git'), f.slotPlain());
-		}, function (addonExists) {
-			if (!addonExists) {
-				throw {code: "NOT_INSTALLED", message: "addon not installed"};
-			} else {
-				f.succeed("master");
-			}
-		});
-
-		// var f = ff(this, function () {
-		// 	fs.readFile(path.join(this.getPath(addon), 'addon.json'), 'utf-8', f.slotPlain(2));
-		// }, function (err, contents) {
-		// 	if (err && err.code == 'ENOENT') {
-		// 		throw {code: "NOT_INSTALLED", message: "addon not installed"};
-		// 	} else if (err) {
-		// 		throw err;
-		// 	} else {
-		// 		f.succeed(Version.parse(JSON.parse(contents).version));
-		// 	}
-		// }).cb(cb);
-	};
-
 	/**
 	 * Method will scan the addons directory and initialise
 	 * every addon by loading an index file and executing a
