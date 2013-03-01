@@ -25,6 +25,7 @@ var _git = require('./git');
 var pho = require('./PackageManager');
 var clc = require('cli-color');
 var wrench = require('wrench');
+var Repo = require('./Repo');
 
 var logger = new common.Formatter('addons');
 
@@ -154,54 +155,38 @@ var AddonManager = Class(EventEmitter, function () {
 	// }
 	// @param cb (function (err, cb) {})
 	this.install = function (addon, opts, cb) {
-		logger.log('checking addon', addon + '...');
+		var addonPath = this.getPath(addon);
+		var addonRepo = new Repo.create(addon, {
+			path: addonPath
+		});
+
 		var f = ff(this, function () {
-			// get target version
-			
-			if (opts.version) {
-				f(opts.version);
+			fs.exists(path.join(addonPath, '.git'), f.slotPlain());
+		}, function (addonExists) {
+
+			// install new addon if not exists, otherwise update
+			if (!addonExists) {
+				logger.log(addon, "not currently installed, installing now");
+				this.clone(addon, version, opts, f.wait());
+				f(false); // signal next function to NOT update
 			} else {
-				this.registry.getVersion(addon, f());
-			}
-		}, function (targetVersion) {
-			if (targetVersion == 'dev') {
-				logger.log('note: you are currently in dev mode.  Please use git submodules to manage core addons.');
-				return f.succeed();
+				f("update"); // signal next function to update
+				logger.log('checking', addon, 'for updates');
+				addonRepo.getStatus(f.slotPlain(2));
+				addonRepo.getCurrentBranch(f.slotPlain(2));
 			}
 
-			var version;
-			//if the target version is master
-			if (targetVersion == 'master') {
-				version = "master";
-			} else {
-				//else try and parse the version
-				version = Version.parse(targetVersion);
-				if (!version) {
-					throw targetVersion + " is not a valid version";
-				}
-			}
+		}, function (doUpdate, statusError, status, branchError, branch) {
 
-			logger.log('installing', addon, 'at', version.toString());
-
-			// get current version
-			f(version);
-			this.getVersion(addon, f.slotPlain(2));
-		}, function (version, err, currentVersion) {
-			if (err) {
-				if (err.code == 'NOT_INSTALLED') {
-					logger.log(addon, "not currently installed");
-					this.clone(addon, version, opts, f.wait());
+			// if we are updating, make sure we are on master branch and there are no modified files
+			// NOTE: this is a temporary solution until we rework addon system to work with versioning
+			if (doUpdate) {
+				if (statusError || status.modified.length > 0) {
+					logger.error("Cannot update", addon, "please stash or remove local changes first.");
+				} else if (branchError || branch != "master") {
+					logger.error("Cannot update", addon, "please checkout master branch first.")
 				} else {
-					throw err;
-				}
-			} else {
-				currentVersion = Version.parse(currentVersion);
-				var wrongVersion = !currentVersion || !currentVersion.eq(version);
-				if (wrongVersion) {
-					logger.log("version", currentVersion || "unknown", "is currently active, activating version", version);
-					this.activateVersion(addon, version, f.wait());
-				} else {
-					logger.log("version", currentVersion, "is currently active.");
+					this.activateVersion(addon, "master", f.wait());
 				}
 			}
 		}).error(function (err) {
