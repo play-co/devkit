@@ -162,11 +162,15 @@ var AddonManager = Class(EventEmitter, function () {
 
 		var f = ff(this, function () {
 			fs.exists(path.join(addonPath, '.git'), f.slotPlain());
-		}, function (addonExists) {
+			this.registry.getVersion(addon, f());
+		}, function (addonExists, version) {
 
 			// install new addon if not exists, otherwise update
 			if (!addonExists) {
 				logger.log(addon, "not currently installed, installing now");
+				if (version != "master") {
+					version = Version.parse(version);
+				}
 				this.clone(addon, version, opts, f.wait());
 				f(false); // signal next function to NOT update
 			} else {
