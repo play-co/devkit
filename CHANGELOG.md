@@ -1,11 +1,12 @@
 ## 0.1.3 (Feb. 28, 2013)
 - **Revamped splash screens**
-- Fix to project title/shortName when running basil init
+- Added **ViewPool** class
 - Use jmdns instead of dns-sd for cross platform support
+- Fix to project title/shortName when running basil init
 - Fixed debug logger to allow basil to be served from non-default port
 - Fixed `basil update`, `basil clean-register`
 - Fixes to ButtonView and ImageScaleView
-
+- Fixed devicePixelRatio bug on native
 
 ## 0.1.2 (Feb. 21, 2013)
 - Added `basil which` command
