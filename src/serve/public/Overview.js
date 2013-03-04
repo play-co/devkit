@@ -70,9 +70,9 @@ var LazyPane = Class(squill.Widget, function(supr) {
 exports = Class(squill.TabbedPane, function(supr) {
 
 	this._def = {
-		className: "OverviewPanel",
-		contentsWrapperClassName: "OverviewPanes",
-		tabContainerClassName: "OverviewTabs",
+		className: "overviewPanel",
+		contentsWrapperClassName: "overviewPanes",
+		tabContainerClassName: "overviewTabs",
 		tabChildren: [
 			{
 				id: "projectSelector",
