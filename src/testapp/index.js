@@ -35,6 +35,12 @@ var targetPaths = []; // Path to targets
 function testapp(target, opts, next) {
 	logger.log(clc.yellow.bright('Launching Test App:'), target);
 
+	// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics
+	var MixPanel = require('mixpanel');
+	var myMixPanel = MixPanel && MixPanel.init("08144f9200265117af1ba86e226c352a");
+	myMixPanel && myMixPanel.track("BasilTestApp", {"target":target});
+	// -- End of Analytics
+
 	if (targetNames.indexOf(target) >= 0) {
 		require(targetPaths[target]).testapp(opts, next);
 	} else {
