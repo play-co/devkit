@@ -31,7 +31,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	};
 
 	this.onBeforeShow = function() {
-		document.getElementById("nativePaneFrame").src = "http://0.0.0.0:9220";
+		document.getElementById("nativePaneFrame").src = "http://" + window.location.hostname + ":9220";
 	};
 
 	this.onBeforeHide = function() {
