@@ -161,7 +161,7 @@ function serveFrontend (app) {
 
 //creates and configures an express server
 function launchServer () {
-	common.track("BasilServe", {"version":common.sdkVersion.src});
+	common.track("BasilServe");
 
 	//var app = require('express').createServer();
 	var express = require('express');

@@ -401,6 +401,10 @@ exports.readVersionFile = function () {
 	exports.buildVersion = package.basil['tealeaf-build-tools'];
 };
 
+//call it straight away
+exports.readVersionFile();
+
+
 //// -- Start of Analytics
 
 // Singleton MixPanel object instance
@@ -414,13 +418,25 @@ function getMixPanel() {
 
 // -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics!
 exports.track = function(key, opts) {
-	// Pass tracker data to Mix Panel REST API
+	// Grab MixPanel singleton instance
 	var mp_tracker = getMixPanel();
+
+	// Definte common options
+	var commonOpts = {
+		version: common.sdkVerison.src
+	};
+
+	// Combine options:
+	opts = opts || {};
+	for (var ii in commonOpts) {
+		if (!opts[ii]) {
+			opts[ii] = commonOpts[ii];
+		}
+	}
+
+	// Launch!
 	mp_tracker && mp_tracker.track(key, opts);
 }
 
 //// -- End of Analytics
-
-//call it straight away
-exports.readVersionFile();
 
