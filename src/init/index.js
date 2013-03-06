@@ -92,11 +92,7 @@ var initProject = function(template, dest){
 
 	console.log('Created a new ' + template + ' project at ' + newLocation);
 
-	// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics
-	var MixPanel = require('mixpanel');
-	var myMixPanel = MixPanel && MixPanel.init("08144f9200265117af1ba86e226c352a");
-	myMixPanel && myMixPanel.track("BasilInit", {"version":common.sdkVersion.src, "template":template, "shortName":project});
-	// -- End of Analytics
+	common.track("BasilInit", {"version":common.sdkVersion.src, "template":template, "shortName":project});
 
 	//now register the new project
 	register(newLocation);
