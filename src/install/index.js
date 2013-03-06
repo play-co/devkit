@@ -42,7 +42,7 @@ exports.install = function (addon, version, cb) {
 		process.exit(2);
 	}
 
-	common.track("BasilInstall", {"version":common.sdkVersion.src, "addon":addon});
+	common.track("BasilInstall", {"addon":addon});
 
 	argv = argv.argv; //lolz
 

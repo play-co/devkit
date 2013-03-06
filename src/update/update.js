@@ -126,7 +126,7 @@ exports.update = function (tag, next) {
 		}
 		tag = Version.parse(tag);
 	}, function () {
-		common.track("BasilServe", {"version":common.sdkVersion.src});
+		common.track("BasilUpdate", {"switchTag": tag.toString()});
 		console.log(clc.green('Attempting to switch to ' + tag.toString()));
 		common.child('git', ['stash', 'save'], defaultChildArgs, f.slotPlain()); //don't care about output
 	}, function (err) {

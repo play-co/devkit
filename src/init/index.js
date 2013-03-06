@@ -92,7 +92,7 @@ var initProject = function(template, dest){
 
 	console.log('Created a new ' + template + ' project at ' + newLocation);
 
-	common.track("BasilInit", {"version":common.sdkVersion.src, "template":template, "shortName":project});
+	common.track("BasilInit", {"template":template, "shortName":project});
 
 	//now register the new project
 	register(newLocation);
