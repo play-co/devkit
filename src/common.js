@@ -52,16 +52,31 @@ exports.loadJsio();
 
 var Version = require('./shared/Version');
 
+var seenException;
 process.on('uncaughtException', function (e) {
-	console.log("");
-	switch (e.code) {
-		case 'EADDRINUSE':
-			console.error(clc.red("ERROR"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
-			break;
-		default:
-			console.error(clc.red("ERROR"), e.stack);
+	if (!seenException) {
+		seenException = true;
+
+		console.log("");
+		switch (e.code) {
+			case 'EADDRINUSE':
+				console.error(clc.red("ERROR:"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
+				break;
+			default:
+				console.error(clc.red("ERROR:"), e.stack);
+		}
+
+		common.track("BasilCrash", {"code": e.code, "stack": e.stack});
+
+		console.log("");
+		console.error(clc.red("  Terminating in 5 seconds..."));
+		console.log("");
+
+		// Give it time to post
+		setTimeout(function() {
+			process.exit(1);
+		}, 5000);
 	}
-	process.exit(1);
 });
 
 process.on('SIGINT', function () {
