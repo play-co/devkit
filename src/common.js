@@ -21,6 +21,7 @@ var request = require('request');
 var querystring = require('querystring');
 var spawn = require('child_process').spawn;
 var clc = require('cli-color');
+var mixpanel = require('mixpanel');
 
 var common = exports;
 
@@ -400,5 +401,26 @@ exports.readVersionFile = function () {
 	exports.buildVersion = package.basil['tealeaf-build-tools'];
 };
 
+//// -- Start of Analytics
+
+// Singleton MixPanel object instance
+var myMixPanel = null;
+function getMixPanel() {
+	if (!myMixPanel) {
+		myMixPanel = mixpanel.init("08144f9200265117af1ba86e226c352a");
+	}
+	return myMixPanel;
+}
+
+// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics!
+exports.track = function(key, opts) {
+	// Pass tracker data to Mix Panel REST API
+	var mp_tracker = getMixPanel();
+	mp_tracker && mp_tracker.track(key, opts);
+}
+
+//// -- End of Analytics
+
 //call it straight away
 exports.readVersionFile();
+
