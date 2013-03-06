@@ -95,7 +95,7 @@ var initProject = function(template, dest){
 	// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics
 	var MixPanel = require('mixpanel');
 	var myMixPanel = MixPanel && MixPanel.init("08144f9200265117af1ba86e226c352a");
-	myMixPanel && myMixPanel.track("BasilInit", {"template":template, "shortName":project});
+	myMixPanel && myMixPanel.track("BasilInit", {"version":common.sdkVersion.src, "template":template, "shortName":project});
 	// -- End of Analytics
 
 	//now register the new project
