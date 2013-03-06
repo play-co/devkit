@@ -146,7 +146,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 				this.global.ACCESSIBILITY.mute(this.isMuted());
 			});
 
-			this.global.CONFIG.preload.hide = bind(this, 'hideLoadingImage');
+			this.global.CONFIG.splash.hide = bind(this, 'hideLoadingImage');
 
 			// update muted state
 			this.mute(this._isMuted);
@@ -279,17 +279,30 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		if (params.rotation) {
 			hash.rotation = params.rotation;
 		}
+		if (this._isMuted) {
+			hash.mute = "true";
+		}
 
-		var r = new std.uri('http://localhost/simulate/' + this._appID + '/' + this._params.target + '/')
+		var r = new std.uri('/simulate/' + this._appID + '/' + this._params.target + '/')
 			.addQuery(query)
 			.addHash(hash)
+			.setProtocol("http")
+			.setHost(window.location.hostname)
 			.setPort(this._port)
 
 		return r;
 	};
 
 	this.getLoadingImageURL = function () {
-		return new std.uri(this._params.target + '/loading.png').toString();
+		var splash;
+		if (this._rotation % 2 == 0) {
+			//even amounts of rotations mean portrait
+			splash = "/splash/portrait2048";
+		} else {
+			//oods mean landscape
+			splash = "/splash/landscape1536";
+		}
+		return new std.uri(this._params.target + splash).toString();
 	};
 
 	this.rebuild = function (next) {
@@ -633,24 +646,23 @@ exports.buildChromeFromURI = function(uri) {
 };
 
 var DebugLoggerServer = Class([net.interfaces.Server, lib.PubSub], function () {
-	var name;
-	var sim;
+
 	this.init = function (opts) {
-		name = opts.name;
-		sim = opts.sim;
+		this._name = opts.name;
+		this._sim = opts.sim;
 	};
 
 	this.built = false;
 	this.buildProtocol = function () {
 		this._conn = new net.protocols.Cuppa();
 
+		this._conn.onEvent.subscribe('HIDE_LOADING_IMAGE', this._sim, 'hideLoadingImage');
+
 		this._conn.onEvent.subscribe('APP_READY', this, function (evt) {
 			this.publish('NewConnection', this._conn, evt.args.uid);
 
 			// we want to immediately send the name for logging purposes
-			this._conn.sendEvent('SET_NAME', {name: name});
-
-			sim.hideLoadingImage();
+			this._conn.sendEvent('SET_NAME', {name: this._name});
 		});
 
 		this.built = true;

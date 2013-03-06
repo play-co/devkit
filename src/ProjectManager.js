@@ -17,6 +17,7 @@
 
 var EventEmitter = require('events').EventEmitter;
 var fs = require('fs');
+var path = require('path');
 var ff = require('ff');
 var common = require('./common');
 var packageManager = require('./PackageManager');
@@ -36,7 +37,10 @@ var ProjectManager = Class(EventEmitter, function () {
 		if (this._reloading) { return; }
 		this._reloading = true;
 
-		this._projectDirs = common.config.get('projects') || [];
+		var localProjectsPath = common.paths.root('./projects');
+		var localProjects = fs.readdirSync(localProjectsPath).map(common.paths.projects);
+		var configProjects = common.config.get('projects') || [];
+		this._projectDirs = configProjects.concat(localProjects);
 
 		var projects = {};
 		var added = [];

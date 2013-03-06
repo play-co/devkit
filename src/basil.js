@@ -69,10 +69,15 @@ function displayHeader () {
 		"Needs more ketchup."
 	].sort(function () { return Math.random() - 0.5; });
 
+	var version = common.sdkVersion.toString();
+	var versionLength = version.length; //clc adds escape chars
+	version = clc.yellow(version);
+
 	var colouredGCText = clc.white.bright("{{") + clc.cyan.bright(" Game Closure SDK ") + clc.white.bright("}}");
 	console.log([
 		"============================================================",
 		"                   " + colouredGCText + "                   ",
+		"                                                            ".substr(0, (60-versionLength)/2) + version,
 		"                                                            ".substr(0, (60-opts[0].length)/2) + opts[0],
 		"------------------------------------------------------------",
 		""].join('\n'));
@@ -263,13 +268,14 @@ if (require.main === module) {
 }
 
 function main () {
-	if (process.argv[2] == 'version' || process.argv[2] == '-v') {
-		return console.log(clc.yellow(common.sdkVersion));
-	}
+	var cmd = process.argv[2];
 
-	// Regular build options.
-	switch (process.argv[2]) {
-		// Unspecific options.
+	switch (cmd) {
+		case 'version':
+		case '-v':
+		case '--version':
+			console.log(clc.yellow(common.sdkVersion));
+			break;
 
 		case 'serve':
 			displayHeader();
@@ -303,26 +309,15 @@ function main () {
 			require('./contribute').main(process.argv.splice(3));
 			return;
 
-		//allow debug to fall through as release 
-		//arguments can stay whatever they come in
-		//since default args are for release builds.
-		//Any other arguments handed in would be to use
-		//release with different args
 		case 'debug':
-			if (process.argv.indexOf('--compress') == -1) {
-				process.argv.push('--no-compress');
-			}
-			process.argv.push("--debug");
-
-		//fall through
 		case 'release':
-			
 		case 'build':
 			ensureLocalProject();
 			var f = ff(this, function () {
 				ensureJava(f());
 			}, function () {
 				require('./build').exec(process.argv.slice(3), {
+					template: cmd, // debug/release/build
 					android: common.config.get('android'),
 					ios: common.config.get('ios'),
 					sdk: common.paths.sdk()
@@ -330,6 +325,10 @@ function main () {
 			}).error(function(e) {
 				logger.err(e);
 			});
+			break;
+
+		case 'which':
+			console.log(common.paths.root());
 			break;
 
 		case 'compile':

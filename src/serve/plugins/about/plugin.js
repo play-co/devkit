@@ -76,7 +76,6 @@ exports.load = function (app) {
 			res.json({
 				info: {
 					lastChecked: lastChecked,
-					isDev: true,
 					version: version
 				},
 				tags: tagData

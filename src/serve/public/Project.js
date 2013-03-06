@@ -183,8 +183,7 @@ exports = Class(function() {
 	 * Utility functions.
 	 */
 
-	this.getIcon = function (targetSize) {
-		var iconList = this.manifest.icons;
+	this.tryIcons = function(iconList, targetSize) {
 		var sizes = [], closest = null;
 		if (iconList) {
 			for (var size in iconList) {
@@ -204,6 +203,21 @@ exports = Class(function() {
 				return '/projects/' + this.id + '/files/' + iconList[sizes.pop()];
 			}
 		}
-		return '/images/defaultIcon.png';
+
+		return null;
+	}
+
+	this.getIcon = function (targetSize) {
+		var path = this.manifest.icon ? ('/projects/' + this.id + '/files/' + this.manifest.icon) : null;
+		if (!path) {
+			path = this.tryIcons(this.manifest.android && this.manifest.android.icons, targetSize);
+		}
+		if (!path) {
+			path = this.tryIcons(this.manifest.ios && this.manifest.ios.icons, targetSize);
+		}
+		if (!path) {
+			path = '/images/defaultIcon.png';
+		}
+		return path;
 	};
 });

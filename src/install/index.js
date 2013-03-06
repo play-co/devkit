@@ -33,14 +33,16 @@ var argv = require('optimist')
 		.alias('force', 'f')
 		.default('force', false)
 	.boolean('ssh')
-	.describe('ssh', 'Install addon through SSH')
-	.default('ssh', true);
+		.describe('ssh', 'Install addon through SSH')
+		.default('ssh', false);
 
 exports.install = function (addon, version, cb) {
 	if (!addon) {
 		argv.showHelp();
 		process.exit(2);
 	}
+
+	common.track("BasilInstall", {"addon":addon});
 
 	argv = argv.argv; //lolz
 

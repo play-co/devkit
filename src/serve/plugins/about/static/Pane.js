@@ -45,9 +45,9 @@ var VersionCell = Class(squill.Cell, function(supr) {
 	});
 
 	this.render = function() {
-		this.label.setText(this._data.toString());
+		this.label.setText(this._data.version.toString());
 
-		if (this._data == currentVersion) {
+		if (this._data.version == currentVersion) {
 			$.addClass(this._el, 'current');
 		} else {
 			$.removeClass(this._el, 'current');
@@ -55,14 +55,14 @@ var VersionCell = Class(squill.Cell, function(supr) {
 	};
 });
 
-var versionData = new squill.models.DataSource({key: 'tag'});
+var versionData = new squill.models.DataSource({key: 'src', sorter: function (v) { return Version.sorterKey(v.version); }});
 
 exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this._def = {
 		id: 'aboutPane',
 		children: [
-			{className: 'topTabs', type: squill.TabbedPane, panes: [
-				{id: 'aboutMain', className: 'mainPanel', title: 'about', children: [
+			{id: 'aboutMain', className: 'mainPanel', title: 'about', children: [
+				{className: 'table-wrapper', children: [
 					{className: 'table', children: [
 						{className: 'table-row', children: [
 							{className: 'table-cell', children: [
@@ -72,23 +72,18 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 									{id: 'updateStatus'},
 									{id: 'lastCheckedStatus'},
 									{id: 'refresh', type: 'button', text: '\u21BB', className: 'circle'}
-								]}
+								]},
+								{id: 'btnSwitchVersion', type: 'button', text: 'switch version'}
 							]}
 						]},
 					]},
 				]},
-
-				{
-					className: 'support mainPanel',
-					title: 'support',
-					id: 'support'
-				},
-
-				{className: 'mainPanel', title: 'versions', children: [
-					{id: 'versionHeader', children: [{tag: 'span', text: 'current version: '}, {tag: 'span', id: 'aboutVersion'}]},
-					{id: 'versionWrapper', className: 'darkPanel', children: [
+				
+				{id: 'versionWrapper', children: [
+					{id: 'versionHeader', text: 'all versions:'}, // children: [{tag: 'span', text: 'all versions: '}, {tag: 'span', id: 'aboutVersion'}]},
+					{id: 'versionListWrapper', className: 'darkPanel', children: [
 						{id: 'versions', type: 'list', dataSource: versionData, cellCtor: VersionCell, selectable: 'single'}
-					]},
+					]}
 				]}
 			]}
 		]
@@ -103,10 +98,14 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				type: 'json'
 			}, bind(this, 'onVersions'));
 		};
+
+		on.btnSwitchVersion = function () {
+			$.addClass(this._el, 'showVersions');
+			this.versions.needsRender();
+		}
 	});
 
 	this.onSwitchVersion = function(version) {
-		this.hideMore();
 		$.setText(this.lastCheckedStatus, 'Updating... Please wait.');
 		util.ajax.get({
 				url: '/plugins/about/update/',
@@ -127,14 +126,6 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 
 		this.getVersions();
 		this.versions.subscribe('Switch', this, 'onSwitchVersion');
-
-		this.support._el.innerHTML = '<ul class="support">\
-			<li><a href="http://docs.gameclosure.com">Documentation</a></li>\
-			<li><a href="https://gcsdk.zendesk.com/forums">Forum</a></li>\
-			<li><a href="">Mailing List</a></li>\
-			<li><a href="http://webchat.freenode.net/?channels=#gameclosure">IRC</a></li>\
-			<li><a href="mailto:support@gameclosure.com">support@gameclosure.com</a></li>\
-		</ul>';
 	};
 
 	this.getVersions = function() {
@@ -148,6 +139,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		if (!response) {
 			return;
 		}
+
 		var lastChecked = response.info ? response.info.lastChecked : -1;
 		if (lastChecked == -1) {
 			$.setText(this.lastCheckedStatus, 'checking for updates...');
@@ -169,21 +161,27 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				currentVersion = v;
 			}
 
-			versionData.add(v);
+			versionData.add({
+				version: v,
+				src: v.src
+			});
 		}
 
 		versionData.sort(Version.sorterDesc);
 
 		var verStr;
 		if (!currentVersion) {
-			verStr = 'Version Unknown';
+			verStr = 'Version unknown';
 		} else {
-			verStr = 'Version ' + currentVersion.tag.replace(/-/g, ' ');
+			if (currentVersion.channel == 'release') {
+				verStr = 'Version ' + currentVersion.toString(true); // don't show channel
+			} else {
+				verStr = 'Version ' + currentVersion.toString();
+			}
 		}
 
 		$.setText(this.version, verStr);
-		$.setText(this.aboutVersion, verStr);
-
+		
 		this._checkUpdates();
 	};
 
@@ -195,9 +193,9 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		var nextVersion = null;
 
 		// find the first non-beta version greater than the current version
-		versionData.forEach(function(v) {
-			if (currentVersion.lt(v)) {
-				nextVersion = v;
+		versionData.forEach(function(data) {
+			if (currentVersion.lt(data.version)) {
+				nextVersion = data.version;
 				return true;
 			}
 		}, this);
