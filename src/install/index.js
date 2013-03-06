@@ -42,6 +42,8 @@ exports.install = function (addon, version, cb) {
 		process.exit(2);
 	}
 
+	common.track("BasilInstall", {"addon":addon});
+
 	argv = argv.argv; //lolz
 
 	addonManager.install(addon, {version: version, force: argv.force, isSSH: argv.ssh}, function (err) {

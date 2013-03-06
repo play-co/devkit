@@ -268,7 +268,9 @@ if (require.main === module) {
 }
 
 function main () {
-	switch (process.argv[2]) {
+	var cmd = process.argv[2];
+
+	switch (cmd) {
 		case 'version':
 		case '-v':
 		case '--version':
@@ -307,26 +309,15 @@ function main () {
 			require('./contribute').main(process.argv.splice(3));
 			return;
 
-		//allow debug to fall through as release 
-		//arguments can stay whatever they come in
-		//since default args are for release builds.
-		//Any other arguments handed in would be to use
-		//release with different args
 		case 'debug':
-			if (process.argv.indexOf('--compress') == -1) {
-				process.argv.push('--no-compress');
-			}
-			process.argv.push("--debug");
-
-		//fall through
 		case 'release':
-			
 		case 'build':
 			ensureLocalProject();
 			var f = ff(this, function () {
 				ensureJava(f());
 			}, function () {
 				require('./build').exec(process.argv.slice(3), {
+					template: cmd, // debug/release/build
 					android: common.config.get('android'),
 					ios: common.config.get('ios'),
 					sdk: common.paths.sdk()
