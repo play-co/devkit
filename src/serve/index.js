@@ -40,7 +40,6 @@ var etag = require('./etag');
 var STATIC_SIMULATE_DIR = path.join('src', 'serve', 'plugins', 'simulate', 'static');
 
 
-
 /**
  * Arguments.
  */
@@ -126,7 +125,18 @@ function serveFrontend (app) {
 	var plugins = {};
 	fs.readdirSync(path.join(__dirname, 'plugins')).forEach(function (name) {
 		// Read the manifest.
-		plugins[name] = JSON.parse(fs.readFileSync(path.join(__dirname, 'plugins', name, 'manifest.json')));
+		try {
+			var manifest = path.join(__dirname, 'plugins', name, 'manifest.json');
+			if (fs.existsSync(manifest)) {
+				plugins[name] = JSON.parse(fs.readFileSync(manifest));
+			} else {
+				return;
+			}
+		} catch (e) {
+			logger.warn('Could not load plugin', name);
+			console.error(e);
+			return;
+		}
 
 		// Serve static files.
 		app.use(root + 'plugins/' + name, express.static(path.join(__dirname, 'plugins', name, 'static')));
@@ -151,6 +161,8 @@ function serveFrontend (app) {
 
 //creates and configures an express server
 function launchServer () {
+	common.track("BasilServe");
+
 	//var app = require('express').createServer();
 	var express = require('express');
 	var app = express();
@@ -188,14 +200,14 @@ function launchServer () {
 	common.getLocalIP(function (err, address) {
 		address = address[0];
 
-		spawn("dns-sd", [
-			"-P", "basil", "_tealeaf._tcp", "local",
-			basePort, String(address), String(address), "basil"
-		]).on('exit', function (code) {
-			if (code) {
-				logger.error('(dns-sd exited with code ' + code + ")");
-			}
-		});
+		build.jvmtools.exec('jmdns', [
+			'-rs', 'basil', '_tealeaf._tcp', 'local', basePort
+			], function (jmdns) {
+				var formatter = new build.common.Formatter('jmdns');
+				jmdns.on('out', formatter.out);
+				jmdns.on('err', formatter.err);
+				jmdns.on('end', function (data) {})
+			});
 	});
 
 	// Serve
@@ -232,7 +244,7 @@ exports.cli = function () {
 	// If current project is a game, try to automatically register it.
 	if (fs.existsSync('./manifest.json')) {
 		logger.log('Serving from project directory, attempting to automatically register..');
-		require('../register').register('.', launchServer);
+		require('../register').register('.', false, launchServer);
 	} 
 	launchServer();
 };

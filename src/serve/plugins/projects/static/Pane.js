@@ -28,10 +28,10 @@ var ProjectCell = Class(squill.Cell, function() {
 		className: 'cell projectCell hoverable',
 		children: [
 			{
-				id: 'icon', className: 'project-icon'
+				id: 'icon', className: 'projectIcon'
 			},
 			{
-				id: 'name', type: 'label', className: 'project-name'
+				id: 'name', type: 'label', className: 'projectName'
 			}
 		]
 	};
@@ -42,7 +42,7 @@ var ProjectCell = Class(squill.Cell, function() {
 		var defaultIcon = '/images/defaultIcon.png';
 		this.icon.style.backgroundImage = 'url(' + (project.getIcon(512) || defaultIcon) + ')';
 
-		if (project.manifest.icons.renderGloss) {
+		if (project.manifest.ios && project.manifest.ios.icons && project.manifest.ios.icons.renderGloss) {
 			$.addClass(this.icon, 'gloss');
 		} else {
 			$.removeClass(this.icon, 'gloss');
@@ -56,9 +56,9 @@ var ExampleCell = Class(squill.Cell, function () {
 	this._def = {
 		className: 'exampleProjectCell',
 		children: [
-			{id: 'name', type: 'label', className: 'project-name'},
-			{id: 'doc', tag: 'a', className: 'project-doc'},
-			{id: 'description', type: 'label', className: 'project-description'}
+			{id: 'name', type: 'label', className: 'projectName'},
+			{id: 'doc', tag: 'a', className: 'projectDoc'},
+			{id: 'description', type: 'label', className: 'projectDescription'}
 		]
 	};
 

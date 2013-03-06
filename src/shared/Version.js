@@ -43,16 +43,24 @@ var Version = Class(function () {
 
 		this.build = opts.build || 0;
 		this.tag = opts.tag || '';
+
+		this.src = this.toString();
 	};
 
 	this.getNext = function (which) {
 		var clone = new Version(this);
 		if (which == 'major') {
 			clone.major++;
+			clone.minor = 0;
+			clone.patch = 0;
+			clone.build = 0;
 		} else if (which == 'minor') {
 			clone.minor++;
+			clone.build = 0;
+			clone.patch = 0;
 		} else if (which == 'build') {
 			clone.build++;
+			clone.patch = 0;
 		} else {
 			clone.patch++;
 		}
@@ -207,8 +215,32 @@ Version.sorterDesc = function (a, b) {
 	return Version.sorterAsc(b, a);
 };
 
+Version.sorterKey = function (a) {
+	return a.channel + ' ' + pad(a.major) + pad(a.minor) + pad(a.patch) + pad(a.build);
+}
+
+
+var LEN = 8;
+var MAX = 99999999;
+var MIN = -99999999;
+var PAD = "00000000";
+
+function pad (val) {
+	val = ~~val;
+
+	if (val < MIN) { val = MIN; }
+	if (val > MAX) { val = MAX; }
+	if (val < 0) {
+		val *= -1;
+		return '-' + PAD.substring(0, LEN - ('' + val).length) + val;
+	} else {
+		return PAD.substring(0, LEN - ('' + val).length) + val;
+	}
+};
+
+
 if(module && module.children) {
-	module.exports = Version;	
+	module.exports = Version;
 } else {
 	exports = Version;
 }

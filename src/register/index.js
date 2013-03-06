@@ -116,17 +116,17 @@ exports.unregister = function (dirtounreg, next) {
 
 // removes incorrect projects from the register.
 exports.clean = function(next){
-	var register = common.config.get('projects') || {};
-	var i, j = 0;
-	for (i in register){
-		if (!fs.existsSync(path.join(register[i], './manifest.json'))){
-			delete register[i];
-			j++;
+	var register = common.config.get('projects') || [];
+	var cleanCount = 0;
+	for (var ii = 0; ii < register.length; ++ii) {
+		if (!fs.existsSync(path.join(register[ii], './manifest.json'))){
+			register.splice(ii, 1);
+			++cleanCount;
 		}
 	}
-	if (j !== 0) {
+	if (cleanCount > 0) {
 		common.config.set('projects', register, function () {
-			console.log('Cleaned out', j, 'projects that were invalid from the register.');
+			console.log('Cleaned out', cleanCount, 'projects that were invalid from the register.');
 			next && next();
 		});
 	} else {

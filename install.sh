@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Make sure we are not running as root
+if [[ $EUID -eq 0 ]]; then
+   echo "This script should not be run as root" 1>&2
+   exit 1
+fi
+
 BASIL_ROOT=$(cd -P $(dirname "$0") && pwd)
 
 if [[ -z "$BASH_VERSION" ]]; then
@@ -65,24 +71,23 @@ fi
 
 echo -e "\nInitializing GC SDK libraries ..."
 
+# setup for gc internal repositories
+remoteurl=`git config --get remote.origin.url`
+PRIV_SUBMODS=false && [[ "$remoteurl" == *devkit-priv* ]] && PRIV_SUBMODS=true
+if $PRIV_SUBMODS; then
+	echo "Using private submodules..."
+	cp .gitmodules-priv .gitmodules
+fi
+
 if ! git submodule sync; then
 		error "Unable to sync git submodules"
 		exit 1
 fi
 
-# setup for gc internal repositories
-remoteurl=`git config --get remote.origin.url`
-if [[ "$remoteurl" == *gcsdk-priv* ]]; then
-	cd lib/timestep
-	git remote set-url origin "https://github.com/gameclosure/timestep-priv.git"
-	cd ../../lib/gcapi
-	git remote set-url origin "https://github.com/gameclosure/gcapi-priv.git"
-	cd ../../
-fi
+git submodule update --init --recursive
 
-if ! git submodule update --init --recursive; then
-		error "Unable to update git submodules"
-		exit 1
+if $PRIV_SUBMODS; then
+	git checkout .gitmodules
 fi
 
 if [ ! -w "/usr/local" ]; then
@@ -133,4 +138,8 @@ if [[ $? != 0 ]]; then
 	error 'Could not complete installation'
 else
 	echo 'Successfully installed. Type "basil" to begin.'
+
+	echo ''
+	echo 'By default basil will send anonymous usage statistics and crash reports to help us improve the DevKit.'
+	echo '  If you wish to turn this off, add a new key to config.json: "optout": true,'
 fi

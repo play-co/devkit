@@ -2,5 +2,5 @@
 	"version": "0.1.0",
 	"author": "Game Closure",
 	"name": "About",
-	"scope": "main"
+	"scope": "footer"
 }

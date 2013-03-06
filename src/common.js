@@ -21,6 +21,7 @@ var request = require('request');
 var querystring = require('querystring');
 var spawn = require('child_process').spawn;
 var clc = require('cli-color');
+var mixpanel = require('mixpanel');
 
 var common = exports;
 
@@ -38,6 +39,7 @@ exports.paths = {
 			lib: pathGetter('lib'),
 			sdk: pathGetter('sdk'),
 			build: pathGetter('lib', 'tealeaf-build', 'src'),
+			projects: pathGetter('projects'),
 		};
 
 exports.loadJsio = function () {
@@ -50,16 +52,31 @@ exports.loadJsio();
 
 var Version = require('./shared/Version');
 
+var seenException;
 process.on('uncaughtException', function (e) {
-	console.log("");
-	switch (e.code) {
-		case 'EADDRINUSE':
-			console.error(clc.red("ERROR"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
-			break;
-		default:
-			console.error(clc.red("ERROR"), e.stack);
+	if (!seenException) {
+		seenException = true;
+
+		console.log("");
+		switch (e.code) {
+			case 'EADDRINUSE':
+				console.error(clc.red("ERROR:"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
+				break;
+			default:
+				console.error(clc.red("ERROR:"), e.stack);
+		}
+
+		common.track("BasilCrash", {"code": e.code, "stack": e.stack});
+
+		console.log("");
+		console.error(clc.red("  Terminating in 5 seconds..."));
+		console.log("");
+
+		// Give it time to post
+		setTimeout(function() {
+			process.exit(1);
+		}, 5000);
 	}
-	process.exit(1);
 });
 
 process.on('SIGINT', function () {
@@ -302,7 +319,7 @@ exports.getLocalIP = function (next) {
 	var interfaces = require('os').networkInterfaces();
 	var ips = [];
 	for (var name in interfaces) {
-		if (/en\d+/.test(name)) {
+		if (/e(n|th)\d+/.test(name)) {
 			for (var i = 0, item; item = interfaces[name][i]; ++i) {
 				// ignore IPv6 and local IPs
 				if (item.family == 'IPv4' && !item.internal) {
@@ -401,3 +418,43 @@ exports.readVersionFile = function () {
 
 //call it straight away
 exports.readVersionFile();
+
+
+//// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics!
+
+// Singleton MixPanel object instance
+var myMixPanel = null;
+function getMixPanel() {
+	if (!myMixPanel) {
+		myMixPanel = mixpanel.init("08144f9200265117af1ba86e226c352a");
+	}
+	return myMixPanel;
+}
+
+exports.track = function(key, opts) {
+	if (!common.config.get("optout")) {
+		// Grab MixPanel singleton instance
+		var mp_tracker = getMixPanel();
+
+		// Definte common options
+		var commonOpts = {
+			version: common.sdkVersion.src
+		};
+
+		// Combine options:
+		opts = opts || {};
+		for (var ii in commonOpts) {
+			if (!opts[ii]) {
+				opts[ii] = commonOpts[ii];
+			}
+		}
+
+		// Launch!
+		mp_tracker && mp_tracker.track(key, opts);
+	} else {
+		//console.error(clc.yellow("WARNING:"), "MixPanel anonymous event tracking disabled (config:optout).  Please consider opting-in to help improve the DevKit!");
+	}
+}
+
+//// -- End of Analytics
+
