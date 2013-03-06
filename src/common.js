@@ -405,7 +405,7 @@ exports.readVersionFile = function () {
 exports.readVersionFile();
 
 
-//// -- Start of Analytics
+//// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics!
 
 // Singleton MixPanel object instance
 var myMixPanel = null;
@@ -416,26 +416,29 @@ function getMixPanel() {
 	return myMixPanel;
 }
 
-// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics!
 exports.track = function(key, opts) {
-	// Grab MixPanel singleton instance
-	var mp_tracker = getMixPanel();
+	if (!common.config.get("optout")) {
+		// Grab MixPanel singleton instance
+		var mp_tracker = getMixPanel();
 
-	// Definte common options
-	var commonOpts = {
-		version: common.sdkVerison.src
-	};
+		// Definte common options
+		var commonOpts = {
+			version: common.sdkVersion.src
+		};
 
-	// Combine options:
-	opts = opts || {};
-	for (var ii in commonOpts) {
-		if (!opts[ii]) {
-			opts[ii] = commonOpts[ii];
+		// Combine options:
+		opts = opts || {};
+		for (var ii in commonOpts) {
+			if (!opts[ii]) {
+				opts[ii] = commonOpts[ii];
+			}
 		}
-	}
 
-	// Launch!
-	mp_tracker && mp_tracker.track(key, opts);
+		// Launch!
+		mp_tracker && mp_tracker.track(key, opts);
+	} else {
+		//console.error(clc.yellow("WARNING:"), "MixPanel anonymous event tracking disabled (config:optout).  Please consider opting-in to help improve the DevKit!");
+	}
 }
 
 //// -- End of Analytics
