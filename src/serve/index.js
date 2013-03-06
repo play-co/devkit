@@ -164,7 +164,7 @@ function launchServer () {
 	// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics
 	var MixPanel = require('mixpanel');
 	var myMixPanel = MixPanel && MixPanel.init("08144f9200265117af1ba86e226c352a");
-	myMixPanel && myMixPanel.track("BasilServe");
+	myMixPanel && myMixPanel.track("BasilServe", {"version":common.sdkVersion.src});
 	// -- End of Analytics
 
 	//var app = require('express').createServer();
