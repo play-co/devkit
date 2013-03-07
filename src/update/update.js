@@ -145,7 +145,9 @@ exports.update = function (tag, next) {
 		common.child('git', ['checkout', '--force', tag.toString()], defaultChildArgs, f.wait());
 	}, function () {
 		console.log("Running install script");
-		common.child('./install.sh', [], loudChildArgs, f.wait());
+		common.child('./install.sh', ["--silent"], loudChildArgs, f.wait());
+	}, function () {
+		require("../analytics");
 	})
 	.error(function(err) {
 		console.log(clc.red("ERROR"), err);
