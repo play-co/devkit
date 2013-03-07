@@ -131,6 +131,7 @@ fi
 echo
 
 node src/dependencyCheck.js
+node src/analytics.js
 
 echo 
 
@@ -138,8 +139,4 @@ if [[ $? != 0 ]]; then
 	error 'Could not complete installation'
 else
 	echo 'Successfully installed. Type "basil" to begin.'
-
-	echo ''
-	echo 'By default basil will send anonymous usage statistics and crash reports to help us improve the DevKit.'
-	echo '  If you wish to turn this off, add a new key to config.json: "optout": true,'
 fi
