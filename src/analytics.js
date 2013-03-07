@@ -91,6 +91,8 @@ function run() {
 				f.slotPlain()(false);
 			} else {
 				logger.log("Registering with " + name + " <" + email + "> ...");
+				common.config.set("registerName", name, f.wait());
+				common.config.set("registerEmail", email, f.wait());
 				postEmail(email, name, f.slotPlain());
 			}
 		}, function (registered) {
