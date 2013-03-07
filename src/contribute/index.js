@@ -226,7 +226,7 @@ _commands.release = Class(function () {
 		}, function () {
 			// commit the submodules and package.json
 			if (!argv.test) {
-				sdkRepo.git('commit', '-am', "Releasing version " + tag, f());
+				sdkRepo.git('commit', '-m', "Releasing version " + tag, f());
 				console.log("committing...");
 			}
 		}, function () {
