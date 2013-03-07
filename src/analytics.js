@@ -60,8 +60,8 @@ function run() {
 		var name;
 
 		var f = ff(function () {
-			logger.log("By default basil will send anonymous usage and crash reports");
-			logger.log("  to help us improve the DevKit.");
+			logger.log(clc.yellow("By default basil will send anonymous usage and crash reports"));
+			logger.log(clc.yellow("to help us improve the DevKit."));
 
 			ask("Press " + clc.green.bright("enter") + " to continue.  Or type \"" + clc.red.bright("no") + "\" to opt-out: ", f.slotPlain());
 		}, function (optout) {
