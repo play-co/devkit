@@ -133,7 +133,6 @@ echo
 node src/dependencyCheck.js
 
 if [[ "$1" != "--silent" ]]; then
-	echo "TESTING: $1"
 	node src/analytics.js
 fi
 
