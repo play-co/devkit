@@ -101,9 +101,10 @@ exports.update = function (tag, next) {
 
 	var f = ff(this, function () {
 		common.child('git', ['fetch', '--tags'], defaultChildArgs, f.wait()); //we don't care about output
-		
-		if (!tag) {
-
+	}, function () {
+		if (tag) {
+			tag = Version.parse(tag);
+		} else {
 			var wait = f.wait();
 
 			common.child('git', ['tag', '-l'], defaultChildArgs, function (code, data) {
@@ -124,7 +125,6 @@ exports.update = function (tag, next) {
 				wait();
 			});
 		}
-		tag = Version.parse(tag);
 	}, function () {
 		common.track("BasilUpdate", {"switchTag": tag.toString()});
 		console.log(clc.green('Attempting to switch to ' + tag.toString()));
