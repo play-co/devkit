@@ -192,7 +192,7 @@ _commands.release = Class(function () {
 		}, function (nextVersion) {
 			tag = nextVersion.toString();
 
-			logger.log("releasing version", tag);
+			logger.log("--- Tagging version", tag, "and adding submodules");
 
 			var packagePath = common.paths.root("package.json");
 			var package = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
@@ -205,31 +205,63 @@ _commands.release = Class(function () {
 
 			fs.writeFileSync(packagePath, JSON.stringify(package, null, '\t'));
 
-			var paths = ['package.json'];
+			// tag all repos
 			forEachRepo(function (repo) {
-				if (repo.location != '.') {
-					paths.push(repo.location);
-				}
-
-				// tag all submodules
+				repo.log("tagging", tag);
 				if (!argv.test) {
 					repo.git('tag', '-f', tag, f());
 				}
 			});
-			
-			logger.log("committing", paths.join(' '));
 
-			// add all submodules
-			if (!argv.test) {
-				sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+			// add submodule references
+			forEachRepo(function (repo) {
+				// add all submodules
+				if (repo.submodules) {
+					var paths = [];
+
+					for (var key in repo.submodules) {
+						var sm = repo.submodules[key];
+						repo.log("adding", sm.name);
+						paths.push(sm.relpath);
+					}
+
+					// add all submodules
+					if (!argv.test) {
+						sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+					}
+				}
+			});
+		}, function () {
+			logger.log("--- Committing added submodules");
+
+			function commitSM(repoName) {
+				var repo = _repos[repoName];
+
+				if (repo.submodules) {
+					for (var key in repo.submodules) {
+						var sm = repo.submodules[key];
+
+						commitSM(sm.name);
+					}
+				}
+
+				if (!repo.hasCommitted) {
+					repo.hasCommitted = true;
+
+					// commit the submodules and package.json
+					repo.log("committing");
+					if (!argv.test) {
+						repo.git('commit', '-m', "Releasing version " + tag, f());
+					}
+				}
+			}
+
+			for (var repoName in _repos) {
+				commitSM(repoName);
 			}
 		}, function () {
-			// commit the submodules and package.json
-			if (!argv.test) {
-				sdkRepo.git('commit', '-m', "Releasing version " + tag, f());
-				console.log("committing...");
-			}
-		}, function () {
+			logger.log("--- Pushing remote to head release branch");
+
 			// push the commits to development remote
 			forEachRepo(function (repo) {
 				if (repo.release) {
@@ -240,6 +272,8 @@ _commands.release = Class(function () {
 				}
 			}, this);
 		}, function () {
+			logger.log("--- Pushing tag to remote");
+
 			// push the tags to development remote
 			forEachRepo(function (repo) {
 				if (repo.release) {
@@ -250,6 +284,8 @@ _commands.release = Class(function () {
 				}
 			});
 		}, function () {
+			logger.log("--- Pushing release remote to head release branch");
+
 			// push the commits to release remote
 			forEachRepo(function (repo) {
 				if (repo.release) {
@@ -260,6 +296,8 @@ _commands.release = Class(function () {
 				}
 			});
 		}, function () {
+			logger.log("--- Pushing tag to release remote");
+
 			// push the tags to release remote
 			forEachRepo(function (repo) {
 				if (repo.release) {
