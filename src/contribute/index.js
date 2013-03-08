@@ -227,7 +227,7 @@ _commands.release = Class(function () {
 
 					// add all submodules
 					if (!argv.test) {
-						repo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+						repo.git.apply(repo, ['add'].concat(paths).concat([f()]));
 					}
 				}
 			});
