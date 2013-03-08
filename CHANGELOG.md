@@ -1,3 +1,8 @@
+## 0.1.5 (Mar. 7, 2013)
+- Fixed `basil update` analytics and git usage
+- Fixed ListView example
+- Android: Fixed back button press consumption
+
 ## 0.1.4 (Mar. 6, 2013)
 - **Offline Documentation cache**
 - Added usage statistics tracking
