@@ -227,10 +227,16 @@ _commands.release = Class(function () {
 
 					// add all submodules
 					if (!argv.test) {
-						sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+						repo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
 					}
 				}
 			});
+
+			var paths = ["package.json"];
+			sdkRepo.log("adding package.json");
+			if (!argv.test) {
+				sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+			}
 		}, function () {
 			logger.log("--- Committing added submodules");
 
