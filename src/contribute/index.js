@@ -192,7 +192,7 @@ _commands.release = Class(function () {
 		}, function (nextVersion) {
 			tag = nextVersion.toString();
 
-			logger.log("--- Tagging version", tag, "and adding submodules");
+			logger.log("--- Writing new package.json and tagging repos with", tag);
 
 			var packagePath = common.paths.root("package.json");
 			var package = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
@@ -212,6 +212,8 @@ _commands.release = Class(function () {
 					repo.git('tag', '-f', tag, f());
 				}
 			});
+		}, function () {
+			logger.log("--- Adding submodules");
 
 			// add submodule references
 			forEachRepo(function (repo) {
@@ -221,8 +223,8 @@ _commands.release = Class(function () {
 
 					for (var key in repo.submodules) {
 						var sm = repo.submodules[key];
-						repo.log("adding", sm.name);
-						paths.push(path.join(repo.location, sm.relpath));
+						repo.log("adding", sm.name, ":", sm.relpath);
+						paths.push(sm.relpath);
 					}
 
 					// add all submodules
