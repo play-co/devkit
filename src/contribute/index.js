@@ -248,7 +248,6 @@ _commands.release = Class(function () {
 				if (repo.submodules) {
 					for (var key in repo.submodules) {
 						var sm = repo.submodules[key];
-
 						commitSM(sm.name);
 					}
 				}
@@ -256,10 +255,13 @@ _commands.release = Class(function () {
 				if (!repo.hasCommitted) {
 					repo.hasCommitted = true;
 
-					// commit the submodules and package.json
-					repo.log("committing");
-					if (!argv.test) {
-						repo.git('commit', '-m', "Releasing version " + tag, f());
+					if (!repo.secondary) {
+						// commit the submodules and package.json
+						repo.log("committing");
+
+						if (!argv.test) {
+							repo.git('commit', '-m', "Releasing version " + tag, f());
+						}
 					}
 				}
 			}
@@ -272,7 +274,7 @@ _commands.release = Class(function () {
 
 			// push the commits to development remote
 			forEachRepo(function (repo) {
-				if (repo.release) {
+				if (repo.release && !repo.secondary) {
 					repo.log("pushing to", repo.remote, "HEAD:" + repo.releaseBranch);
 					if (!argv.test) {
 						repo.git('push', '-f', repo.remote, "HEAD:" + repo.releaseBranch, f());
@@ -284,7 +286,7 @@ _commands.release = Class(function () {
 
 			// push the tags to development remote
 			forEachRepo(function (repo) {
-				if (repo.release) {
+				if (repo.release && !repo.secondary) {
 					repo.log("pushing", tag, "to", repo.remote);
 					if (!argv.test) {
 						repo.git('push', repo.remote, tag, f());
@@ -296,7 +298,7 @@ _commands.release = Class(function () {
 
 			// push the commits to release remote
 			forEachRepo(function (repo) {
-				if (repo.release) {
+				if (repo.release && !repo.secondary) {
 					repo.log("pushing to", repo.release.remote, "HEAD:" + repo.release.branch);
 					if (!argv.test) {
 						repo.git('push', '-f', repo.release.remote, "HEAD:" + repo.release.branch, f());
@@ -308,7 +310,7 @@ _commands.release = Class(function () {
 
 			// push the tags to release remote
 			forEachRepo(function (repo) {
-				if (repo.release) {
+				if (repo.release && !repo.secondary) {
 					repo.log("pushing to", repo.release.remote, tag);
 					if (!argv.test) {
 						repo.git('push', repo.release.remote, tag, f());

@@ -32,6 +32,7 @@ exports.create = Class(function () {
 		this.uri = details.uri;
 		this.branch = details.branch;
 		this.submodules = def.submodules;
+		this.secondary = def.secondary;
 
 		if (def.dev) {
 			this.isDev = true;
