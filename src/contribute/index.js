@@ -233,11 +233,11 @@ _commands.release = Class(function () {
 					}
 				}
 			});
+		}, function () {
+			logger.log("--- Adding package.json");
 
-			var paths = ["package.json"];
-			sdkRepo.log("adding package.json");
 			if (!argv.test) {
-				sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+				sdkRepo.git('add', 'package.json', f());
 			}
 		}, function () {
 			logger.log("--- Committing added submodules");
