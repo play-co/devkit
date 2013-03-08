@@ -260,7 +260,7 @@ _commands.release = Class(function () {
 						repo.log("committing");
 
 						if (!argv.test) {
-							repo.git('commit', '-m', "Releasing version " + tag, f());
+							repo.git('commit', '-m', "Releasing version " + tag, f.waitPlain());
 						}
 					}
 				}
