@@ -1,6 +1,7 @@
 ## 0.1.5 (Mar. 7, 2013)
 - Fixed `basil update` analytics and git usage
 - Fixed ListView example
+- Fixed looping when loop is set in AudioManager config
 - Android: Fixed back button press consumption
 
 ## 0.1.4 (Mar. 6, 2013)
