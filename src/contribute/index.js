@@ -222,7 +222,7 @@ _commands.release = Class(function () {
 					for (var key in repo.submodules) {
 						var sm = repo.submodules[key];
 						repo.log("adding", sm.name);
-						paths.push(sm.relpath);
+						paths.push(path.join(repo.location, sm.relpath));
 					}
 
 					// add all submodules
