@@ -36,7 +36,11 @@ Set `android.root` in config.json to your
 
 Then run:
 
-	$ basil build native-android [--debug] [--deploy]
+	$ basil debug native-android
+
+Or:
+
+	$ basil release native-android
 
 ## Build iOS
 
@@ -49,7 +53,11 @@ Set `ios.root` in config.json to your
 
 Then run:
 
-	$ basil build native-ios [--debug] [--deploy]
+	$ basil debug native-ios
+
+Or:
+
+	$ basil release native-ios
 
 ## Dependencies
 
