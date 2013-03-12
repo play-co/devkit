@@ -122,6 +122,7 @@ exports.clean = function(next){
 		if (!fs.existsSync(path.join(register[ii], './manifest.json'))){
 			register.splice(ii, 1);
 			++cleanCount;
+			--ii;
 		}
 	}
 	if (cleanCount > 0) {
