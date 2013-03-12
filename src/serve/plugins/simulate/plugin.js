@@ -54,7 +54,7 @@ function serveProject (project) {
 		// can never remove these routes once they're registered
 		// with the app without hacking express...
 		common.getProjectList(function(projects) {
-			if (!projects[id]) {
+			if (!projects[id.toLowerCase()]) {
 				res.send(404);
 			} else {
 				next();
@@ -90,7 +90,7 @@ exports.load = function (app, argv) {
 	// Rebuild on commit always
 	app.get('/simulate/:shortName/:target/', function (req, res, next) {
 		common.getProjectList(function (projects) {
-			var project = projects[req.params.shortName];
+			var project = projects[req.params.shortName.toLowerCase()];
 			if (!project) {
 				return next();
 			}
@@ -128,7 +128,7 @@ exports.load = function (app, argv) {
 
 	app.get('/simulate/:shortName/:target/splash/:splash', function (req, res, next) {
 		common.getProjectList(function (projects) {
-			var project = projects[req.params.shortName];
+			var project = projects[req.params.shortName.toLowerCase()];
 			var splash = req.params.splash;
 
 			var img = project && project.manifest.splash && project.manifest.splash[splash];
@@ -188,7 +188,7 @@ exports.load = function (app, argv) {
 	// "native.js.mp3" for testapp
 	app.get('/simulate/:shortName/:target/native.js.mp3', function(req, res, next) {
 		common.getProjectList(function (projects) {
-			var project = projects[req.params.shortName];
+			var project = projects[req.params.shortName.toLowerCase()];
 			var target = req.params.target;
 
 			common.getLocalIP(function (err, address) {

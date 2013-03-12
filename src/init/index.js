@@ -62,7 +62,7 @@ var initProject = function(template, dest){
 	var shortName = path.basename(dest);
 
 	common.getProjectList(function(projects) {
-		if (projects[shortName]) {
+		if (projects[shortName.toLowerCase()]) {
 			console.log("That project shortName is already taken.  Please rename your project or erase the old project and run `basil clean-register`");
 			return;
 		}

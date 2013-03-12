@@ -57,15 +57,17 @@ var ProjectManager = Class(EventEmitter, function () {
 						logger.error('Specific report:', err);
 
 					} else {
-						var id = project.getID();
-						projects[id] = project;
-					}
+						var id = project.getID().toLowerCase();
 
-					// track added and removed projects
-					if (!(id in this._projects)) {
-						if (projects[id]) added.push(projects[id]);
-					} else {
-						delete removed[id];
+						// insert into working copy of projects
+						projects[id] = project;
+
+						// track added and removed projects
+						if (!(id in this._projects)) {
+							if (projects[id]) added.push(projects[id]);
+						} else {
+							delete removed[id];
+						}
 					}
 
 					onProjectLoad();
