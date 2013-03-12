@@ -387,9 +387,9 @@ exports.copyFileSync = function (from, to) {
 	return fs.writeFileSync(to, fs.readFileSync(from));
 }
 
-exports.getProjectList = function () {
+exports.getProjectList = function (next) {
 	var projectManager = require('./ProjectManager');
-	return projectManager.getProjects();
+	projectManager.getProjects(next);
 };
 
 //perhaps this should be in pho?
