@@ -185,15 +185,17 @@ function run() {
 	}, function (package, addons) {
 		// check version for all optional addons if they're installed
 		addons.forEach(function (addon) {
-			console.log("Updating addon", addon);
-			var onFinish = f();
-			addonManager.install(addon, {}, function (err, res) {
-				if (err && (err.NOT_INSTALLED || err.UNKNOWN_ADDON)) {
-					onFinish(); // don't worry about these errors
-				} else {
-					onFinish(err); // forward unexpected errors
-				}
-			});
+			if (addon.charAt(0) != '.') {
+				console.log("Updating addon", addon);
+				var onFinish = f();
+				addonManager.install(addon, {}, function (err, res) {
+					if (err && (err.NOT_INSTALLED || err.UNKNOWN_ADDON)) {
+						onFinish(); // don't worry about these errors
+					} else {
+						onFinish(err); // forward unexpected errors
+					}
+				});
+			}
 		});
 	}).error(function (err) {
 		logger.error("Error:");
