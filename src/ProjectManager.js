@@ -40,7 +40,12 @@ var ProjectManager = Class(EventEmitter, function () {
 		this._reloading = true;
 
 		var localProjectsPath = common.paths.root('./projects');
-		var localProjects = fs.readdirSync(localProjectsPath).map(common.paths.projects);
+		var localProjects = [];
+		fs.readdirSync(localProjectsPath).map(common.paths.projects).forEach(function(item) {
+			if (path.basename(item).charAt(0) != '.') {
+				localProjects.push(item);
+			}
+		});
 		var configProjects = common.config.get('projects') || [];
 		this._projectDirs = configProjects.concat(localProjects);
 
