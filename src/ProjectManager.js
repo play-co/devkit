@@ -42,7 +42,7 @@ var ProjectManager = Class(EventEmitter, function () {
 		var localProjectsPath = common.paths.root('./projects');
 		var localProjects = [];
 		fs.readdirSync(localProjectsPath).map(common.paths.projects).forEach(function(item) {
-			if (item.indexOf('.DS_Store') == -1) {
+			if (path.basename(item).charAt(0) != '.') {
 				localProjects.push(item);
 			}
 		});
