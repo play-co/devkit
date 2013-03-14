@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -34,6 +34,8 @@ var targetPaths = []; // Path to targets
 
 function testapp(target, opts, next) {
 	logger.log(clc.yellow.bright('Launching Test App:'), target);
+
+	common.track("BasilTestApp", {"target":target});
 
 	if (targetNames.indexOf(target) >= 0) {
 		require(targetPaths[target]).testapp(opts, next);

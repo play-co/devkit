@@ -132,6 +132,10 @@ echo
 
 node src/dependencyCheck.js
 
+if [[ "$1" != "--silent" ]]; then
+	node src/analytics.js
+fi
+
 echo 
 
 if [[ $? != 0 ]]; then

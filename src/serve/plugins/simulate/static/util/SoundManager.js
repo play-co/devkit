@@ -1,4 +1,4 @@
-/** @license
+/*** @license
  * SoundManager 2: JavaScript Sound for the Web
  * ----------------------------------------------
  * http://schillmania.com/projects/soundmanager2/

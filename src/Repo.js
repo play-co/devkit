@@ -31,6 +31,8 @@ exports.create = Class(function () {
 		this.remote = details.remote;
 		this.uri = details.uri;
 		this.branch = details.branch;
+		this.submodules = def.submodules;
+		this.secondary = def.secondary;
 
 		if (def.dev) {
 			this.isDev = true;
@@ -209,11 +211,11 @@ exports.create = Class(function () {
 	}
 
 	this.getCurrentBranch = function (cb) {
-		this.git("symbolic-ref", "--short", "-q", "HEAD", function (code, out, err) {
+		this.git("symbolic-ref", "-q", "HEAD", function (code, out, err) {
 			if (code) {
 				cb({code: code, err: err});
 			} else {
-				cb(null, out.trim());
+				cb(null, path.basename(out.trim()));
 			}
 		});
 	}

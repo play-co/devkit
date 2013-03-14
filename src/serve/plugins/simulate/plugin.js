@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -53,13 +53,13 @@ function serveProject (project) {
 		// hacky way to not serve removed projects since we
 		// can never remove these routes once they're registered
 		// with the app without hacking express...
-		var projects = common.getProjectList();
-		if (!projects[id]) {
-			res.send(404);
-			return;
-		}
-
-		next();
+		common.getProjectList(function(projects) {
+			if (!projects[id.toLowerCase()]) {
+				res.send(404);
+			} else {
+				next();
+			}
+		});
 	});
 
 	// Static pages.
@@ -89,124 +89,127 @@ exports.load = function (app, argv) {
 
 	// Rebuild on commit always
 	app.get('/simulate/:shortName/:target/', function (req, res, next) {
-		var projects = common.getProjectList();
-		var project = projects[req.params.shortName];
-		if (!project) {
-			return next();
-		}
+		common.getProjectList(function (projects) {
+			var project = projects[req.params.shortName.toLowerCase()];
+			if (!project) {
+				return next();
+			}
 
-		//check the availability of the build target
-		//default to browser desktop
-		var target = req.params.target;
-		if (!build.isTargetAvailable(target)) {
-			target = "browser-desktop";
-		}
+			//check the availability of the build target
+			//default to browser desktop
+			var target = req.params.target;
+			if (!build.isTargetAvailable(target)) {
+				target = "browser-desktop";
+			}
 
-		common.getLocalIP(function (err, address) {
-			build.build(project.paths.root, target, {
-				stage: argv.production ? false : true,
-				debug: true,
-				isSimulated: true,
-				ip: address
-			}, function () {
-				next();
+			common.getLocalIP(function (err, address) {
+				build.build(project.paths.root, target, {
+					stage: argv.production ? false : true,
+					debug: true,
+					isSimulated: true,
+					ip: address
+				}, function () {
+					next();
+				});
 			});
+
+			// update the manifest if on a version
+			if (project.manifest.sdkVersion !== common.sdkVersion.toString()) {
+
+				project.manifest.sdkVersion = common.sdkVersion.toString();
+				
+				fs.writeFile(
+					path.join(project.paths.root, "manifest.json"),
+					JSON.stringify(project.manifest, null, '\t')
+				);
+			}
 		});
-
-		// update the manifest if on a version
-		if (project.manifest.sdkVersion !== common.sdkVersion.toString()) {
-
-			project.manifest.sdkVersion = common.sdkVersion.toString();
-			
-			fs.writeFile(
-				path.join(project.paths.root, "manifest.json"),
-				JSON.stringify(project.manifest, null, '\t')
-			);
-		}
 	});
 
 	app.get('/simulate/:shortName/:target/splash/:splash', function (req, res, next) {
-		var projects = common.getProjectList();
-		var project = projects[req.params.shortName];
-		var splash = req.params.splash;
+		common.getProjectList(function (projects) {
+			var project = projects[req.params.shortName.toLowerCase()];
+			var splash = req.params.splash;
 
-		var img = project && project.manifest.splash && project.manifest.splash[splash];
-		if (!img) {
-			//if the key does not exist in the manifest we need to generate one
-			var splashSizes = {  
-				"portrait480": "320x480",
-				"portrait960": "640x960",
-				"portrait1024": "768x1024",
-				"portrait1136": "640x1136",
-				"portrait2048": "1536x2048",
-				"landscape768": "1024x768",
-				"landscape1536": "2048x1496"
-			};
-			var outSize = splashSizes[splash];
-			if (project.manifest.splash && project.manifest.splash["universal"] && outSize) {
-				//run the splasher to generate a splash of the desired size
-				logger.log("Splash image mapped from universal ->", splash);
-				var outImg = path.join(project.paths.root,".tempsplash.png");
-				build.jvmtools.exec('splasher', [
-					"-i", path.resolve(project.paths.root, project.manifest.splash["universal"]),
-					"-o", outImg,
-					"-resize", outSize,
-					"-rotate", "auto"
-				], function (splasher) {
-					var formatter = new build.common.Formatter('splasher');
-					splasher.on('out', formatter.out);
-					splasher.on('err', formatter.err);
-					splasher.on('end', function (data) {
-						var stream = fs.createReadStream(outImg);
-						stream.pipe(res)
-						stream.on('end', function () {
-							//remove out remporary file
-							fs.unlinkSync(outImg);
-						});
-					})
-				});
-			} else {
-				return next();
-			} 
-		} else {
-			img = path.resolve(project.paths.root, img);
-			var f = ff(function () {
-				fs.exists(img, f.slotPlain());
-			}, function (exists) {
-				if (!exists) {
-					next();
+			var img = project && project.manifest.splash && project.manifest.splash[splash];
+			if (!img) {
+				//if the key does not exist in the manifest we need to generate one
+				var splashSizes = {  
+					"portrait480": "320x480",
+					"portrait960": "640x960",
+					"portrait1024": "768x1024",
+					"portrait1136": "640x1136",
+					"portrait2048": "1536x2048",
+					"landscape768": "1024x768",
+					"landscape1536": "2048x1496"
+				};
+				var outSize = splashSizes[splash];
+				if (project.manifest.splash && project.manifest.splash["universal"] && outSize) {
+					//run the splasher to generate a splash of the desired size
+					logger.log("Splash image mapped from universal ->", splash);
+					var outImg = path.join(project.paths.root,".tempsplash.png");
+					build.jvmtools.exec('splasher', [
+						"-i", path.resolve(project.paths.root, project.manifest.splash["universal"]),
+						"-o", outImg,
+						"-resize", outSize,
+						"-rotate", "auto"
+					], function (splasher) {
+						var formatter = new build.common.Formatter('splasher');
+						splasher.on('out', formatter.out);
+						splasher.on('err', formatter.err);
+						splasher.on('end', function (data) {
+							var stream = fs.createReadStream(outImg);
+							stream.pipe(res)
+							stream.on('end', function () {
+								//remove out remporary file
+								fs.unlinkSync(outImg);
+							});
+						})
+					});
 				} else {
-					logger.log("Splash image mapped from", splash, "->", img);
-					fs.createReadStream(img).pipe(res);
-				}
-			}).error(next);
-		}
+					return next();
+				} 
+			} else {
+				img = path.resolve(project.paths.root, img);
+				var f = ff(function () {
+					fs.exists(img, f.slotPlain());
+				}, function (exists) {
+					if (!exists) {
+						next();
+					} else {
+						logger.log("Splash image mapped from", splash, "->", img);
+						fs.createReadStream(img).pipe(res);
+					}
+				}).error(next);
+			}
+		});
 	});
 
 	// "native.js.mp3" for testapp
 	app.get('/simulate/:shortName/:target/native.js.mp3', function(req, res, next) {
-		var projects = common.getProjectList();
-		var project = projects[req.params.shortName];
-		var target = req.params.target;
+		common.getProjectList(function (projects) {
+			var project = projects[req.params.shortName.toLowerCase()];
+			var target = req.params.target;
 
-		common.getLocalIP(function (err, address) {
-			build.build(project.paths.root, target, {
-				stage: argv.production ? false : true,
-				debug: true,
-				isTestApp: true,
-				ip: address
-			}, next);
+			common.getLocalIP(function (err, address) {
+				build.build(project.paths.root, target, {
+					stage: argv.production ? false : true,
+					debug: true,
+					isTestApp: true,
+					ip: address
+				}, next);
+			});
+
+			logger.log("Serving", req.params.shortName, "->", req.ip);
+
+			var dm = new Buffer(
+				JSON.stringify({
+					"name": "connect",
+					"addr": req.ip
+				}));
+			var s = new dgram.createSocket("udp4");
+			s.send(dm, 0, dm.length, 9320, '127.0.0.1', function(err, bytes) { s.close(); });
 		});
-
-		logger.log("Serving", req.params.shortName, "->", req.ip);
-
-		var dm = new Buffer(
-			JSON.stringify({
-				"name": "connect",
-				"addr": req.ip
-			}));
-		var s = new dgram.createSocket("udp4");
-		s.send(dm, 0, dm.length, 9320, '127.0.0.1', function(err, bytes) { s.close(); });
 	});
 
 	app.get('/simulate/remote/attachedDevices', function (req, res) {

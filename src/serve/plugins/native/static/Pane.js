@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	};
 
 	this.onBeforeShow = function() {
-		document.getElementById("nativePaneFrame").src = "http://0.0.0.0:9220";
+		document.getElementById("nativePaneFrame").src = "http://" + window.location.hostname + ":9220";
 	};
 
 	this.onBeforeHide = function() {

@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -277,10 +277,6 @@ var GCPackage = (function() {
 			"appID": createUUID(),
 			"shortName": (typeof opts.shortName === 'undefined') ? "" : opts.shortName,
 			"title": (typeof opts.title === 'undefined') ? "" : opts.title,
-
-			"icons": {
-				"renderGloss": true
-			},
 
 			"studio": {
 				"name": "Your Studio Name",

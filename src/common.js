@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@ var request = require('request');
 var querystring = require('querystring');
 var spawn = require('child_process').spawn;
 var clc = require('cli-color');
+var mixpanel = require('mixpanel');
 
 var common = exports;
 
@@ -51,16 +52,31 @@ exports.loadJsio();
 
 var Version = require('./shared/Version');
 
+var seenException;
 process.on('uncaughtException', function (e) {
-	console.log("");
-	switch (e.code) {
-		case 'EADDRINUSE':
-			console.error(clc.red("ERROR"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
-			break;
-		default:
-			console.error(clc.red("ERROR"), e.stack);
+	if (!seenException) {
+		seenException = true;
+
+		console.log("");
+		switch (e.code) {
+			case 'EADDRINUSE':
+				console.error(clc.red("ERROR:"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
+				break;
+			default:
+				console.error(clc.red("ERROR:"), e.stack);
+		}
+
+		common.track("BasilCrash", {"code": e.code, "stack": e.stack});
+
+		console.log("");
+		console.error(clc.red("  Terminating in 5 seconds..."));
+		console.log("");
+
+		// Give it time to post
+		setTimeout(function() {
+			process.exit(1);
+		}, 5000);
 	}
-	process.exit(1);
 });
 
 process.on('SIGINT', function () {
@@ -371,9 +387,9 @@ exports.copyFileSync = function (from, to) {
 	return fs.writeFileSync(to, fs.readFileSync(from));
 }
 
-exports.getProjectList = function () {
+exports.getProjectList = function (next) {
 	var projectManager = require('./ProjectManager');
-	return projectManager.getProjects();
+	projectManager.getProjects(next);
 };
 
 //perhaps this should be in pho?
@@ -402,3 +418,43 @@ exports.readVersionFile = function () {
 
 //call it straight away
 exports.readVersionFile();
+
+
+//// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics!
+
+// Singleton MixPanel object instance
+var myMixPanel = null;
+function getMixPanel() {
+	if (!myMixPanel) {
+		myMixPanel = mixpanel.init("08144f9200265117af1ba86e226c352a");
+	}
+	return myMixPanel;
+}
+
+exports.track = function(key, opts) {
+	if (!common.config.get("optout")) {
+		// Grab MixPanel singleton instance
+		var mp_tracker = getMixPanel();
+
+		// Definte common options
+		var commonOpts = {
+			version: common.sdkVersion.src
+		};
+
+		// Combine options:
+		opts = opts || {};
+		for (var ii in commonOpts) {
+			if (!opts[ii]) {
+				opts[ii] = commonOpts[ii];
+			}
+		}
+
+		// Launch!
+		mp_tracker && mp_tracker.track(key, opts);
+	} else {
+		//console.error(clc.yellow("WARNING:"), "MixPanel anonymous event tracking disabled (config:optout).  Please consider opting-in to help improve the DevKit!");
+	}
+}
+
+//// -- End of Analytics
+
