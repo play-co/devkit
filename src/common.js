@@ -38,7 +38,7 @@ function cleanPath (items) {
 	return p;
 }
 function pathGetter () {
-	var base = [__dirname, '..'].concat(cleanPath(Array.prototype.slice.call(arguments)));
+	var base = [__dirname, '..'].concat(Array.prototype.slice.call(arguments));
 	return function () {
 		return path.join.apply(path, base.concat(cleanPath(Array.prototype.slice.call(arguments))));
 	};
