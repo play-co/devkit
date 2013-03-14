@@ -278,10 +278,6 @@ var GCPackage = (function() {
 			"shortName": (typeof opts.shortName === 'undefined') ? "" : opts.shortName,
 			"title": (typeof opts.title === 'undefined') ? "" : opts.title,
 
-			"icons": {
-				"renderGloss": true
-			},
-
 			"studio": {
 				"name": "Your Studio Name",
 				"domain": "studio.example.com",
