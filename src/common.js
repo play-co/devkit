@@ -25,10 +25,22 @@ var mixpanel = require('mixpanel');
 
 var common = exports;
 
+function cleanPath (items) {
+	// path.join in node v0.10.0+ requires all input to be strings
+	// (node previously ignored non-strings)
+	var p = [];
+	for (var i = 0; i < items.length; i++) {
+		var item = items[i];
+		if (typeof item == 'string') {
+			p.push(item);
+		}
+	}
+	return p;
+}
 function pathGetter () {
-	var base = [__dirname, '..'].concat(Array.prototype.slice.call(arguments));
+	var base = [__dirname, '..'].concat(cleanPath(Array.prototype.slice.call(arguments)));
 	return function () {
-		return path.join.apply(path, base.concat(Array.prototype.slice.call(arguments)));
+		return path.join.apply(path, base.concat(cleanPath(Array.prototype.slice.call(arguments))));
 	};
 }
 
