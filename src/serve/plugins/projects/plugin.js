@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -58,15 +58,15 @@ exports.load = function (app) {
 
 	// JSON project list for the test app and front-end
 	app.get('/projects', function (req, res) {
-		var projects = projectManager.getProjects();
-		res.json(projects);
+		projectManager.getProjects(function(projects) {
+			res.json(projects);
+		});
 	});
 
 	// Manifest saving.
 	// TODO this is a bad API, should be changed later on.
 	app.post("/projects/manifest/save/:shortName", function(req, res) {
-		var projects = projectManager.getProjects();
-		if (projects) {
+		projectManager.getProjects(function(projects) {
 			var project = projects.filter(function (project) {
 				return project.manifest.shortName == req.params.shortName || project.manifest.appID == req.params.shortName;
 			})[0];
@@ -85,7 +85,7 @@ exports.load = function (app) {
 			project.saveManifest(currentManifest, function() {
 				res.json({"ok": true});
 			});
-		}
+		});
 	});
 }
 

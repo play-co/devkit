@@ -9,7 +9,6 @@
 	"icon": "resources/icons/icon512.png",
 	"splash": {
 		"autoHide": true,
-		"scaleMethod": "cover",
 		"portrait480": "resources/splash/portrait480.png",
 		"portrait960": "resources/splash/portrait960.png",
 		"portrait1024": "resources/splash/portrait1024.png",

@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -192,7 +192,7 @@ _commands.release = Class(function () {
 		}, function (nextVersion) {
 			tag = nextVersion.toString();
 
-			logger.log("releasing version", tag);
+			logger.log("--- Writing new package.json and tagging repos with", tag);
 
 			var packagePath = common.paths.root("package.json");
 			var package = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
@@ -205,34 +205,76 @@ _commands.release = Class(function () {
 
 			fs.writeFileSync(packagePath, JSON.stringify(package, null, '\t'));
 
-			var paths = ['package.json'];
+			// tag all repos
 			forEachRepo(function (repo) {
-				if (repo.location != '.') {
-					paths.push(repo.location);
-				}
-
-				// tag all submodules
+				repo.log("tagging", tag);
 				if (!argv.test) {
 					repo.git('tag', '-f', tag, f());
 				}
 			});
-			
-			logger.log("committing", paths.join(' '));
+		}, function () {
+			logger.log("--- Adding submodules");
 
-			// add all submodules
+			// add submodule references
+			forEachRepo(function (repo) {
+				// add all submodules
+				if (repo.submodules) {
+					var paths = [];
+
+					for (var key in repo.submodules) {
+						var sm = repo.submodules[key];
+						repo.log("adding", sm.name, ":", sm.relpath);
+						paths.push(sm.relpath);
+					}
+
+					// add all submodules
+					if (!argv.test) {
+						repo.git.apply(repo, ['add'].concat(paths).concat([f()]));
+					}
+				}
+			});
+		}, function () {
+			logger.log("--- Adding package.json");
+
 			if (!argv.test) {
-				sdkRepo.git.apply(sdkRepo, ['add'].concat(paths).concat([f()]));
+				sdkRepo.git('add', 'package.json', f());
 			}
 		}, function () {
-			// commit the submodules and package.json
-			if (!argv.test) {
-				sdkRepo.git('commit', '-m', "Releasing version " + tag, f());
-				console.log("committing...");
+			logger.log("--- Committing added submodules");
+
+			function commitSM(repoName) {
+				var repo = _repos[repoName];
+
+				if (repo.submodules) {
+					for (var key in repo.submodules) {
+						var sm = repo.submodules[key];
+						commitSM(sm.name);
+					}
+				}
+
+				if (!repo.hasCommitted) {
+					repo.hasCommitted = true;
+
+					if (!repo.secondary) {
+						// commit the submodules and package.json
+						repo.log("committing");
+
+						if (!argv.test) {
+							repo.git('commit', '-m', "Releasing version " + tag, f.waitPlain());
+						}
+					}
+				}
+			}
+
+			for (var repoName in _repos) {
+				commitSM(repoName);
 			}
 		}, function () {
+			logger.log("--- Pushing remote to head release branch");
+
 			// push the commits to development remote
 			forEachRepo(function (repo) {
-				if (repo.release) {
+				if (repo.release && !repo.secondary) {
 					repo.log("pushing to", repo.remote, "HEAD:" + repo.releaseBranch);
 					if (!argv.test) {
 						repo.git('push', '-f', repo.remote, "HEAD:" + repo.releaseBranch, f());
@@ -240,9 +282,11 @@ _commands.release = Class(function () {
 				}
 			}, this);
 		}, function () {
+			logger.log("--- Pushing tag to remote");
+
 			// push the tags to development remote
 			forEachRepo(function (repo) {
-				if (repo.release) {
+				if (repo.release && !repo.secondary) {
 					repo.log("pushing", tag, "to", repo.remote);
 					if (!argv.test) {
 						repo.git('push', repo.remote, tag, f());
@@ -250,9 +294,11 @@ _commands.release = Class(function () {
 				}
 			});
 		}, function () {
+			logger.log("--- Pushing release remote to head release branch");
+
 			// push the commits to release remote
 			forEachRepo(function (repo) {
-				if (repo.release) {
+				if (repo.release && !repo.secondary) {
 					repo.log("pushing to", repo.release.remote, "HEAD:" + repo.release.branch);
 					if (!argv.test) {
 						repo.git('push', '-f', repo.release.remote, "HEAD:" + repo.release.branch, f());
@@ -260,9 +306,11 @@ _commands.release = Class(function () {
 				}
 			});
 		}, function () {
+			logger.log("--- Pushing tag to release remote");
+
 			// push the tags to release remote
 			forEachRepo(function (repo) {
-				if (repo.release) {
+				if (repo.release && !repo.secondary) {
 					repo.log("pushing to", repo.release.remote, tag);
 					if (!argv.test) {
 						repo.git('push', repo.release.remote, tag, f());

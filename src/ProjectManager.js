@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -28,8 +28,10 @@ var ProjectManager = Class(EventEmitter, function () {
 	this.init = function () {
 		this._projectDirs = [];
 		this._projects = {};
+		this._loaded = false;
 
 		this.loadConfig();
+
 		common.config.on('change', bind(this, 'loadConfig', true));
 	};
 
@@ -38,7 +40,14 @@ var ProjectManager = Class(EventEmitter, function () {
 		this._reloading = true;
 
 		var localProjectsPath = common.paths.root('./projects');
-		var localProjects = fs.readdirSync(localProjectsPath).map(common.paths.projects);
+		var localProjects = [];
+		fs.readdirSync(localProjectsPath).map(function (filename) {
+			return common.paths.projects(filename);
+		}).forEach(function(item) {
+			if (path.basename(item).charAt(0) != '.') {
+				localProjects.push(item);
+			}
+		});
 		var configProjects = common.config.get('projects') || [];
 		this._projectDirs = configProjects.concat(localProjects);
 
@@ -51,19 +60,21 @@ var ProjectManager = Class(EventEmitter, function () {
 				
 				packageManager.getProject(dir, bind(this, function (err, project) {
 					if (err) {
-						logger.error('Error loading game: at path ' + dir);
-						logger.error(err);
+						logger.error('Game at', dir, 'could not be loaded.  Run `basil clean-register` to remove it.');
+						logger.error('Specific report:', err);
 
 					} else {
-						var id = project.getID();
+						var id = project.getID().toLowerCase();
+
+						// insert into working copy of projects
 						projects[id] = project;
-					}
 
-					// track added and removed projects
-					if (!(id in this._projects)) {
-						if (projects[id]) added.push(projects[id]);
-					} else {
-						delete removed[id];
+						// track added and removed projects
+						if (!(id in this._projects)) {
+							if (projects[id]) added.push(projects[id]);
+						} else {
+							delete removed[id];
+						}
 					}
 
 					onProjectLoad();
@@ -91,15 +102,32 @@ var ProjectManager = Class(EventEmitter, function () {
 			}, this);
 
 			this._reloading = false;
+			this._loaded = true;
+
+			this.emit('Updated');
 		});
 	};
 
-	this.getProjectDirs = function () {
-		return this._projectDirs;
+	this.getProjectDirs = function (next) {
+		if (this._loaded) {
+			next(this._projectDirs);
+		} else {
+			var that = this;
+			this.on('Updated', function() {
+				next(that._projectDirs);
+			});
+		}
 	};
 
-	this.getProjects = function () {
-		return this._projects;
+	this.getProjects = function (next) {
+		if (this._loaded) {
+			next(this._projects);
+		} else {
+			var that = this;
+			this.on('Updated', function() {
+				next(that._projects);
+			});
+		}
 	};
 });
 

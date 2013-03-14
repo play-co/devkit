@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -122,6 +122,7 @@ exports.clean = function(next){
 		if (!fs.existsSync(path.join(register[ii], './manifest.json'))){
 			register.splice(ii, 1);
 			++cleanCount;
+			--ii;
 		}
 	}
 	if (cleanCount > 0) {
