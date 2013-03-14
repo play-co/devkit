@@ -41,7 +41,9 @@ var ProjectManager = Class(EventEmitter, function () {
 
 		var localProjectsPath = common.paths.root('./projects');
 		var localProjects = [];
-		fs.readdirSync(localProjectsPath).map(common.paths.projects).forEach(function(item) {
+		fs.readdirSync(localProjectsPath).map(function (filename) {
+			return common.paths.projects(filename);
+		}).forEach(function(item) {
 			if (path.basename(item).charAt(0) != '.') {
 				localProjects.push(item);
 			}
