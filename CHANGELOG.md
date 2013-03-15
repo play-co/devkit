@@ -1,4 +1,11 @@
-## 0.1.5 (Mar. 7, 2013)
+## 0.1.8 (Mar. 14, 2013)
+- Fixed a bug with node v0.10 and path.join
+- No long treat hidden files/folders as projects or addons
+- Removed the automatic posting of error logs
+- Added --install and --open flags to android builds
+- Removed outdated `basil serve` logic and styling
+
+## 0.1.5 - 0.1.7 (Mar. 7, 2013)
 - Fixed `basil update` analytics and git usage
 - Fixed ListView example
 - Fixed looping when loop is set in AudioManager config
