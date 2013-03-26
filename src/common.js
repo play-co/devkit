@@ -19,7 +19,7 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 var querystring = require('querystring');
-var spawn = require('child_process').spawn;
+var child_process = require('child_process');
 var clc = require('cli-color');
 var mixpanel = require('mixpanel');
 
@@ -63,7 +63,7 @@ process.on('uncaughtException', function (e) {
 				console.error(clc.red("ERROR:"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
 				break;
 			default:
-				console.error(clc.red("ERROR:"), e.stack);
+				console.error(clc.red("Uncaught Exception:"), e.stack);
 		}
 
 		common.track("BasilCrash", {"code": e.code, "stack": e.stack});
@@ -89,17 +89,29 @@ process.on('exit', function () {
 
 // Run a child process inline.
 exports.child = function (prog, args, opts, cont) {
-	var tool = spawn(prog, args, opts);
+	var tool;
+
+	try {
+		tool = child_process.execFile(prog, args, opts);
+	} catch (err) {
+		console.error('(' + prog + ' could not be executed: ' + err + ')');
+		cont(err);
+	}
 	var out = [];
 	var err = [];
 	var formatter = new exports.Formatter(opts.tag || prog, opts.silent, out, err);
-	tool.stdout.on('data', formatter.out);
-	tool.stderr.on('data', formatter.err);
+	tool.stdout.on('data', formatter.out.bind(formatter));
+	tool.stderr.setEncoding('utf8');
+	tool.stderr.on('data', formatter.warn.bind(formatter));
 	tool.on('close', function (code) {
 		if (code !== 0 && !opts.silent) {
-			console.error('(' + prog + ' exited with code ' + code + ')');
+			if (code === -1) {
+				formatter.error('Unable to spawn ' + prog + '.  Please make sure that you have installed all of the prerequisites.');
+			} else {
+				formatter.error('(' + prog + ' exited with code ' + code + ')');
+			}
 		}
-		
+
 		tool.stdin.end();
 		cont(code, out.join(''), err.join(''));
 	});
