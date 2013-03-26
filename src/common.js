@@ -105,7 +105,7 @@ exports.child = function (prog, args, opts, cont) {
 	tool.stderr.on('data', formatter.warn.bind(formatter));
 	tool.on('close', function (code) {
 		if (code !== 0 && !opts.silent) {
-			if (code === -1) {
+			if (code === -1 || code === 127) {
 				formatter.error('Unable to spawn ' + prog + '.  Please make sure that you have installed all of the prerequisites.');
 			} else {
 				formatter.error('(' + prog + ' exited with code ' + code + ')');
