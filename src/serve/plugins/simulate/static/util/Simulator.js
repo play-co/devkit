@@ -92,12 +92,9 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		window.addEventListener('keydown', bind(this, this._rebuildKeyListener), true);
 
 		// initialize muted state from localStorage
-		var isMuted = localStorage.settingMuted;
 		this._isMuted = false;
-		if (isMuted) {
-			try {
-				this._isMuted = JSON.parse(isMuted);
-			} catch (e) {}
+		if (localStorage.settingMuted) {
+			this._isMuted = true;
 		}
 
 		this._appName = opts.appName;
@@ -222,7 +219,11 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 	
 		this.on('MUTE', bind(this, function () {
 			this._isMuted ^= true;
-			localStorage.settingMuted = JSON.stringify(this._isMuted);
+			if (this._isMuted) {
+				localStorage.settingMuted = true;
+			} else {
+				delete localStorage.settingMuted;
+			}
 			this._server._conn.sendEvent('MUTE', {shouldMute: this._isMuted});
 		}));
 		
