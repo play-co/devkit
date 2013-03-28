@@ -293,6 +293,8 @@ var TopBar = Class(squill.Widget, function(supr) {
 
 		this.populateSimulatorList();
 		this.populateDeviceList();
+
+		this._btnMute._el.textContent = (gui.getActiveSimulator().isMuted() ? 'Unmute':'Mute');
 	}
 
 	var deviceList = []; //NOT this._deviceList
