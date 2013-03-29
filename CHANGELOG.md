@@ -1,3 +1,10 @@
+## 0.1.9 (Mar. 28, 2013)
+- Fixed mute button bug in simulator
+- Fixed issue with sound preloader on android
+- Fixed splash screen resizing on android
+- **Added native support for ctx.createPattern**
+- Fixed an issue with ButtonView
+
 ## 0.1.8 (Mar. 14, 2013)
 - Fixed a bug with node v0.10 and path.join
 - No long treat hidden files/folders as projects or addons
