@@ -12,6 +12,8 @@
 		"basil": "./bin/basil"
 	},
 	"dependencies": {
+		"pretty-data": "0.40.0",
+		"xml2json": "0.3.2",
 		"read": "~1.0.2",
 		"cli-color": "0.1.7",
 		"express": "3.0.0rc3",
