@@ -85,7 +85,7 @@ var initProject = function(template, dest){
 		wrench.copyDirSyncRecursive(templatePath, newLocation, {preserve:true});
 
 		//create a symlink to the sdk
-		fs.symlinkSync(sdkLocation, path.join(newLocation, "sdk"));
+		fs.symlinkSync(sdkLocation, path.join(newLocation, "sdk"), 'junction');
 
 		//fill out manifest properties
 		var manPath = path.join(newLocation, "manifest.json");

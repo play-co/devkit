@@ -25,6 +25,8 @@ var mixpanel = require('mixpanel');
 
 var common = exports;
 
+var isWindows = require('os').platform() == 'win32';
+
 function pathGetter () {
 	var base = [__dirname, '..'].concat(Array.prototype.slice.call(arguments));
 	return function () {
@@ -90,9 +92,15 @@ process.on('exit', function () {
 // Run a child process inline.
 exports.child = function (prog, args, opts, cont) {
 	var tool;
-
 	try {
-		tool = child_process.execFile(prog, args, opts);
+		//If we are on windows commands need to be sent through cmd so
+		//bat scripts can be executed
+		if (isWindows) {
+			var cmdArgs = ['/c', prog].concat(args);
+			tool = child_process.execFile('cmd', cmdArgs, opts);
+		} else {
+			tool = child_process.execFile(prog, args, opts);
+		}
 	} catch (err) {
 		console.error('(' + prog + ' could not be executed: ' + err + ')');
 		cont(err);
@@ -330,8 +338,9 @@ fs.exists(CONFIG_PATH, function (exists) {
 exports.getLocalIP = function (next) {
 	var interfaces = require('os').networkInterfaces();
 	var ips = [];
+
 	for (var name in interfaces) {
-		if (/e(n|th)\d+/.test(name)) {
+		if (/e(n|th)\d+/.test(name) || isWindows) {
 			for (var i = 0, item; item = interfaces[name][i]; ++i) {
 				// ignore IPv6 and local IPs
 				if (item.family == 'IPv4' && !item.internal) {

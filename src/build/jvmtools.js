@@ -46,9 +46,16 @@ function getJavaProcess () {
 	if (!jvmtools.proc) {
 		var proc = jvmtools.proc = spawn(CMD, ARGS);
 		proc.stdout.once('data', function (data) {
-			// Read hostname:port.
+			// Read hostname:port
 			var parts = String(data).split(':');
-			connectClient(parts[0], parts[1]);
+			var ip = parts[0];
+			//check if the ip is returned as all zeros
+			if (parts[0] == '0.0.0.0') {
+				//just use localhost instead since connecting to 0.0.0.0
+				//does not work on windows
+				ip = 'localhost';
+			}
+			connectClient(ip, parts[1]);
 		});
 		proc.stderr.on('data', function (data) {
 			// process.stderr.write('TealeafBuildTools: ' + data);

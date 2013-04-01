@@ -1,0 +1,7 @@
+[
+	["../lib/js.io/packages/", "sdk/jsio"],
+	["../lib/timestep/src/","sdk/timestep"],
+	["../lib/squill/","sdk/squill"],
+	["../lib/gcapi/src","sdk/gc"],
+	["../addons/","sdk/addons"]
+]

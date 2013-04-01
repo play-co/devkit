@@ -60,13 +60,13 @@ function createSDKSymlink (dir, next) {
 			} else {
 				logger.log('Relinking ./sdk'); 
 				fs.unlinkSync(to);
-				fs.symlink(from, to, null, next);
+				fs.symlink(from, to,'junction', next);
 			}
 		});
 	} catch (e) {
 		if (e.code == "ENOENT") {
 			logger.log('Creating symlink ./sdk'); 
-			fs.symlink(from, to, null, next);
+			fs.symlink(from, to, 'junction', next);
 		} else {
 			logger.warn('Unexpected exception trying to create a symlink at', to);
 			console.error(e);

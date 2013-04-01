@@ -35,6 +35,8 @@ var BUILD_TOOLS_JAR = common.paths.root('lib/tealeaf-build-tools.jar');
 var BUILD_TOOLS_SRC = common.paths.root('lib/tealeaf-build-tools-{version}.jar');
 var addonManager = require('./AddonManager');
 
+var isWindows = require('os').platform() == 'win32';
+
 function checkTealeafBuildTools (version, cb) {
 	logger.log("checking for tealeaf-build-tools", version.toString());
 
@@ -53,33 +55,46 @@ function checkTealeafBuildTools (version, cb) {
 }
 
 function checkTealeafBuildToolsLink (version, cb) {
-	var f = ff(function () {
-		fs.exists(BUILD_TOOLS_JAR, f.slotPlain());
-	}, function (exists) {
-		if (exists) {
-			var next = f();
-			var f2 = ff(function () {
-				fs.readlink(BUILD_TOOLS_JAR, f2());
-			}, function (link) {
-				var fileVersion = link.match(/tealeaf-build-tools-(.*?)\.jar/);
-				if (!fileVersion || !version.eq(fileVersion[1])) {
-					logger.log("tealeaf-build-tools", version.toString(), "does not exist");
-					next();
-				} else {
-					logger.log("tealeaf-build-tools", version.toString(), "present");
-					f.done();
-				}
-			});
-		}
-	}, function () {
-		logger.log("tealeaf-build-tools creating link...");
-		createLink(version, f());
-	}, function () {
-		logger.log("tealeaf-build-tools link created!");
-	}).error(function (err) {
-		logger.error("error checking link:");
-		logger.error(err);
-	}).success(cb);
+    //if we are windows dont bother symlinking the file just create
+    //a hard link to the newest version
+    if (isWindows) {
+        var f = ff(function () {
+            fs.unlink(BUILD_TOOLS_JAR, f.slotPlain());
+        }, function(err) {
+            fs.link(getBuildToolsPath(version), BUILD_TOOLS_JAR, f());
+        }).error(function (err) {
+            logger.error("error failed to create hard link:");
+            logger.error(err);
+        }).success(cb);
+    } else {
+        var f = ff(function () {
+            fs.exists(BUILD_TOOLS_JAR, f.slotPlain());
+        }, function (exists) {
+            if (exists) {
+                var next = f();
+                var f2 = ff(function () {
+                    fs.readlink(BUILD_TOOLS_JAR, f2());
+                }, function (link) {
+                    var fileVersion = link.match(/tealeaf-build-tools-(.*?)\.jar/);
+                    if (!fileVersion || !version.eq(fileVersion[1])) {
+                        logger.log("tealeaf-build-tools", version, "does not exist");
+                        next();
+                    } else {
+                        logger.log("tealeaf-build-tools", version, "present");
+                        f.done();
+                    }
+                });
+            }
+        }, function () {
+            logger.log("tealeaf-build-tools creating link...");
+            createLink(version, f());
+        }, function () {
+            logger.log("tealeaf-build-tools link created!");
+        }).error(function (err) {
+            logger.error("error checking link:");
+            logger.error(err);
+        }).success(cb);
+    }
 }
 
 function createLink(version, cb) {
