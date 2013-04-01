@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -92,12 +92,9 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		window.addEventListener('keydown', bind(this, this._rebuildKeyListener), true);
 
 		// initialize muted state from localStorage
-		var isMuted = localStorage.settingMuted;
 		this._isMuted = false;
-		if (isMuted) {
-			try {
-				this._isMuted = JSON.parse(isMuted);
-			} catch (e) {}
+		if (localStorage.settingMuted) {
+			this._isMuted = true;
 		}
 
 		this._appName = opts.appName;
@@ -146,7 +143,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 				this.global.ACCESSIBILITY.mute(this.isMuted());
 			});
 
-			this.global.CONFIG.preload.hide = bind(this, 'hideLoadingImage');
+			this.global.CONFIG.splash.hide = bind(this, 'hideLoadingImage');
 
 			// update muted state
 			this.mute(this._isMuted);
@@ -222,7 +219,11 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 	
 		this.on('MUTE', bind(this, function () {
 			this._isMuted ^= true;
-			localStorage.settingMuted = JSON.stringify(this._isMuted);
+			if (this._isMuted) {
+				localStorage.settingMuted = true;
+			} else {
+				delete localStorage.settingMuted;
+			}
 			this._server._conn.sendEvent('MUTE', {shouldMute: this._isMuted});
 		}));
 		
@@ -286,13 +287,23 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		var r = new std.uri('/simulate/' + this._appID + '/' + this._params.target + '/')
 			.addQuery(query)
 			.addHash(hash)
+			.setProtocol("http")
+			.setHost(window.location.hostname)
 			.setPort(this._port)
 
 		return r;
 	};
 
 	this.getLoadingImageURL = function () {
-		return new std.uri(this._params.target + '/loading.png').toString();
+		var splash;
+		if (this._rotation % 2 == 0) {
+			//even amounts of rotations mean portrait
+			splash = "/splash/portrait2048";
+		} else {
+			//oods mean landscape
+			splash = "/splash/landscape1536";
+		}
+		return new std.uri(this._params.target + splash).toString();
 	};
 
 	this.rebuild = function (next) {

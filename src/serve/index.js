@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ var projectManager = require('../ProjectManager');
 var etag = require('./etag');
 
 var STATIC_SIMULATE_DIR = path.join('src', 'serve', 'plugins', 'simulate', 'static');
-
 
 
 /**
@@ -162,6 +161,8 @@ function serveFrontend (app) {
 
 //creates and configures an express server
 function launchServer () {
+	common.track("BasilServe");
+
 	//var app = require('express').createServer();
 	var express = require('express');
 	var app = express();
@@ -199,14 +200,14 @@ function launchServer () {
 	common.getLocalIP(function (err, address) {
 		address = address[0];
 
-		spawn("dns-sd", [
-			"-P", "basil", "_tealeaf._tcp", "local",
-			basePort, String(address), String(address), "basil"
-		]).on('exit', function (code) {
-			if (code) {
-				logger.error('(dns-sd exited with code ' + code + ")");
-			}
-		});
+		build.jvmtools.exec('jmdns', [
+			'-rs', 'basil', '_tealeaf._tcp', 'local', basePort
+			], function (jmdns) {
+				var formatter = new build.common.Formatter('jmdns');
+				jmdns.on('out', formatter.out);
+				jmdns.on('err', formatter.err);
+				jmdns.on('end', function (data) {})
+			});
 	});
 
 	// Serve

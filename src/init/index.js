@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -59,36 +59,50 @@ exports.init = function(args) {
 
 //copies files from a template.
 var initProject = function(template, dest){
-	var templatePath = path.join(__dirname, "templates", template);
-	var newLocation = dest;
-	var sdkLocation = path.join(__dirname, "..", "..", "sdk");
+	var shortName = path.basename(dest);
 
-	if (fs.existsSync(path.join(newLocation, 'manifest.json'))){
-		console.log("There's already a project at this location!");
-		return;
-	}
+	common.getProjectList(function(projects) {
+		if (projects[shortName.toLowerCase()]) {
+			console.log("That project shortName is already taken.  Please rename your project or erase the old project and run `basil clean-register`");
+			return;
+		}
 
-	//create the new project directory
-	if (!fs.existsSync(newLocation)) {
-		wrench.mkdirSyncRecursive(newLocation);
-	}
+		var templatePath = path.join(__dirname, "templates", template);
+		var newLocation = dest;
+		var sdkLocation = path.join(__dirname, "..", "..", "sdk");
 
-	//copy files from a template
-	wrench.copyDirSyncRecursive(templatePath, newLocation, {preserve:true});
+		if (fs.existsSync(path.join(newLocation, 'manifest.json'))){
+			console.log("There's already a project at this location!");
+			return;
+		}
 
-	//create a symlink to the sdk
-	fs.symlinkSync(sdkLocation, path.join(newLocation, "sdk"), 'junction');
+		//create the new project directory
+		if (!fs.existsSync(newLocation)) {
+			wrench.mkdirSyncRecursive(newLocation);
+		}
 
-	//fill out manifest properties
-	var manPath = path.join(newLocation, "manifest.json");
-	var man = JSON.parse(fs.readFileSync(manPath).toString());
-	man.appID = createUUID();
-	man.shortName = newLocation;
-	man.title = newLocation;
-	fs.writeFileSync(manPath, JSON.stringify(man, null, '\t'));
+		//copy files from a template
+		wrench.copyDirSyncRecursive(templatePath, newLocation, {preserve:true});
 
-	console.log('Created a new ' + template + ' project at ' + newLocation);
+		//create a symlink to the sdk
+		fs.symlinkSync(sdkLocation, path.join(newLocation, "sdk"), 'junction');
 
-	//now register the new project
-	register(newLocation);
+		//fill out manifest properties
+		var manPath = path.join(newLocation, "manifest.json");
+		var man = JSON.parse(fs.readFileSync(manPath).toString());
+		man.appID = createUUID();
+
+		man.shortName = shortName;
+		man.title = shortName;
+
+		fs.writeFileSync(manPath, JSON.stringify(man, null, '\t'));
+
+		console.log('Created a new ' + template + ' project at ' + newLocation);
+
+		common.track("BasilInit", {"template":template, "shortName":shortName});
+
+		//now register the new project
+		register(newLocation);
+	});
 };
+

@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ var GUI = exports = Class(squill.Widget, function(supr) {
 	this.init = function(opts) {
 		supr(this, 'init', arguments);
 
-		this._portManager = new PortManager({ range: '9200-9220 exclusive' });
+		this._portManager = new PortManager({ range: ''+window.location.port + '-' + (window.location.port + 20) + ' exclusive' });
 
 		this._manifest = opts.manifest;
 		this._appID = opts.manifest.appID;
@@ -293,6 +293,8 @@ var TopBar = Class(squill.Widget, function(supr) {
 
 		this.populateSimulatorList();
 		this.populateDeviceList();
+
+		this._btnMute._el.textContent = (gui.getActiveSimulator().isMuted() ? 'Unmute':'Mute');
 	}
 
 	var deviceList = []; //NOT this._deviceList

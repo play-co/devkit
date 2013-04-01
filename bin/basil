@@ -39,10 +39,7 @@ else
 fi
 
 if [[(( ($BASIL_DEBUG == 1) && ($EXITC != 0) && ($EXITC != 42) && ($EXITC != 2) ))]]; then
-	# send the logs to us
-	CRASH_LOG=`cat $TMPDIR/basil.log`
-	curl docs.gameclosure.com/basil_crash.php -d "msg=$CRASH_LOG" --silent
-	echo -e "basil exited with an error. The logs are in ${TMPDIR}basil.log.\nContact our support team (support@gameclosure.com) with these logs for assistance. "
+	echo -e "basil exited with an error. The logs are in ${TMPDIR}/basil.log.\nContact our support team (support@gameclosure.com) with these logs for assistance. "
 fi
 
 while [ $EXITC == 42 ]; do

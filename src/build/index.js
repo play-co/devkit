@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ var targetNames = ['native-android', 'native-ios', 'browser-mobile', 'browser-de
 
 function build (dir, target, opts, next) {
 	var project = packageManager.load(dir);
-	
+
 	//create a path based on the target (debug/release)
 	var releasePath = path.join(opts.debug ? 'debug' : 'release', target);
 	logger.log(clc.yellow.bright('Building:'), releasePath);
@@ -139,11 +139,11 @@ function exec (args, config, next) {
 
 	var optimistParser = new Optimist(args)
 		.boolean('debug')
-			.default('debug', false)
+			.default('debug', config.template !== "release")
 			.describe('debug', '[native] builds a version with debugging support')
 
 		.boolean('compress')
-			.default('compress', true)
+			.default('compress', config.template !== "debug")
 			.describe('compress', '[js] minifies JavaScript files')
 		
 		.boolean('stage')
@@ -185,6 +185,9 @@ function exec (args, config, next) {
 	}
 
 	common.startTime('build');
+
+	argv.template = config.template;
+
 	build('.', target, argv, function (failed) {
 		
 		if (!failed) {

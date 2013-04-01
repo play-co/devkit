@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -70,9 +70,9 @@ var LazyPane = Class(squill.Widget, function(supr) {
 exports = Class(squill.TabbedPane, function(supr) {
 
 	this._def = {
-		className: "OverviewPanel",
-		contentsWrapperClassName: "OverviewPanes",
-		tabContainerClassName: "OverviewTabs",
+		className: "overviewPanel",
+		contentsWrapperClassName: "overviewPanes",
+		tabContainerClassName: "overviewTabs",
 		tabChildren: [
 			{
 				id: "projectSelector",
@@ -349,7 +349,7 @@ exports = Class(squill.TabbedPane, function(supr) {
 		this._overviewProjectIcon.style.backgroundImage = "url(" + (project.getIcon(512) || "/images/defaultIcon.png") + ")";
 		this.simulateButton.setLabel(project.manifest.launchTitle || "Simulate");
 
-		if (project.manifest.icons.renderGloss) {
+		if (project.manifest.ios && project.manifest.ios.icons && project.manifest.ios.icons.renderGloss) {
 			$.addClass(this._overviewProjectIcon, "gloss");
 		} else {
 			$.removeClass(this._overviewProjectIcon, "gloss");

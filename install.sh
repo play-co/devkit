@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Make sure we are not running as root
+if [[ $EUID -eq 0 ]]; then
+   echo "This script should not be run as root" 1>&2
+   exit 1
+fi
+
 BASIL_ROOT=$(cd -P $(dirname "$0") && pwd)
 
 if [[ -z "$BASH_VERSION" ]]; then
@@ -125,6 +131,10 @@ echo
 
 node bin/checkSymlinks
 node src/dependencyCheck.js
+
+if [[ "$1" != "--silent" ]]; then
+	node src/analytics.js
+fi
 
 echo 
 

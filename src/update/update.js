@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -101,9 +101,10 @@ exports.update = function (tag, next) {
 
 	var f = ff(this, function () {
 		common.child('git', ['fetch', '--tags'], defaultChildArgs, f.wait()); //we don't care about output
-		
-		if (!tag) {
-
+	}, function () {
+		if (tag) {
+			tag = Version.parse(tag);
+		} else {
 			var wait = f.wait();
 
 			common.child('git', ['tag', '-l'], defaultChildArgs, function (code, data) {
@@ -124,21 +125,29 @@ exports.update = function (tag, next) {
 				wait();
 			});
 		}
-		tag = Version.parse(tag);
 	}, function () {
+		common.track("BasilUpdate", {"switchTag": tag.toString()});
 		console.log(clc.green('Attempting to switch to ' + tag.toString()));
-		common.child('git', ['stash', 'save'], defaultChildArgs, f.wait()); //don't care about output
-	}, function () {
-		console.log("Extracting changes to SDK");
-		common.child('git', ['stash', 'show'], defaultChildArgs, f());
-	}, function (data) {
-		console.log("Save the changes to", stashDir);
-		fs.writeFile(path.join(stashDir, 'stash_'+(new Date())), String(data), f.wait());
+		common.child('git', ['stash', 'save'], defaultChildArgs, f.slotPlain()); //don't care about output
+	}, function (err) {
+		if (err) {
+			f(err);
+		} else {
+			console.log("Extracting changes to SDK");
+			common.child('git', ['stash', 'show'], defaultChildArgs, f.slotPlain(2));
+		}
+	}, function (err, data) {
+		if (!err && data) {
+			console.log("Save the changes to", stashDir);
+			fs.writeFile(path.join(stashDir, 'stash_'+(new Date())), String(data), f.wait());
+		}
 		console.log("Checking out version", tag.toString());
 		common.child('git', ['checkout', '--force', tag.toString()], defaultChildArgs, f.wait());
 	}, function () {
 		console.log("Running install script");
-		common.child('./install.sh', [], loudChildArgs, f.wait());
+		common.child('./install.sh', ["--silent"], loudChildArgs, f.wait());
+	}, function () {
+		require("../analytics");
 	})
 	.error(function(err) {
 		console.log(clc.red("ERROR"), err);
