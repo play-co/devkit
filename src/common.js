@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -19,8 +19,9 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 var querystring = require('querystring');
-var spawn = require('child_process').spawn;
+var child_process = require('child_process');
 var clc = require('cli-color');
+var mixpanel = require('mixpanel');
 
 var common = exports;
 
@@ -53,16 +54,31 @@ exports.loadJsio();
 
 var Version = require('./shared/Version');
 
+var seenException;
 process.on('uncaughtException', function (e) {
-	console.log("");
-	switch (e.code) {
-		case 'EADDRINUSE':
-			console.error(clc.red("ERROR"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
-			break;
-		default:
-			console.error(clc.red("ERROR"), e.stack);
+	if (!seenException) {
+		seenException = true;
+
+		console.log("");
+		switch (e.code) {
+			case 'EADDRINUSE':
+				console.error(clc.red("ERROR:"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
+				break;
+			default:
+				console.error(clc.red("Uncaught Exception:"), e.stack);
+		}
+
+		common.track("BasilCrash", {"code": e.code, "stack": e.stack});
+
+		console.log("");
+		console.error(clc.red("  Terminating in 5 seconds..."));
+		console.log("");
+
+		// Give it time to post
+		setTimeout(function() {
+			process.exit(1);
+		}, 5000);
 	}
-	process.exit(1);
 });
 
 process.on('SIGINT', function () {
@@ -76,24 +92,34 @@ process.on('exit', function () {
 // Run a child process inline.
 exports.child = function (prog, args, opts, cont) {
 	var tool;
-	//If we are on windows commands need to be sent through cmd so
-	//bat scripts can be executed
-	if (isWindows) {
-		var cmdArgs = ['/c', prog].concat(args);
-		tool = spawn('cmd', cmdArgs, opts);
-	} else {
-		tool = spawn(prog, args, opts);
+	try {
+		//If we are on windows commands need to be sent through cmd so
+		//bat scripts can be executed
+		if (isWindows) {
+			var cmdArgs = ['/c', prog].concat(args);
+			tool = child_process.spawn('cmd', cmdArgs, opts);
+		} else {
+			tool = child_process.execFile(prog, args, opts);
+		}
+	} catch (err) {
+		console.error('(' + prog + ' could not be executed: ' + err + ')');
+		cont(err);
 	}
 	var out = [];
 	var err = [];
 	var formatter = new exports.Formatter(opts.tag || prog, opts.silent, out, err);
-	tool.stdout.on('data', formatter.out);
-	tool.stderr.on('data', formatter.err);
+	tool.stdout.on('data', formatter.out.bind(formatter));
+	tool.stderr.setEncoding('utf8');
+	tool.stderr.on('data', formatter.warn.bind(formatter));
 	tool.on('close', function (code) {
 		if (code !== 0 && !opts.silent) {
-			console.error('(' + prog + ' exited with code ' + code + ')');
+			if (code === -1 || code === 127) {
+				formatter.error('Unable to spawn ' + prog + '.  Please make sure that you have installed all of the prerequisites.');
+			} else {
+				formatter.error('(' + prog + ' exited with code ' + code + ')');
+			}
 		}
-		
+
 		tool.stdin.end();
 		cont(code, out.join(''), err.join(''));
 	});
@@ -314,7 +340,7 @@ exports.getLocalIP = function (next) {
 	var ips = [];
 
 	for (var name in interfaces) {
-		if (/en\d+/.test(name) || isWindows) {
+		if (/e(n|th)\d+/.test(name) || isWindows) {
 			for (var i = 0, item; item = interfaces[name][i]; ++i) {
 				// ignore IPv6 and local IPs
 				if (item.family == 'IPv4' && !item.internal) {
@@ -382,9 +408,9 @@ exports.copyFileSync = function (from, to) {
 	return fs.writeFileSync(to, fs.readFileSync(from));
 }
 
-exports.getProjectList = function () {
+exports.getProjectList = function (next) {
 	var projectManager = require('./ProjectManager');
-	return projectManager.getProjects();
+	projectManager.getProjects(next);
 };
 
 //perhaps this should be in pho?
@@ -413,3 +439,43 @@ exports.readVersionFile = function () {
 
 //call it straight away
 exports.readVersionFile();
+
+
+//// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics!
+
+// Singleton MixPanel object instance
+var myMixPanel = null;
+function getMixPanel() {
+	if (!myMixPanel) {
+		myMixPanel = mixpanel.init("08144f9200265117af1ba86e226c352a");
+	}
+	return myMixPanel;
+}
+
+exports.track = function(key, opts) {
+	if (!common.config.get("optout")) {
+		// Grab MixPanel singleton instance
+		var mp_tracker = getMixPanel();
+
+		// Definte common options
+		var commonOpts = {
+			version: common.sdkVersion.src
+		};
+
+		// Combine options:
+		opts = opts || {};
+		for (var ii in commonOpts) {
+			if (!opts[ii]) {
+				opts[ii] = commonOpts[ii];
+			}
+		}
+
+		// Launch!
+		mp_tracker && mp_tracker.track(key, opts);
+	} else {
+		//console.error(clc.yellow("WARNING:"), "MixPanel anonymous event tracking disabled (config:optout).  Please consider opting-in to help improve the DevKit!");
+	}
+}
+
+//// -- End of Analytics
+

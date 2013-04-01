@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ git.currentTag = function (gitDir, next) {
 		"--git-dir", path.join(gitDir, ".git"),
 		"describe", "--always", "--tag"
 	], {
-		cwd: path.join(gitDir, ".git")
+		cwd: gitDir
 	}, function (error, data) {
 		if (error) {
 			console.log("Error: failed to get git tag for dir: " + gitDir);

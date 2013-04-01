@@ -1,4 +1,4 @@
-/* @license
+/** @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
@@ -41,6 +41,8 @@ exports.install = function (addon, version, cb) {
 		argv.showHelp();
 		process.exit(2);
 	}
+
+	common.track("BasilInstall", {"addon":addon});
 
 	argv = argv.argv; //lolz
 

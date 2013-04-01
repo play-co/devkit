@@ -2,7 +2,7 @@
 	"author": "The Game Closure SDK Team",
 	"name": "basil",
 	"description": "Basil - the Game Closure SDK",
-	"version": "0.1.1",
+	"version": "0.1.9",
 	"homepage": "http://github.com/gameclosure/",
 	"repository": {
 		"type": "git",
@@ -12,6 +12,8 @@
 		"basil": "./bin/basil"
 	},
 	"dependencies": {
+		"pretty-data": "0.40.0",
+		"xml2json": "0.3.2",
 		"read": "~1.0.2",
 		"cli-color": "0.1.7",
 		"express": "3.0.0rc3",
@@ -31,7 +33,8 @@
 		"nib": ">= 0.8.2",
 		"falafel": "0.0.2",
 		"findit": "0.1.2",
-		"underscore": "1.3.3"
+		"underscore": "1.3.3",
+		"mixpanel": "0.0.12"
 	},
 	"devDependencies": {
 		"chai": "~1.2.0",
@@ -49,7 +52,7 @@
 	"private": true,
 	"basil": {
 		"addons": [],
-		"tealeaf-build-tools": "0.2.1",
+		"tealeaf-build-tools": "0.2.4",
 		"android": "2.1.0"
 	},
 	"channel": "release"
