@@ -97,7 +97,7 @@ exports.child = function (prog, args, opts, cont) {
 		//bat scripts can be executed
 		if (isWindows) {
 			var cmdArgs = ['/c', prog].concat(args);
-			tool = child_process.spawn('cmd', cmdArgs, opts);
+			tool = child_process.execFile('cmd', cmdArgs, opts);
 		} else {
 			tool = child_process.execFile(prog, args, opts);
 		}
