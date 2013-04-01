@@ -1,0 +1,94 @@
+#!/usr/bin/env node
+
+// first entry is the source (relative to the destination)
+// second entry is the destination
+
+var path = require('path');
+var fs = require('fs');
+
+var isWindows = require('os').platform() == 'win32';
+
+var base = path.join(path.dirname(__filename), '..');
+
+exports.check = function (cb) {
+	var cwd = process.cwd();
+	process.chdir(__dirname);
+	var links = require('../tools/links.json');
+	var i = 0;
+	var nextLink = function () {
+		var link = links[i];
+		if (!link) {
+			process.chdir(cwd);
+			cb && cb();
+		} else {
+			++i;
+			var dest = path.join(base, link[1]);
+			//if we are on windows then the src path needs to be provided as a absolute path
+			//in this case the link sources are provided relative to the directory that the destination of the link resides
+			if (isWindows) {
+				var src = path.join(dest,'\\..\\' + link[0]);
+			} else {
+				var src = link[0];
+			}
+			createLink(src, dest, nextLink);
+		}
+	}
+	nextLink();
+};
+
+function createLink (src, dest, next) {
+	console.log('creating link to', dest);
+	var cwd = process.cwd();
+	process.chdir(__dirname);
+
+	try {
+		makeDirsSync(path.dirname(dest));
+	} catch (e) {
+		return next(e);
+	}
+	try {
+		fs.unlinkSync(dest);
+	} catch (e) {
+		//do nothing with this error
+	}
+	fs.symlink(src, dest, 'junction', next);
+}
+
+// based on https://gist.github.com/1053383
+function makeDirsSync (dir) {
+	// normalize and resolve path to an absolute one:
+	// (path.resolve automatically uses the current directory if needed)
+	dir = path.resolve(path.normalize(dir));
+
+	// try to create this directory:
+	try {
+		// XXX hardcoding recommended file mode of 511 (0777 in octal)
+		// (note that octal numbers are disallowed in ES5 strict mode)
+		fs.mkdirSync(dir, 511);
+	} catch (e) {
+		// and if we fail, base action based on why we failed:
+		switch (e.code) {
+
+			// base case: if the path already exists, we're good to go.
+			// TODO account for this path being a file, not a dir?
+			case 'EEXIST':
+				return;
+
+			// recursive case: some directory in the path doesn't exist, so
+			// make this path's parent directory.
+			case 'ENOENT':
+				fs.mkdirSync(path.dirname(dir));
+				fs.mkdirSync(dir);
+				break;
+
+			default:
+				throw e;
+		}
+	}
+}
+
+
+// Command line invocation.
+if (require.main === module) {
+	exports.check();
+}
