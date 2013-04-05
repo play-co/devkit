@@ -13,7 +13,7 @@ if [[ -z "$BASH_VERSION" ]]; then
 		exit 1
 fi
 
-echo $'\033[1;32m-{{{>\033[0m Game Closure SDK'
+echo $'\033[1;32m-{{{>\033[0m Game Closure DevKit'
 echo 'Installing...'
 
 function abs_path() {
@@ -104,10 +104,13 @@ CURRENT_BASIL_PATH=$(which basil)
 TARGET_BASIL_PATH="$BASIL_ROOT/bin/basil"
 SYSTEM_WIDE_INSTALL=false
 
-read -p "Would you like to link basil to /usr/local/ (Will not work for other users)? [Y/N]" -n 1 -r
+read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [N/y] ?" -n 1 -r
+echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-	echo 'Trying to execute link basil to /usr/local with sudo'
+	echo
+	echo 'Trying to execute link basil to /usr/local with sudo.  You may be prompted for your root password.'
+	SYSTEM_WIDE_INSTALL=true
 
 	if [[ -e /usr/local/bin/basil ]]; then
 		sudo sh -c "unlink /usr/local/bin/basil; ln -s '$TARGET_BASIL_PATH' /usr/local/bin/basil"
@@ -122,10 +125,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 
-if [[ $SYSTEM_WIDE_INSTALL == true ]]; then
-	echo "Successfully installed. Type $BASIL_ROOT/bin/basil to begin."
-	echo "You may wish to add $BASIL_ROOT/bin to your \$PATH"
+if [[ $SYSTEM_WIDE_INSTALL == false ]]; then
+	echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m Type "$BASIL_ROOT/bin/basil" to begin.'
+	echo "+ Suggestion: You may wish to add $BASIL_ROOT/bin to your \$PATH"
 else
-	echo 'Successfully installed. Type "basil" to begin.'
+	echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m Type "basil" to begin.'
 fi
 
