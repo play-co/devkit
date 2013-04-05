@@ -109,7 +109,7 @@ echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
 	echo
-	echo 'Trying to execute link basil to /usr/local with sudo.  You may be prompted for your root password.'
+	echo 'Trying to link from /usr/local with sudo.  You may be prompted for your root password.'
 	SYSTEM_WIDE_INSTALL=true
 
 	if [[ -e /usr/local/bin/basil ]]; then
@@ -126,9 +126,9 @@ fi
 
 
 if [[ $SYSTEM_WIDE_INSTALL == false ]]; then
-	echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m Type "$BASIL_ROOT/bin/basil" to begin.'
+	echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m'  "Type \"$BASIL_ROOT/bin/basil\" to begin."
 	echo "+ Suggestion: You may wish to add $BASIL_ROOT/bin to your \$PATH"
 else
-	echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m Type "basil" to begin.'
+	echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
 fi
 
