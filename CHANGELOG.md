@@ -1,3 +1,11 @@
+## 0.1.10 (Apr. 4, 2013)
+- Better Windows support
+- All: Fixes for Sockets and new socket stream multi-reader
+- Android: Fixed TestApp crash on startup
+- iOS: Fixed TestApp JS Remote Debugging on game restart
+- All: Fixed animation group Finish event
+- iOS: Now delivers orientation change events to JS
+
 ## 0.1.9 (Mar. 28, 2013)
 - Fixed mute button bug in simulator
 - Fixed issue with sound preloader on android
