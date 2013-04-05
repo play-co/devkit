@@ -57,16 +57,10 @@ if [[ ! -w "$HOME/.npm" ]]; then
 		echo "Try: sudo chown -R $USER $HOME/.npm"
 		exit 1
 fi
+
 #
 # Install
 #
-
-BASIL_PATH=$(which basil)
-
-if [[ -L "$BASIL_PATH" ]]  ; then
-		echo "Removing old basil symlink."
-		rm "$BASIL_PATH"
-fi
 
 echo -e "\nInitializing GC SDK libraries ..."
 
@@ -89,42 +83,10 @@ if $PRIV_SUBMODS; then
 	git checkout .gitmodules
 fi
 
-if [[ ! -w "/usr/local"  && ! (`uname` == MINGW32*)]]; then
-		error "You need write permissions to /usr/local"
+if ! npm install; then
+		error "Running npm install"
 		echo "Try running: sudo chown -R \$USER /usr/local"
 		exit 1
-fi
-
-if ! npm link --local; then
-		error "Linking npm to local"
-		echo "Try running: sudo chown -R \$USER /usr/local"
-		exit 1
-fi
-
-#
-# Check if basil on path
-#
-
-which basil
-if [[ $? != 0 ]]; then
-	if [[ ! -w /usr/local/bin ]]; then
-			error "GC SDK install requires write permission to /usr/local/bin"
-			echo "Try: sudo chown -R $(whoami) /usr/local/bin"
-			exit 1
-	fi
-	if [[ -e /usr/local/share/npm/bin/basil ]]; then
-		warn "You should add /usr/local/share/npm/bin/ to your PATH"
-		ln -sf $(readlink /usr/local/share/npm/bin/basil) /usr/local/bin/basil
-	else
-		warn "We could not find basil in your path. Attempting a manual link..."
-		BASIL_PATH=$(abs_path $(dirname $0){/bin/basil})
-		echo $BASIL_PATH
-		if [[ ! -e $BASIL_PATH ]]; then
-			error 'Could not find basil runtime.'
-			exit 1
-		fi
-		ln -sf $BASIL_PATH /usr/local/bin/basil
-	fi
 fi
 
 echo
@@ -138,8 +100,32 @@ fi
 
 echo 
 
-if [[ $? != 0 ]]; then
-	error 'Could not complete installation'
+CURRENT_BASIL_PATH=$(which basil)
+TARGET_BASIL_PATH="$BASIL_ROOT/bin/basil"
+SYSTEM_WIDE_INSTALL=false
+
+read -p "Would you like to link basil to /usr/local/ (Will not work for other users)? [Y/N]" -n 1 -r
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+	echo 'Trying to execute link basil to /usr/local with sudo'
+
+	if [[ -e /usr/local/bin/basil ]]; then
+		sudo sh -c "unlink /usr/local/bin/basil; ln -s '$TARGET_BASIL_PATH' /usr/local/bin/basil"
+	else
+		sudo ln -s "$TARGET_BASIL_PATH" /usr/local/bin/basil
+	fi
+
+	if [[ $? != 0 ]]; then
+		error "Could not link basil to /usr/local"
+		SYSTEM_WIDE_INSTALL=false
+	fi
+fi
+
+
+if [[ $SYSTEM_WIDE_INSTALL == true ]]; then
+	echo "Successfully installed. Type $BASIL_ROOT/bin/basil to begin."
+	echo "You may wish to add $BASIL_ROOT/bin to your \$PATH"
 else
 	echo 'Successfully installed. Type "basil" to begin.'
 fi
+
