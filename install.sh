@@ -107,7 +107,7 @@ SYSTEM_WIDE_INSTALL=false
 read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [N/y] ?" -n 1 -r
 echo
 
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+if [[ ($REPLY == 'y') || ($REPLY == 'Y') ]]; then
 	echo
 	echo 'Trying to link from /usr/local with sudo.  You may be prompted for your root password.'
 	SYSTEM_WIDE_INSTALL=true
