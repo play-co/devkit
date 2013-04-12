@@ -3,7 +3,7 @@
 # Basil command line script, that intercepts update calls.
 
 if [[ `uname` == MINGW32* ]]; then
-	BASIL_PATH=$(dirname $0)"/../"	
+	BASIL_PATH=$(dirname "$0")"/../"	
 else
 	# concat some paths to find the current dir
 	PARTONE=$(dirname $0)
@@ -35,10 +35,10 @@ fi
 
 EXITC=0
 if [[ $BASIL_DEBUG == 1 ]]; then
-	node $BASIL_PATH"/src/basil" $* 2>&1 | tee $TMPDIR/basil.log
+	node "$BASIL_PATH/src/basil" $* 2>&1 | tee $TMPDIR/basil.log
 	EXITC=${PIPESTATUS[0]}
 else
-	node $BASIL_PATH"/src/basil" $*
+	node "$BASIL_PATH/src/basil" $*
 	EXITC=$?
 fi
 
@@ -47,6 +47,6 @@ if [[(( ($BASIL_DEBUG == 1) && ($EXITC != 0) && ($EXITC != 42) && ($EXITC != 2) 
 fi
 
 while [ $EXITC == 42 ]; do
-	node $BASIL_PATH"/src/basil" $*
+	node "$BASIL_PATH/src/basil" $*
 	EXITC=$?
 done
