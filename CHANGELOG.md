@@ -1,3 +1,18 @@
+## 0.1.11 (Apr. 15, 2013)
+ - fixed crash on path with non-directory (updated jash version dependency)
+ - fixed image view positioning (removed unnecessary rounding)
+ - removed browser-only xml mode from reader
+ - fixed View.removeFilter on native
+ - better installation process
+ - improved linux support
+ - new socket example
+ - fixed TextView UI Inspector tag
+ - examples no longer try to register dot files
+ - faster blockEvents handling
+ - new ParticleEngine
+ - fixed basil crash on path with space
+ - new particle engine example
+
 ## 0.1.10 (Apr. 4, 2013)
 - Better Windows support
 - All: Fixes for Sockets and new socket stream multi-reader
