@@ -9,7 +9,7 @@ fi
 BASIL_ROOT=$(cd -P $(dirname "$0") && pwd)
 
 if [[ -z "$BASH_VERSION" ]]; then
-		echo "Error: GC SDK install script should be run in bash."
+		echo "Error: GC DevKit install script should be run in bash."
 		exit 1
 fi
 
@@ -29,17 +29,17 @@ function warn () {
 }
 
 if ! which git > /dev/null; then
-		error "GC SDK requires git to install. (http://git-scm.com)"
+		error "GC DevKit requires git to install. (http://git-scm.com)"
 		exit 1
 fi
 
 if ! which node > /dev/null; then
-		error "GC SDK requires node 0.8+ to install. (http://nodejs.org)"
+		error "GC DevKit requires node 0.8+ to install. (http://nodejs.org)"
 		exit 1
 fi
 
 if ! which npm > /dev/null; then
-		error "GC SDK requires npm to install. (http://npmjs.org)"
+		error "GC DevKit requires npm to install. (http://npmjs.org)"
 		exit 1
 fi
 
@@ -53,7 +53,7 @@ if [[ ! -d "$HOME/.npm" ]]; then
 fi
 
 if [[ ! -w "$HOME/.npm" ]]; then
-		error "GC SDK install requires write permission to $HOME/.npm"
+		error "GC DevKit install requires write permission to $HOME/.npm"
 		echo "Try: sudo chown -R $USER $HOME/.npm"
 		exit 1
 fi
@@ -62,7 +62,7 @@ fi
 # Install
 #
 
-echo -e "\nInitializing GC SDK libraries ..."
+echo -e "\nInitializing GC DevKit libraries ..."
 
 # setup for gc internal repositories
 remoteurl=`git config --get remote.origin.url`
@@ -104,31 +104,35 @@ CURRENT_BASIL_PATH=$(which basil)
 TARGET_BASIL_PATH="$BASIL_ROOT/bin/basil"
 SYSTEM_WIDE_INSTALL=false
 
-read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [N/y] ?" -n 1 -r
-echo
-
-if [[ ($REPLY == 'y') || ($REPLY == 'Y') ]]; then
-	echo
-	echo 'Trying to link from /usr/local with sudo.  You may be prompted for your root password.'
-	SYSTEM_WIDE_INSTALL=true
-
-	if [[ -e /usr/local/bin/basil ]]; then
-		sudo sh -c "unlink /usr/local/bin/basil; ln -s '$TARGET_BASIL_PATH' /usr/local/bin/basil"
-	else
-		sudo ln -s "$TARGET_BASIL_PATH" /usr/local/bin/basil
-	fi
-
-	if [[ $? != 0 ]]; then
-		error "Could not link basil to /usr/local"
-		SYSTEM_WIDE_INSTALL=false
-	fi
-fi
-
-
-if [[ $SYSTEM_WIDE_INSTALL == false ]]; then
-	echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m'  "Type \"$BASIL_ROOT/bin/basil\" to begin."
-	echo "+ Suggestion: You may wish to add $BASIL_ROOT/bin to your \$PATH"
-else
+if [[ `uname` == MINGW32* ]]; then
+	npm link --local
 	echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
-fi
+else
+	read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [N/y] ?" -n 1 -r
+	echo
 
+	if [[ ($REPLY == 'y') || ($REPLY == 'Y') ]]; then
+		echo
+		echo 'Trying to link from /usr/local with sudo.  You may be prompted for your root password.'
+		SYSTEM_WIDE_INSTALL=true
+
+		if [[ -e /usr/local/bin/basil ]]; then
+			sudo sh -c "unlink /usr/local/bin/basil; ln -s '$TARGET_BASIL_PATH' /usr/local/bin/basil"
+		else
+			sudo ln -s "$TARGET_BASIL_PATH" /usr/local/bin/basil
+		fi
+
+		if [[ $? != 0 ]]; then
+			error "Could not link basil to /usr/local"
+			SYSTEM_WIDE_INSTALL=false
+		fi
+	fi
+
+
+	if [[ $SYSTEM_WIDE_INSTALL == false ]]; then
+		echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m'  "Type \"$BASIL_ROOT/bin/basil\" to begin."
+		echo "+ Suggestion: You may wish to add $BASIL_ROOT/bin to your \$PATH"
+	else
+		echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
+	fi
+fi
