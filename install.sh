@@ -96,43 +96,44 @@ node src/dependencyCheck.js
 
 if [[ "$1" != "--silent" ]]; then
 	node src/analytics.js
-fi
 
-echo 
+	echo 
 
-CURRENT_BASIL_PATH=$(which basil)
-TARGET_BASIL_PATH="$BASIL_ROOT/bin/basil"
-SYSTEM_WIDE_INSTALL=false
+	CURRENT_BASIL_PATH=$(which basil)
+	TARGET_BASIL_PATH="$BASIL_ROOT/bin/basil"
+	SYSTEM_WIDE_INSTALL=false
 
-if [[ `uname` == MINGW32* ]]; then
-	npm link --local
-	echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
-else
-	read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [N/y] ?" -n 1 -r
-	echo
-
-	if [[ ($REPLY == 'y') || ($REPLY == 'Y') ]]; then
-		echo
-		echo 'Trying to link from /usr/local with sudo.  You may be prompted for your root password.'
-		SYSTEM_WIDE_INSTALL=true
-
-		if [[ -e /usr/local/bin/basil ]]; then
-			sudo sh -c "unlink /usr/local/bin/basil; ln -s '$TARGET_BASIL_PATH' /usr/local/bin/basil"
-		else
-			sudo ln -s "$TARGET_BASIL_PATH" /usr/local/bin/basil
-		fi
-
-		if [[ $? != 0 ]]; then
-			error "Could not link basil to /usr/local"
-			SYSTEM_WIDE_INSTALL=false
-		fi
-	fi
-
-
-	if [[ $SYSTEM_WIDE_INSTALL == false ]]; then
-		echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m'  "Type \"$BASIL_ROOT/bin/basil\" to begin."
-		echo "+ Suggestion: You may wish to add $BASIL_ROOT/bin to your \$PATH"
-	else
+	if [[ `uname` == MINGW32* ]]; then
+		npm link --local
 		echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
+	else
+		read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [N/y] ?" -n 1 -r
+		echo
+
+		if [[ ($REPLY == 'y') || ($REPLY == 'Y') ]]; then
+			echo
+			echo 'Trying to link from /usr/local with sudo.  You may be prompted for your root password.'
+			SYSTEM_WIDE_INSTALL=true
+
+			if [[ -e /usr/local/bin/basil ]]; then
+				sudo sh -c "unlink /usr/local/bin/basil; ln -s '$TARGET_BASIL_PATH' /usr/local/bin/basil"
+			else
+				sudo ln -s "$TARGET_BASIL_PATH" /usr/local/bin/basil
+			fi
+
+			if [[ $? != 0 ]]; then
+				error "Could not link basil to /usr/local"
+				SYSTEM_WIDE_INSTALL=false
+			fi
+		fi
+
+
+		if [[ $SYSTEM_WIDE_INSTALL == false ]]; then
+			echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m'  "Type \"$BASIL_ROOT/bin/basil\" to begin."
+			echo "+ Suggestion: You may wish to add $BASIL_ROOT/bin to your \$PATH"
+		else
+			echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
+		fi
 	fi
+
 fi
