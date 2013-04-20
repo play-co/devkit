@@ -1,3 +1,12 @@
+## 0.1.12 (Apr. 19, 2013)
+ - user can specify engine settings via GC.app._settings
+ - removed deprecated circle property
+ - windows installer runs npm link instead of asking about global install
+ - fixed hanging update script
+ - fixed animate resume
+ - more robust stream reader
+ - password mode for TextPromptView
+
 ## 0.1.11 (Apr. 15, 2013)
  - fixed crash on path with non-directory (updated jash version dependency)
  - fixed image view positioning (removed unnecessary rounding)
