@@ -97,6 +97,11 @@ node src/dependencyCheck.js
 if [[ "$1" != "--silent" ]]; then
 	node src/analytics.js
 
+	# Work around a known issue with older versions of
+	# node where stdin is left in non-blocking mode.
+	# Reset stdin handle
+	exec 0<"/dev/stdin"
+
 	echo 
 
 	CURRENT_BASIL_PATH=$(which basil)
