@@ -1,3 +1,10 @@
+## 0.1.13 (Apr. 25, 2013)
+ - buffered (more performant) TextViews
+ - fixed subtle pause/resume canvas texture bug
+ - fixed install read error due to node bug
+ - device rotation events
+ - fixed version mismatch
+
 ## 0.1.12 (Apr. 19, 2013)
  - user can specify engine settings via GC.app._settings
  - removed deprecated circle property
