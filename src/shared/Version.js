@@ -64,6 +64,7 @@ var Version = Class(function () {
 		} else {
 			clone.patch++;
 		}
+		clone.src = clone.toString();
 		return clone;
 	};
 
