@@ -162,14 +162,6 @@ _commands.prerelease = Class(function () {
 	}
 });
 
-_commands.vtest = Class(function() {
-	this.init = function() {
-		_repos['devkit'].getNextVersion("release", "patch", function(e, nextVersion) {
-			console.log('next version:', nextVersion);
-		});
-	};
-});
-
 _commands.release = Class(function () {
 	this.constructor.help = "";
 	this.constructor.summary = "";
