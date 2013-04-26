@@ -110,7 +110,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		util.ajax.get({
 				url: '/plugins/about/update/',
 				data: {
-					version: version.toString()
+					version: version.src
 				}
 			}, function(err, response) {
 				if (err) {
