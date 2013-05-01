@@ -204,14 +204,6 @@ _commands.release = Class(function () {
 			package.channel = nextVersion.channel;
 
 			fs.writeFileSync(packagePath, JSON.stringify(package, null, '\t'));
-
-			// tag all repos
-			forEachRepo(function (repo) {
-				repo.log("tagging", tag);
-				if (!argv.test) {
-					repo.git('tag', '-f', tag, f());
-				}
-			});
 		}, function () {
 			logger.log("--- Adding submodules");
 
@@ -269,6 +261,16 @@ _commands.release = Class(function () {
 			for (var repoName in _repos) {
 				commitSM(repoName);
 			}
+		}, function () {
+			logger.log("--- Tagging all repos");
+
+			// tag all repos
+			forEachRepo(function (repo) {
+				repo.log("tagging", tag);
+				if (!argv.test) {
+					repo.git('tag', '-f', tag, f());
+				}
+			});
 		}, function () {
 			logger.log("--- Pushing remote to head release branch");
 
