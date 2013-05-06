@@ -43,7 +43,6 @@ exports.register = function (directories, warn, cb) {
 	var toAdd = [];
 
 	async_forEach(directories, function (projectPath, next) {
-		if (path.basename(projectPath).charAt(0) == '.') { return; }
 		var f = ff(function () {
 			fs.realpath(projectPath, f());
 		}, function (projectPath) {
