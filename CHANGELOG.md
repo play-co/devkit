@@ -1,3 +1,20 @@
+## 0.1.14 (May 6, 2013)
+ - fixed package.json wrong version issue
+ - fixed about pane version switcher
+ - improved filters
+ - new AudioManager APIs
+   - all sounds: isPaused
+   - background: setTime, getTime, getDuration, isPlaying
+   - new play options: time, duration
+ - fixed iOS pause/resume of background sounds
+ - replaced NATIVE APIs with handler setters on device
+   - setBackButtonHandler, setRotationHandler
+ - fixed zero-dimension edge case for buffered TextView
+ - new example of playing with audio time
+ - new TextView option: hardWrap
+ - fixed TextView clipping
+ - disabled verbose logs
+
 ## 0.1.13 (Apr. 25, 2013)
  - buffered (more performant) TextViews
  - fixed subtle pause/resume canvas texture bug
