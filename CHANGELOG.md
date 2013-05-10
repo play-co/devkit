@@ -1,3 +1,9 @@
+## 0.1.15 (May 8, 2013)
+ - fixed web builds
+ - AudioManager.setVolume doesn't load inactive sounds
+ - fixed TextView buffering on device
+ - disabled TextView buffering on web and in simulator
+
 ## 0.1.14 (May 6, 2013)
  - fixed package.json wrong version issue
  - fixed about pane version switcher
