@@ -16,3 +16,6 @@
 [submodule "projects/whack-that-mole"]
 	path = projects/whack-that-mole
 	url = https://github.com/gameclosure/whack-that-mole.git
+[submodule "lib/menus"]
+	path = lib/menus
+	url = https://github.com/gameclosure/menus.git
