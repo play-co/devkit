@@ -18,4 +18,4 @@
 	url = https://github.com/gameclosure/whack-that-mole.git
 [submodule "projects/platformer"]
 	path = projects/platformer
-	url = git@github.com:gameclosure/platformer.git
+	url = https://github.com/gameclosure/platformer.git
