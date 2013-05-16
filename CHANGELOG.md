@@ -1,3 +1,10 @@
+## 0.1.16 (May 15, 2013)
+ - SpriteView can generate animations from prebuilt spritesheets
+ - inactive background volume setting doesn't freeze audio
+ - new example of using SpriteViews and ImageViews with prebuilt spritesheets
+ - reduced number of Android permissions
+ - platformer game engine added to projects
+
 ## 0.1.15 (May 8, 2013)
  - fixed web builds
  - AudioManager.setVolume doesn't load inactive sounds
