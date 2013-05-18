@@ -284,7 +284,7 @@ var AddonManager = Class(EventEmitter, function () {
 					//try to include the file and execute init()
 					var idx = require(currentPath);
 					if (typeof idx.init === "function") {
-						idx.init();
+						idx.init(common);
 					}
 				} catch (e) {
 					logger.error("Error loading [" + currentPath + "] : init():");
@@ -325,8 +325,8 @@ var AddonManager = Class(EventEmitter, function () {
 				fs.exists(currentPath, bind(this, function (exists) {
 					if (exists) {
 						try {
-							var data = require(currentPath).load() || {};
-							
+							var data = require(currentPath).load(common) || {};
+
 							// merge the paths in
 							this._paths = this._paths.concat(data.paths || []).filter(function (path) { return path; });
 
@@ -360,3 +360,4 @@ var AddonManager = Class(EventEmitter, function () {
 
 //singleton!
 module.exports = new AddonManager();
+

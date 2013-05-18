@@ -38,7 +38,7 @@ function testapp(target, opts, next) {
 	common.track("BasilTestApp", {"target":target});
 
 	if (targetNames.indexOf(target) >= 0) {
-		require(targetPaths[target]).testapp(opts, next);
+		require(targetPaths[target]).testapp(common, opts, next);
 	} else {
 		next(1);
 	}

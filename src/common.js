@@ -40,7 +40,7 @@ exports.paths = {
 			addons: pathGetter('addons'),
 			lib: pathGetter('lib'),
 			sdk: pathGetter('sdk'),
-			build: pathGetter('lib', 'tealeaf-build', 'src'),
+			nativeBuild: pathGetter('lib', 'timestep', 'build', 'native'),
 			projects: pathGetter('projects'),
 		};
 
