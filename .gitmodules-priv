@@ -22,6 +22,9 @@
 [submodule "lib/menus"]
 	path = lib/menus
 	url = https://github.com/gameclosure/menus.git
+[submodule "lib/shooter"]
+	path = lib/shooter
+	url = https://github.com/gameclosure/shooter.git
 [submodule "projects/demoMenus"]
 	path = projects/demoMenus
 	url = https://github.com/gameclosure/demoMenus.git
