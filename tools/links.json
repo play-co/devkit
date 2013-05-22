@@ -3,5 +3,6 @@
 	["../lib/timestep/src/","sdk/timestep"],
 	["../lib/squill/","sdk/squill"],
 	["../lib/gcapi/src","sdk/gc"],
+	["../lib/menus","sdk/menus"],
 	["../addons/","sdk/addons"]
 ]
