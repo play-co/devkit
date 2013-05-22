@@ -1,3 +1,10 @@
+## 0.1.18 (May 17, 2013)
+ - menu system
+
+## 0.1.17 (May 15, 2013)
+ - fixed nonexistent GC.app in demo builds
+ - fixed platformer submodule reference
+
 ## 0.1.16 (May 15, 2013)
  - SpriteView can generate animations from prebuilt spritesheets
  - inactive background volume setting doesn't freeze audio
