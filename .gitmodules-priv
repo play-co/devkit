@@ -28,3 +28,6 @@
 [submodule "projects/demoMenus"]
 	path = projects/demoMenus
 	url = https://github.com/gameclosure/demoMenus.git
+[submodule "projects/demoShooter"]
+	path = projects/demoShooter
+	url = https://github.com/gameclosure/demoShooter.git

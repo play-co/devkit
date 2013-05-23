@@ -28,3 +28,6 @@
 [submodule "lib/shooter"]
 	path = lib/shooter
 	url = https://github.com/gameclosure/shooter.git
+[submodule "projects/demoShooter"]
+	path = projects/demoShooter
+	url = https://github.com/gameclosure/demoShooter.git
