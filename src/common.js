@@ -42,6 +42,7 @@ exports.paths = {
 			sdk: pathGetter('sdk'),
 			build: pathGetter('lib', 'timestep', 'build'),
 			nativeBuild: pathGetter('lib', 'timestep', 'build', 'native'),
+			timestepAddons: pathGetter('lib', 'timestep', 'src', 'platforms', 'native', 'addons'),
 			projects: pathGetter('projects'),
 		};
 
