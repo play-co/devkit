@@ -1,3 +1,13 @@
+## 0.1.19 (May 24, 2013)
+ - new Shooter game engine
+ - new ScoreView class for high-performance text rendering with images
+ - improved ViewPools, including patch from Duncan Beevers
+ - always preload browser sounds
+ - fixed race condition of trying to play browser sound before it is loaded
+ - fixed two race conditions in native-android
+ - device.collectGarbage()
+ - new drag and drop example
+
 ## 0.1.18 (May 17, 2013)
  - menu system
 
