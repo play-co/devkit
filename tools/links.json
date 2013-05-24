@@ -4,5 +4,6 @@
 	["../lib/squill/","sdk/squill"],
 	["../lib/gcapi/src","sdk/gc"],
 	["../lib/menus","sdk/menus"],
+	["../lib/shooter","sdk/shooter"],
 	["../addons/","sdk/addons"]
 ]
