@@ -4,6 +4,7 @@
  - improved ViewPools, including patch from Duncan Beevers
  - always preload browser sounds
  - fixed race condition of trying to play browser sound before it is loaded
+ - fixed TextView clipping and color caching
  - fixed two race conditions in native-android
  - device.collectGarbage()
  - new drag and drop example
