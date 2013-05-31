@@ -74,7 +74,7 @@ function createSDKSymlink (dir, next) {
 	}
 }
 
-var targetNames = ['native-android', 'native-ios', 'browser-mobile', 'browser-desktop'];
+var targetNames = ['native-android', 'native-ios', /*'browser-mobile',*/ 'browser-desktop'];
 
 function build (dir, target, opts, next) {
 	var project = packageManager.load(dir);

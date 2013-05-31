@@ -138,7 +138,7 @@ function commandHelp (command) {
 				"Platforms:",
 				"  native-android",
 				"  native-ios",
-				"  browser-mobile",
+				/*"  browser-mobile", taking this out until it is supported -cat */
 				"  browser-desktop",
 				""].join('\n'));
 			break;
