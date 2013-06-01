@@ -111,8 +111,10 @@ git.pull = function (dir, remote, branch, next) {
 	}, next);
 };
 
-git.checkout = function (dir, branch, next) {
-	common.child('git', ['checkout'].concat(branch ? [branch] : []), {
+git.checkout = function (dir, branch, opts, next) {
+	common.child('git', ['checkout'].concat(opts.map(function(opt) {
+		return '--' + opt;
+	})).concat(branch ? [branch] : []), {
 		cwd: dir
 	}, next);
 };
