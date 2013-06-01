@@ -267,12 +267,12 @@ var AddonManager = Class(EventEmitter, function () {
 			addonGit('fetch', '--tags', f());
 		}, function () {
 			//checkout the correct version
-			addonGit('checkout', version.toString(), f.slotPlain());
+			addonGit('checkout', version.toString(), ['force'], f.slotPlain());
 		}, function (code) {
 			//exited with status other than 0
 			if (code != 0) {
 				logger.log("Could not find", version.toString(), ". Using master");
-				addonGit('checkout', 'master', f.slot());
+				addonGit('checkout', 'master', ['force'], f.slot());
 			}
 		}, function () {
 			var currentPath = path.join(this.getPath(addon), "index.js");
