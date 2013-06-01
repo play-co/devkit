@@ -1,3 +1,12 @@
+## 0.1.20 (May 31, 2013)
+ - improved sizing rules for menu system, thanks to Duncan Beevers
+ - various menu system layout improvements
+ - window.open for browser, Android, and iOS
+ - fixedAspectRatio option for ImageViews
+ - fixed js.io compilation bug
+ - fixed TextView.getTag
+ - updated ViewPool code in Platformer game engine
+
 ## 0.1.19 (May 24, 2013)
  - new Shooter game engine
  - new ScoreView class for high-performance text rendering with images
