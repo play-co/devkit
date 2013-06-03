@@ -1,3 +1,33 @@
+## 0.1.21 (June 3, 2013)
+ - menu system
+   - titles always centered and never overlap buttons
+   - disable input before transitioning out
+ - ScoreView works with layout properties
+ - View.getBoundingShape works with layout properties
+ - fixed TextView alignment with stroke
+ - fixed js.io compilation bug
+ - ScoreView example style fixes
+
+## 0.1.20 (May 31, 2013)
+ - improved sizing rules for menu system, thanks to Duncan Beevers
+ - various menu system layout improvements
+ - window.open for browser, Android, and iOS
+ - fixedAspectRatio option for ImageViews
+ - fixed js.io compilation bug
+ - fixed TextView.getTag
+ - updated ViewPool code in Platformer game engine
+
+## 0.1.19 (May 24, 2013)
+ - new Shooter game engine
+ - new ScoreView class for high-performance text rendering with images
+ - improved ViewPools, including patch from Duncan Beevers
+ - always preload browser sounds
+ - fixed race condition of trying to play browser sound before it is loaded
+ - fixed TextView clipping and color caching
+ - fixed two race conditions in native-android
+ - device.collectGarbage()
+ - new drag and drop example
+
 ## 0.1.18 (May 17, 2013)
  - menu system
 
