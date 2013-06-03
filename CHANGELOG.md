@@ -3,7 +3,7 @@
    - titles always centered and never overlap buttons
    - disable input before transitioning out
  - ScoreView works with layout properties
- - View.getSize returns dimensions regardless of layout properties
+ - View.getBoundingShape works with layout properties
  - fixed TextView alignment with stroke
  - fixed js.io compilation bug
  - ScoreView example style fixes
