@@ -79,14 +79,10 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this._def = {
 		id: 'ProjectsPane',
 		children: [
-			{className: 'topTabs', type: squill.TabbedPane, panes: [
+			{className: 'topTabs', id: 'projectTabs', type: squill.TabbedPane, panes: [
 				{className: 'mainPanel', title: 'Projects', children: [
 					{id: 'projectList', margin: 10, type: 'list', isTiled: true, controller: this,
 						selectable: 'single', cellCtor: ProjectCell, margin: 3}
-				]},
-				{className: 'mainPanel', title: 'Examples', children: [
-					{id: 'exampleList', className: 'darkPanel', margin: 10, type: 'list', controller: this,
-						selectable: 'single', cellCtor: ExampleCell}
 				]}
 			]}
 		]
@@ -101,7 +97,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this._filteredList = function (type) {
 		return this._overview.getProjects().getFilteredDataSource(
 				function(item) {
-					return item.manifest.group &&  (item.manifest.group.toLowerCase() === type);
+					return item.manifest.group && (item.manifest.group.toLowerCase() === type.toLowerCase());
 				}
 			);
 	};
@@ -109,7 +105,40 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this.setDataSource = function (dataSource) {
 		this.projectList.setDataSource(dataSource);
 
-		this.exampleList.setDataSource(this._filteredList('examples'));
+		var panes = [];
+		var paneNames = {};
+		this._overview.getProjects().each(function (item) {
+			var group = item.manifest.group;
+			if (!paneNames[group]) {
+				panes.push(group);
+				paneNames[group] = true;
+			}
+		});
+		for (var i = 0; i < panes.length; i++) {
+			var group = panes[i];
+			if (group) {
+				var panel = this._children[0].newPane(
+					{
+						className: 'mainPanel',
+						title: group.toUpperCase()[0] + group.substr(-group.length + 1),
+						children: [
+							{
+								id: 'exampleList',
+								className: 'darkPanel',
+								margin: 10,
+								type: 'list',
+								controller: this,
+								selectable: 'single', 
+								cellCtor: ExampleCell
+							}
+						]
+					}
+				);
+				var list = panel.getChildren()[0];
+				list.setDataSource(this._filteredList(group));
+				this._selectDelegate(list);
+			}
+		}
 
 		this.refresh();
 	};
@@ -145,6 +174,5 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		supr(this, 'buildWidget', arguments);
 
 		this._selectDelegate(this.projectList);
-		this._selectDelegate(this.exampleList);
 	};
 });
