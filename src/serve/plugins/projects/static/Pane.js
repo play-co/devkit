@@ -134,7 +134,9 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 						]
 					}
 				);
-				panel.getChildren()[0].setDataSource(this._filteredList(group));
+				var list = panel.getChildren()[0];
+				list.setDataSource(this._filteredList(group));
+				this._selectDelegate(list);
 			}
 		}
 
@@ -162,18 +164,15 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	};
 
 	this._selectDelegate = function(list) {
-		/*
 		list.selection.on('Select', function (project) {
 			GLOBAL.overview.selectProject(project);
 			localStorage.lastProject = project.id;
 		});
-*/
 	};
 
 	this.buildWidget = function (el) {
 		supr(this, 'buildWidget', arguments);
 
 		this._selectDelegate(this.projectList);
-		this._selectDelegate(this.exampleList);
 	};
 });
