@@ -185,12 +185,13 @@ var AddonManager = Class(EventEmitter, function () {
 			// if we are updating, make sure we are on master branch and there are no modified files
 			// NOTE: this is a temporary solution until we rework addon system to work with versioning
 			if (doUpdate) {
+				var properBranch = addonPath.slice(-5) == "-priv" ? "develop" : "master";
 				if (statusError || status.modified.length > 0) {
 					logger.error("Cannot update", addon, "please stash or remove local changes first.");
-				} else if (branchError || branch != "master") {
-					logger.error("Cannot update", addon, "please checkout master branch first.")
+				} else if (branchError || branch != properBranch) {
+					logger.error("Cannot update", addon, "please checkout " + properBranch + " branch first.");
 				} else {
-					this.activateVersion(addon, "master", f.wait());
+					this.activateVersion(addon, properBranch, f.wait());
 				}
 			}
 		}).error(function (err) {
