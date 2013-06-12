@@ -257,7 +257,7 @@ var AddonManager = Class(EventEmitter, function () {
 	};
 
 	this.startupPlugins = function (next) {
-		var pluginsRoot = common.paths.root("plugins");
+		var pluginsRoot = common.paths.root("sdk/plugins");
 		var links;
 
 		// Remove symlinks that point to invalid paths from devkit/plugins.
@@ -267,17 +267,16 @@ var AddonManager = Class(EventEmitter, function () {
 			// Make plugin root directory
 			wrench.mkdirSyncRecursive(pluginsRoot, 511); // 0777
 
-			// Register plugin root path with js.io compiler
-			this.registerPath(pluginsRoot);
-
-			wrench.readdir(pluginsPath, f.slot());
+			fs.readdir(pluginsRoot, f.slot());
 		}, function (contents) {
 			var group = f.group();
 
 			links = contents;
 			if (links && links.length > 0) {
 				for (var ii = 0, len = links.length; ii < len; ++ii) {
-					fs.readlink(links[ii], group.slot());
+					var filePath = path.join(pluginsRoot, links[ii]);
+					links[ii] = filePath;
+					fs.readlink(filePath, group.slot());
 				}
 			} else {
 				logger.log("No plugin JS currently installed");
@@ -310,9 +309,6 @@ var AddonManager = Class(EventEmitter, function () {
 						logger.log("Removing plugin JS symlink for", links[ii], "since it no longer valid");
 
 						fs.unlink(links[ii], f.wait());
-					} else {
-						// TODO: Remove
-						logger.log("Validated plugin JS symlink for", links[ii]);
 					}
 				}
 			} else {
@@ -324,24 +320,12 @@ var AddonManager = Class(EventEmitter, function () {
 	}
 
 	this.activatePluginJS = function (addon, next) {
-		var jsPath, pluginRoot, linkPath;
+		var pluginRoot = path.normalize(path.join(__dirname, "../sdk/plugins"));
+		var linkPath = path.normalize(path.join(pluginRoot, addon));
 
-		// If is on Windows,
-		if (require('os').platform() == 'win32') {
-			// WARNING: Since Windows requires symlink source paths to be absolute,
-			// the plugin path is based on the absolute path to this file.
-			jsPath = path.normalize(path.join(__dirname, "../addons", addon, "js"));
-			pluginRoot = path.normalize(path.join(__dirname, "../plugins"));
-			linkPath = path.normalize(path.join(pluginRoot, addon));
-		} else {
-			// On other platforms it is better to use relative symlinks so that
-			// the directory can be relocated without breaking.
-			jsPath = path.normalize(path.join(__dirname, "../addons", addon, "js"));
-			pluginRoot = path.normalize(path.join(__dirname, "../plugins"));
-			linkPath = path.normalize(path.join(pluginRoot, addon));
-
-			// TODO: Make this path relative (testing absolute first)
-		}
+		// WARNING: Since Windows requires symlink source paths to be absolute,
+		// the plugin path is based on the absolute path to this file.
+		var jsPath = path.normalize(path.join(__dirname, "../addons", addon, "js"));
 
 		var f = ff(this, function () {
 			// Does the addon have a JS path?
@@ -351,13 +335,13 @@ var AddonManager = Class(EventEmitter, function () {
 				logger.log("Installing plugin JS path:", jsPath);
 
 				// Remove old symlink if it exists
-				fs.unlinkSync(linkPath);
+				if (fs.existsSync(linkPath)) {
+					fs.unlinkSync(linkPath);
+				}
 
 				// Add new JS symlink
 				fs.symlink(jsPath, linkPath, 'junction', f.wait());
 			} else {
-				logger.log("Addon does not have plugin JS code to install under ./js/:", addon);
-
 				// Stop ff call chain here
 				f.succeed();
 			}
@@ -433,8 +417,10 @@ var AddonManager = Class(EventEmitter, function () {
 		}, function (files) {
 			var addons = [];
 			f(addons);
-			
+
 			files.forEach(function (file) {
+				this.activatePluginJS(file, f.wait());
+
 				var onLoad = f.waitPlain();
 				var currentPath = path.join(addonPath, file, "index.js");
 				fs.exists(currentPath, bind(this, function (exists) {
