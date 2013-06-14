@@ -257,6 +257,100 @@ var AddonManager = Class(EventEmitter, function () {
 		}).success(cb);
 	};
 
+	this.startupPlugins = function (next) {
+		var pluginsRoot = common.paths.root("sdk/plugins");
+		var links;
+
+		// Remove symlinks that point to invalid paths from devkit/plugins.
+		// Add devkit/plugins to the js.io compile path.
+
+		var f = ff(this, function () {
+			// Make plugin root directory
+			wrench.mkdirSyncRecursive(pluginsRoot, 511); // 0777
+
+			fs.readdir(pluginsRoot, f.slot());
+		}, function (contents) {
+			var group = f.group();
+
+			links = contents;
+			if (links && links.length > 0) {
+				for (var ii = 0, len = links.length; ii < len; ++ii) {
+					var filePath = path.join(pluginsRoot, links[ii]);
+					links[ii] = filePath;
+					fs.readlink(filePath, group.slot());
+				}
+			} else {
+				logger.log("No plugin JS currently installed");
+
+				// Stop ff call chain here
+				f.succeed();
+			}
+		}, function (targets) {
+			var group = f.group();
+
+			if (targets && targets.length > 0) {
+				if (targets.length != links.length) {
+					throw new Error("Array size mismatch");
+				}
+
+				for (var ii = 0, len = targets.length; ii < len; ++ii) {
+					fs.exists(targets[ii], group.slotPlain());
+				}
+			} else {
+				throw new Error("Unable to read plugin JS symlinks");
+			}
+		}, function (checks) {
+			if (checks && checks.length > 0) {
+				if (checks.length != links.length) {
+					throw new Error("Array size mismatch");
+				}
+
+				for (var ii = 0, len = checks.length; ii < len; ++ii) {
+					if (!checks[ii]) {
+						logger.log("Removing plugin JS symlink for", links[ii], "since it no longer valid");
+
+						fs.unlink(links[ii], f.wait());
+					}
+				}
+			} else {
+				throw new Error("Unable to read plugin JS exist");
+			}
+		}).error(function (e) {
+			logger.error("Failure validating plugin JS:", e);
+		}).cb(next);
+	}
+
+	this.activatePluginJS = function (addon, next) {
+		var pluginRoot = path.normalize(path.join(__dirname, "../sdk/plugins"));
+		var linkPath = path.normalize(path.join(pluginRoot, addon));
+
+		// WARNING: Since Windows requires symlink source paths to be absolute,
+		// the plugin path is based on the absolute path to this file.
+		var jsPath = path.normalize(path.join(__dirname, "../addons", addon, "js"));
+
+		var f = ff(this, function () {
+			// Does the addon have a JS path?
+			fs.exists(jsPath, f.slotPlain());
+		}, function (jsPathExists) {
+			if (jsPathExists) {
+				logger.log("Installing plugin JS path:", jsPath);
+
+				// Remove old symlink if it exists
+				if (fs.existsSync(linkPath)) {
+					fs.unlinkSync(linkPath);
+				}
+
+				// Add new JS symlink
+				fs.symlink(jsPath, linkPath, 'junction', f.wait());
+			} else {
+				// Stop ff call chain here
+				f.succeed();
+			}
+		}).error(function (e) {
+			logger.error("Failure activating plugin JS for", addon + ":", e);
+		}).cb(next);
+	}
+
 	/**
 	* Activating a version means to checkout the
 	* compatible version of an addon
@@ -275,6 +369,9 @@ var AddonManager = Class(EventEmitter, function () {
 				logger.log("Could not find", version.toString(), ". Using master");
 				addonGit('checkout', 'master', '--force', f.slot());
 			}
+		}, function () {
+			// Activate plugin JS (if it exists) before running index.js
+			this.activatePluginJS(addon, f.wait());
 		}, function () {
 			var currentPath = path.join(this.getPath(addon), "index.js");
 			if (!fs.existsSync(currentPath)) {
@@ -316,11 +413,15 @@ var AddonManager = Class(EventEmitter, function () {
 	this.scanAddons = function (cb) {
 		var f = ff(this, function () {
 			fs.readdir(addonPath, f());
+
+			this.startupPlugins(f.waitPlain());
 		}, function (files) {
 			var addons = [];
 			f(addons);
-			
+
 			files.forEach(function (file) {
+				this.activatePluginJS(file, f.wait());
+
 				var onLoad = f.waitPlain();
 				var currentPath = path.join(addonPath, file, "index.js");
 				fs.exists(currentPath, bind(this, function (exists) {
