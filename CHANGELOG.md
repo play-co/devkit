@@ -9,7 +9,7 @@
  - layout system
    - more flexible system supports more usage patterns
    - removed regex for faster reflow
-   - layouts now play nice with web builds
+   - layouts play nice with web builds
  - menu system - TextDialogView
    - setButtons
    - support back and close buttons, based on opts
@@ -18,13 +18,7 @@
  - device.isSimulator
  - added basic analytics
  - new linear layout example
- - new plugins
-   - billing
-   - geolocation
-   - flurry
-   - amplitude
-   - tapjoy
-   - leadbolt
+ - new geolocation plugin
 
 ## 0.1.21 (June 3, 2013)
  - menu system
