@@ -5,7 +5,7 @@
    - Image caching for SpriteViews and ImageViews
    - much faster ImageView.setImage
    - ImageScaleView.updateOpts merges in initialization opts
-   - Image.destroy only effects native source image
+   - Image.destroy only affects native source image
  - layout system
    - more flexible system supports more usage patterns
    - removed regex for faster reflow
