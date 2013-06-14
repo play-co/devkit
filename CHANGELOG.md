@@ -4,24 +4,27 @@
  - images
    - Image caching for SpriteViews and ImageViews
    - much faster ImageView.setImage
-   - fixed ImageScaleView.updateOpts
-   - fixed Image.destroy
+   - ImageScaleView.updateOpts merges in initialization opts
+   - Image.destroy only effects native source image
  - layout system
    - more flexible system supports more usage patterns
    - removed regex for faster reflow
-   - fixed web builds with layout system
+   - layouts now play nice with web builds
  - menu system - TextDialogView
    - setButtons
    - support back and close buttons, based on opts
  - simulator home screen button triggers pageshow/pagehide events
+ - iOS XHR returns status 0 and null data on connection failure
  - device.isSimulator
  - added basic analytics
  - new linear layout example
  - new plugins
+   - billing
+   - geolocation
    - flurry
    - amplitude
    - tapjoy
-   - billing
+   - leadbolt
 
 ## 0.1.21 (June 3, 2013)
  - menu system
