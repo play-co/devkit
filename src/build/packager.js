@@ -195,7 +195,7 @@ function getConfigObject (project, opts, target) {
 		config.splash = JSON.parse(JSON.stringify(manifest.splash));
 	}
 
-	if (manifest.android && !manifest.android.icons) {
+	if (manifest.android && (!manifest.android.icons || !Object.keys(manifest.android.icons).length)) {
 		wrench.mkdirSyncRecursive(path.join(opts.fullPath, "resources/icons"));
 		manifest.android.icons = updateIcons(
 			path.join(common.paths.root(), "/src/init/templates/empty/"),
@@ -209,7 +209,7 @@ function getConfigObject (project, opts, target) {
 		);
 	}
 
-	if (manifest.ios && !manifest.ios.icons) {
+	if (manifest.ios && (!manifest.ios.icons || !Object.keys(manifest.ios.icons).length)) {
 		wrench.mkdirSyncRecursive(path.join(opts.fullPath, "resources/icons"));
 		manifest.ios.icons = updateIcons(
 			path.join(common.paths.root(), "/src/init/templates/empty/"),
