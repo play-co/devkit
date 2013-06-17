@@ -13,38 +13,38 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-var path = require('path');
-var fs = require('fs');
-var ff = require('ff');
-var wrench = require('wrench');
-var util = require('util');
-var request = require('request');
-var crypto = require('crypto');
-var spawn = require('child_process').spawn;
-var clc = require('cli-color');
-var read = require('read');
-var spritesheetMap = require('./spritesheetMap');
-var fontsheetMap = require('./fontsheetMap');
+var path = require("path");
+var fs = require("fs");
+var ff = require("ff");
+var wrench = require("wrench");
+var util = require("util");
+var request = require("request");
+var crypto = require("crypto");
+var spawn = require("child_process").spawn;
+var clc = require("cli-color");
+var read = require("read");
+var spritesheetMap = require("./spritesheetMap");
+var fontsheetMap = require("./fontsheetMap");
 
-var compile = require('./compile');
-var common = require('../common');
-var logger = new common.Formatter('packager');
+var compile = require("./compile");
+var common = require("../common");
+var logger = new common.Formatter("packager");
 
-var git = require('./git');
-var jvmtools = require('./jvmtools');
+var git = require("./git");
+var jvmtools = require("./jvmtools");
 
 /**
  * Packager utilities
  */
 function getSDKHash (next) {
 	git.currentTag(common.paths.root(), function (hash) {
-		next(hash || 'unknown');
+		next(hash || "unknown");
 	});
 }
 
 function getGameHash (project, next) {
 	git.currentTag(project.paths.root, function (hash) {
-		next(hash || 'unknown');
+		next(hash || "unknown");
 	});
 }
 
@@ -107,6 +107,45 @@ var CONFIG_GLOBAL_TEMPLATE = {
 	splash: {} // Map<String, String> 
 };
 
+function copyFile (from, to) {
+	if (!fs.existsSync(to) && fs.existsSync(from)) {
+		try {
+			fs.createReadStream(from).pipe(fs.createWriteStream(to));
+		} catch (e) {
+			console.error("Failed to copy file:", from);
+		}
+	}
+}
+
+function updateSplash (templatePath, projectPath) {
+	var splash = {
+			portrait480: "resources/splash/portrait480.png",
+			portrait960: "resources/splash/portrait960.png",
+			portrait1024: "resources/splash/portrait1024.png",
+			portrait1136: "resources/splash/portrait1136.png",
+			portrait2048: "resources/splash/portrait2048.png",
+			landscape768: "resources/splash/landscape768.png",
+			landscape1536: "resources/splash/landscape1536.png"
+		};
+
+	for (var i in splash) {
+		var image = splash[i];
+		copyFile(path.join(templatePath, image), path.join(projectPath, image));
+	}
+
+	splash.autoHide = true;
+	return splash;
+}
+
+function updateIcons (templatePath, projectPath, icons) {
+	for (var i in icons) {
+		var image = icons[i];
+		copyFile(path.join(templatePath, image), path.join(projectPath, image));
+	}
+
+	return icons;
+}
+
 // Return a JSON object for the global CONFIG object.
 function getConfigObject (project, opts, target) {
 	var manifest = project.manifest;
@@ -135,38 +174,70 @@ function getConfigObject (project, opts, target) {
 
 	// Get SDK version from reading Basil config.
 	try {
-		var basilConfig = fs.readFileSync(common.paths.root('.version')).toString().split(";");
+		var basilConfig = fs.readFileSync(common.paths.root(".version")).toString().split(";");
 		config.sdkVersion = basilConfig[0];
 	} catch (e) {
-		config.sdkVersion = 'unknown';
+		config.sdkVersion = "unknown";
 	}
-	
+
 	// Staging URL.
 	config.servicesURL = opts.servicesURL;
 	config.noRedirect = opts.isSimulated || opts.noRedirect;
 	
 	logger.log("Using services URL " + config.servicesURL);
-	
-	if (manifest.splash != null) {
+
+	if (!manifest.splash || !Object.keys(manifest.splash).length) {
+		wrench.mkdirSyncRecursive(path.join(opts.fullPath, "resources/splash"));
+		config.splash = updateSplash(common.paths.root("/src/init/templates/empty/"), opts.fullPath);
+	} else {
 		config.splash = JSON.parse(JSON.stringify(manifest.splash));
 	}
-	
+
+	if (manifest.android && (!manifest.android.icons || !Object.keys(manifest.android.icons).length)) {
+		wrench.mkdirSyncRecursive(path.join(opts.fullPath, "resources/icons"));
+		manifest.android.icons = updateIcons(
+			common.paths.root("/src/init/templates/empty/"),
+			opts.fullPath,
+			{
+				36: "resources/icons/android36.png",
+				48: "resources/icons/android48.png",
+				72: "resources/icons/android72.png",
+				96: "resources/icons/android96.png"
+			}
+		);
+	}
+
+	if (manifest.ios && (!manifest.ios.icons || !Object.keys(manifest.ios.icons).length)) {
+		wrench.mkdirSyncRecursive(path.join(opts.fullPath, "resources/icons"));
+		manifest.ios.icons = updateIcons(
+			common.paths.root("/src/init/templates/empty/"),
+			opts.fullPath,
+			{
+				57: "resources/icons/ios57.png",
+				72: "resources/icons/ios72.png",
+				114: "resources/icons/ios114.png",
+				144: "resources/icons/ios144.png",
+			}
+		);
+		manifest.ios.icons.renderGloss = true;
+	}
+
 	var urlOpts = {
-		"short_name": config['shortName'],
-		"domain": (manifest.studio || {})['domain'],
-		"staging_domain": (manifest.studio || {})['stagingDomain']
+		"short_name": config["shortName"],
+		"domain": (manifest.studio || {})["domain"],
+		"staging_domain": (manifest.studio || {})["stagingDomain"]
 	};
 
 	if (process.opts.inviteURLTemplate) {
-		config['inviteURLTemplate'] = process.opts.inviteURLTemplate;
+		config["inviteURLTemplate"] = process.opts.inviteURLTemplate;
 	} else if (manifest.inviteURLTemplate) {
-		config['inviteURLTemplate'] = manifest.inviteURLTemplate;
+		config["inviteURLTemplate"] = manifest.inviteURLTemplate;
 	} else if (opts.isSimulated) {
-		config['inviteURLTemplate'] = 'http://' + common.getLocalIP()[0] + ':9200/simulate/' + manifest.shortName + '/browser-desktop/?i={code}';
+		config["inviteURLTemplate"] = "http://" + common.getLocalIP()[0] + ":9200/simulate/" + manifest.shortName + "/browser-desktop/?i={code}";
 	} else if (opts.stage) {
-		config['inviteURLTemplate'] = 'http://' + urlOpts.short_name + '.' + urlOpts.staging_domain + '/?i={code}';
+		config["inviteURLTemplate"] = "http://" + urlOpts.short_name + "." + urlOpts.staging_domain + "/?i={code}";
 	} else {
-		config['inviteURLTemplate'] = 'http://' + urlOpts.short_name + '.'  + urlOpts.domain + '/?i={code}';
+		config["inviteURLTemplate"] = "http://" + urlOpts.short_name + "."  + urlOpts.domain + "/?i={code}";
 	}
 
 	return config;
@@ -185,7 +256,7 @@ function getJSConfig (project, opts, target) {
 				"window.CONFIG=", JSON.stringify(getConfigObject(project, opts, target)), ";\n",
 				"window.CONFIG.baseURL = window.location.toString().match(/(.*\\/).*$/)[1];\n",
 			"})();"
-		]).join('');
+		]).join("");
 }
 
 // Package all JavaScript into a single file that can be included with the build.
@@ -231,16 +302,16 @@ function createCompiler (opts) {
 exports.getDefines = function (opts) {
 	var defines = {
 			BUILD_TARGET: opts.target,
-			BUILD_ENV: opts.target.split('-')[0], // env is browser or mobile (e.g. parses 'browser-mobile' or 'native-ios')
+			BUILD_ENV: opts.target.split("-")[0], // env is browser or mobile (e.g. parses "browser-mobile" or "native-ios")
 			DEBUG: !!opts.debug,
 			DEV_MODE: !!opts.debug,
 		};
 
-	var addonManager = require('../AddonManager');
+	var addonManager = require("../AddonManager");
 	if (addonManager) {
 		addonManager.getAddons().forEach(function (addon) {
-			var safeName = addon.toUpperCase().replace(/-/g, '_');
-			defines['ADDON_' + safeName] = true;
+			var safeName = addon.toUpperCase().replace(/-/g, "_");
+			defines["ADDON_" + safeName] = true;
 		});
 	}
 
@@ -286,7 +357,7 @@ function createSpritesheetSizeMap (spriteMap, appDir, target, cb) {
 
 // utility function to replace any windows path separators for paths that will be used for URLs
 var regexSlash = /\\/g;
-function useURISlashes (str) { return str.replace(regexSlash, '/'); }
+function useURISlashes (str) { return str.replace(regexSlash, "/"); }
 
 // The spriter sprites images, but also returns a list of resources. It is a
 // tool of many faces.
@@ -302,27 +373,27 @@ function getResources(manifest, target, appDir, output, cb) {
 	var f = ff(function () {
 		// array to store spriter output
 		var out = [];
-		var formatter = new common.Formatter('spriter', true, out);
+		var formatter = new common.Formatter("spriter", true, out);
 		var onEnd = f(); // continue to next callback once onEnd is called
 
-		jvmtools.exec('spriter', [
+		jvmtools.exec("spriter", [
 			"--scale", 1,
-			"--dir", appDir + '/',
+			"--dir", appDir + "/",
 			"--output", fullSpriteDir,
 			"--target", target,
 			"--binaries", common.paths.lib()
 		], function (spriter) {
-			spriter.on('out', formatter.out);
-			spriter.on('err', formatter.err);
-			spriter.on('end', function () { onEnd(!out.length, out.join('')); });
+			spriter.on("out", formatter.out);
+			spriter.on("err", formatter.err);
+			spriter.on("end", function () { onEnd(!out.length, out.join("")); });
 		});
 	}, function (spriterOutput) {
 		var resources = JSON.parse(spriterOutput);
 		
 		// add the spritesheetSizeMap to sprites list so that it gets 
 		// copied to the build directories properly as well.
-		resources.sprites.push('spritesheetSizeMap.json');
-		resources.other.push('resources/fonts/fontsheetSizeMap.json');
+		resources.sprites.push("spritesheetSizeMap.json");
+		resources.other.push("resources/fonts/fontsheetSizeMap.json");
 
 		result.sprites = resources.sprites.map(function (filename) {
 			var ext = path.extname(filename);
@@ -339,7 +410,7 @@ function getResources(manifest, target, appDir, output, cb) {
 		result.resources = resources.other.map(function (filename) {
 			if (path.basename(filename) === "metadata.json") {
 				try {
-					var filedata = fs.readFileSync(path.resolve(appDir, filename), 'utf8');
+					var filedata = fs.readFileSync(path.resolve(appDir, filename), "utf8");
 					var fileobj = JSON.parse(filedata);
 					if (fileobj.package === false) {
 						var filterPath = path.dirname(filename);
@@ -382,7 +453,7 @@ function getResources(manifest, target, appDir, output, cb) {
 
 		var mapPath = path.resolve(fullSpriteDir, resources.map);
 		f(mapPath);
-		fs.readFile(mapPath, 'utf8', f());
+		fs.readFile(mapPath, "utf8", f());
 
 	}, function (mapPath, data) {
 		// rewrite JSON data, fixing slashes and appending the spritesheet directory
@@ -412,7 +483,7 @@ function getResources(manifest, target, appDir, output, cb) {
 		createSpritesheetSizeMap(imageMap, appDir, output, f.wait());
 
 		// write out the new image map
-		fs.writeFile(mapPath, JSON.stringify(imageMap), 'utf8', f.wait());
+		fs.writeFile(mapPath, JSON.stringify(imageMap), "utf8", f.wait());
 	})
 	.cb(cb)
 	.error(function (e) {
@@ -435,9 +506,9 @@ function compileResources (project, opts, target, initialImport, cb) {
 	logger.log("Packaging resources...");
 
 	// Font sheets cannot be sprited; add a metadata.json file for fonts (for compatibility)
-	writeMetadata(opts, "resources/fonts", '{"sprite": false}');
-	writeMetadata(opts, "resources/icons", '{"sprite": false, "package": false}');
-	writeMetadata(opts, "resources/splash", '{"sprite": false, "package": false}');
+	writeMetadata(opts, "resources/fonts", "{\"sprite\": false}");
+	writeMetadata(opts, "resources/icons", "{\"sprite\": false, \"package\": false}");
+	writeMetadata(opts, "resources/splash", "{\"sprite\": false, \"package\": false}");
 
 	var f = ff(function () {
 		getResources(project.manifest, target, opts.fullPath, opts.localBuildPath, f());
