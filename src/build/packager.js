@@ -190,7 +190,7 @@ function getConfigObject (project, opts, target) {
 
 	if (!manifest.splash || !Object.keys(manifest.splash).length) {
 		wrench.mkdirSyncRecursive(path.join(opts.fullPath, "resources/splash"));
-		config.splash = updateSplash(path.join(common.paths.root(), "/src/init/templates/empty/"), opts.fullPath);
+		config.splash = updateSplash(common.paths.root("/src/init/templates/empty/"), opts.fullPath);
 	} else {
 		config.splash = JSON.parse(JSON.stringify(manifest.splash));
 	}
@@ -198,7 +198,7 @@ function getConfigObject (project, opts, target) {
 	if (manifest.android && (!manifest.android.icons || !Object.keys(manifest.android.icons).length)) {
 		wrench.mkdirSyncRecursive(path.join(opts.fullPath, "resources/icons"));
 		manifest.android.icons = updateIcons(
-			path.join(common.paths.root(), "/src/init/templates/empty/"),
+			common.paths.root("/src/init/templates/empty/"),
 			opts.fullPath,
 			{
 				36: "resources/icons/android36.png",
@@ -212,7 +212,7 @@ function getConfigObject (project, opts, target) {
 	if (manifest.ios && (!manifest.ios.icons || !Object.keys(manifest.ios.icons).length)) {
 		wrench.mkdirSyncRecursive(path.join(opts.fullPath, "resources/icons"));
 		manifest.ios.icons = updateIcons(
-			path.join(common.paths.root(), "/src/init/templates/empty/"),
+			common.paths.root("/src/init/templates/empty/"),
 			opts.fullPath,
 			{
 				57: "resources/icons/ios57.png",
