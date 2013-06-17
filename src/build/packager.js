@@ -108,11 +108,15 @@ var CONFIG_GLOBAL_TEMPLATE = {
 };
 
 function copyFile (from, to) {
-	if (!fs.existsSync(to) && fs.existsSync(from)) {
-		try {
-			fs.createReadStream(from).pipe(fs.createWriteStream(to));
-		} catch (e) {
-			console.error("Failed to copy file:", from);
+	if (!fs.existsSync(to)) {
+		if (fs.existsSync(from)) {
+			try {
+				fs.writeFileSync(to, fs.readFileSync(from));
+			} catch (e) {
+				console.error("Failed to copy file:", from);
+			}
+		} else {
+			console.error("Warning can't find:", from);
 		}
 	}
 }
@@ -189,6 +193,7 @@ function getConfigObject (project, opts, target) {
 	if (!manifest.splash || !Object.keys(manifest.splash).length) {
 		wrench.mkdirSyncRecursive(path.join(opts.fullPath, "resources/splash"));
 		config.splash = updateSplash(common.paths.root("/src/init/templates/empty/"), opts.fullPath);
+		manifest.splash = JSON.parse(JSON.stringify(config.splash));
 	} else {
 		config.splash = JSON.parse(JSON.stringify(manifest.splash));
 	}
