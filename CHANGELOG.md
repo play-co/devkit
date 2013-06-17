@@ -1,3 +1,44 @@
+## 0.1.22 (June 14, 2013)
+ - addon system
+ - TextView font size scales to fit view by default
+ - images
+   - Image caching for SpriteViews and ImageViews
+   - much faster ImageView.setImage
+   - ImageScaleView.updateOpts merges in initialization opts
+   - Image.destroy only affects native source image
+ - layout system
+   - more flexible system supports more usage patterns
+   - removed regex for faster reflow
+   - layouts play nice with web builds
+ - menu system - TextDialogView
+   - setButtons
+   - support back and close buttons, based on opts
+ - simulator home screen button triggers pageshow/pagehide events
+ - iOS XHR returns status 0 and null data on connection failure
+ - device.isSimulator
+ - added basic analytics
+ - new linear layout example
+ - new geolocation plugin
+
+## 0.1.21 (June 3, 2013)
+ - menu system
+   - titles always centered and never overlap buttons
+   - disable input before transitioning out
+ - ScoreView works with layout properties
+ - View.getBoundingShape works with layout properties
+ - fixed TextView alignment with stroke
+ - fixed js.io compilation bug
+ - ScoreView example style fixes
+
+## 0.1.20 (May 31, 2013)
+ - improved sizing rules for menu system, thanks to Duncan Beevers
+ - various menu system layout improvements
+ - window.open for browser, Android, and iOS
+ - fixedAspectRatio option for ImageViews
+ - fixed js.io compilation bug
+ - fixed TextView.getTag
+ - updated ViewPool code in Platformer game engine
+
 ## 0.1.19 (May 24, 2013)
  - new Shooter game engine
  - new ScoreView class for high-performance text rendering with images

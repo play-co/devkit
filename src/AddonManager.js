@@ -2,17 +2,15 @@
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the Mozilla Public License v. 2.0 as published by Mozilla.
 
  * The Game Closure SDK is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * Mozilla Public License v. 2.0 for more details.
 
- * You should have received a copy of the GNU General Public License
- * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the Mozilla Public License v. 2.0
+ * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
 var EventEmitter = require('events').EventEmitter;
@@ -185,12 +183,13 @@ var AddonManager = Class(EventEmitter, function () {
 			// if we are updating, make sure we are on master branch and there are no modified files
 			// NOTE: this is a temporary solution until we rework addon system to work with versioning
 			if (doUpdate) {
+				var properBranch = addonPath.slice(-5) == "-priv" ? "develop" : "master";
 				if (statusError || status.modified.length > 0) {
 					logger.error("Cannot update", addon, "please stash or remove local changes first.");
-				} else if (branchError || branch != "master") {
-					logger.error("Cannot update", addon, "please checkout master branch first.")
+				} else if (branchError || branch != properBranch) {
+					logger.error("Cannot update", addon, "please checkout " + properBranch + " branch first.");
 				} else {
-					this.activateVersion(addon, "master", f.wait());
+					this.activateVersion(addon, properBranch, f.wait());
 				}
 			}
 		}).error(function (err) {
@@ -256,6 +255,100 @@ var AddonManager = Class(EventEmitter, function () {
 		}).success(cb);
 	};
 
+	this.startupPlugins = function (next) {
+		var pluginsRoot = common.paths.root("sdk/plugins");
+		var links;
+
+		// Remove symlinks that point to invalid paths from devkit/plugins.
+		// Add devkit/plugins to the js.io compile path.
+
+		var f = ff(this, function () {
+			// Make plugin root directory
+			wrench.mkdirSyncRecursive(pluginsRoot, 511); // 0777
+
+			fs.readdir(pluginsRoot, f.slot());
+		}, function (contents) {
+			var group = f.group();
+
+			links = contents;
+			if (links && links.length > 0) {
+				for (var ii = 0, len = links.length; ii < len; ++ii) {
+					var filePath = path.join(pluginsRoot, links[ii]);
+					links[ii] = filePath;
+					fs.readlink(filePath, group.slot());
+				}
+			} else {
+				logger.log("No plugin JS currently installed");
+
+				// Stop ff call chain here
+				f.succeed();
+			}
+		}, function (targets) {
+			var group = f.group();
+
+			if (targets && targets.length > 0) {
+				if (targets.length != links.length) {
+					throw new Error("Array size mismatch");
+				}
+
+				for (var ii = 0, len = targets.length; ii < len; ++ii) {
+					fs.exists(targets[ii], group.slotPlain());
+				}
+			} else {
+				throw new Error("Unable to read plugin JS symlinks");
+			}
+		}, function (checks) {
+			if (checks && checks.length > 0) {
+				if (checks.length != links.length) {
+					throw new Error("Array size mismatch");
+				}
+
+				for (var ii = 0, len = checks.length; ii < len; ++ii) {
+					if (!checks[ii]) {
+						logger.log("Removing plugin JS symlink for", links[ii], "since it no longer valid");
+
+						fs.unlink(links[ii], f.wait());
+					}
+				}
+			} else {
+				throw new Error("Unable to read plugin JS exist");
+			}
+		}).error(function (e) {
+			logger.error("Failure validating plugin JS:", e);
+		}).cb(next);
+	}
+
+	this.activatePluginJS = function (addon, next) {
+		var pluginRoot = path.normalize(path.join(__dirname, "../sdk/plugins"));
+		var linkPath = path.normalize(path.join(pluginRoot, addon));
+
+		// WARNING: Since Windows requires symlink source paths to be absolute,
+		// the plugin path is based on the absolute path to this file.
+		var jsPath = path.normalize(path.join(__dirname, "../addons", addon, "js"));
+
+		var f = ff(this, function () {
+			// Does the addon have a JS path?
+			fs.exists(jsPath, f.slotPlain());
+		}, function (jsPathExists) {
+			if (jsPathExists) {
+				logger.log("Installing plugin JS path:", jsPath);
+
+				// Remove old symlink if it exists
+				if (fs.existsSync(linkPath)) {
+					fs.unlinkSync(linkPath);
+				}
+
+				// Add new JS symlink
+				fs.symlink(jsPath, linkPath, 'junction', f.wait());
+			} else {
+				// Stop ff call chain here
+				f.succeed();
+			}
+		}).error(function (e) {
+			logger.error("Failure activating plugin JS for", addon + ":", e);
+		}).cb(next);
+	}
+
 	/**
 	* Activating a version means to checkout the
 	* compatible version of an addon
@@ -267,13 +360,16 @@ var AddonManager = Class(EventEmitter, function () {
 			addonGit('fetch', '--tags', f());
 		}, function () {
 			//checkout the correct version
-			addonGit('checkout', version.toString(), f.slotPlain());
+			addonGit('checkout', version.toString(), '--force', f.slotPlain());
 		}, function (code) {
 			//exited with status other than 0
 			if (code != 0) {
 				logger.log("Could not find", version.toString(), ". Using master");
-				addonGit('checkout', 'master', f.slot());
+				addonGit('checkout', 'master', '--force', f.slot());
 			}
+		}, function () {
+			// Activate plugin JS (if it exists) before running index.js
+			this.activatePluginJS(addon, f.wait());
 		}, function () {
 			var currentPath = path.join(this.getPath(addon), "index.js");
 			if (!fs.existsSync(currentPath)) {
@@ -284,7 +380,7 @@ var AddonManager = Class(EventEmitter, function () {
 					//try to include the file and execute init()
 					var idx = require(currentPath);
 					if (typeof idx.init === "function") {
-						idx.init();
+						idx.init(common);
 					}
 				} catch (e) {
 					logger.error("Error loading [" + currentPath + "] : init():");
@@ -315,18 +411,22 @@ var AddonManager = Class(EventEmitter, function () {
 	this.scanAddons = function (cb) {
 		var f = ff(this, function () {
 			fs.readdir(addonPath, f());
+
+			this.startupPlugins(f.waitPlain());
 		}, function (files) {
 			var addons = [];
 			f(addons);
-			
+
 			files.forEach(function (file) {
+				this.activatePluginJS(file, f.wait());
+
 				var onLoad = f.waitPlain();
 				var currentPath = path.join(addonPath, file, "index.js");
 				fs.exists(currentPath, bind(this, function (exists) {
 					if (exists) {
 						try {
-							var data = require(currentPath).load() || {};
-							
+							var data = require(currentPath).load(common) || {};
+
 							// merge the paths in
 							this._paths = this._paths.concat(data.paths || []).filter(function (path) { return path; });
 
@@ -360,3 +460,4 @@ var AddonManager = Class(EventEmitter, function () {
 
 //singleton!
 module.exports = new AddonManager();
+
