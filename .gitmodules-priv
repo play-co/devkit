@@ -31,3 +31,6 @@
 [submodule "projects/demoShooter"]
 	path = projects/demoShooter
 	url = https://github.com/gameclosure/demoShooter.git
+[submodule "addons/examples"]
+	path = addons/examples
+	url = https://github.com/gameclosure/examples-priv.git
