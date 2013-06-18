@@ -1,3 +1,9 @@
+## 0.1.23 (June 18, 2013)
+ - Translate 3D support for DOM, thanks to Austin Hammer
+ - autoSized ImageViews play nice with layouts
+ - improved compile-time audio selection
+ - more efficient resource preloading
+
 ## 0.1.22 (June 14, 2013)
  - addon system
  - TextView font size scales to fit view by default
