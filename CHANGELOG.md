@@ -1,5 +1,6 @@
 ## 0.1.23 (June 18, 2013)
  - Translate 3D support for DOM, thanks to Austin Hammer
+ - window.onerror support for iOS
  - autoSized ImageViews play nice with layouts
  - improved compile-time audio selection
  - more efficient resource preloading
