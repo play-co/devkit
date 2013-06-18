@@ -290,7 +290,7 @@ function useURISlashes (str) { return str.replace(regexSlash, '/'); }
 
 // The spriter sprites images, but also returns a list of resources. It is a
 // tool of many faces.
-function getResources(manifest, target, appDir, output, cb) {
+function getResources(manifest, target, appDir, output, mapMutator, cb) {
 	// object on success to pass to cb(err, res);
 	var result = {};
 
@@ -396,6 +396,10 @@ function getResources(manifest, target, appDir, output, cb) {
 			imageMap[useURISlashes(key)] = rawMap[key];
 		});
 
+		if (typeof mapMutator === "function") {
+			mapMutator(imageMap);
+		}
+
 		// add to resources
 		var mapExt = path.extname(mapPath);
 		result.resources.push({
@@ -440,7 +444,7 @@ function compileResources (project, opts, target, initialImport, cb) {
 	writeMetadata(opts, "resources/splash", '{"sprite": false, "package": false}');
 
 	var f = ff(function () {
-		getResources(project.manifest, target, opts.fullPath, opts.localBuildPath, f());
+		getResources(project.manifest, target, opts.fullPath, opts.localBuildPath, opts.mapMutator, f());
 		packageJS(opts, initialImport, false, f());
 	}, function (files, jsSrc) {
 		logger.log("Finished packaging resources");
