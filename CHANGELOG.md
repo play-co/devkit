@@ -4,6 +4,7 @@
  - autoSized ImageViews play nice with layouts
  - improved compile-time audio selection
  - more efficient resource preloading
+ - installation script installs examples
 
 ## 0.1.22 (June 14, 2013)
  - addon system
