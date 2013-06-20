@@ -166,7 +166,9 @@ var AddonManager = Class(EventEmitter, function () {
 			// install new addon if not exists, otherwise update
 			if (!addonExists) {
 				logger.log(addon, "not currently installed, installing now");
-				if (version != "master") {
+				if (addonPath.slice(-5) == "-priv") {
+					version = "develop";
+				} else if (version != "master") {
 					version = Version.parse(version);
 				}
 				this.clone(addon, version, opts, f.wait());
