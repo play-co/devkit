@@ -188,7 +188,10 @@ function run() {
 		wrench.mkdirSyncRecursive(common.paths.addons());
 
 		// install/check version for all required addons
-		var addons = package['basil']['addons'];
+		var addons = package['basil'][
+			fs.readFileSync('.git/config', {encoding: 'utf8'}).indexOf('devkit-priv') == -1
+			? 'addons' : 'addons-priv'];
+
 		addons.forEach(function (addon) {
 			installer.install(addon, null, f.wait());
 		});

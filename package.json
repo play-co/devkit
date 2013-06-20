@@ -49,7 +49,14 @@
 	},
 	"private": true,
 	"basil": {
-		"addons": [],
+		"addons": [
+			"examples",
+			"geoloc"
+		],
+		"addons-priv": [
+			"examples-priv",
+			"geoloc"
+		],
 		"tealeaf-build-tools": "0.2.4",
 		"android": "2.1.0"
 	},

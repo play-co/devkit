@@ -120,7 +120,8 @@ var AddonManager = Class(EventEmitter, function () {
 						f(common.sdkVersion, true);
 					}
 				} else {
-					var vers = info.version ? info.version : "master";
+					var vers = info.version ? info.version :
+						common.paths.addons(addon).slice(-5) == "-priv" ? "develop" : "master";
 					logger.log("Using version from registry:", vers.toString());
 					f(vers, false);
 				}
@@ -166,7 +167,7 @@ var AddonManager = Class(EventEmitter, function () {
 			// install new addon if not exists, otherwise update
 			if (!addonExists) {
 				logger.log(addon, "not currently installed, installing now");
-				if (version != "master") {
+				if (version != "master" && version != "develop") {
 					version = Version.parse(version);
 				}
 				this.clone(addon, version, opts, f.wait());
