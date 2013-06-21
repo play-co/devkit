@@ -156,17 +156,23 @@ exports.load = function (app, argv) {
 						splasher.on('out', formatter.out);
 						splasher.on('err', formatter.err);
 						splasher.on('end', function (data) {
-							var stream = fs.createReadStream(outImg);
-							stream.pipe(res)
-							stream.on('end', function () {
-								//remove out remporary file
-								fs.unlinkSync(outImg);
+							fs.exists(outImg, function(exists) {
+								if (!exists) {
+									next();
+								} else {
+									var stream = fs.createReadStream(outImg);
+									stream.pipe(res)
+									stream.on('end', function () {
+										//remove out remporary file
+										fs.unlinkSync(outImg);
+									});
+								}
 							});
 						})
 					});
 				} else {
 					return next();
-				} 
+				}
 			} else {
 				img = path.resolve(project.paths.root, img);
 				var f = ff(function () {
