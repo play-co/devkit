@@ -31,3 +31,9 @@
 [submodule "projects/demoShooter"]
 	path = projects/demoShooter
 	url = https://github.com/gameclosure/demoShooter.git
+[submodule "lib/isometric"]
+	path = lib/isometric
+	url = https://github.com/gameclosure/isometric.git
+[submodule "projects/demoIsometricGame"]
+	path = projects/demoIsometricGame
+	url = https://github.com/gameclosure/demoIsometricGame.git
