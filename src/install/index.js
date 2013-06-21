@@ -42,7 +42,7 @@ exports.install = function (addon, version, cb) {
 
 	common.track("BasilInstall", {"addon":addon});
 
-	argv = argv.argv; //lolz
+	argv = argv.argv || argv; //lolz
 
 	addonManager.install(addon, {version: version, force: argv.force, isSSH: argv.ssh}, function (err) {
 

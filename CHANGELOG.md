@@ -1,3 +1,11 @@
+## 0.1.23 (June 18, 2013)
+ - Translate 3D support for DOM, thanks to Austin Hammer
+ - window.onerror support for iOS
+ - autoSized ImageViews play nice with layouts
+ - improved compile-time audio selection
+ - more efficient resource preloading
+ - installation script installs examples
+
 ## 0.1.22 (June 14, 2013)
  - addon system
  - TextView font size scales to fit view by default
