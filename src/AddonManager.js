@@ -323,6 +323,10 @@ var AddonManager = Class(EventEmitter, function () {
 		var pluginRoot = path.normalize(path.join(__dirname, "../sdk/plugins"));
 		var linkPath = path.normalize(path.join(pluginRoot, addon));
 
+		if (!fs.existsSync(pluginRoot)) {
+			wrench.mkdirSyncRecursive(pluginRoot);
+		}
+
 		// WARNING: Since Windows requires symlink source paths to be absolute,
 		// the plugin path is based on the absolute path to this file.
 		var jsPath = path.normalize(path.join(__dirname, "../addons", addon, "js"));
