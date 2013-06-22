@@ -51,10 +51,12 @@
 	"basil": {
 		"addons": [
 			"examples",
+			"billing",
 			"geoloc"
 		],
 		"addons-priv": [
 			"examples-priv",
+			"billing",
 			"geoloc"
 		],
 		"tealeaf-build-tools": "0.2.4",
