@@ -1,3 +1,22 @@
+## 0.1.24 (June 21, 2013)
+ - new isometric game engine
+ - improved ButtonView selection toggling, thanks to rampr
+ - improved installation process
+ - addon system support for minimal configuration
+ - new engine option: noReflow
+ - ButtonView text works without reflow
+ - improved native-ios installation
+ - basil init doesn't generate outdated license info
+ - native-android doesn't crash on missing resource
+ - simulator/testapp doesn't crash on missing splash
+ - default addons
+   - examples
+   - billing
+   - geoloc
+ - new isometric examples
+ - new billing example
+ - new billing addon
+
 ## 0.1.23 (June 18, 2013)
  - Translate 3D support for DOM, thanks to Austin Hammer
  - window.onerror support for iOS
