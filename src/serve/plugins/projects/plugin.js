@@ -38,6 +38,7 @@ function serveProject (project) {
 
 	// Serve project files and folders.
 	_app.use('/projects/' + id + '/files', express.static(project.paths.root));
+	_app.use('/projects/' + id + '/debug/', express.static(project.paths.root));
 	_app.get(new RegExp("^/projects/" + id + "/files/(.*/|)$"), function (req, res) {
 		var dir = path.join(project.paths.root, '/', req.params[0]);
 		if (fs.existsSync(dir)) {
