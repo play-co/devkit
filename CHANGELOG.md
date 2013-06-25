@@ -1,3 +1,8 @@
+## 0.1.25 (June 25, 2013)
+ - fixed splash copying, thanks to rampr
+ - fixed App Store bundle id setting in plist
+ - removed UDID in compliance with Apple's new policies
+
 ## 0.1.24 (June 21, 2013)
  - new isometric game engine
  - improved ButtonView selection toggling, thanks to rampr
