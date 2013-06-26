@@ -70,7 +70,7 @@ exports.deploy = function () {
 		var options = {
 			host: argv.host,
 			port: argv.port,
-			path: '/api/apps/'+manifest.appID+"/?auth="+deploy_auth,
+			path: '/v1/apps.update-app?app='+manifest.appID+"&key="+deploy_auth,
 			method: 'POST',
 			headers: {
 					'Content-Type': 'application/json',
@@ -88,9 +88,17 @@ exports.deploy = function () {
 
 			res.on('end', function () {
 				var stitch = chunks.join("");
-				var response = JSON.parse(stitch);
+				var response;
+				try {
+					response = JSON.parse(stitch);
+				} catch (e) {
+					console.log(clc.red("ERROR"), e)
+					console.log(stitch);
+					return;
+				}
+
 				if (response.error) {
-					console.log(clc.red("ERROR"), response.error); 
+					console.log(clc.red("ERROR"), response); 
 				} else if (response.status === "OK") {
 					console.log(clc.green("SUCCESS") +" Deploy successful");
 				}
