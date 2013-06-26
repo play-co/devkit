@@ -83,6 +83,13 @@ var GUI = exports = Class(squill.Widget, function(supr) {
 		this._container.topBar = new TopBar({parent: this._container, gui: this});
 
 		this.showFrame(this._container);
+
+		util.ajax.get({url: '/simulate/addons/', type: 'json'}, bind(this, function (err, res) {
+			res.forEach(function (name) {
+				jsio.__jsio("import ..addons." + name + ".index").init(this);
+			}, this);
+		}));
+
 	};
 
 	this.onViewportChange = function (e, dim) { };
