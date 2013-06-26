@@ -163,6 +163,7 @@ function getConfigObject (project, opts, target) {
 	config.fonts = manifest.fonts;
 	config.disableNativeViews = manifest.disableNativeViews || false;
 	config.unlockViewport = manifest.unlockViewport;
+	config.useDOM = !!manifest.useDOM;
 	
 	// for noodletown invites
 	config.mpMetricsKey = manifest.mpMetricsKey;
