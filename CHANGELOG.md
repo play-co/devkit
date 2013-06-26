@@ -1,5 +1,6 @@
 ## 0.1.25 (June 25, 2013)
  - fixed splash copying, thanks to rampr
+ - new GestureView with Swipe, Pinch, Rotate, DragSingle, and FingerUp events
  - fixed App Store bundle id setting in plist
  - removed UDID in compliance with Apple's new policies
 
