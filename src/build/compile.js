@@ -326,6 +326,8 @@ compile.JsioCompiler = Class(function () {
 			appendImport: false,
 			debug: argv.verbose ? 2 : 4
 		});
+
+		return this;
 	}
 
 	/**
