@@ -24,6 +24,7 @@ var build = require('../../../build');
 var etag = require('../../etag');
 var common = require('../../../common');
 var git = require('../../../git');
+var addonManager = require('../../../AddonManager');
 var projectManager = require('../../../ProjectManager');
 var pho = require('../../../PackageManager');
 var logger = new common.Formatter('packager');
@@ -223,5 +224,40 @@ exports.load = function (app, argv) {
 	app.post('/simulate/remote/enableDevice/', function (req, res) {
 		nativeInspectorServer.activateRemoteConn(req.body.id);
 		res.send(200);
+	});
+
+	app.get('/simulate/addons/', function (req, res) {
+		var addons = [];
+		addonManager.getAddons().forEach(function (addon) {
+			if (fs.existsSync(common.paths.addons(addon, 'simulator', 'index.js'))) {
+				addons.push(addon);
+			}
+		});
+
+		res.json(addons);
+	});
+
+	addonManager.getAddons().forEach(function (addon) {
+		if (fs.existsSync(common.paths.addons(addon, 'simulator'))) {
+			console.log('addon', addon);
+			app.use('/simulate/addons/' + addon + '/', etag.static(common.paths.addons(addon, 'simulator')));
+		};
+	});
+
+	app.get('/simulate/addons/:addon/index.js', function (req, res) {
+		var name = req.params.addon;
+		var addonPath = common.paths.addons(name, 'index.js');
+		if (fs.existsSync(addonPath)) {
+			var JsioCompiler = require(common.paths.root('src', 'build', 'compile')).JsioCompiler;
+			var compiler = new JsioCompiler();
+			compiler.opts.includeJsio = false;
+			compiler.opts.cwd = common.paths.root();
+
+			var path = 'addons.' + name + '.simulator.index';
+			compiler.inferOptsFromEnv('browser')
+				.compile(path, function (err, code) {
+					res.send(";(function () { var jsio = GLOBAL.jsio; " + code + "; exports = jsio('import " + path + "')})();");
+			});
+		}
 	});
 };
