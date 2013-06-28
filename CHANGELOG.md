@@ -2,6 +2,7 @@
  - more efficient collision detection in shooter game engine
  - FingerDown and ClearMulti events for GestureView
  - full support for multitouch drag
+ - improved OpenGL visibility on iOS
 
 ## 0.1.25 (June 25, 2013)
  - fixed splash copying, thanks to rampr
