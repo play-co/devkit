@@ -1,3 +1,8 @@
+## 0.1.26 (June 28, 2013)
+ - more efficient collision detection in shooter game engine
+ - FingerDown and ClearMulti events for GestureView
+ - full support for multitouch drag
+
 ## 0.1.25 (June 25, 2013)
  - fixed splash copying, thanks to rampr
  - new GestureView with Swipe, Pinch, Rotate, DragSingle, and FingerUp events
