@@ -18,6 +18,7 @@
 var fs = require('fs');
 var ff = require('ff');
 var path = require('path');
+var express = require('express');
 var dgram = require('dgram');
 var build = require('../../../build');
 
@@ -226,34 +227,43 @@ exports.load = function (app, argv) {
 		res.send(200);
 	});
 
-	app.get('/simulate/addons/', function (req, res) {
-		var addons = [];
-		addonManager.getAddons().forEach(function (addon) {
-			if (fs.existsSync(common.paths.addons(addon, 'simulator', 'index.js'))) {
-				addons.push(addon);
-			}
-		});
 
-		res.json(addons);
+	var simulatorAddons = [];
+	addonManager.getAddons().forEach(function (addon) {
+		try {
+			if (fs.existsSync(common.paths.addons(addon, 'simulator'))) {
+				simulatorAddons.push(addon);
+
+				if (fs.existsSync(common.paths.addons(addon, 'simulator', 'routes.js'))) {
+					var routes = require(common.paths.addons(addon, 'simulator', 'routes.js'));
+					if (routes.initApp) {
+						var addonApp = express();
+						routes.initApp(express, addonApp);
+						app.use('/simulate/addons/' + addon + '/', addonApp);
+					}
+				}
+				
+				app.use('/simulate/addons/' + addon + '/static/', etag.static(common.paths.addons(addon, 'simulator', 'static')));
+			}
+		} catch (e) {
+			logger.error("simulator addon", addon, "failed to initialize", e);
+		}
 	});
 
-	addonManager.getAddons().forEach(function (addon) {
-		if (fs.existsSync(common.paths.addons(addon, 'simulator'))) {
-			console.log('addon', addon);
-			app.use('/simulate/addons/' + addon + '/', etag.static(common.paths.addons(addon, 'simulator')));
-		};
+	app.get('/simulate/addons/', function (req, res) {
+		res.json(simulatorAddons);
 	});
 
 	app.get('/simulate/addons/:addon/index.js', function (req, res) {
 		var name = req.params.addon;
-		var addonPath = common.paths.addons(name, 'index.js');
+		var addonPath = common.paths.addons(name, 'simulator', 'static', 'index.js');
 		if (fs.existsSync(addonPath)) {
 			var JsioCompiler = require(common.paths.root('src', 'build', 'compile')).JsioCompiler;
 			var compiler = new JsioCompiler();
 			compiler.opts.includeJsio = false;
 			compiler.opts.cwd = common.paths.root();
 
-			var path = 'addons.' + name + '.simulator.index';
+			var path = 'addons.' + name + '.simulator.static.index';
 			compiler.inferOptsFromEnv('browser')
 				.compile(path, function (err, code) {
 					res.send(";(function () { var jsio = GLOBAL.jsio; " + code + "; exports = jsio('import " + path + "')})();");
