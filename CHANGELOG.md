@@ -3,6 +3,8 @@
  - FingerDown and ClearMulti events for GestureView
  - full support for multitouch drag
  - improved OpenGL visibility on iOS
+ - better ButtonView selection state logic
+ - simulator launch waits for debugging connect
 
 ## 0.1.25 (June 25, 2013)
  - fixed splash copying, thanks to rampr
