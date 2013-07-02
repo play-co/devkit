@@ -171,6 +171,10 @@ var GUI = exports = Class(squill.Widget, function(supr) {
 		}
 	};
 
+	this.getTopBar = function () {
+		return this._container.topBar;
+	}
+
 	this.setActiveSimulator = function (activeSimulatorIndex) {
 		if (activeSimulatorIndex === undefined) return; 
 		if (this._simulator) this._simulator.publish('BECOME_INACTIVE');
