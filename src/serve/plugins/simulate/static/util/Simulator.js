@@ -343,6 +343,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		return this._isMuted;
 	};
 
+	this._shouldDrag = true;
 	this.shouldDrag = function (flag) {
 		this._shouldDrag = !!flag;
 	};

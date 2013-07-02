@@ -285,7 +285,7 @@ var TopBar = Class(squill.Widget, function(supr) {
 			{id: '_btnNativeBack', type: 'button', className: 'button', text: 'Hardware Back'},
 			{id: '_btnNativeHome', type: 'button', className: 'button', text: 'Home Screen'},
 			{id: '_btnMute', type: 'button', className: 'button', text: 'Mute'},
-			{id: '_btnDrag', type: 'button', className: 'button', text: 'Enable Drag'},
+			{id: '_btnDrag', type: 'button', className: 'button', text: 'Disable Drag'},
 			{id: '_btnPause', type: 'button', className: 'button', text: 'Pause'},
 			{id: '_btnStep', type: 'button', className: 'button', text: 'Step'}
 		]
