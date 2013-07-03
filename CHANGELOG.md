@@ -2,15 +2,16 @@
  - new dragRadius option makes View draggable
  - SliderView behaves consistently regardless of scale
  - enforce ImageView aspect ratio in flex linear layout
+ - native-core
+   - no filter inheritance
+   - set current shader before updating
+   - bind primary shader in clearRect
+   - flush textures before updating active context
  - Android
    - better visibility into build failures
    - more informative plugin warnings
    - fixed NPE on back pressed with malformed plugin
  - fixed iOS testapp crash on reload
- - native-core
-   - no filter inheritance
-   - set current shader before updating
-   - fixed context-switching issue
 
 ## 0.1.26 (June 28, 2013)
  - more efficient collision detection in shooter game engine
