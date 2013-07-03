@@ -8,8 +8,9 @@
    - fixed NPE on back pressed with malformed plugin
  - fixed iOS testapp crash on reload
  - native-core
-   - fixed context-switching issue
    - no filter inheritance
+   - set current shader before updating
+   - fixed context-switching issue
 
 ## 0.1.26 (June 28, 2013)
  - more efficient collision detection in shooter game engine
