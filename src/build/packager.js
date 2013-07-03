@@ -394,7 +394,12 @@ function getResources(manifest, target, appDir, output, mapMutator, cb) {
 			spriter.on("end", function () { onEnd(!out.length, out.join("")); });
 		});
 	}, function (spriterOutput) {
-		var resources = JSON.parse(spriterOutput);
+		try {
+			var resources = JSON.parse(spriterOutput);
+		} catch (e) {
+			logger.error(spriterOutput);
+			throw e;
+		}
 		
 		// add the spritesheetSizeMap to sprites list so that it gets 
 		// copied to the build directories properly as well.
