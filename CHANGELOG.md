@@ -2,6 +2,7 @@
  - new dragRadius option makes View draggable
  - SliderView behaves consistently regardless of scale
  - enforce ImageView aspect ratio in flex linear layout
+ - reenabled TextView buffering
  - native-core
    - no filter inheritance
    - set current shader before updating
