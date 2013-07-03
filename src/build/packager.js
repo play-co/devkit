@@ -470,13 +470,6 @@ function getResources(manifest, target, appDir, output, mapMutator, cb) {
 				rawMap[key].sheet = useURISlashes(path.join(relativeSpriteDir, rawMap[key].sheet));
 			}
 
-			if (/\.9\.png/.test(key)) {
-				rawMap[key].x += 1;
-				rawMap[key].y += 1;
-				rawMap[key].w -= 2;
-				rawMap[key].h -= 2;
-			}
-
 			imageMap[useURISlashes(key)] = rawMap[key];
 		});
 
