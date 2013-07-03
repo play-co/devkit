@@ -238,7 +238,7 @@ exports.load = function (app, argv) {
 					var routes = require(common.paths.addons(addon, 'simulator', 'routes.js'));
 					if (routes.initApp) {
 						var addonApp = express();
-						routes.initApp(express, addonApp);
+						routes.initApp(common, express, addonApp);
 						app.use('/simulate/addons/' + addon + '/', addonApp);
 					}
 				}
