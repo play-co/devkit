@@ -1,5 +1,5 @@
 ## 0.1.27 (July 3, 2013)
- - new dragRadius option makes View draggable
+ - draggable Views, new options: dragRadius, unboundDrag
  - SliderView behaves consistently regardless of scale
  - enforce ImageView aspect ratio in flex linear layout
  - reenabled TextView buffering
