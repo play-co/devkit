@@ -93,12 +93,66 @@ function serveAPI (app) {
 			var out = [];
 			
 			compiler.on("err", function (data) {
-				logger.error("[CLOSURE ERR]", data);
 				out.push(data);
-			}); 
+			});
 		
 			compiler.on("end", function (data) {
-				res.json([true, {"stderr": out.join("")}]);
+				var errors = [];
+				var block = {};
+				errors.push(block);
+
+				out.join("").split("\n").forEach(function (line) {
+					logger.error(line);
+					if (/^\s*$/.test(line)) {
+						if (block.code) {
+							errors.push(block);
+						}
+						block = {};
+					} else {
+						var match = line.match(/^\s*stdin:(\d+):\s*(.*?)$/);
+						if (match) {
+							block.line = match[1];
+							block.err = match[2];
+						} else if (!/^\s*$/.test(line)) {
+							(block.code || (block.code = [])).push(line);
+						}
+					}
+				});
+
+				if (block.code) { errors.push(block); }
+
+				errors.forEach(function (block) {
+
+					var prefix = '';
+					var j = 0;
+					var i = 0;
+					var chr = null;
+					while (true) {
+						for (var j = 0; j < block.code.length; ++j) {
+							var line = block.code[j];
+							if (chr === null) {
+								chr = line[i];
+							} else if (chr != line[i]) {
+								chr = false;
+								break;
+							}
+						}
+						if (chr !== false) {
+							prefix += chr;
+							++i;
+						} else {
+							break;
+						}
+					}
+
+					if (prefix.length) {
+						block.code = block.code.map(function (line) {
+							return line.substring(prefix.length);
+						});
+					}
+				});
+
+				res.json([true, errors]);
 			});
 		});
 	});
