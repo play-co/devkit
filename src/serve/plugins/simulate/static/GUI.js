@@ -92,6 +92,14 @@ var GUI = exports = Class(squill.Widget, function(supr) {
 
 	};
 
+	this.reloadActiveSimulator = function () {
+		this._container.topBar.reloadActiveSimulator();
+	}
+
+	this.getManifest = function () {
+		return this._manifest;
+	}
+
 	this.onViewportChange = function (e, dim) { };
 
 	this.getAvailableRect = function () {
@@ -421,6 +429,10 @@ var TopBar = Class(squill.Widget, function(supr) {
 		for (i in sims) {
 			sims[i].publish(name, args || {});
 		};
+	}
+
+	this.reloadActiveSimulator = function () {
+		sendToActiveSimulator('RELOAD');
 	}
 
 	this.delegate = new squill.Delegate(function(on) {
