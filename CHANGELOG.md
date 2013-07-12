@@ -6,6 +6,7 @@
  - restart JS and renderer if iOS release build runs out of memory
  - ListView can be initialized with predefined selections
  - draggable views via makeDraggable function
+ - restore Android JS viewport regardless of IsEmpty state
  - fixes for iOS static library builds
  - new addons
    - Chartboost
