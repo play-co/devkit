@@ -5,7 +5,7 @@
  - ButtonView can be disabled in onClick handler
  - restart JS and renderer if iOS release build runs out of memory
  - ListView can be initialized with predefined selections
- - coverDrag option for draggable Views
+ - draggable views via makeDraggable function
  - fixes for iOS static library builds
  - new addons
    - Chartboost
