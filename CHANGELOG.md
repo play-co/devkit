@@ -10,7 +10,8 @@
  - new addons
    - Chartboost
    - GoogleAnalytics
-   - TradeMob
+   - Trademob
+   - Jumptap
 
 ## 0.1.27 (July 3, 2013)
  - draggable Views, new options: dragRadius, unboundDrag
