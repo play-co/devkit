@@ -1,3 +1,17 @@
+## 0.1.28 (July 12, 2013)
+ - iOS support for addon frameworks and dynlib, thanks to Mart Roosmaa
+ - improved layers and tools for isometric game engine, thanks to Christopher Hiller
+ - ButtonView with toggleSelected starts unselected
+ - ButtonView can be disabled in onClick handler
+ - restart JS and renderer if iOS release build runs out of memory
+ - ListView can be initialized with predefined selections
+ - coverDrag option for draggable Views
+ - fixes for iOS static library builds
+ - new addons
+   - Chartboost
+   - GoogleAnalytics
+   - TradeMob
+
 ## 0.1.27 (July 3, 2013)
  - draggable Views, new options: dragRadius, unboundDrag
  - SliderView behaves consistently regardless of scale
