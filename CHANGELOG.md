@@ -1,3 +1,41 @@
+## 0.1.28 (July 12, 2013)
+ - iOS support for addon frameworks and dynlib, thanks to Mart Roosmaa
+ - improved layers and tools for isometric game engine, thanks to Christopher Hiller
+ - ButtonView with toggleSelected starts unselected
+ - ButtonView can be disabled in onClick handler
+ - restart JS and renderer if iOS release build runs out of memory
+ - ListView can be initialized with predefined selections
+ - coverDrag option for draggable Views
+ - fixes for iOS static library builds
+ - new addons
+   - Chartboost
+   - GoogleAnalytics
+   - TradeMob
+
+## 0.1.27 (July 3, 2013)
+ - draggable Views, new options: dragRadius, unboundDrag
+ - SliderView behaves consistently regardless of scale
+ - enforce ImageView aspect ratio in flex linear layout
+ - reenabled TextView buffering
+ - native-core
+   - no filter inheritance
+   - set current shader before updating
+   - bind primary shader in clearRect
+   - flush textures before updating active context
+ - Android
+   - better visibility into build failures
+   - more informative plugin warnings
+   - fixed NPE on back pressed with malformed plugin
+ - fixed iOS testapp crash on reload
+
+## 0.1.26 (June 28, 2013)
+ - more efficient collision detection in shooter game engine
+ - FingerDown and ClearMulti events for GestureView
+ - full support for multitouch drag
+ - improved OpenGL visibility on iOS
+ - better ButtonView selection state logic
+ - simulator launch waits for debugging connect
+
 ## 0.1.25 (June 25, 2013)
  - fixed splash copying, thanks to rampr
  - new GestureView with Swipe, Pinch, Rotate, DragSingle, and FingerUp events
