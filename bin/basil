@@ -1,33 +1,22 @@
 #!/usr/bin/env bash
 
-# Basil command line script, that intercepts update calls.
+# Basil command line script.
 
 if [[ `uname` == MINGW32* ]]; then
 	BASIL_PATH=$(dirname "$0")"/../"	
 else
-	# concat some paths to find the current dir
-	PARTONE=$(dirname $0)
-	if [[ -L $0 ]]; then
-		PARTTWO=$(dirname $(readlink $0))"/../"
-	else
-		PARTTWO=$(dirname $0)"/../"
-	fi
+	# Path finder from: http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
+	SOURCE="${BASH_SOURCE[0]}"
+	while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+		DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+		SOURCE="$(readlink "$SOURCE")"
+		[[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+	done
+	DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-	if [ -z $BASIL_DEBUG ]; then
-		BASIL_DEBUG=1
-	fi
-
-	if [ -z $TMPDIR ]; then
-		TMPDIR="/tmp"
-	fi
-
-	if [[ $PARTTWO == \.* ]]; then
-		BASIL_PATH=$PARTONE"/"$PARTTWO
-	else
-		BASIL_PATH=$PARTTWO
-	fi
-
+	BASIL_PATH="$DIR/../"
 fi
+
 # clean up old logs
 if [ -e $TMPDIR/basil.log ]; then
 	rm $TMPDIR/basil.log
