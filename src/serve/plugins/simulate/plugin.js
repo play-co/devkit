@@ -44,7 +44,7 @@ var parse = require('url').parse;
 
 function serveProject (project) {
 	var id = project.getID();
-	var root = '/simulate/' + id + '/';
+	var root = '/simulate/';
 
 	if (_routes[id]) { return false; }
 	_routes[id] = true;
@@ -63,11 +63,13 @@ function serveProject (project) {
 	});
 
 	// Static pages.
-	_app.use(root, etag.static(path.join(__dirname, 'static')));
+	_app.use(path.join(root, id), etag.static(path.join(__dirname, 'static')));
 
 	// Compiled targets.
-	_app.use(root, etag.static(path.join(project.paths.root, 'build', 'debug'), {maxAge: 0}));
-	_app.use(root + "resources/", etag.static(path.join(project.paths.root, 'resources')));
+	_app.use(path.join(root, 'debug', id), etag.static(path.join(project.paths.root, 'build', 'debug'), {maxAge: 0}));
+	_app.use(path.join(root, 'debug', id, 'resources/'), etag.static(path.join(project.paths.root, 'resources')));
+
+	_app.use(path.join(root, 'release', id), etag.static(path.join(project.paths.root, 'build', 'release'), {maxAge: 0}));
 
 	// var route = etag.static(path.join(project.paths.root, 'sdk', 'gc', 'debugging'));
 	_app.get(new RegExp('^' + root + '.*?/sdk/gc/debugging/.*?'), function (req, res) {
@@ -87,8 +89,10 @@ exports.load = function (app, argv) {
 		nativeInspectorServer.listen('tcp', {host: 'localhost', port: '9226'});
 	}
 
+	_app.use('/simulate/static/', etag.static(path.join(__dirname, 'static')));
+
 	// Rebuild on commit always
-	app.get('/simulate/:shortName/:target/', function (req, res, next) {
+	app.get('/simulate/:debug/:shortName/:target/', function (req, res, next) {
 		common.getProjectList(function (projects) {
 			var project = projects[req.params.shortName.toLowerCase()];
 			if (!project) {
@@ -105,7 +109,7 @@ exports.load = function (app, argv) {
 			common.getLocalIP(function (err, address) {
 				build.build(project.paths.root, target, {
 					stage: argv.production ? false : true,
-					debug: true,
+					debug: req.params.debug == "debug" ? true : false,
 					isSimulated: true,
 					ip: address
 				}, function () {
@@ -126,7 +130,7 @@ exports.load = function (app, argv) {
 		});
 	});
 
-	app.get('/simulate/:shortName/:target/splash/:splash', function (req, res, next) {
+	app.get('/simulate/:debug/:shortName/:target/splash/:splash', function (req, res, next) {
 		common.getProjectList(function (projects) {
 			var project = projects[req.params.shortName.toLowerCase()];
 			var splash = req.params.splash;
@@ -246,7 +250,8 @@ exports.load = function (app, argv) {
 				app.use('/simulate/addons/' + addon + '/static/', etag.static(common.paths.addons(addon, 'simulator', 'static')));
 			}
 		} catch (e) {
-			logger.error("simulator addon", addon, "failed to initialize", e);
+			logger.error("simulator addon", addon, "failed to initialize");
+			logger.error(e.stack);
 		}
 	});
 

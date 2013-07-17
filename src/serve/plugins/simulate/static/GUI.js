@@ -27,258 +27,11 @@ import .util.Inspector as Inspector;
 import .util.Simulator as Simulator;
 import .util.PortManager as PortManager;
 
-/**
- * Visual simulator GUI.
- */
+import net;
+import net.interfaces;
+import net.protocols.Cuppa;
 
-var GUI = exports = Class(squill.Widget, function(supr) {
-
-	this._def = {
-		children: [
-			{id: '_content'},
-			{id: '_bottomPanel'}
-		]
-	};
-
-	this.init = function(opts) {
-		supr(this, 'init', arguments);
-
-		this._portManager = new PortManager({ range: ''+window.location.port + '-' + (window.location.port + 20) + ' exclusive' });
-
-		this._manifest = opts.manifest;
-		this._appID = opts.manifest.appID;
-		this._shortName = opts.manifest.shortName;
-
-		this._leftWidth = 0;
-
-		new squill.Window().subscribe('ViewportChange', this, 'onViewportChange');
-		this.onViewportChange(null, $(window));
-
-		this._container = $({
-			parent: this._content,
-			style: {
-				position: 'absolute',
-				top: '0px',
-				left: '-110%',
-				width: '100%',
-				height: '100%',
-				border: '0px'
-			}
-		});
-
-		// UI inspector. This must be created before adding simulators.
-		var inspector = this._inspector = new Inspector({
-		 	id: 'inspector',
-		 	parent: this._container,
-		 	appID: this._shortName || this._appID
-		});
-		GLOBAL.top.inspector = inspector;
-
-		// add simulators
-		this.addSimulators(opts.simulators);
-
-		this.setActiveSimulator(0); //use the first one as default
-		simulator = this.getActiveSimulator();
-
-		this._container.topBar = new TopBar({parent: this._container, gui: this});
-
-		this.showFrame(this._container);
-
-		util.ajax.get({url: '/simulate/addons/', type: 'json'}, bind(this, function (err, res) {
-			res.forEach(function (name) {
-				jsio.__jsio("import ..addons." + name + ".index").init(this);
-			}, this);
-		}));
-
-	};
-
-	this.reloadActiveSimulator = function () {
-		this._container.topBar.reloadActiveSimulator();
-	}
-
-	this.getManifest = function () {
-		return this._manifest;
-	}
-
-	this.onViewportChange = function (e, dim) { };
-
-	this.getAvailableRect = function () {
-
-		var rect = {
-			x: 0,
-			y: 0,
-			width: this._content.offsetWidth,
-			height: document.body.offsetHeight
-		};
-
-		if (this._topBar) {
-			rect.y += this._topBar.offsetHeight;
-			rect.height -= this._topBar.offsetHeight;
-		}
-
-		if (this._inspector && this._inspector.isOpen()) {
-			var offset = Math.max(0, this._inspector.getElement().offsetWidth);
-			rect.x += offset;
-			rect.width -= offset;
-		}
-
-		return rect;
-	};
-
-	this.getContainer = function () {
-		return this._container || this._el;
-	};
-
-	this.addSimulators = function (optsArr) {
-		// opts is an array of options for simulators.
-		// this.createSimulators([{device: string, name: string}, {device: string, name: string}]);
-		if (!this._simulators) this._simulators = [];
-
-		var i;
-		for (i = 0; i < optsArr.length; i++) {
-			optsArr[i]['index'] = i;
-			this._simulators.push(new Simulator({
-				parent: this,
-				appName: this._manifest.shortName || this._manifest.appID,
-				port: this._portManager.useEmptyPort(),
-				rotation: parseInt(optsArr[i].rotation, 10),
-				deviceName: optsArr[i].device,
-				offsetX: optsArr[i].offsetX,
-				offsetY: optsArr[i].offsetY,
-				name: optsArr[i].name
-			}));
-			this.setActiveSimulator(i); //we do this to set up some things like the inspector connection
-		}
-
-		this.setActiveSimulator(0);
-	};
-
-	this.removeSimulator = function (simulatorIndex) {
-		this._portManager.clearPort(this._simulators[simulatorIndex]);
-
-		$.remove(this._simulators.splice(simulatorIndex, 1)[0].remove());
-		
-		this._container.topBar.populateSimulatorList();
-		this.updateURI();
-	};
-
-	this.getActiveSimulator = function () {
-		if (!this._simulator) this._simulator = this._simulators[0];
-		return this._simulator;
-	};
-
-	this.getAllSimulators = function () {
-		return this._simulators;
-	};
-
-	this.simulatorNameToIndex = function (name) {
-		for (var i = 0; i < this._simulators.length; i++) {
-			if (name === this._simulators[i]._name) {
-				return i;
-			}
-		}
-	};
-
-	this.getTopBar = function () {
-		return this._container.topBar;
-	}
-
-	this.setActiveSimulator = function (activeSimulatorIndex) {
-		if (activeSimulatorIndex === undefined) return; 
-		if (this._simulator) this._simulator.publish('BECOME_INACTIVE');
-		this._simulator = this._simulators[activeSimulatorIndex];
-		this._simulator.publish('BECOME_ACTIVE');
-
-		if (this._inspector) this._inspector.startLocalDebugging(this._simulator);
-
-		GLOBAL.top.simulator = this._simulators[activeSimulatorIndex];
-	};
-
-	this.showFrame = function (frame) {
-		if (this._currentFrame) {
-			$.style(this._currentFrame, {left: '-110%'});
-			if (this._currentFrame.tab) {
-				$.removeClass(this._currentFrame.tab, 'selected');
-			}
-		}
-
-		this._currentFrame = frame;
-		$.style(this._currentFrame, {left: '0px'});
-		if (this._currentFrame.tab) {
-			$.addClass(this._currentFrame.tab, 'selected');
-		}
-	};
-
-	this.createClients = function (clients, inviteURL) {
-		if (inviteURL) {
-			var inviteCode = new URI(inviteURL).query('i');
-		}
-
-		var numClients = clients.length;
-		for (var i = 0; i < numClients; ++i) {
-			var params = merge({inviteCode: inviteCode}, clients[i]);
-			this.addSimulators([{
-				def: params, //TODO this is broken
-				name: numClients == 1 ? null : clients[i].displayName
-			}]);
-		}
-	};
-
-	this.updateURI = function () {
-		var simulators = [];
-
-		for (var i in this._simulators) {
-			simulators.push({
-				name: this._simulators[i]._name,
-				device: this._simulators[i]._deviceName,
-				rotation: this._simulators[i]._rotation
-			});
-		}
-
-		//TODO: this simulators= thing is a little off, probably need to use the js.io URI class.
-		window.location.hash = "simulators="+JSON.stringify(simulators);
-	};
-});
-
-/**
- * Launch simulator.
- */
-exports.start = function () {
-	import ff;
-	import util.ajax;
-	import squill.cssLoad;
-
-	var appID = window.location.toString().match(/\/simulate\/(.*?)\//)[1];
-
-	var f = new ff(function () {
-		squill.cssLoad.get('/simulator.css', f.wait());
-		util.ajax.get({url: '/projects/' + appID + '/files/manifest.json', type: 'json'}, f.slot());
-	}, function (manifest) {
-		document.title = manifest.title;
-
-		var uri = new URI(window.location);
-		var simulators = JSON.parse(uri.hash('simulators') || '[]');
-		if (!simulators.length) {
-			simulators[0] = {
-				device: 'iphone'
-			};
-		}
-
-		for (var i in simulators) {
-			if (!simulators[i].name) {
-				simulators[i].name = "Simulator_" + i;
-			}
-		}
-
-		var gui = GLOBAL.GUI = new GUI({
-			parent: document.body,
-			manifest: manifest,
-			simulators: simulators
-		});
-	}).error(function (err) {
-		alert(err);
-	});
-};
+var POSTMESSAGE_PORT = '__debug_timestep_inspector__';
 
 var TopBar = Class(squill.Widget, function(supr) {
 	this._def = {
@@ -299,19 +52,17 @@ var TopBar = Class(squill.Widget, function(supr) {
 			{id: '_btnMute', type: 'button', className: 'button', text: 'Mute'},
 			{id: '_btnDrag', type: 'button', className: 'button', text: 'Disable Drag'},
 			{id: '_btnPause', type: 'button', className: 'button', text: 'Pause'},
-			{id: '_btnStep', type: 'button', className: 'button', text: 'Step'}
+			{id: '_btnStep', type: 'button', className: 'button', text: 'Step'},
+			{id: '_btnDebug', type: 'button', className: 'button', text: 'Debug'}
 		]
 	}
 
-	var gui;
 	this.init = function (opts) {
-		gui = opts.gui;
 		supr(this, 'init', arguments);
 
-		this.populateSimulatorList();
-		this.populateDeviceList();
-
-		this._btnMute._el.textContent = (gui.getActiveSimulator().isMuted() ? 'Unmute':'Mute');
+		// this.populateSimulatorList();
+		// this.populateDeviceList();
+		// this._btnMute._el.textContent = (_controller.getActiveSimulator().isMuted() ? 'Unmute':'Mute');
 	}
 
 	var deviceList = []; //NOT this._deviceList
@@ -335,10 +86,10 @@ var TopBar = Class(squill.Widget, function(supr) {
 
 		for(i = 0; i < deviceList.length; ++i) {
 			deviceList[i].onclick(bind(this, function (evt) {
-				gui.getActiveSimulator().setType(evt.srcElement.id);
+				_controller.getActiveSimulator().setType(evt.srcElement.id);
 				$.hide(this._deviceList);
 				this._deviceList.shown = false;
-				gui.updateURI();
+				_controller.updateURI();
 			}));
 		}
 	}
@@ -353,7 +104,7 @@ var TopBar = Class(squill.Widget, function(supr) {
 		simulatorList = [];
 		i = null;
 
-		var sims = gui.getAllSimulators();
+		var sims = _controller.getAllSimulators();
 		for (i in sims) {
 			simulatorList.push(new squill.Widget({
 				parent: this._simulatorList,
@@ -376,7 +127,7 @@ var TopBar = Class(squill.Widget, function(supr) {
 
 		for (i in simulatorList) {
 			simulatorList[i]._close_.onclick(function (evt) {
-				gui.removeSimulator(gui.simulatorNameToIndex(this.attributes.getNamedItem('simName').textContent)); //wha
+				_controller.removeSimulator(_controller.simulatorNameToIndex(this.attributes.getNamedItem('simName').textContent)); //wha
 			});
 		}
 
@@ -392,7 +143,7 @@ var TopBar = Class(squill.Widget, function(supr) {
 					before: this._btnAddSimulator
 				}));
 				simulatorList[simulatorList.length-1].onclick(bind(this, function (evt) {
-					gui._inspector.startRemoteDebugging(evt.srcElement.id);
+					_controller._inspector.startRemoteDebugging(evt.srcElement.id);
 					$.hide(this._simulatorList);
 					this._simulatorList.shown = false;
 				}));
@@ -401,33 +152,33 @@ var TopBar = Class(squill.Widget, function(supr) {
 
 		for (i = 0; i < simulatorList.length; ++i) {
 			simulatorList[i].onclick(bind(this, function (evt) {
-				gui.setActiveSimulator(gui.simulatorNameToIndex(evt.srcElement.id));
+				_controller.setActiveSimulator(_controller.simulatorNameToIndex(evt.srcElement.id));
 				$.hide(this._simulatorList);
 				this._simulatorList.shown = false;
 			}));
 		}
 
 		this._btnAddSimulator.onclick = bind(this, function () {
-			gui.addSimulators([{
+			_controller.addSimulator({
 				device: 'iphone',
-				name: "Simulator_" + gui._simulators.length
-			}]);
-			gui.setActiveSimulator(gui._simulators.length - 1);
+				name: "Simulator_" + _controller._simulators.length
+			});
+			_controller.setActiveSimulator(_controller._simulators.length - 1);
 			this.populateSimulatorList(); //refresh the list
 			$.hide(this._simulatorList);
 			this._simulatorList.shown = false;
-			gui.updateURI();
+			_controller.updateURI();
 		});
 	}
 
 	var sendToActiveSimulator = function (name, args) {
-		gui.getActiveSimulator().publish(name, args || {});
+		_controller.getActiveSimulator().sendEvent(name, args || {});
 	}
 
 	var sendToAllSimulators = function (name, args) {
-		var i, sims = gui.getAllSimulators();
+		var i, sims = _controller.getAllSimulators();
 		for (i in sims) {
-			sims[i].publish(name, args || {});
+			sims[i].sendEvent(name, args || {});
 		};
 	}
 
@@ -453,12 +204,12 @@ var TopBar = Class(squill.Widget, function(supr) {
 		};
 
 		on._btnInspect = function () {
-			gui._inspector.toggle()
+			_controller._inspector.toggle()
 		};
 
 		on._btnRotate = function () {
 			sendToActiveSimulator('ROTATE');
-			gui.updateURI();
+			_controller.updateURI();
 		};
 
 		on._btnScreenShot = function () {
@@ -493,5 +244,253 @@ var TopBar = Class(squill.Widget, function(supr) {
 			sendToActiveSimulator('STEP');
 			this._btnPause._el.textContent = 'Unpause';
 		};
+
+		on._btnDebug = function () {
+			sendToActiveSimulator('DEBUG');
+			this._btnDebug._el.textContent = (this._btnDebug._el.textContent === 'Debug' ? 'Release' : 'Debug');
+		}
 	});
 });
+
+/**
+ * Visual simulator.
+ */
+
+var SimulatorServer = Class([net.interfaces.Server, lib.PubSub], function () {
+	this.listen = function () {
+		net.listen(this, 'postmessage', {port: POSTMESSAGE_PORT});
+	}
+
+	this.buildProtocol = function () {
+		var conn = new net.protocols.Cuppa();
+		conn.onEvent.once('HANDSHAKE', bind(this, 'emit', 'HANDSHAKE', conn));
+		return conn;
+	}
+});
+
+var MainController = exports = Class(squill.Widget, function(supr) {
+
+	this._def = {
+		children: [
+			{id: '_topBar', type: TopBar},
+			{id: '_content'},
+			{id: '_bottomPanel'}
+		]
+	};
+
+	this.init = function(opts) {
+		supr(this, 'init', arguments);
+
+		this._server = new SimulatorServer();
+		this._server.listen();
+		this._server.on('HANDSHAKE', bind(this, '_onHandshake'));
+
+		var basePort = parseInt(window.location.port || "80");
+		this._portManager = new PortManager({
+			start: basePort + 1,
+			end: basePort + 20
+		});
+
+		this._simulators = {};
+
+		this._manifest = opts.manifest;
+		this._appID = opts.manifest.appID;
+		this._shortName = opts.manifest.shortName;
+
+		new squill.Window().subscribe('ViewportChange', this, 'onViewportChange');
+		this.onViewportChange(null, $(window));
+
+		var inspector = this._inspector = new Inspector({
+		 	id: 'inspector',
+		 	parent: this,
+		 	appID: this._shortName || this._appID
+		});
+
+		// add simulators
+		this.addSimulator(opts.simulators);
+
+		util.ajax.get({url: '/simulate/addons/', type: 'json'}, bind(this, function (err, res) {
+			res.forEach(function (name) {
+				jsio.__jsio("import ..addons." + name + ".index").init(this);
+			}, this);
+		}));
+	};
+
+	this._onHandshake = function (conn, evt) {
+		if (evt.args.type == 'simulator') {
+			var port = evt.args.port;
+			var simulator = this._simulators[port];
+			if (simulator) {
+				simulator.setConn(conn);
+			}
+		} else {
+			// remote device
+		}
+	}
+
+	this.reloadActiveSimulator = function () {
+		this._topBar.reloadActiveSimulator();
+	}
+
+	this.getContainer = function () { return this._content || this._el; }
+
+	this.getManifest = function () { return this._manifest; }
+
+	this.onViewportChange = function (e, dim) { };
+
+	this.getAvailableRect = function () {
+
+		var rect = {
+			x: 0,
+			y: 0,
+			width: this._content.offsetWidth,
+			height: document.body.offsetHeight
+		};
+
+		if (this._topBar) {
+			var el = this._topBar.getElement();
+			rect.y += el.offsetHeight;
+			rect.height -= el.offsetHeight;
+		}
+
+		if (this._inspector && this._inspector.isOpen()) {
+			var offset = Math.max(0, this._inspector.getElement().offsetWidth);
+			rect.x += offset;
+			rect.width -= offset;
+		}
+
+		return rect;
+	};
+
+	// simulatorDef defines the parameters for a new simulator
+	// can also pass an array of defs to create multiple simulators
+	//
+	// this.addSimulators([{device: string, name: string}, {device: string, name: string}]);
+	this.addSimulator = function (simulatorDef) {
+		if (isArray(simulatorDef)) {
+			return simulatorDef.map(this.addSimulator, this);
+		}
+
+		var port = this._portManager.useEmptyPort();
+		var simulator = new Simulator({
+			controller: this,
+			parent: this,
+			appName: this._manifest.shortName || this._manifest.appID,
+			port: port,
+			rotation: parseInt(simulatorDef.rotation, 10),
+			deviceName: simulatorDef.device,
+			offsetX: simulatorDef.offsetX,
+			offsetY: simulatorDef.offsetY,
+			name: simulatorDef.name
+		});
+
+		this._simulators[port] = simulator;
+
+		if (!this._activeSimulator) {
+			this.setActiveSimulator(simulator);
+		}
+
+		return port;
+	};
+
+	this.removeSimulator = function (port) {
+		var simulator = this._simulators[port];
+		if (simulator) {
+			this._portManager.clearPort(port);
+			simulator.remove();
+
+			this._topBar.populateSimulatorList();
+			this.updateURI();
+		}
+	};
+
+	this.getActiveSimulator = function () { return this._activeSimulator; };
+	this.getAllSimulators = function () { return this._simulators; };
+	this.getTopBar = function () { return this._topBar; }
+
+	this.setActiveSimulator = function (simulator) {
+		if (this._activeSimulator != simulator) {
+			if (this._activeSimulator) {
+				this._activeSimulator.setActive(false);
+			}
+
+			this._activeSimulator = simulator;
+			simulator.setActive(true);
+
+			this._inspector.setSimulator(simulator);
+		}
+	};
+
+	this.createClients = function (clients, inviteURL) {
+		if (inviteURL) {
+			var inviteCode = new URI(inviteURL).query('i');
+		}
+
+		var numClients = clients.length;
+		for (var i = 0; i < numClients; ++i) {
+			var params = merge({inviteCode: inviteCode}, clients[i]);
+			this.addSimulator([{
+				def: params, //TODO this is broken
+				name: numClients == 1 ? null : clients[i].displayName
+			}]);
+		}
+	};
+
+	this.updateURI = function () {
+		var simulators = [];
+
+		for (var i in this._simulators) {
+			simulators.push({
+				name: this._simulators[i]._name,
+				device: this._simulators[i]._deviceName,
+				rotation: this._simulators[i]._rotation
+			});
+		}
+
+		//TODO: this simulators= thing is a little off, probably need to use the js.io URI class.
+		window.location.hash = "simulators="+JSON.stringify(simulators);
+	};
+});
+
+var _controller;
+
+/**
+ * Launch simulator.
+ */
+exports.start = function () {
+	import ff;
+	import util.ajax;
+	import squill.cssLoad;
+
+	var appID = window.location.toString().match(/\/simulate\/(.*?)\//)[1];
+
+	var f = new ff(function () {
+		squill.cssLoad.get('/simulator.css', f.wait());
+		util.ajax.get({url: '/projects/' + appID + '/files/manifest.json', type: 'json'}, f.slot());
+	}, function (manifest) {
+		document.title = manifest.title;
+
+		var uri = new URI(window.location);
+		var simulators = JSON.parse(uri.hash('simulators') || '[]');
+		if (!simulators.length) {
+			simulators[0] = {
+				device: 'iphone'
+			};
+		}
+
+		for (var i in simulators) {
+			if (!simulators[i].name) {
+				simulators[i].name = "Simulator_" + i;
+			}
+		}
+
+		_controller = new MainController({
+			parent: document.body,
+			manifest: manifest,
+			simulators: simulators
+		});
+	}).error(function (err) {
+		alert(err);
+	});
+};
+

@@ -32,10 +32,6 @@ import .PortManager;
 
 import lib.PubSub;
 
-import net;
-import net.interfaces;
-import net.protocols.Cuppa;
-
 var Chrome = exports = Class(squill.Widget, function (supr) {
 
 	// offset from the center
@@ -59,10 +55,15 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 	};
 
 	this.init = function(opts) {
+
+		this._controller = opts.controller;
 		this._port = opts.port || 9201;
+		this._debug = true;
 
 		this._rotation = opts.rotation || 0;
 		this._backgroundProps = {};
+
+		this._isDragEnabled = true;
 
 		this.setType(opts.deviceName);
 		this._offsetX = opts.offsetX || 0;
@@ -99,11 +100,41 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		this.rebuild();
 	};
 
+	this.isLocal = function () {
+		return true;
+	}
+
+	this.setConn = function (conn) {
+
+		if (this._conn) {
+			this._conn.onEvent.removeAllListeners();
+			this._conn.onRequest.removeAllListeners();
+		}
+
+		this._conn = conn;
+
+		if (this._isActive) {
+			conn.sendEvent('ACTIVE');
+		} else {
+			conn.sendEvent('INACTIVE');
+		}
+		
+		conn.onEvent.subscribe('HIDE_LOADING_IMAGE', this, 'hideLoadingImage');
+		conn.onEvent.subscribe('APP_READY', this, function (evt) {
+			// we want to immediately send the name for logging purposes
+			this._conn.sendEvent('SET_NAME', {name: this._name});
+		});
+
+		this.emit('ConnChanged', this._conn);
+	}
+
+	this.getConn = function () { return this._conn; }
+
 	this.getContainer = function () { return this._frameWrapper || supr(this, 'getContainer'); };
 
 	this.buildWidget = function () {
 		$.onEvent(this._el, 'mousedown', this, function () {
-				if (this._shouldDrag) {
+				if (this._isDragEnabled) {
 					this._mover.startDrag();
 				}
 			});
@@ -146,7 +177,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			// update muted state
 			this.mute(this._isMuted);
 
-			this.shouldDrag(this._shouldDrag);
+			this.setIsDragEnabled(this._isDragEnabled);
 
 			// unused?
 			this.publish('Start');
@@ -155,87 +186,68 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		});
 		*/
 
-		this._server = new DebugLoggerServer({
-			name: this._name,
-			sim: this
-		});
 		this.update();
-		this.setupUIHandlers();
 	};
 
-	this.getDebugLoggerServer = function () {
-		return this._server;
-	};
+	this.setActive = function (isActive) {
+		if (this._isActive != isActive) {
+			this._isActive = isActive;
+			this.sendEvent('SET_ACTIVE', {isActive: isActive});
+		}
+	}
 
-	this.setupUIHandlers = function () {
-		this.on('BECOME_ACTIVE', bind(this, function () {
-			this._el.style.zIndex = 2;
-			this._offsetY -= 50;
-			this.update();
-		}));
-	
-		this.on('BECOME_INACTIVE', bind(this, function () {
-			this._el.style.zIndex = 1;
-			this._offsetY += 50;
-			this.update();
-		}));
-	
-		this.on('RELOAD', bind(this, function () {
-			this.rebuild();
-		}));
-	
-		this.on('ROTATE', bind(this, function () {
-			this.rotate();
-		}));
-	
-		this.on('SCREENSHOT', bind(this, function () {
-			this._server._conn.sendRequest('SCREENSHOT', {}, null, function (err, res) {
-				var canvas = res.canvasImg;
-				var win = window.open('', '', 'width=' + (res.width + 2) + ',height=' + (res.height + 2));
-				var doc = win.document;
-				var now = new Date();
-				var min = ('00' + now.getMinutes()).substr(-2);
-				var time = now.getHours() + ':' + min;
-				var date = now.getMonth() + '/' + now.getDate();
-				
-				doc.open();
-				doc.write('<html><title>Screenshot ' + date + ' ' + time + '</title></head>'
-					+ '<body style="margin:0px;padding:0px;background-color:#000;">'
-					+ '<img src="' + canvas + '">'
-					+ '</body></html>');
-				doc.close();
-			})
-		}));
-		
-		this.on('BACK_BUTTON', bind(this, function () {
-			this._server._conn.sendEvent('BACK_BUTTON', {});
-		}));
-		
-		this.on('HOME_BUTTON', bind(this, function () {
-			this._server._conn.sendEvent('HOME_BUTTON', {});
-		}));
-	
-		this.on('MUTE', bind(this, function () {
-			this._isMuted ^= true;
-			if (this._isMuted) {
-				localStorage.settingMuted = true;
-			} else {
-				delete localStorage.settingMuted;
-			}
-			this._server._conn.sendEvent('MUTE', {shouldMute: this._isMuted});
-		}));
-		
-		this.on('DRAG', bind(this, function () {
-			this.shouldDrag(!this._shouldDrag);
-		}));
-		
-		this.on('PAUSE', bind(this, function () {
-			this._server._conn.sendEvent('PAUSE', {});
-		}));
-		
-		this.on('STEP', bind(this, function () {
-			this._server._conn.sendEvent('STEP', {});
-		}));
+	this.sendEvent = function (evt) {
+		switch (evt) {
+			case 'DEBUG':
+				this._debug = !this._debug;
+				this.rebuild();
+				break;
+
+			case 'RELOAD':
+				this.rebuild();
+				break;
+
+			case 'ROTATE':
+				this.rotate();
+				break;
+
+			case 'SCREENSHOT':
+				this._conn.sendRequest('SCREENSHOT', {}, null, function (err, res) {
+					var canvas = res.canvasImg;
+					var win = window.open('', '', 'width=' + (res.width + 2) + ',height=' + (res.height + 2));
+					var doc = win.document;
+					var now = new Date();
+					var min = ('00' + now.getMinutes()).substr(-2);
+					var time = now.getHours() + ':' + min;
+					var date = now.getMonth() + '/' + now.getDate();
+					
+					doc.open();
+					doc.write('<html><title>Screenshot ' + date + ' ' + time + '</title></head>'
+						+ '<body style="margin:0px;padding:0px;background-color:#000;">'
+						+ '<img src="' + canvas + '">'
+						+ '</body></html>');
+					doc.close();
+				});
+				break;
+			
+			case 'MUTE':
+				this._isMuted ^= true;
+				if (this._isMuted) {
+					localStorage.settingMuted = true;
+				} else {
+					delete localStorage.settingMuted;
+				}
+				this._conn.sendEvent('MUTE', {shouldMute: this._isMuted});
+				return;
+			
+			case 'DRAG':
+				this.setDragEnabled(!this._isDragEnabled);
+				break;
+		}
+
+		if (this._conn) {
+			this._conn.sendEvent(evt);
+		}
 	};
 
 	this.hideLoadingImage = function () {
@@ -245,13 +257,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		}), 500);
 	};
 
-	this.getFrame = function () {
-		return this._frame;
-	};
-
-	this.getDocument = function () {
-		return this._frame.contentDocument;
-	};
+	this.getFrame = function () { return this._frame; };
 
 	this.getLaunchURL = function (params) {
 		var query = {}, hash = {
@@ -272,6 +278,11 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		if (params.inviteCode) {
 			query.i = params.inviteCode;
 		}
+
+		if (!this._debug) {
+			query.debug = 'false';
+		}
+
 		if (params.displayName) {
 			hash.displayName = params.displayName;
 		}
@@ -282,15 +293,19 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			hash.mute = "true";
 		}
 
-		var r = new std.uri('/simulate/' + this._appID + '/' + this._params.target + '/')
+		var r = new std.uri('/simulate/' + (this._debug ? 'debug' : 'release') + '/' + this._appID + '/' + this._params.target + '/')
 			.addQuery(query)
 			.addHash(hash)
 			.setProtocol("http")
 			.setHost(window.location.hostname)
-			.setPort(this._port)
+			.setPort(this._port);
 
 		return r;
 	};
+
+	this.setDragEnabled = function (isDragEnabled) { this._isDragEnabled = !!isDragEnabled; };
+
+	this.isMuted = function () { return this._isMuted; };
 
 	this.getLoadingImageURL = function () {
 		var splash;
@@ -337,15 +352,6 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			e.preventDefault();
 			return false;
 		}
-	};
-
-	this.isMuted = function () {
-		return this._isMuted;
-	};
-
-	this._shouldDrag = true;
-	this.shouldDrag = function (flag) {
-		this._shouldDrag = !!flag;
 	};
 
 	this.setTransitionsEnabled = function (isEnabled) {
@@ -645,32 +651,3 @@ exports.buildChromeFromURI = function(uri) {
 	});
 };
 
-var DebugLoggerServer = Class([net.interfaces.Server, lib.PubSub], function () {
-
-	this.init = function (opts) {
-		this._name = opts.name;
-		this._sim = opts.sim;
-	};
-
-	this.built = false;
-	this.buildProtocol = function () {
-		this._conn = new net.protocols.Cuppa();
-
-		this._conn.onEvent.subscribe('HIDE_LOADING_IMAGE', this._sim, 'hideLoadingImage');
-
-		this._conn.onEvent.subscribe('APP_READY', this, function (evt) {
-			this.publish('NewConnection', this._conn, evt.args.uid);
-
-			// we want to immediately send the name for logging purposes
-			this._conn.sendEvent('SET_NAME', {name: this._name});
-		});
-
-		this.built = true;
-
-		return this._conn;
-	};
-
-	this.getConn = function () {
-		return this._conn;
-	};
-});
