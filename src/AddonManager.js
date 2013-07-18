@@ -336,7 +336,7 @@ var AddonManager = Class(EventEmitter, function () {
 			fs.exists(jsPath, f.slotPlain());
 		}, function (jsPathExists) {
 			if (jsPathExists) {
-				logger.log("Installing plugin JS path:", jsPath);
+				//logger.log("Installing plugin JS path:", jsPath);
 
 				// Remove old symlink if it exists
 				if (fs.existsSync(linkPath)) {
