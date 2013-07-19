@@ -1,3 +1,28 @@
+## 0.1.29 (July 19, 2013)
+ - new TextEditView: embedded text input field with device keyboard
+ - new engine option: scaleUI
+ - new device flags: isIOSSimulator, isAndroidSimulator
+ - better ImageScaleView
+   - cache slice data instead of calculating every time
+   - compute cover clipping bounds instead of setting clip to true
+ - faster ScoreView
+ - full support for base64 images
+ - GestureView drag deltas work with scale
+ - improved basil path finder
+ - addon improvements
+   - support frameworks, bundles, and dependencies
+   - cleaner error handling for missing addons and JSON configuration
+ - new addons
+   - AirPush
+   - Amplitude
+   - AppFlood
+   - Appnext
+   - InMobi
+   - LeadBolt
+   - MoPub
+   - TapForTap
+   - Tapjoy
+
 ## 0.1.28 (July 12, 2013)
  - iOS support for addon frameworks and dynlib, thanks to Mart Roosmaa
  - improved layers and tools for isometric game engine, thanks to Christopher Hiller
