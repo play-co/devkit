@@ -18,6 +18,7 @@
    - Amplitude
    - AppFlood
    - Appnext
+   - Flurry
    - InMobi
    - LeadBolt
    - MoPub
