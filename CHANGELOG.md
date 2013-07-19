@@ -9,6 +9,7 @@
  - full support for base64 images
  - GestureView drag deltas work with scale
  - improved basil path finder
+ - improved iOS OpenURL handler
  - addon improvements
    - support frameworks, bundles, and dependencies
    - cleaner error handling for missing addons and JSON configuration
