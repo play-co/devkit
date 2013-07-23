@@ -328,7 +328,7 @@ var GCPackage = (function() {
 	};
 
 	GCPackage.prototype.listSoundsSync = function(cb) {
-		return listFilesSync(this.paths.lang, ['mp3', 'ogg']);
+		return listFilesSync(this.paths.resources, ['mp3', 'ogg']);
 	};
 
 	GCPackage.prototype.listConfig = function(cb) {
@@ -398,7 +398,7 @@ var GCPackage = (function() {
 		return listFiles(this.paths.lang, ['json'], cb);
 	};
 
-	GCPackage.prototype.listTranslationsSync = function(cb) {
+	GCPackage.prototype.listTranslationsSync = function() {
 		return listFilesSync(this.paths.lang, ['json']);
 	};
 
@@ -412,7 +412,7 @@ var GCPackage = (function() {
 		}
 	};
 
-	GCPackage.prototype.getTranslationSync = function(code, cb) {
+	GCPackage.prototype.getTranslationSync = function(code) {
 		try {
 			var data = fs.readFileSync(path.join(this.paths.lang, code + ".json"));
 			return data ? JSON.parse(data) : null;
@@ -425,7 +425,7 @@ var GCPackage = (function() {
 		fs.unlink(path.join(this.paths.lang, code + ".json"), cb);
 	};
 
-	GCPackage.prototype.removeTranslationSync = function(code, cb) {
+	GCPackage.prototype.removeTranslationSync = function(code) {
 		fs.unlinkSync(path.join(this.paths.lang, code + ".json"));
 		return true
 	};
