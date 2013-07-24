@@ -15,49 +15,67 @@
 
 import sdkPlugin;
 import util.ajax;
+import squill.Cell;
+import squill.TabbedPane;
+import squill.models.DataSource as DataSource;
+
+var TranslationCell = Class(squill.Cell, function() {
+	this._def = {
+		className: 'translationCell',
+		children: [
+			{
+				id: 'key', type: 'label', className: 'translationKey'
+			},
+			{
+				id: 'value', type: 'label', className: 'translationValue'
+			}
+		]
+	};
+
+	this.render = function() {
+		var translation = this._data;
+		this.key.setLabel(translation.key);
+		this.value.setLabel(translation.value);
+	};
+});
 
 exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this._def = {
 		id: 'i18nPane',
 		children: [
 			{
-				id: 'i18nPaneFrame',
-				tag: 'table'
+				className: 'topTabs',
+				id: 'translationTabs',
+				type: squill.TabbedPane,
+				panes: []
 			}
 		]
 	};
 
-	this.buildTable = function(err, trans) {
+	this.buildTranslations = function(err, trans) {
+		
 		if (err) {
-			this.i18nPaneFrame.innerHTML = 'no translations';
-		} else {
-			this.i18nPaneFrame.innerHTML = '';
-
-			var phrases = trans.en;
-			var row = document.createElement('tr');
-			var keyCell = document.createElement('td');
-			keyCell.innerHTML = 'key';
-			row.appendChild(keyCell);
-			for (var k in trans) {
-				var langCell = document.createElement('td');
-				langCell.innerHTML = '<b>' + k + '</b>';
-				row.appendChild(langCell);
-				phrases = phrases || trans[k];
+			return console.log(err);
+		}
+		
+		for (var k in trans) {
+			var ds = new DataSource({ key: 'key' });
+			for (var key in trans[k]) {
+				ds.add({ key: key, value: trans[k][key] });
 			}
-			this.i18nPaneFrame.appendChild(row);
-
-			for (var k in phrases) {
-				var row = document.createElement('tr');
-				var keyCell = document.createElement('td');
-				keyCell.innerHTML = '<b>' + k + '</b>';
-				row.appendChild(keyCell);
-				for (var lang in trans) {
-					var valCell = document.createElement('td');
-					valCell.innerHTML = trans[lang][k];
-					row.appendChild(valCell);
-				}
-				this.i18nPaneFrame.appendChild(row);
-			}
+			var panel = this._children[0].newPane({
+				className: 'mainPanel',
+				title: k,
+				children: [{
+					id: k + 'List',
+					className: 'darkPanel',
+					margin: 10,
+					type: 'list',
+					controller: this,
+					cellCtor: TranslationCell,
+					dataSource: ds
+				}]
+			});
 		}
 	};
 
@@ -65,6 +83,6 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		util.ajax.get({
 			url: this._project.url + 'debug/resources/lang/all.json',
 			type: 'json'
-		}, bind(this, 'buildTable'));
+		}, bind(this, 'buildTranslations'));
 	};
 });

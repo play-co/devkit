@@ -1,5 +1,36 @@
-#i18nPaneFrame td {
-	border: 1px solid black;
-	font-size: 20px;
-	width: 150px;
-}
+//#i18nPaneFrame td {
+//	border: 1px solid black;
+//	font-size: 20px;
+//	width: 150px;
+//}
+
+translationListMargin = 15px
+
+#translationList
+	absoluteBox(translationListMargin, translationListMargin, translationListMargin, translationListMargin)
+	overflow: auto;
+
+.translationCell
+	color #EEE
+	font-size 12px
+	cursor pointer
+	border-top 1px solid rgba(0, 0, 0, 0)
+	border-bottom 1px solid rgba(0, 0, 0, 0)
+	padding 10px
+	font-family 'Gill Sans'
+
+.translationCell:nth-child(even)
+	background-color rgba(0, 0, 0, 0.4)
+
+.translationCell .translationKey
+	color #EEF
+	text-shadow none
+	width 320px
+	font-size 15px
+	margin 0
+	text-align left
+
+.translationCell .translationKey
+.translationCell .translationValue
+	display inline-block
+	text-overflow: ellipsis;
