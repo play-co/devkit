@@ -45,7 +45,7 @@ function serveProject (project) {
 	}
 
 	fs.writeFileSync(path.join(langPath, 'all.json'), JSON.stringify(trans));
-	_app.use('/simulate/' + id + '/debug/resources/lang/', etag.static(langPath));
+	_app.use('/simulate/' + id + '/lang/', etag.static(langPath));
 }
 
 exports.load = function (app) {
