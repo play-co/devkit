@@ -53,29 +53,31 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	};
 
 	this.buildTranslations = function(err, trans) {
-		
+		this.translationTabs.clear();
 		if (err) {
-			return console.log(err);
-		}
-		
-		for (var k in trans) {
-			var ds = new DataSource({ key: 'key' });
-			for (var key in trans[k]) {
-				ds.add({ key: key, value: trans[k][key] });
-			}
-			var panel = this._children[0].newPane({
-				className: 'mainPanel',
-				title: k,
-				children: [{
-					id: k + 'List',
-					className: 'darkPanel',
-					margin: 10,
-					type: 'list',
-					controller: this,
-					cellCtor: TranslationCell,
-					dataSource: ds
-				}]
+			this.translationTabs.newPane({
+				title: 'no translations yet!'
 			});
+		} else {
+			for (var k in trans) {
+				var ds = new DataSource({ key: 'key' });
+				for (var key in trans[k]) {
+					ds.add({ key: key, value: trans[k][key] });
+				}
+				var panel = this.translationTabs.newPane({
+					className: 'mainPanel',
+					title: k,
+					children: [{
+						id: k + 'List',
+						className: 'darkPanel',
+						margin: 10,
+						type: 'list',
+						controller: this,
+						cellCtor: TranslationCell,
+						dataSource: ds
+					}]
+				});
+			}
 		}
 	};
 
