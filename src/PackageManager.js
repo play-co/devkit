@@ -308,7 +308,7 @@ var GCPackage = (function() {
 		return listFiles(this.paths.resources, exts, next);
 	};
 
-	GCPackage.prototype.listResourcesSync = function (exts, next) {
+	GCPackage.prototype.listResourcesSync = function (exts) {
 		if (typeof exts == 'function') {
 			cb = exts; exts = null;
 		}
@@ -319,7 +319,7 @@ var GCPackage = (function() {
 		return listFiles(this.paths.resources, ['png', 'jpg', 'jpeg', 'bmp', 'gif'], cb);
 	};
 
-	GCPackage.prototype.listImagesSync = function(cb) {
+	GCPackage.prototype.listImagesSync = function() {
 		return listFilesSync(this.paths.resources, ['png', 'jpg', 'jpeg', 'bmp', 'gif']);
 	};
 
@@ -327,7 +327,7 @@ var GCPackage = (function() {
 		return listFiles(this.paths.resources, ['mp3', 'ogg'], cb);
 	};
 
-	GCPackage.prototype.listSoundsSync = function(cb) {
+	GCPackage.prototype.listSoundsSync = function() {
 		return listFilesSync(this.paths.resources, ['mp3', 'ogg']);
 	};
 
@@ -335,7 +335,7 @@ var GCPackage = (function() {
 		return listFiles(this.paths.resources, ['json'], cb);
 	};
 
-	GCPackage.prototype.listConfigSync = function(cb) {
+	GCPackage.prototype.listConfigSync = function() {
 		return listFilesSync(this.paths.resources, ['json']);
 	};
 
@@ -345,7 +345,7 @@ var GCPackage = (function() {
 		return listFiles(this.paths.shared, ['js'], cb);
 	};
 
-	GCPackage.prototype.listScriptsSync = function(cb) {
+	GCPackage.prototype.listScriptsSync = function() {
 		return listFilesSync(this.paths.shared, ['js']);
 	};
 
