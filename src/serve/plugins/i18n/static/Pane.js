@@ -81,7 +81,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 
 	this.onBeforeShow = function() {
 		util.ajax.get({
-			url: this._project.url + 'debug/resources/lang/all.json',
+			url: this._project.url + 'lang/all.json',
 			type: 'json'
 		}, bind(this, 'buildTranslations'));
 	};
