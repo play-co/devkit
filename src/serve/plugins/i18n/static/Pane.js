@@ -16,8 +16,6 @@
 import sdkPlugin;
 import util.ajax;
 
-from util.browser import $;
-
 exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this._def = {
 		id: 'i18nPane',
@@ -29,41 +27,11 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		]
 	};
 
-	this.setOverview = function(overview) {
-		debugger;
-	};
-
-	this.showProject = function(project) {
-		debugger;
-	};
-
-	this.onBeforeShow = function() {
-
-		debugger;
-
-//		util.ajax.get({
-//			url: 
-//		}, function(err, response) {
-//			logger.log("WE DID IT!", err, response);
-//		});
-
-//		debugger;
-
+	this.buildTable = function(err, response) {
 		var t = document.getElementById('i18nPaneFrame');
 		t.innerHTML = "";
-//		var trans = require('./en.json');
-//		var trans = CACHE['resources/i18n/en.json'];
-//		logger.log(trans);
-//		trans = JSON.parse(trans);
 		var trans = {
-			en: {
-				mario: 'Mario Bario',
-				jimmy: 'Jimmy Jam'
-			},
-			sp: {
-				mario: 'Mario en Espanol',
-				jimmy: 'Spanish Jimmy'
-			}
+			en: response
 		};
 
 		var phrases = trans.en;
@@ -91,5 +59,12 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 			}
 			t.appendChild(row);
 		}
+	};
+
+	this.onBeforeShow = function() {
+		util.ajax.get({
+			url: this._project.url + 'debug/resources/lang/en.json',
+			type: 'json'
+		}, bind(this, 'buildTable'));
 	};
 });
