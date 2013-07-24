@@ -27,12 +27,9 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		]
 	};
 
-	this.buildTable = function(err, response) {
+	this.buildTable = function(err, trans) {
 		var t = document.getElementById('i18nPaneFrame');
 		t.innerHTML = "";
-		var trans = {
-			en: response
-		};
 
 		var phrases = trans.en;
 		var row = document.createElement('tr');
@@ -63,7 +60,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 
 	this.onBeforeShow = function() {
 		util.ajax.get({
-			url: this._project.url + 'debug/resources/lang/en.json',
+			url: this._project.url + 'debug/resources/lang/all.json',
 			type: 'json'
 		}, bind(this, 'buildTable'));
 	};
