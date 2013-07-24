@@ -18,7 +18,7 @@ var path = require('path');
 var request = require('request');
 var querystring = require('querystring');
 var child_process = require('child_process');
-var clc = require('cli-color');
+var color = require('cli-color');
 var mixpanel = require('mixpanel');
 
 var common = exports;
@@ -62,16 +62,16 @@ process.on('uncaughtException', function (e) {
 		console.log("");
 		switch (e.code) {
 			case 'EADDRINUSE':
-				console.error(clc.red("ERROR:"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
+				console.error(color.red("ERROR:"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
 				break;
 			default:
-				console.error(clc.red("Uncaught Exception:"), e.stack);
+				console.error(color.red("Uncaught Exception:"), e.stack);
 		}
 
 		common.track("BasilCrash", {"code": e.code, "stack": e.stack});
 
 		console.log("");
-		console.error(clc.red("  Terminating in 5 seconds..."));
+		console.error(color.red("  Terminating in 5 seconds..."));
 		console.log("");
 
 		// Give it time to post
@@ -152,10 +152,10 @@ exports.Formatter = Class(function () {
 		return ('' + str)
 
 			// add colour to our build logs so that it's easier to see if and where things went wrong.
-			.replace(/\d* ?error(s|\(s\))?/gi, function (res) { return clc.bright.red(res); })
-			.replace(/\d* ?warn(ing)?(s|\(s\))?/gi, function (res) { return clc.bright.red(res); })
-			.replace('BUILD SUCCESSFUL', clc.bright.green('BUILD SUCCESSFUL'))
-			.replace('BUILD FAILED', clc.bright.red('BUILD FAILED'))
+			.replace(/\d*(^|\s|[^a-zA-Z0-9-])error(s|\(s\))?/gi, function (res) { return color.redBright(res); })
+			.replace(/\d*(^|\s|[^a-zA-Z0-9-])warn(ing)?(s|\(s\))?/gi, function (res) { return color.redBright(res); })
+			.replace('BUILD SUCCESSFUL', color.greenBright('BUILD SUCCESSFUL'))
+			.replace('BUILD FAILED', color.redBright('BUILD FAILED'))
 
 			// fix new lines
 			.replace(/\r?\n(?!$)/g, '\n' + this._prefix);
@@ -169,11 +169,11 @@ exports.Formatter = Class(function () {
 	}
 
 	this.warn = function () {
-		console.error.apply(console, [this._prefix, clc.bright.red('[warn] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
+		console.error.apply(console, [this._prefix, color.redBright('[warn] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
 	}
 
 	this.error = function () {
-		console.error.apply(console, [this._prefix, clc.bright.red('[error] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
+		console.error.apply(console, [this._prefix, color.redBright('[error] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
 	}
 
 	// hook these up to streaming logs (stdout and stderr)
@@ -211,7 +211,7 @@ exports.Formatter = Class(function () {
 });
 
 exports.Formatter.getPrefix = function (tag) {
-	return clc.cyan.bright(('               [' + tag + ']   ').substr(-15 - Math.max(0, tag.length - 10)));
+	return color.cyanBright(('               [' + tag + ']   ').substr(-15 - Math.max(0, tag.length - 10)));
 }
 
 var logger = new exports.Formatter('gcsdk');
@@ -473,7 +473,7 @@ exports.track = function(key, opts) {
 		// Launch!
 		mp_tracker && mp_tracker.track(key, opts);
 	} else {
-		//console.error(clc.yellow("WARNING:"), "MixPanel anonymous event tracking disabled (config:optout).  Please consider opting-in to help improve the DevKit!");
+		//console.error(color.yellow("WARNING:"), "MixPanel anonymous event tracking disabled (config:optout).  Please consider opting-in to help improve the DevKit!");
 	}
 }
 

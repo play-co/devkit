@@ -183,7 +183,7 @@ exports.compress = function (filename, src, opts, cb) {
 		compiler.on("end", function (code) {
 			err = err.join('').replace(/^stdin:(\d+):/mg, 'Line $1:');
 			if (err.length) {
-				compressLog.log(clc.green.bright(filename + ':\n') + err);
+				compressLog.log(clc.greenBright(filename + ':\n') + err);
 			}
 
 			if (code == 0) {

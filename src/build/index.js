@@ -79,7 +79,7 @@ function build (dir, target, opts, next) {
 
 	//create a path based on the target (debug/release)
 	var releasePath = path.join(opts.debug ? 'debug' : 'release', target);
-	logger.log(clc.yellow.bright('Building:'), releasePath);
+	logger.log(clc.yellowBright('Building:'), releasePath);
 
 	// URL for API requests
 	if (!opts.servicesURL) {
@@ -163,8 +163,8 @@ function exec (args, config, next) {
 			.default('isSimulated', false)
 			.describe('isSimulated', '[sdk] internal use only')
 
-		.usage('Usage: ' + clc.green.bright('basil build') + clc.yellow.bright(' [target]\n\n')
-			+ 'where ' + clc.yellow.bright('[target]') + ' is one of:\n\n'
+		.usage('Usage: ' + clc.greenBright('basil build') + clc.yellowBright(' [target]\n\n')
+			+ 'where ' + clc.yellowBright('[target]') + ' is one of:\n\n'
 			+ '\t' + targetNames.join('\n\t'));
 
 	var argv = optimistParser.argv;
@@ -174,7 +174,7 @@ function exec (args, config, next) {
 		if (!target) {
 			logger.error('no target provided\n');
 		} else {
-			logger.error('"' + clc.yellow.bright(target) + '" is not a valid target\n');
+			logger.error('"' + clc.yellowBright(target) + '" is not a valid target\n');
 		}
 
 		optimistParser.showHelp();
