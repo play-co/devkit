@@ -223,19 +223,28 @@ var GCPackage = (function() {
 		};
 	}
 
-	GCPackage.prototype.load = function (root, next) {
+	GCPackage.prototype.load = function (root, cb) {
 		var err = this.initPaths(root);
 		if (err) {
-			next(err);
-			return;
+			cb(err);
+		} else {
+			this.readManifest(bind(this, function (err, manifest) {
+				if (err) {
+					cb && cb(err);
+				} else {
+					cb && cb(null, this);
+				}
+			}));
 		}
+	}
 
+	GCPackage.prototype.readManifest = function (cb) {
 		// load and parse manifest to initialize this object
 		fs.readFile(this.paths.manifest, function (err, contents) {
 
 			// forward IO errors
 			if (err) {
-				next(err);
+				cb && cb(err);
 				return;
 			}
 
@@ -243,7 +252,7 @@ var GCPackage = (function() {
 			try {
 				this.manifest = JSON.parse(contents);
 			} catch (e) {
-				next({
+				cb && cb({
 					'message': 'JSON parse error',
 					'contents': contents,
 					'error': e
@@ -258,7 +267,7 @@ var GCPackage = (function() {
 			}
 
 			// success! pass along this object
-			next(null, this);
+			cb && cb(null, this.manifest);
 		}.bind(this));
 	}
 
@@ -298,6 +307,10 @@ var GCPackage = (function() {
 		this.manifest = data;
 		fs.writeFileSync(path.join(this.paths.root, 'manifest.json'), serializeConfig(data));
 	};
+
+	GCPackage.prototype.getAddonConfig = function () {
+		return this.manifest.addons || {};
+	}
 
 	/* Resources */
 
@@ -463,7 +476,7 @@ exports.load = function(path) {
 	return new GCPackage(path);
 };
 
-exports.getProject = function (path, next) {
+exports.getProject = function (path, cb) {
 	var package = new GCPackage();
-	package.load(path, next);
+	package.load(path, cb);
 }

@@ -45,7 +45,7 @@ exports.create = function(path, prependDir, targetFilename) {
 				cb(null, {
 					w: +parts[4],
 					h: +parts[6].slice(0, -1)
-				});			
+				});
 			});
 		};
 		return ret;

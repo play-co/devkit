@@ -145,6 +145,11 @@ exports.Formatter = Class(function () {
 	}
 
 	this.format = function (str) {
+
+		if (str instanceof Error) {
+			return '\n' + exports.errorToString(str);
+		}
+
 		if (typeof str == 'object') {
 			return str;
 		}
@@ -418,6 +423,10 @@ exports.isValidShortname = function(shortname){
 	return shortname.search(/([^[a-zA-Z0-9])/) === -1;
 };
 
+exports.getEtagServer = function () {
+	return require('./serve/etag');
+}
+
 // Log execution time.
 var times = {};
 exports.startTime = function (key) {
@@ -430,16 +439,94 @@ exports.endTime = function (key) {
 	delete times[key];
 };
 
-//read the version data from the .version file
+// read the version data from the .version file
 exports.readVersionFile = function () {
 	var package = JSON.parse(fs.readFileSync(exports.paths.root("package.json")));
 	exports.sdkVersion = Version.parse(package.channel + '-' + package.version);
 	exports.buildVersion = package.basil['tealeaf-build-tools'];
 };
 
-//call it straight away
+// call it straight away
 exports.readVersionFile();
 
+exports.errorToString = function (error) {
+
+	if (!error.stack) {
+		return error;
+	}
+
+	var out = [];
+	
+	try {
+		var errStr = error.stack;
+		var lines = errStr.split('\n');
+		var i = 0;
+		var msg = [];
+		while (lines[i] && !/^\s*at/.test(lines[i])) {
+			msg.push(lines[i]);
+			++i;
+		}
+
+		var parser = /^\s*at (.*?)\s+\((.*?)\)/;
+		lines = lines.slice(i).reverse();
+		var data = lines.map(function (line) {
+			var match = line.match(parser);
+			if (match) {
+				var result = {
+					func: match[1]
+				};
+
+				var details = match[2].match(/(.*?):(\d+):(\d+)/);
+				if (details && details[1]) {
+					var filename = path.relative(exports.paths.root(), match[2]);
+					var dirname = path.dirname(filename);
+					result.file = path.basename(filename);
+					result.details = './' + (dirname == '.' ? '' : dirname);
+					result.line = details[2];
+				} else {
+					result.details = match[2];
+				}
+
+				return result;
+			} else {
+				return line;
+			}
+		});
+
+		var n = data.length;
+		data.slice(0, n - 1).map(function (data, i) {
+			if (typeof data == 'string') {
+				out.push(data);
+			} else {
+				out.push(new Array(i + 1).join(' ') + '└ '
+					+ color.green(data.file) + ':' + color.blueBright(data.line)
+					+ ' ' + color.whiteBright(data.func)
+					+ color.yellowBright(' (' + data.details + ')'));
+			}
+		});
+
+		var lastLine = data[n - 1];
+		if (lastLine) {
+			var indent = new Array(n).join(' ');
+			var msgLines = msg.join('\n').split('\n');
+			var msgText = msgLines.join('\n   ' + indent);
+			out.push(indent + '└ '
+				+ color.redBright(
+					msgText
+					+ (msgLines.length > 1 ? '\n' + indent : '')
+					+ color.white(' at ')
+					+ color.green(lastLine.file) + ':' + color.blueBright(lastLine.line)
+					+ ' ' + color.redBright(lastLine.func)
+					+ color.yellowBright(' (' + lastLine.details + ')')
+				));
+		}
+	} catch (e) {
+		out.push(e.stack);
+		out.push(error.stack);
+	}
+
+	return out.join('\n');
+}
 
 //// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics!
 

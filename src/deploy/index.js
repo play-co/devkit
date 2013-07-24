@@ -16,6 +16,8 @@
 var packageManager = require('../PackageManager');
 var http = require('http');
 var clc = require('cli-color');
+var fs = require('fs');
+var path = require('path');
 var ff = require('ff');
 var common = require('../common');
 var git = require('../git');
@@ -46,8 +48,13 @@ exports.deploy = function () {
 	}
 
 	var f = ff(this, function () {
-		git.getGithubRepo(process.cwd(), f());
-		git.getGithubBranch(process.cwd(), f());
+		if (fs.existsSync(path.join(process.cwd(), '.git'))) {
+			git.getGithubRepo(process.cwd(), f());
+			git.getGithubBranch(process.cwd(), f());
+		} else {
+			f("");
+			f("");
+		}
 	}, function (repo, branch) {
 		var metadata = {
 			version: 0, //0th version means no build attached

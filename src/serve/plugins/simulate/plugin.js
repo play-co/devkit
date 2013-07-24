@@ -231,32 +231,36 @@ exports.load = function (app, argv) {
 		res.send(200);
 	});
 
-
 	var simulatorAddons = [];
-	addonManager.getAddons().forEach(function (addon) {
-		try {
-			if (fs.existsSync(common.paths.addons(addon, 'simulator'))) {
+	var allAddons = addonManager.getAddons();
+	Object.keys(allAddons).forEach(function (addonName) {
+		var addon = allAddons[addonName];
+		if (addon.hasSimulatorPlugin()) {
+			try {
 				simulatorAddons.push(addon);
 
-				if (fs.existsSync(common.paths.addons(addon, 'simulator', 'routes.js'))) {
-					var routes = require(common.paths.addons(addon, 'simulator', 'routes.js'));
+				var routesJS = addon.getPath('simulator', 'routes.js');
+				if (fs.existsSync(routesJS)) {
+					var routes = require(routesJS);
 					if (routes.initApp) {
 						var addonApp = express();
 						routes.initApp(common, express, addonApp);
-						app.use('/simulate/addons/' + addon + '/', addonApp);
+						app.use('/simulate/addons/' + addonName + '/', addonApp);
 					}
 				}
 				
-				app.use('/simulate/addons/' + addon + '/static/', etag.static(common.paths.addons(addon, 'simulator', 'static')));
+				var staticFiles = addon.getPath('simulator', 'static');
+				if (fs.existsSync(staticFiles)) {
+					app.use('/simulate/addons/' + addonName + '/static/', etag.static(staticFiles));
+				}
+			} catch (e) {
+				logger.error("simulator addon", addonName, "failed to initialize", e);
 			}
-		} catch (e) {
-			logger.error("simulator addon", addon, "failed to initialize");
-			logger.error(e.stack);
 		}
 	});
 
 	app.get('/simulate/addons/', function (req, res) {
-		res.json(simulatorAddons);
+		res.json(simulatorAddons.map(function (addon) { return addon.getName(); }));
 	});
 
 	app.get('/simulate/addons/:addon/index.js', function (req, res) {
