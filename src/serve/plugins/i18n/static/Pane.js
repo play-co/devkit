@@ -19,6 +19,8 @@ import squill.Cell;
 import squill.TabbedPane;
 import squill.models.DataSource as DataSource;
 
+var transHowTo = "You haven't set up any translations yet. Add your language-specific json files to resources/lang.";
+
 var TranslationCell = Class(squill.Cell, function() {
 	this._def = {
 		className: 'translationCell',
@@ -54,7 +56,13 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		this.translationTabs.clear();
 		if (err) {
 			this.translationTabs.newPane({
-				title: 'no translations yet!'
+				className: 'mainPanel',
+				title: 'no translations yet!',
+				children: [{
+					id: 'noTranslations',
+					text: transHowTo,
+					style: { padding: '20px' }
+				}]
 			});
 		} else {
 			for (var k in trans) {
@@ -62,7 +70,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				for (var key in trans[k]) {
 					ds.add({ key: key, value: trans[k][key] });
 				}
-				var panel = this.translationTabs.newPane({
+				this.translationTabs.newPane({
 					className: 'mainPanel',
 					title: k,
 					children: [{
