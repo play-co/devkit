@@ -28,12 +28,10 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	};
 
 	this.buildTable = function(err, trans) {
-		var t = document.getElementById('i18nPaneFrame');
-
 		if (err) {
-			t.innerHTML = 'no translations';
+			this.i18nPaneFrame.innerHTML = 'no translations';
 		} else {
-			t.innerHTML = '';
+			this.i18nPaneFrame.innerHTML = '';
 
 			var phrases = trans.en;
 			var row = document.createElement('tr');
@@ -46,7 +44,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				row.appendChild(langCell);
 				phrases = phrases || trans[k];
 			}
-			t.appendChild(row);
+			this.i18nPaneFrame.appendChild(row);
 
 			for (var k in phrases) {
 				var row = document.createElement('tr');
@@ -58,7 +56,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 					valCell.innerHTML = trans[lang][k];
 					row.appendChild(valCell);
 				}
-				t.appendChild(row);
+				this.i18nPaneFrame.appendChild(row);
 			}
 		}
 	};
