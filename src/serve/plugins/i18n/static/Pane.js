@@ -33,15 +33,13 @@ var TranslationCell = Class(squill.Cell, function() {
 	};
 
 	this.render = function() {
-		var translation = this._data;
-		this.key.setLabel(translation.key);
-		this.value.setLabel(translation.value);
+		this.key.setLabel(this._data.key);
+		this.value.setLabel(this._data.value);
 	};
 });
 
 exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this._def = {
-		id: 'i18nPane',
 		children: [
 			{
 				className: 'topTabs',
