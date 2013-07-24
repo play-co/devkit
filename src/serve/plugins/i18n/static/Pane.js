@@ -67,7 +67,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 					title: k,
 					children: [{
 						id: k + 'List',
-						className: 'darkPanel',
+						className: 'darkPanel translationList',
 						margin: 10,
 						type: 'list',
 						controller: this,
