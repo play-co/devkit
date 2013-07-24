@@ -29,32 +29,37 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 
 	this.buildTable = function(err, trans) {
 		var t = document.getElementById('i18nPaneFrame');
-		t.innerHTML = "";
 
-		var phrases = trans.en;
-		var row = document.createElement('tr');
-		var keyCell = document.createElement('td');
-		keyCell.innerHTML = 'key';
-		row.appendChild(keyCell);
-		for (var k in trans) {
-			var langCell = document.createElement('td');
-			langCell.innerHTML = '<b>' + k + '</b>';
-			row.appendChild(langCell);
-			phrases = phrases || trans[k];
-		}
-		t.appendChild(row);
+		if (err) {
+			t.innerHTML = 'no translations';
+		} else {
+			t.innerHTML = '';
 
-		for (var k in phrases) {
+			var phrases = trans.en;
 			var row = document.createElement('tr');
 			var keyCell = document.createElement('td');
-			keyCell.innerHTML = '<b>' + k + '</b>';
+			keyCell.innerHTML = 'key';
 			row.appendChild(keyCell);
-			for (var lang in trans) {
-				var valCell = document.createElement('td');
-				valCell.innerHTML = trans[lang][k];
-				row.appendChild(valCell);
+			for (var k in trans) {
+				var langCell = document.createElement('td');
+				langCell.innerHTML = '<b>' + k + '</b>';
+				row.appendChild(langCell);
+				phrases = phrases || trans[k];
 			}
 			t.appendChild(row);
+
+			for (var k in phrases) {
+				var row = document.createElement('tr');
+				var keyCell = document.createElement('td');
+				keyCell.innerHTML = '<b>' + k + '</b>';
+				row.appendChild(keyCell);
+				for (var lang in trans) {
+					var valCell = document.createElement('td');
+					valCell.innerHTML = trans[lang][k];
+					row.appendChild(valCell);
+				}
+				t.appendChild(row);
+			}
 		}
 	};
 
