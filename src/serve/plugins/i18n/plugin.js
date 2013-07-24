@@ -1,6 +1,24 @@
+var path = require('path');
+var etag = require('../../etag');
+var projectManager = require('../../../ProjectManager');
+
+var _app;
+
+projectManager.on('AddProject', serveProject);
+
+var _routes = {};
+
+function serveProject (project) {
+	var id = project.getID();
+	var root = '/simulate/' + id + '/debug/';
+	
+	if (_routes[id]) { return false; }
+	_routes[id] = true;
+	
+	_app.use(root + 'resources/lang/',
+		etag.static(path.join(project.paths.root, 'resources', 'lang')));
+}
+
 exports.load = function (app) {
-//  will use app cache, but must tinker first...
-//	console.log(GLOBAL.CACHE['resources/i18n/en.json']);
-//  for now, use en.json right here
-	console.log(require('./en.json'));
+	_app = app;
 };
