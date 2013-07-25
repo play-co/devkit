@@ -430,7 +430,7 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 				}
 
 				if (buildAddon.onBeforeBuild) {
-					buildAddon.onBeforeBuild(project, target, appDir, output, f.wait());
+					// buildAddon.onBeforeBuild(project, target, appDir, output, f.wait());
 				}
 			} catch (e) {
 				logger.error("Failed to initialize the build addon", addonName, e);
