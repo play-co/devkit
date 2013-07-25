@@ -17,6 +17,7 @@
 
 var fs = require('fs');
 var path = require('path');
+var wrench = require('wrench');
 var etag = require('../../etag');
 var projectManager = require('../../../ProjectManager');
 
@@ -32,21 +33,50 @@ function serveProject (project) {
 
 	if (_trans[id] || !fs.existsSync(langPath)) { return false; }
 
-	var trans = _trans[id] = {};
+	_trans[id] = {};
+	var trans = _trans[id].translations = {};
+	var keys = _trans[id].keys = {};
 	var langs = fs.readdirSync(langPath);
 	var shouldServe = false;
 
+	// build translation objects
 	for (var i = 0; i < langs.length; i++) {
 		var fname = langs[i];
 		var lparts = fname.split('.');
 		if (lparts[0] != 'all' && lparts[1] == 'json') {
 			shouldServe = true;
-			trans[lparts[0]] = JSON.parse(fs.readFileSync(path.join(langPath, fname)));
+			var transObj = JSON.parse(fs.readFileSync(path.join(langPath, fname)));
+			trans[lparts[0]] = transObj;
+			for (var k in transObj) {
+				keys[k] = [];
+			}
 		}
 	}
 
+	// build key locators
+	var srcPath = path.join(project.paths.root, 'src');
+	var files = wrench.readdirSyncRecursive(srcPath);
+	for (var i = 0; i < files.length; i++) {
+		var fpath = path.join(srcPath, files[i]);
+		var f = new wrench.LineReader(fpath);
+		var c = 1;
+		while (f.hasNextLine()) {
+			var line = f.getNextLine();
+			for (var k in keys) {
+				if (line.indexOf(k) != -1) {
+					keys[k].push({
+						file: fpath,
+						line: c
+					});
+				}
+			}
+			c += 1;
+		}
+		f.close();
+	}
+
 	if (shouldServe) {
-		fs.writeFileSync(path.join(langPath, 'all.json'), JSON.stringify(trans));
+		fs.writeFileSync(path.join(langPath, 'all.json'), JSON.stringify(_trans[id]));
 		_app.use('/simulate/' + id + '/lang/', etag.static(langPath));
 	}
 }
