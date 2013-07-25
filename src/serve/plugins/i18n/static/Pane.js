@@ -34,6 +34,10 @@ var TranslationCell = Class(squill.Cell, function() {
 		]
 	};
 
+	this.onClick = function() {
+		console.log(this._data.hits);
+	};
+
 	this.render = function() {
 		this.key.setLabel(this._data.key);
 		this.value.setLabel(this._data.value);
@@ -52,7 +56,9 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		]
 	};
 
-	this.buildTranslations = function(err, trans) {
+	this.buildTranslations = function(err, response) {
+		var trans = response.translations;
+		var keys = response.keys;
 		this.translationTabs.clear();
 		if (err) {
 			this.translationTabs.newPane({
@@ -68,7 +74,11 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 			for (var k in trans) {
 				var ds = new DataSource({ key: 'key' });
 				for (var key in trans[k]) {
-					ds.add({ key: key, value: trans[k][key] });
+					ds.add({
+						key: key,
+						value: trans[k][key],
+						hits: keys[key]
+					});
 				}
 				this.translationTabs.newPane({
 					className: 'mainPanel',
