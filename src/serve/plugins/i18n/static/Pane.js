@@ -57,8 +57,6 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	};
 
 	this.buildTranslations = function(err, response) {
-		var trans = response.translations;
-		var keys = response.keys;
 		this.translationTabs.clear();
 		if (err) {
 			this.translationTabs.newPane({
@@ -71,6 +69,8 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				}]
 			});
 		} else {
+			var trans = response.translations;
+			var keys = response.keys;
 			for (var k in trans) {
 				var ds = new DataSource({ key: 'key' });
 				for (var key in trans[k]) {
