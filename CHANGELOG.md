@@ -6,6 +6,7 @@
  - support for HEAD ajax requests
  - support for clearing squill TabbedPane
  - cleaned up synchronous PackageManager list functions
+ - iOS and Android plugins install npm dependencies before building
  - iOS support for plugin plists
  - iOS openURL passes along source application
  - run Android update on plugin libraries
