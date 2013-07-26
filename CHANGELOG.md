@@ -1,3 +1,23 @@
+## 0.1.30 (July 26, 2013)
+ - new device flag: isTablet, thanks to Jishnu Mohan
+ - ListView renderMargin spaces out cells, thanks to Mart Roosmaa
+ - various isometric game engine improvements, thanks to Christopher Hiller
+ - new internationalization tab in simulator
+ - support for HEAD ajax requests
+ - support for clearing squill TabbedPane
+ - cleaned up synchronous PackageManager list functions
+ - iOS and Android plugins install npm dependencies before building
+ - iOS support for plugin plists
+ - iOS openURL passes along source application
+ - run Android update on plugin libraries
+ - reverted to cacheless ImageScaleView with better margin handling
+ - fixed parentless fixedAspectRatio ImageViews
+ - fixed Android null pointer exception in audio edge case
+ - fixed memory leak in BoxLayout
+ - new addons
+   - Facebook
+   - SponsorPay
+
 ## 0.1.29 (July 19, 2013)
  - new TextEditView: embedded text input field with device keyboard
  - new engine option: scaleUI
