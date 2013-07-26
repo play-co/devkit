@@ -11,6 +11,7 @@
  - run Android update on plugin libraries
  - fixed parentless fixedAspectRatio ImageViews
  - fixed Android null pointer exception in audio edge case
+ - fixed memory leak in BoxLayout
  - new addons
    - Facebook
    - SponsorPay
