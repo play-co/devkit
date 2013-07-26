@@ -1,3 +1,19 @@
+## 0.1.30 (July 26, 2013)
+ - new device flag: isTablet, thanks to Jishnu Mohan
+ - ListView renderMargin spaces out cells, thanks to Mart Roosmaa
+ - new internationalization tab in simulator
+ - support for HEAD ajax requests
+ - support for clearing squill TabbedPane
+ - cleaned up synchronous PackageManager list functions
+ - iOS support for plugin plists
+ - iOS openURL passes along source application
+ - run Android update on plugin libraries
+ - fixed parentless fixedAspectRatio ImageViews
+ - fixed Android null pointer exception in audio edge case
+ - new addons
+   - Facebook
+   - SponsorPay
+
 ## 0.1.29 (July 19, 2013)
  - new TextEditView: embedded text input field with device keyboard
  - new engine option: scaleUI
