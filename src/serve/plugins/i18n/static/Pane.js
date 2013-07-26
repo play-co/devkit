@@ -19,8 +19,8 @@ import squill.Cell;
 import squill.TabbedPane;
 import squill.models.DataSource as DataSource;
 
+var hitsNode = null;
 var transHowTo = "You haven't set up any translations yet. Add your language-specific json files to resources/lang.";
-
 var TranslationCell = Class(squill.Cell, function() {
 	this._def = {
 		className: 'translationCell',
@@ -35,7 +35,7 @@ var TranslationCell = Class(squill.Cell, function() {
 	};
 
 	this.onClick = function() {
-		console.log(this._data.hits);
+		hitsNode.innerHTML = JSON.stringify(this._data.hits);
 	};
 
 	this.render = function() {
@@ -51,7 +51,6 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				className: 'topTabs',
 				id: 'translationTabs',
 				type: squill.TabbedPane,
-				panes: []
 			}
 		]
 	};
@@ -93,6 +92,19 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 						dataSource: ds
 					}]
 				});
+			}
+			var tt = this.translationTabs.getElement();
+			tt.style.height = (tt.parentNode.clientHeight - 200) + 'px';
+			var tcw = this.translationTabs.tabContentsWrapper;
+			tcw.style.height = (tcw.parentNode.clientHeight - 20) + 'px';
+			if (!hitsNode) {
+				hitsNode = document.createElement('div');
+				hitsNode.style.position = 'absolute';
+				hitsNode.style.bottom = '0px';
+				hitsNode.style.width = tcw.clientWidth + 'px';
+				hitsNode.style.height = '200px';
+				hitsNode.style.background = 'red';
+				tt.parentNode.appendChild(hitsNode);
 			}
 		}
 	};
