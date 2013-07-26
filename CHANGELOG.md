@@ -11,6 +11,7 @@
  - iOS openURL passes along source application
  - run Android update on plugin libraries
  - reverted to cacheless ImageScaleView with better margin handling
+ - added native shim to browser builds and set simulating native flag
  - fixed parentless fixedAspectRatio ImageViews
  - fixed Android null pointer exception in audio edge case
  - fixed memory leak in BoxLayout
