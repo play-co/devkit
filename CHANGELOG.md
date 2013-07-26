@@ -1,6 +1,7 @@
 ## 0.1.30 (July 26, 2013)
  - new device flag: isTablet, thanks to Jishnu Mohan
  - ListView renderMargin spaces out cells, thanks to Mart Roosmaa
+ - various isometric game engine improvements, thanks to Christopher Hiller
  - new internationalization tab in simulator
  - support for HEAD ajax requests
  - support for clearing squill TabbedPane
