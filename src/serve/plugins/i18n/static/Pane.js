@@ -19,8 +19,28 @@ import squill.Cell;
 import squill.TabbedPane;
 import squill.models.DataSource as DataSource;
 
-var hitsNode = null;
+var hitsDataSource = null;
 var transHowTo = "You haven't set up any translations yet. Add your language-specific json files to resources/lang.";
+
+var HitCell = Class(squill.Cell, function() {
+	this._def = {
+		className: 'translationCell',
+		children: [
+			{
+				id: 'file', type: 'label', className: 'translationKey'
+			},
+			{
+				id: 'line', type: 'label', className: 'translationValue'
+			}
+		]
+	};
+
+	this.render = function() {
+		this.file.setLabel(this._data.file);
+		this.line.setLabel(this._data.line);
+	};
+});
+
 var TranslationCell = Class(squill.Cell, function() {
 	this._def = {
 		className: 'translationCell',
@@ -35,7 +55,8 @@ var TranslationCell = Class(squill.Cell, function() {
 	};
 
 	this.onClick = function() {
-		hitsNode.innerHTML = JSON.stringify(this._data.hits);
+		hitsDataSource.clear();
+		hitsDataSource.add(this._data.hits);
 	};
 
 	this.render = function() {
@@ -51,6 +72,15 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				className: 'topTabs',
 				id: 'translationTabs',
 				type: squill.TabbedPane,
+			},
+			{
+				id: 'hitList',
+				className: 'darkPanel',
+				margin: 10,
+				type: 'list',
+				controller: this,
+				cellCtor: HitCell,
+				dataSource: hitsDataSource
 			}
 		]
 	};
@@ -71,6 +101,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 			var trans = response.translations;
 			var keys = response.keys;
 			for (var k in trans) {
+				hitsDataSource = new DataSource({});
 				var ds = new DataSource({ key: 'key' });
 				for (var key in trans[k]) {
 					ds.add({
@@ -92,19 +123,6 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 						dataSource: ds
 					}]
 				});
-			}
-			var tt = this.translationTabs.getElement();
-			tt.style.height = (tt.parentNode.clientHeight - 200) + 'px';
-			var tcw = this.translationTabs.tabContentsWrapper;
-			tcw.style.height = (tcw.parentNode.clientHeight - 20) + 'px';
-			if (!hitsNode) {
-				hitsNode = document.createElement('div');
-				hitsNode.style.position = 'absolute';
-				hitsNode.style.bottom = '0px';
-				hitsNode.style.width = tcw.clientWidth + 'px';
-				hitsNode.style.height = '200px';
-				hitsNode.style.background = 'red';
-				tt.parentNode.appendChild(hitsNode);
 			}
 		}
 	};
