@@ -19,7 +19,27 @@ import squill.Cell;
 import squill.TabbedPane;
 import squill.models.DataSource as DataSource;
 
+var hitsDataSource = null;
 var transHowTo = "You haven't set up any translations yet. Add your language-specific json files to resources/lang.";
+
+var HitCell = Class(squill.Cell, function() {
+	this._def = {
+		className: 'translationCell',
+		children: [
+			{
+				id: 'file', type: 'label', className: 'translationKey'
+			},
+			{
+				id: 'line', type: 'label', className: 'translationValue'
+			}
+		]
+	};
+
+	this.render = function() {
+		this.file.setLabel(this._data.file);
+		this.line.setLabel('line ' + this._data.line);
+	};
+});
 
 var TranslationCell = Class(squill.Cell, function() {
 	this._def = {
@@ -32,6 +52,11 @@ var TranslationCell = Class(squill.Cell, function() {
 				id: 'value', type: 'label', className: 'translationValue'
 			}
 		]
+	};
+
+	this.onClick = function() {
+		hitsDataSource.clear();
+		hitsDataSource.add(this._data.hits);
 	};
 
 	this.render = function() {
@@ -47,12 +72,19 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				className: 'topTabs',
 				id: 'translationTabs',
 				type: squill.TabbedPane,
-				panes: []
+			},
+			{
+				id: 'hitList',
+				className: 'darkPanel',
+				margin: 10,
+				type: 'list',
+				controller: this,
+				cellCtor: HitCell
 			}
 		]
 	};
 
-	this.buildTranslations = function(err, trans) {
+	this.buildTranslations = function(err, response) {
 		this.translationTabs.clear();
 		if (err) {
 			this.translationTabs.newPane({
@@ -65,10 +97,18 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				}]
 			});
 		} else {
+			var trans = response.translations;
+			var keys = response.keys;
+			hitsDataSource = new DataSource({});
+			this.hitList.setDataSource(hitsDataSource);
 			for (var k in trans) {
 				var ds = new DataSource({ key: 'key' });
 				for (var key in trans[k]) {
-					ds.add({ key: key, value: trans[k][key] });
+					ds.add({
+						key: key,
+						value: trans[k][key],
+						hits: keys[key]
+					});
 				}
 				this.translationTabs.newPane({
 					className: 'mainPanel',
