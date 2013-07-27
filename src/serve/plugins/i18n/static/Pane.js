@@ -37,7 +37,7 @@ var HitCell = Class(squill.Cell, function() {
 
 	this.render = function() {
 		this.file.setLabel(this._data.file);
-		this.line.setLabel(this._data.line);
+		this.line.setLabel('line ' + this._data.line);
 	};
 });
 
@@ -79,8 +79,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				margin: 10,
 				type: 'list',
 				controller: this,
-				cellCtor: HitCell,
-				dataSource: hitsDataSource
+				cellCtor: HitCell
 			}
 		]
 	};
@@ -100,8 +99,9 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 		} else {
 			var trans = response.translations;
 			var keys = response.keys;
+			hitsDataSource = new DataSource({});
+			this.hitList.setDataSource(hitsDataSource);
 			for (var k in trans) {
-				hitsDataSource = new DataSource({});
 				var ds = new DataSource({ key: 'key' });
 				for (var key in trans[k]) {
 					ds.add({

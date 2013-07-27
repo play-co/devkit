@@ -57,7 +57,8 @@ function serveProject (project) {
 	var srcPath = path.join(project.paths.root, 'src');
 	var files = wrench.readdirSyncRecursive(srcPath);
 	for (var i = 0; i < files.length; i++) {
-		var fpath = path.join(srcPath, files[i]);
+		var fname = files[i];
+		var fpath = path.join(srcPath, fname);
 		var f = new wrench.LineReader(fpath);
 		var c = 1;
 		while (f.hasNextLine()) {
@@ -66,7 +67,7 @@ function serveProject (project) {
 				if (line.indexOf(k) != -1) {
 					keys[k].push({
 						id: fpath + '.' + c,
-						file: fpath,
+						file: fname,
 						line: c
 					});
 				}
