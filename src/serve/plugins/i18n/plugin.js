@@ -65,6 +65,7 @@ function serveProject (project) {
 			for (var k in keys) {
 				if (line.indexOf(k) != -1) {
 					keys[k].push({
+						id: fpath + '.' + c,
 						file: fpath,
 						line: c
 					});
