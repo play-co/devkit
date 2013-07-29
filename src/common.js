@@ -98,6 +98,9 @@ exports.child = function (prog, args, opts, cont) {
 		if (isWindows) {
 			var cmdArgs = ['/c', prog].concat(args);
 			tool = child_process.execFile('cmd', cmdArgs, opts);
+			if (prog.indexOf("./") == 0) {
+				prog = prog.substring(2);
+			}
 		} else {
 			tool = child_process.execFile(prog, args, opts);
 		}
