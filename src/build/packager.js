@@ -401,6 +401,13 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 			{src: path.join(appDir, 'resources'), target: 'resources'}
 		];
 
+	// final resources dictionary
+	var resources = {
+			images: [],
+			imageMap: {},
+			other: []
+		};
+
 	// sprite directory
 	var relativeSpritesheetsDirectory = "spritesheets";
 	var spritesheetsDirectory = path.join(appDir, output, relativeSpritesheetsDirectory);
@@ -411,71 +418,74 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 	//  - get list of resource directories
 	var addons = exports.getAddonsForApp(project);
 	var buildAddons = {};
-	Object.keys(addons).forEach(function (addonName) {
-		var addon = addons[addonName];
-		if (addon.hasBuildPlugin()) {
-			try {
-				var buildAddon = require(addon.getPath('build'));
-				buildAddons[addonName] = buildAddon;
 
-				var addonConfig = project.getAddonConfig();
-				var directories = buildAddon.getResourceDirectories(addonConfig[addonName]);
-				if (isArray(directories)) {
-					directories.forEach(function (directory) {
-						resourceDirectories.push({
-							src: directory.src,
-							target: path.join('addons', addonName, directory.target)
+	var f = ff(this, function () {
+		Object.keys(addons).forEach(function (addonName) {
+			var addon = addons[addonName];
+			if (addon.hasBuildPlugin()) {
+				try {
+					var buildAddon = require(addon.getPath('build'));
+					buildAddons[addonName] = buildAddon;
+
+					var addonConfig = project.getAddonConfig();
+					var directories = buildAddon.getResourceDirectories(addonConfig[addonName]);
+					if (isArray(directories)) {
+						directories.forEach(function (directory) {
+							resourceDirectories.push({
+								src: directory.src,
+								target: path.join('addons', addonName, directory.target)
+							});
 						});
-					});
+					}
+				} catch (e) {
+					logger.error("Error initializing build addon", addonName, e);
 				}
+			}
+		}, this);
 
-				if (buildAddon.onBeforeBuild) {
-					// buildAddon.onBeforeBuild(project, target, appDir, output, f.wait());
+		for (var addonName in buildAddons) {
+			var onFinish = f.wait();
+			try {
+				if (buildAddons[addonName].onBeforeBuild) {
+					buildAddons[addonName].onBeforeBuild(common, project, target, appDir, output, onFinish);
 				}
 			} catch (e) {
-				logger.error("Failed to initialize the build addon", addonName, e);
+				onFinish();
+				logger.error("Error executing onBeforeBuild for addon", addonName, e);
 			}
 		}
-	}, this);
+	}, function () {
+		var onFinish = f.wait();
 
-	// which directory are we on (for async loop)
-	var currentIndex = 0;
+		// which directory are we on (for async loop)
+		var currentIndex = 0;
 
-	// final resources dictionary
-	var resources = {
-			images: [],
-			imageMap: {},
-			other: []
-		};
+		// sprite all directories and merge results (serially)
+		spriteNextDirectory();
 
-	// sprite all directories and merge results (serially)
-	spriteNextDirectory();
+		// async loop over all resource directories
+		function spriteNextDirectory() {
+			var directory = resourceDirectories[currentIndex];
+			if (directory) {
+				spriteDirectory(directory.src, directory.target, function (err, res) {
+					if (!err) {
+						// merge results
+						resources.images = resources.images.concat(res.spritesheets);
+						resources.other = resources.other.concat(res.other);
+						Object.keys(res.imageMap).forEach(function (key) {
+							resources.imageMap[key] = res.imageMap[key];
+						});
+					}
 
-	// async loop over all resource directories
-	function spriteNextDirectory() {
-		var directory = resourceDirectories[currentIndex];
-		if (directory) {
-			spriteDirectory(directory.src, directory.target, function (err, res) {
-				if (!err) {
-					// merge results
-					resources.images = resources.images.concat(res.spritesheets);
-					resources.other = resources.other.concat(res.other);
-					Object.keys(res.imageMap).forEach(function (key) {
-						resources.imageMap[key] = res.imageMap[key];
-					});
-				}
-
-				// next directory
-				++currentIndex;
-				spriteNextDirectory();
-			});
-		} else {
-			onFinish();
+					// next directory
+					++currentIndex;
+					spriteNextDirectory();
+				});
+			} else {
+				onFinish();
+			}
 		}
-	}
-
-	// after async loop
-	function onFinish() {
+	}, function () {
 		// add the spritesheetSizeMap to sprites list so that it gets 
 		// copied to the build directories properly as well.
 
@@ -484,30 +494,28 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 				relative: "resources/fonts/fontsheetSizeMap.json"
 			}));
 
-		var f = ff(function () {
-			// write spritesheet sizes and fontsheet sizes to json files
-			createSpritesheetSizeMap(resources.imageMap, appDir, output, f());
-		}, function (sizeMapPath) {
-			resources.other.push(new Resource({
-				fullPath: sizeMapPath,
-				relative: path.basename(sizeMapPath)
-			}));
+		// write spritesheet sizes and fontsheet sizes to json files
+		createSpritesheetSizeMap(resources.imageMap, appDir, output, f());
+	}, function (sizeMapPath) {
+		resources.other.push(new Resource({
+			fullPath: sizeMapPath,
+			relative: path.basename(sizeMapPath)
+		}));
 
-			var mapPath = path.join(spritesheetsDirectory, 'map.json');
+		var mapPath = path.join(spritesheetsDirectory, 'map.json');
 
-			// write out the new image map
-			fs.writeFile(mapPath, JSON.stringify(resources.imageMap), "utf8", f.wait());
+		// write out the new image map
+		fs.writeFile(mapPath, JSON.stringify(resources.imageMap), "utf8", f.wait());
 
-			// add to resources
-			var mapExt = path.extname(mapPath);
-			resources.other.push(new Resource({
-				relative: path.relative(path.resolve(appDir, output), mapPath),
-				fullPath: mapPath
-			}));
+		// add to resources
+		var mapExt = path.extname(mapPath);
+		resources.other.push(new Resource({
+			relative: path.relative(path.resolve(appDir, output), mapPath),
+			fullPath: mapPath
+		}));
 
-			f(resources);
-		}).cb(cb);
-	}
+		f(resources);
+	}).cb(cb);
 
 	// sprite a single directory
 	function spriteDirectory(srcDir, targetDir, cb) {
