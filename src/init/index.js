@@ -69,18 +69,13 @@ var initProject = function(template, dest){
 		var newLocation = dest;
 		var sdkLocation = path.join(__dirname, "..", "..", "sdk");
 
-		if (fs.existsSync(path.join(newLocation, 'manifest.json'))){
+		if (fs.existsSync(newLocation)) {
 			console.log("There's already a project at this location!");
 			return;
 		}
 
-		//create the new project directory
-		if (!fs.existsSync(newLocation)) {
-			wrench.mkdirSyncRecursive(newLocation);
-		}
-
 		//copy files from a template
-		wrench.copyDirSyncRecursive(templatePath, newLocation, {preserve:true});
+		wrench.copyDirSyncRecursive(templatePath, newLocation);
 
 		//create a symlink to the sdk
 		fs.symlinkSync(sdkLocation, path.join(newLocation, "sdk"), 'junction');
