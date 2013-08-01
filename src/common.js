@@ -96,6 +96,9 @@ exports.child = function (prog, args, opts, cont) {
 		//If we are on windows commands need to be sent through cmd so
 		//bat scripts can be executed
 		if (isWindows) {
+			if (prog.indexOf("./") == 0) {
+				prog = prog.substring(2);
+			}
 			var cmdArgs = ['/c', prog].concat(args);
 			tool = child_process.execFile('cmd', cmdArgs, opts);
 		} else {
