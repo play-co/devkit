@@ -2,7 +2,7 @@
 	"author": "The Game Closure SDK Team",
 	"name": "basil",
 	"description": "Basil - the Game Closure SDK",
-	"version": "0.1.28",
+	"version": "0.1.30",
 	"homepage": "http://github.com/gameclosure/",
 	"repository": {
 		"type": "git",
@@ -16,7 +16,7 @@
 		"cli-color": "0.1.7",
 		"express": "3.0.0rc3",
 		"uglify-js": "1.3.x",
-		"wrench": "~1.3.9",
+		"wrench": ">= 1.5.1",
 		"request": "~2.10.0",
 		"jash": ">= 0.1.1",
 		"socket.io": "~0.8.2",
