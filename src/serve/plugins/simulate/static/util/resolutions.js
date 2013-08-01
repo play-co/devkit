@@ -62,7 +62,7 @@ exports.defaults = {
 		}
 	},
 	ipad: {
-		name: 'iPad',
+		name: 'iPad 2',
 		target: 'native-ios',
 		canRotate: true,
 		canResize: false,
@@ -105,7 +105,7 @@ exports.defaults = {
 		}]
 	},
 	iphone: {
-		name: 'iPhone',
+		name: 'iPhone 4',
 		target: 'native-ios',
 		canRotate: true,
 		canResize: false,
@@ -121,7 +121,7 @@ exports.defaults = {
 	},
 	'iphone5': {
 		name: 'iPhone 5',
-		target: 'native-mobile',
+		target: 'native-ios',
 		devicePixelRatio: 2,
 		canRotate: true,
 		canResize: false,
@@ -137,7 +137,7 @@ exports.defaults = {
 	},
 	'iphone-browser': {
 		name: 'Mobile Safari',
-		target: 'browser-mobile',
+		target: 'browser-desktop',
 		userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3',
 		canRotate: true,
 		canResize: false,

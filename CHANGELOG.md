@@ -1,3 +1,51 @@
+## 0.1.30 (July 26, 2013)
+ - new device flag: isTablet, thanks to Jishnu Mohan
+ - ListView renderMargin spaces out cells, thanks to Mart Roosmaa
+ - various isometric game engine improvements, thanks to Christopher Hiller
+ - new internationalization tab in simulator
+ - support for HEAD ajax requests
+ - support for clearing squill TabbedPane
+ - cleaned up synchronous PackageManager list functions
+ - iOS and Android plugins install npm dependencies before building
+ - iOS support for plugin plists
+ - iOS openURL passes along source application
+ - run Android update on plugin libraries
+ - reverted to cacheless ImageScaleView with better margin handling
+ - added native shim to browser builds and set simulating native flag
+ - fixed parentless fixedAspectRatio ImageViews
+ - fixed Android null pointer exception in audio edge case
+ - fixed memory leak in BoxLayout
+ - new addons
+   - Facebook
+   - SponsorPay
+
+## 0.1.29 (July 19, 2013)
+ - new TextEditView: embedded text input field with device keyboard
+ - new engine option: scaleUI
+ - new device flags: isIOSSimulator, isAndroidSimulator
+ - better ImageScaleView
+   - cache slice data instead of calculating every time
+   - compute cover clipping bounds instead of setting clip to true
+ - faster ScoreView
+ - full support for base64 images
+ - GestureView drag deltas work with scale
+ - improved basil path finder
+ - improved iOS OpenURL handler
+ - addon improvements
+   - support frameworks, bundles, and dependencies
+   - cleaner error handling for missing addons and JSON configuration
+ - new addons
+   - AirPush
+   - Amplitude
+   - AppFlood
+   - Appnext
+   - Flurry
+   - InMobi
+   - LeadBolt
+   - MoPub
+   - TapForTap
+   - Tapjoy
+
 ## 0.1.28 (July 12, 2013)
  - iOS support for addon frameworks and dynlib, thanks to Mart Roosmaa
  - improved layers and tools for isometric game engine, thanks to Christopher Hiller
