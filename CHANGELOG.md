@@ -13,6 +13,7 @@
  - windows installer omits './' from script invocations
  - on Android, pause/resume sounds on pause/resume
  - improved Image error handling
+ - fixed GestureView multitouch
  - fixed duplicate subscriptions in CellView
  - fixed undefined NATIVE.timer.stop reference
  - high accuracy mode for geoloc plugin
