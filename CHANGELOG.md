@@ -14,6 +14,7 @@
  - on Android, pause/resume sounds on pause/resume
  - improved Image error handling
  - monkey patched wrench LineReader (until wrench 1.5.2 release)
+ - installation script asks for user input immediately to avoid error 0
  - fixed GestureView multitouch
  - fixed duplicate subscriptions in CellView
  - fixed undefined NATIVE.timer.stop reference
