@@ -19,6 +19,7 @@
  - fixed duplicate subscriptions in CellView
  - fixed undefined NATIVE.timer.stop reference
  - fixed native clipping with rotation
+ - fixed windows installation git stashing
  - high accuracy mode for geoloc plugin
  - new translation example
  - new cover/contain ImageScaleView example
