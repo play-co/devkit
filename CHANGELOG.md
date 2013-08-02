@@ -13,9 +13,11 @@
  - windows installer omits './' from script invocations
  - on Android, pause/resume sounds on pause/resume
  - improved Image error handling
+ - monkey patched wrench LineReader (until wrench 1.5.2 release)
  - fixed GestureView multitouch
  - fixed duplicate subscriptions in CellView
  - fixed undefined NATIVE.timer.stop reference
+ - fixed native clipping with rotation
  - high accuracy mode for geoloc plugin
  - new translation example
  - new cover/contain ImageScaleView example
