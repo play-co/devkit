@@ -116,9 +116,8 @@ if [[ "$1" != "--silent" ]]; then
 
 	if [[ `uname` == MINGW32* ]]; then
 		npm link --local
-		echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
+		SYSTEM_WIDE_INSTALL=true
 	else
-
 		if [[ $SYSTEM_WIDE_INSTALL == true ]]; then
 			echo
 			echo 'Trying to link from /usr/local with sudo.  You may be prompted for your root password.'
@@ -135,14 +134,13 @@ if [[ "$1" != "--silent" ]]; then
 				SYSTEM_WIDE_INSTALL=false
 			fi
 		fi
+	fi
 
-
-		if [[ $SYSTEM_WIDE_INSTALL == false ]]; then
-			echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m'  "Type \"$BASIL_ROOT/bin/basil\" to begin."
-			echo "+ Suggestion: You may wish to add $BASIL_ROOT/bin to your \$PATH"
-		else
-			echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
-		fi
+	if [[ $SYSTEM_WIDE_INSTALL == false ]]; then
+		echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m'  "Type \"$BASIL_ROOT/bin/basil\" to begin."
+		echo "+ Suggestion: You may wish to add $BASIL_ROOT/bin to your \$PATH"
+	else
+		echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
 	fi
 
 fi
