@@ -58,6 +58,20 @@ if [[ ! -w "$HOME/.npm" ]]; then
 		exit 1
 fi
 
+# Prompt for global install early to avoid error: 0 problem
+SYSTEM_WIDE_INSTALL=false
+
+if [[ "$1" != "--silent" ]]; then
+	if [[ `uname` != MINGW32* ]]; then
+		read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [Y/n] ?" -n 1 -r
+		echo
+
+		if [[ ($REPLY != 'n') && ($REPLY != 'N') ]]; then
+			SYSTEM_WIDE_INSTALL=true
+		fi
+	fi
+fi
+
 #
 # Install
 #
@@ -97,25 +111,14 @@ node src/dependencyCheck.js
 if [[ "$1" != "--silent" ]]; then
 	node src/analytics.js
 
-	# Work around a known issue with older versions of
-	# node where stdin is left in non-blocking mode.
-	# Reset stdin handle
-	exec 0<"/dev/stdin"
-
-	echo 
-
 	CURRENT_BASIL_PATH=$(which basil)
 	TARGET_BASIL_PATH="$BASIL_ROOT/bin/basil"
-	SYSTEM_WIDE_INSTALL=false
 
 	if [[ `uname` == MINGW32* ]]; then
 		npm link --local
-		echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
+		SYSTEM_WIDE_INSTALL=true
 	else
-		read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [N/y] ?" -n 1 -r
-		echo
-
-		if [[ ($REPLY == 'y') || ($REPLY == 'Y') ]]; then
+		if [[ $SYSTEM_WIDE_INSTALL == true ]]; then
 			echo
 			echo 'Trying to link from /usr/local with sudo.  You may be prompted for your root password.'
 			SYSTEM_WIDE_INSTALL=true
@@ -131,14 +134,13 @@ if [[ "$1" != "--silent" ]]; then
 				SYSTEM_WIDE_INSTALL=false
 			fi
 		fi
+	fi
 
-
-		if [[ $SYSTEM_WIDE_INSTALL == false ]]; then
-			echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m'  "Type \"$BASIL_ROOT/bin/basil\" to begin."
-			echo "+ Suggestion: You may wish to add $BASIL_ROOT/bin to your \$PATH"
-		else
-			echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
-		fi
+	if [[ $SYSTEM_WIDE_INSTALL == false ]]; then
+		echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m'  "Type \"$BASIL_ROOT/bin/basil\" to begin."
+		echo "+ Suggestion: You may wish to add $BASIL_ROOT/bin to your \$PATH"
+	else
+		echo $'\033[1;32mSuccessfully installed. -{{{>\033[0m  Type "basil" to begin.'
 	fi
 
 fi
