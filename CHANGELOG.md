@@ -1,3 +1,25 @@
+## 0.1.31 (August 2, 2013)
+ - simulator translation tab shows translation key hits in source files
+ - restored caching ImageScaleView
+ - NativeInspector
+   - resource profiles persist on disconnect
+   - improved info window sizing logic
+ - prevent resource loading threads from stepping on each others' toes
+ - use safer png error construct
+ - no forced reflow on native platforms
+ - proper stringification of example appIDs
+ - jni event batching
+ - basil init works with latest wrench
+ - windows installer omits './' from script invocations
+ - on Android, pause/resume sounds on pause/resume
+ - improved Image error handling
+ - fixed duplicate subscriptions in CellView
+ - fixed undefined NATIVE.timer.stop reference
+ - high accuracy mode for geoloc plugin
+ - new translation example
+ - new cover/contain ImageScaleView example
+ - new metaps addon
+
 ## 0.1.30 (July 26, 2013)
  - new device flag: isTablet, thanks to Jishnu Mohan
  - ListView renderMargin spaces out cells, thanks to Mart Roosmaa
