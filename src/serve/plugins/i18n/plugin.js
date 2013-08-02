@@ -85,4 +85,13 @@ function serveProject (project) {
 
 exports.load = function (app) {
 	_app = app;
+
+	// monkey patch wrench LineReader
+	wrench.LineReader.prototype.getNextLine = function() {
+	    var lineEnd = this.buffer.indexOf("\n"),
+	        result = this.buffer.substring(0, lineEnd != -1 ? lineEnd : this.buffer.length);
+
+	    this.buffer = this.buffer.substring(result.length + 1, this.buffer.length);
+	    return result;
+	};
 };
