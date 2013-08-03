@@ -1,4 +1,5 @@
 ## 0.1.31 (August 2, 2013)
+ - new adventure map library and demo game
  - simulator translation tab shows translation key hits in source files
  - restored caching ImageScaleView
  - NativeInspector
