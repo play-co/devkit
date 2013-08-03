@@ -40,3 +40,6 @@
 [submodule "lib/adventuremap"]
 	path = lib/adventuremap
 	url = https://github.com/gameclosure/adventuremap.git
+[submodule "projects/demoAdventureMap"]
+	path = projects/demoAdventureMap
+	url = https://github.com/gameclosure/demoAdventureMap.git
