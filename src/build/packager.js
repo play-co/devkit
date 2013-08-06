@@ -161,6 +161,7 @@ function getConfigObject (project, opts, target) {
 	config.handshakeEnabled = manifest.handshakeEnabled;
 	config.shortName = manifest.shortName;
 	config.title = manifest.title;
+	config.titles = manifest.titles;
 	config.fonts = manifest.fonts;
 	config.disableNativeViews = manifest.disableNativeViews || false;
 	config.unlockViewport = manifest.unlockViewport;
