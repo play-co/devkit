@@ -28,7 +28,7 @@ exports.defaults = {
 		canResize: true
 	},
 	browser: {
-		name: 'Browser',
+		name: 'Browser (600x800)',
 		target: 'browser-desktop',
 		canRotate: false,
 		canResize: true,
@@ -47,7 +47,7 @@ exports.defaults = {
 		}
 	},
 	facebook: {
-		name: 'Facebook',
+		name: 'Facebook (600x760)',
 		target: 'browser-desktop',
 		canRotate: false,
 		canResize: false,
@@ -62,7 +62,7 @@ exports.defaults = {
 		}
 	},
 	ipad: {
-		name: 'iPad',
+		name: 'iPad 2 (768x1024)',
 		target: 'native-ios',
 		canRotate: true,
 		canResize: false,
@@ -82,8 +82,30 @@ exports.defaults = {
 			offsetY: 49
 		}]
 	},
+	'ipad3': {
+		name: 'iPad 3 (1536x2048)',
+		target: 'native-ios',
+		devicePixelRatio: 2,
+		canRotate: true,
+		canResize: false,
+		width: 1536,
+		height: 2048,
+		background: [{
+			img: 'ipad.png',
+			width: 1720,
+			height: 2260,
+			offsetX: 98,
+			offsetY: 104
+		}, {
+			img: 'ipad-horiz.png',
+			width: 2250,
+			height: 1720,
+			offsetX: 102,
+			offsetY: 98
+		}]
+	},
 	nexus: {
-		name: 'Nexus S',
+		name: 'Nexus S (480x800)',
 		target: 'native-android',
 		canRotate: true,
 		canResize: false,
@@ -105,7 +127,7 @@ exports.defaults = {
 		}]
 	},
 	iphone: {
-		name: 'iPhone',
+		name: 'iPhone 3GS (320x480)',
 		target: 'native-ios',
 		canRotate: true,
 		canResize: false,
@@ -119,9 +141,25 @@ exports.defaults = {
 			offsetY: 141
 		}
 	},
+	'iphone4': {
+		name: 'iPhone 4 (640x960)',
+		target: 'native-ios',
+		devicePixelRatio: 2,
+		canRotate: true,
+		canResize: false,
+		height: 960,
+		width: 640,
+		background: {
+			img: 'iphone.png',
+			width: 800,
+			height: 1520,
+			offsetX: 84,
+			offsetY: 282
+		}
+	},
 	'iphone5': {
-		name: 'iPhone 5',
-		target: 'native-mobile',
+		name: 'iPhone 5 (640x1136)',
+		target: 'native-ios',
 		devicePixelRatio: 2,
 		canRotate: true,
 		canResize: false,
@@ -136,8 +174,8 @@ exports.defaults = {
 		}
 	},
 	'iphone-browser': {
-		name: 'Mobile Safari',
-		target: 'browser-mobile',
+		name: 'Mobile Safari (320x480)',
+		target: 'browser-desktop',
 		userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3',
 		canRotate: true,
 		canResize: false,
@@ -162,7 +200,7 @@ exports.defaults = {
 		}]
 	},
 	'galaxy-nexus': {
-		name: 'Galaxy Nexus',
+		name: 'Galaxy Nexus (720x1184)',
 		target: 'native-android',
 		canRotate: true,
 		canResize: false,
