@@ -1,3 +1,22 @@
+## 0.1.32 (August 8, 2013)
+ - titleless ButtonView TextView height fix, thanks to Ramprasad Rajendran
+ - more simulation targets, and all targets show dimensions
+ - basil build defaults to release mode
+ - improved splash screen choosing logic
+ - support for xxhigh-resolution devices such as Nexus 10
+ - ImageScaleView respects margins
+ - Android debug logs enabled based on build type and new --logging flag
+ - --install flag no longer clears localStorage
+ - new --clearstorage flag clears localStorage
+ - new hook for plugin key listeners
+ - NATIVE.events shim
+ - using latest ff (0.1.4)
+ - fixed BoxLayout resize bug
+ - fixed native texture memory leak
+ - fixed iOS test app
+ - platformer supports Ouya
+ - new ouya addon
+
 ## 0.1.31 (August 2, 2013)
  - new adventure map library and demo game
  - simulator translation tab shows translation key hits in source files
