@@ -8,14 +8,14 @@
  - Android debug logs enabled based on build type and new --logging flag
  - --install flag no longer clears localStorage
  - new --clearstorage flag clears localStorage
- - new hook for plugin key listeners
- - NATIVE.events shim
- - using latest ff (0.1.4)
+ - new hook for plugin key listeners for OUYA plugin
+ - NATIVE.events shim to allow plugins in web simulation mode
+ - updated to latest ff (0.1.4)
  - fixed BoxLayout resize bug
- - fixed native texture memory leak
- - fixed iOS test app
- - platformer supports Ouya
- - new ouya addon
+ - fixed native texture memory leak in iOS testapp
+ - fixed iOS testapp
+ - platformer example supports OUYA
+ - new OUYA addon
 
 ## 0.1.31 (August 2, 2013)
  - new adventure map library and demo game
