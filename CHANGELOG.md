@@ -1,3 +1,14 @@
+## 0.1.33 (August 16, 2013)
+ - Chartboost interstitials, thanks to Ramprasad Rajendran
+ - new ui widget: Toast
+ - device.stayAwake(true/false)
+ - faster SpriteView
+ - enforceAspectRatio finds layout dimensions on style instead of opts
+ - StackView.push forces y to zero, ensuring tidy view stack
+ - improved NATIVE shim
+ - fixed Android vertical text alignment when drawing directly to canvas
+ - fixed adb uninstall with clearstorage flag
+
 ## 0.1.32 (August 8, 2013)
  - titleless ButtonView TextView height fix, thanks to Ramprasad Rajendran
  - more simulation targets, and all targets show dimensions
