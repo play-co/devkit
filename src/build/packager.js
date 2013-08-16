@@ -163,6 +163,7 @@ function getConfigObject (project, opts, target) {
 	config.title = manifest.title;
 	config.titles = manifest.titles;
 	config.fonts = manifest.fonts;
+	config.addons = manifest.addons;
 	config.disableNativeViews = manifest.disableNativeViews || false;
 	config.unlockViewport = manifest.unlockViewport;
 	config.useDOM = !!manifest.useDOM;
