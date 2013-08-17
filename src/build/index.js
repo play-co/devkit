@@ -98,8 +98,8 @@ function build (dir, target, opts, next) {
 		}
 	}
 
-	if (opts.where) {
-		opts.buildPath = path.resolve(project.paths.root, opts.where);
+	if (opts.outputDir) {
+		opts.buildPath = path.resolve(project.paths.root, opts.outputDir);
 	} else {
 		opts.buildPath = path.join(project.paths.root, 'build', releasePath);
 	}
@@ -155,9 +155,8 @@ function exec (args, config, next) {
 		.string('servicesURL')
 			.describe('servicesURL', '[server] internal use only')
 
-		.string('where')
-			.alias('where', 'w')
-			.describe('where', '[sdk] ')
+		.string('outputDir')
+			.describe('outputDir', '[sdk] ')
 
 		.boolean('isSimulated')
 			.default('isSimulated', false)
