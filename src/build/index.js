@@ -156,7 +156,6 @@ function exec (args, config, next) {
 			.describe('servicesURL', '[server] internal use only')
 
 		.string('outputDir')
-			.alias('outputDir', 'o')
 			.describe('outputDir', '[sdk] ')
 
 		.boolean('isSimulated')
