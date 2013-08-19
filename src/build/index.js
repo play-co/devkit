@@ -137,11 +137,11 @@ function exec (args, config, next) {
 
 	var optimistParser = new Optimist(args)
 		.boolean('debug')
-			.default('debug', config.template !== "release")
+			.default('debug', config.template == "debug")
 			.describe('debug', '[native] builds a version with debugging support')
 
 		.boolean('compress')
-			.default('compress', config.template !== "debug")
+			.default('compress', config.template == "release")
 			.describe('compress', '[js] minifies JavaScript files')
 		
 		.boolean('stage')
