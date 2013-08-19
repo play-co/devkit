@@ -20,7 +20,9 @@ import squill.TabbedPane;
 import squill.models.DataSource as DataSource;
 
 var hitsDataSource = null;
-var transHowTo = "You haven't set up any translations yet. Add your language-specific json files to resources/lang.";
+var transText = "You haven't set up any translations yet. Add your language-specific json files to resources/lang.";
+var transLink = "http://doc.gameclosure.com/example/images-cover-contain/";
+var transLinkText = "Check out our internationalization example";
 
 var HitCell = Class(squill.Cell, function() {
 	this._def = {
@@ -92,7 +94,13 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 				title: 'no translations yet!',
 				children: [{
 					id: 'noTranslations',
-					text: transHowTo,
+					text: transText,
+					style: { padding: '20px' }
+				}, {
+					id: 'noTranslationsLink',
+					tag: 'a',
+					text: transLinkText,
+					attrs: { href: transLink },
 					style: { padding: '20px' }
 				}]
 			});
