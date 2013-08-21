@@ -18,6 +18,7 @@
 
 var path = require('path');
 var fs = require('fs');
+var ff = require('ff');
 var optimist = require('optimist');
 var wrench = require('wrench');
 var clc = require('cli-color');
@@ -187,15 +188,47 @@ function exec (args, config, next) {
 	argv.template = config.template;
 
 	build('.', target, argv, function (failed) {
-		
-		if (!failed) {
-			logger.log('\nFinished building.');
-			common.endTime('build');
-		}
 
-		jvmtools.stop(next || function () { });
-		if(next) next(failed);
-		else process.exit(failed ? 2 : 0);
+		var f = ff(function() {
+			if (!failed) {
+				//run after build plugin cbs
+				var project = packageManager.load('.');
+				var addons = packager.getAddonsForApp(project);
+				var buildAddons = {};
+				var group = f.group();
+				Object.keys(addons).forEach(function (addonName) {
+					var addon = addons[addonName];
+					if (addon.hasBuildPlugin()) {
+						try {
+							var buildAddon = require(addon.getPath('build'));
+							buildAddons[addonName] = buildAddon;
+
+						} catch (e) {
+							logger.error("Error initializing build addon", addonName, e);
+						}
+					}
+				}, this);
+
+				for (var addonName in buildAddons) {
+					try {
+						if (buildAddons[addonName].onAfterBuild) {
+							buildAddons[addonName].onAfterBuild(exports, common, project, target, group.slot());
+						}
+					} catch (e) {
+						f.succeed();
+						logger.error("Error executing onAfterBuild for addon", addonName, e);
+					}
+				}
+				logger.log('\nFinished building.');
+				common.endTime('build');
+			}
+
+		}, function() {
+			jvmtools.stop(next || function () { });
+			if(next) next(failed);
+			else process.exit(failed ? 2 : 0);
+		});
+
 	});
 }
 

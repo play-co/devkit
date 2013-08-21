@@ -161,7 +161,9 @@ function getConfigObject (project, opts, target) {
 	config.handshakeEnabled = manifest.handshakeEnabled;
 	config.shortName = manifest.shortName;
 	config.title = manifest.title;
+	config.titles = manifest.titles;
 	config.fonts = manifest.fonts;
+	config.addons = manifest.addons;
 	config.disableNativeViews = manifest.disableNativeViews || false;
 	config.unlockViewport = manifest.unlockViewport;
 	config.useDOM = !!manifest.useDOM;
@@ -400,6 +402,22 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 	var resourceDirectories = [
 			{src: path.join(appDir, 'resources'), target: 'resources'}
 		];
+
+	// sprite any localized resources
+	var allFiles = fs.readdirSync(appDir);
+	for (var i = 0; i < allFiles.length; i++) {
+		try {
+			var fileName = allFiles[i];
+			var filePath = path.join(appDir, fileName);
+			var statInfo = fs.statSync(filePath);
+			var localLoc = fileName.indexOf('resources-');
+			if (statInfo.isDirectory() && localLoc == 0) {
+				resourceDirectories.push({src: filePath, target: fileName}); 
+			}
+		} catch (exception) {
+			//do nothing if the file stat fails
+		}
+	}
 
 	// final resources dictionary
 	var resources = {
