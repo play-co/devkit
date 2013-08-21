@@ -155,8 +155,19 @@ function updateIcons (templatePath, projectPath, icons) {
 function getConfigObject (project, opts, target) {
 	var manifest = project.manifest;
 	var config = JSON.parse(JSON.stringify(CONFIG_GLOBAL_TEMPLATE));
-	
-	// Augment config object with manifest properties.
+
+	// TODO: move this code/refactor android package naming
+	// This code for the android package name should not be here (but is here so
+	// browser android builds can also get the android package)
+	var packageName = "";
+	if (manifest.studio && manifest.studio.domain && manifest.shortName) {
+		var names = manifest.studio.domain.split(/\./g).reverse();
+		var studio = names.join('.');
+		var shortName = manifest.shortName;
+		packageName = studio + "." + shortName;
+	}
+
+// Augment config object with manifest properties.
 	config.appID = manifest.appID;
 	config.handshakeEnabled = manifest.handshakeEnabled;
 	config.shortName = manifest.shortName;
@@ -167,6 +178,8 @@ function getConfigObject (project, opts, target) {
 	config.disableNativeViews = manifest.disableNativeViews || false;
 	config.unlockViewport = manifest.unlockViewport;
 	config.useDOM = !!manifest.useDOM;
+	config.packageName = packageName;
+	config.bundleID = manifest.ios.bundleID || "example.bundle" 
 	
 	// for noodletown invites
 	config.mpMetricsKey = manifest.mpMetricsKey;
