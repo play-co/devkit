@@ -73,7 +73,7 @@ function createSDKSymlink (dir, next) {
 	}
 }
 
-var targetNames = ['native-android', 'native-ios', /*'browser-mobile',*/ 'browser-desktop'];
+var _targetNames = [];
 
 function build (dir, target, opts, next) {
 	var project = packageManager.load(dir);
@@ -166,11 +166,11 @@ function exec (args, config, next) {
 
 		.usage('Usage: ' + clc.greenBright('basil build') + clc.yellowBright(' [target]\n\n')
 			+ 'where ' + clc.yellowBright('[target]') + ' is one of:\n\n'
-			+ '\t' + targetNames.join('\n\t'));
+			+ '\t' + _targetNames.join('\n\t'));
 
 	var argv = optimistParser.argv;
 	var target = argv._[0] && argv._[0].toLowerCase();
-	if (!target || targetNames.indexOf(target) == -1) {
+	if (!target || _targetNames.indexOf(target) == -1) {
 
 		if (!target) {
 			logger.error('no target provided\n');
@@ -250,8 +250,15 @@ exports.git = require("./git");
 exports.JsioCompiler = compile.JsioCompiler;
 
 var _targets = {};
-exports.registerTarget = function (target, path) {
+exports.registerTarget = function (target, path, subtargets) {
 	_targets[target] = path;
+	if (subtargets) {
+		for (var ii = 0; ii < subtargets.length; ++ii) {
+			_targetNames.push(subtargets[ii]);
+		}
+	} else {
+		_targetNames.push(target);
+	}
 }
 
 exports.getTargets = function () {
