@@ -15,52 +15,36 @@
 
 var $ = require('jash');
 var fs = require('fs');
-var async = require('async');
+var ff = require('ff');
 var common = require('../common');
 var logger = new common.Formatter('spritesheetMap');
 
-exports.create = function(path, prependDir, targetFilename) {
-	if (!fs.exists(path)) {
-		fs.writeFile(path + "/" + targetFilename + ".json", JSON.stringify({}), 'utf8', function (err) {
-			if (err) {
-				logger.log(err);
-			} else  {
-				logger.log("wrote " + targetFilename + ".json to " + path);
-			}
-		});
+exports.create = function(path, prependDir, targetFilename, cb) {
+	var f = ff(function () {
+		fs.readdir(path, f());
+	}, function (files) {
+		var fontsheetMap = {};
+		f(fontsheetMap);
 
-		return;
-	}
-	
-	async.parallel(fs.readdirSync(path).filter(function(f) {
-		return /png$/.test(f);
-	}).map(function(f) {
-		var filename = path + '/' + f;
-		var prepend = prependDir ? prependDir + "/" : "";
-		var newPath = prepend + f;
-		var ret = {};
-		ret[newPath] = function(cb) {
-			$.file(filename, function(s, o, e) {
+		files.filter(function(filename) {
+			return /\.png$/i.test(filename);
+		}).forEach(function(filename) {
+			var fullPath = path + '/' + filename;
+			var targetPath = (prependDir ? prependDir + "/" : "") + filename;
+			var cb = f.wait();
+			$.file(fullPath, function(s, o, e) {
 				var parts = o.split(' ');
-				cb(null, {
+				fontsheetMap[targetPath] = {
 					w: +parts[4],
 					h: +parts[6].slice(0, -1)
-				});
+				};
+
+				cb();
 			});
-		};
-		return ret;
-	}).reduce(function(memo, desc) {
-		Object.keys(desc).forEach(function(k) {
-			memo[k] = desc[k];
-		});		
-		return memo;
-	}, {}), function(e, o) {
-		fs.writeFile(path + "/" + targetFilename + ".json", JSON.stringify(o), function(err) {
-			if(err) {
-				logger.log(err);
-			} else {
-				logger.log("wrote " + targetFilename + ".json to " + path);
-			}
-		}); 
-	});
+		});
+	}, function (fontsheetMap) {
+		fs.writeFile(targetFilename, JSON.stringify(fontsheetMap), f());
+	}, function() {
+		logger.log("wrote " + targetFilename + ".json to " + path);
+	}).cb(cb);
 };
