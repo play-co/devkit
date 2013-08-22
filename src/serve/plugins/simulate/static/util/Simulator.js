@@ -143,18 +143,6 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 				this._resizer.startDrag();
 			});
 
-		//add actual simulator frame to html.
-		this._frame = this.addWidget({
-			before: this._loadingImg,
-			tag: 'iframe',
-			id: '_frame',
-			attrs: {
-				name: this._name
-			},
-			src: 'about:blank',
-			className: 'frame'
-		});
-
 		/*
 		this._frame.onload = bind(this, function () {
 			// Focus this frame.
@@ -330,12 +318,25 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			rotation: 'none'
 		});
 
-		// always reload by redirecting through about:blank
-		this._frame.src = 'about:blank';
-		setTimeout(bind(this, function () {
-			this._frame.src = url;
-			next && next(err, res);
-		}), 0);
+		if (this._frame) {
+			$.remove(this._frame);
+		}
+
+		//add actual simulator frame to html.
+		this._frame = this.addWidget({
+			before: this._loadingImg,
+			tag: 'iframe',
+			id: '_frame',
+			attrs: {
+				name: this._name
+			},
+			src: url,
+			className: 'frame'
+		});
+
+		this.update();
+		
+		next && next(err, res);
 	};
 
 	this._rebuildKeyListener = function (e) {
@@ -420,6 +421,14 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		return this._params.devicePixelRatio || 1;
 	}
 	
+	this._setFrameSize = function (width, height) {
+		if (this._frame) {
+			var s = this._frame.style;
+			s.width = width + 'px';
+			s.height = height + 'px';
+		}
+	}
+
 	this.update = function () {
 		var parent = this._parent;
 		var params = this._params;
@@ -439,10 +448,6 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			height = h;
 		}
 
-		var s = this._frame.style;
-		s.WebkitTransform = cssScale;
-		s.WebkitTransformOrigin = "0px 0px";
-
 		this._width = width * scale;
 		this._height = height * scale;
 
@@ -454,26 +459,25 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			screenSize = params.screenSize;
 		}
 
+		if (this._frame) {
+			var s = this._frame.style;
+			s.WebkitTransform = cssScale;
+			s.WebkitTransformOrigin = "0px 0px";
+		}
+
 		var frameStyle = this._frameWrapper.style;
 		if (screenSize) {
-			s.width = screenSize.width + 'px';
-			s.height = screenSize.height + 'px';
-
+			this._setFrameSize(screenSize.width, screenSize.height);
 			frameStyle.width = screenSize.width * scale + 'px';
 			frameStyle.height = screenSize.height * scale + 'px';
 		} else if (width && height) {
-
-			s.width = width + 'px';
-			s.height = height + 'px';
-
+			this._setFrameSize(width, height);
 			frameStyle.width = width * scale + 'px';
 			frameStyle.height = height * scale + 'px';
 		} else {
 			frameStyle.width = '100%';
 			frameStyle.height = '100%';
-
-			s.width = width + 'px';
-			s.height = height + 'px';
+			this._setFrameSize(width, height);
 		}
 
 		switch (params.name) {
