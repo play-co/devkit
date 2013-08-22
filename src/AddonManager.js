@@ -380,15 +380,20 @@ var AddonManager = Class(EventEmitter, function () {
 			fs.exists(jsPath, f.slotPlain());
 		}, function (jsPathExists) {
 			if (jsPathExists) {
-				logger.log("Installing plugin JS path:", jsPath);
-
 				// Remove old symlink if it exists
+				var create = true;
 				if (fs.existsSync(linkPath)) {
-					fs.unlinkSync(linkPath);
+					if (fs.readlinkSync(linkPath) != jsPath) {
+						fs.unlinkSync(linkPath);
+					} else {
+						create = false;
+					}
 				}
 
 				// Add new JS symlink
-				fs.symlink(jsPath, linkPath, 'junction', f.wait());
+				if (create) {
+					fs.symlink(jsPath, linkPath, 'junction', f.wait());
+				}
 			} else {
 				// Stop ff call chain here
 				f.succeed();
