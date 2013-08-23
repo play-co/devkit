@@ -1,3 +1,20 @@
+## 0.1.34 (August 23, 2013)
+ - squill Selection.deselectAll resets collection count, thanks to Mart Roosmaa
+ - activity injection for Android plugins
+ - adventuremap tag removal functions
+ - link from i18n simulator panel to i18n example
+ - corrected debug/compress build defaults
+ - ScrollView useLayoutBounds sets all bounds for all layouts (default=false)
+ - ScrollView input event cancellation to support ScrollView nesting
+ - ImageScaleView.setImage clears cache
+ - ImageScaleView.updateOpts calls setImage whenever image is present
+ - ImageScaleView 3slice accounts for margins
+ - fixed ImageScaleView cover mode with spritesheets
+ - fixed open/outputDir option conflict (removed outputDir o alias)
+ - fixed Windows remote debugger
+ - new localnotify example
+ - new localnotify addon
+
 ## 0.1.33 (August 16, 2013)
  - Chartboost interstitials, thanks to Ramprasad Rajendran
  - new ui widget: Toast
