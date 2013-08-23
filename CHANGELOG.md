@@ -1,6 +1,7 @@
 ## 0.1.34 (August 23, 2013)
  - squill Selection.deselectAll resets collection count, thanks to Mart Roosmaa
  - activity injection for Android plugins
+ - TTF support for iOS test app
  - adventuremap tag removal functions
  - link from i18n simulator panel to i18n example
  - corrected debug/compress build defaults
