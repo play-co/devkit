@@ -26,6 +26,7 @@ var argv = require('optimist')
 	.describe('channel', 'Specify a channel (e.g "beta").').alias('channel', 'c').default('channel', 'release')
 	.describe('list-channel', 'List possible channels.').alias('list-channel', 'l').default('list-channel', false)
 	.describe('list-version', 'List possible channels.').alias('list-version', 'v').default('list-version', false)
+	.describe('reapply-changes', 'Stash and reapply your changes.').alias('reapply-changes', 'r').default('reapply-changes', false)
 	.describe('help', 'Show options.').alias('help', 'h').default('help', false)
 	.argv;
 
@@ -142,8 +143,10 @@ exports.update = function (tag, next) {
 		console.log("Checking out version", tag.toString());
 		common.child('git', ['checkout', '--force', tag.toString()], defaultChildArgs, f.wait());
 	}, function () {
-		console.log("Applying changes to SDK");
-		common.child('git', ['stash', 'pop'], defaultChildArgs, f.wait());
+		if (argv['reapply-changes']) {
+			console.log("Applying changes to SDK");
+			common.child('git', ['stash', 'pop'], defaultChildArgs, f.wait());
+		}
 	}, function () {
 		console.log("Running install script");
 		common.child('./install.sh', ["--silent"], loudChildArgs, f.wait());
