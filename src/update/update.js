@@ -126,7 +126,7 @@ exports.update = function (tag, next) {
 	}, function () {
 		common.track("BasilUpdate", {"switchTag": tag.toString()});
 		console.log(clc.green('Attempting to switch to ' + tag.toString()));
-		common.child('git', ['stash', 'save'], defaultChildArgs, f.slotPlain()); //don't care about output
+		common.child('git', ['stash'], defaultChildArgs, f.slotPlain()); //don't care about output
 	}, function (err) {
 		if (err) {
 			f(err);
@@ -141,6 +141,9 @@ exports.update = function (tag, next) {
 		}
 		console.log("Checking out version", tag.toString());
 		common.child('git', ['checkout', '--force', tag.toString()], defaultChildArgs, f.wait());
+	}, function () {
+		console.log("Applying changes to SDK");
+		common.child('git', ['stash', 'pop'], defaultChildArgs, f.wait());
 	}, function () {
 		console.log("Running install script");
 		common.child('./install.sh', ["--silent"], loudChildArgs, f.wait());
