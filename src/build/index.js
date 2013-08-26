@@ -73,14 +73,30 @@ function createSDKSymlink (dir, next) {
 	}
 }
 
-var targetNames = ['native-android', 'native-ios', /*'browser-mobile',*/ 'browser-desktop'];
+var _targetNames = [];
 
-function build (dir, target, opts, next) {
+function build (dir, target, opts, cb) {
 	var project = packageManager.load(dir);
 
-	//create a path based on the target (debug/release)
+	// create a path based on the target (debug/release)
 	var releasePath = path.join(opts.debug ? 'debug' : 'release', target);
 	logger.log(clc.yellowBright('Building:'), releasePath);
+
+	// get all the build addons and store them
+	var addons = packager.getAddonsForApp(project);
+	var buildAddons = {};
+	Object.keys(addons).forEach(function (addonName) {
+		var addon = addons[addonName];
+		if (addon.hasBuildPlugin()) {
+			try {
+				var buildAddon = require(addon.getPath('build'));
+				buildAddons[addonName] = buildAddon;
+
+			} catch (e) {
+				logger.error("Error initializing build addon", addonName, e);
+			}
+		}
+	}, this);
 
 	// URL for API requests
 	if (!opts.servicesURL) {
@@ -105,14 +121,11 @@ function build (dir, target, opts, next) {
 		opts.buildPath = path.join(project.paths.root, 'build', releasePath);
 	}
 
-	if (CREATE_SYMLINK) {
-		createSDKSymlink(dir, runBuild)
-	} else {
-		runBuild();
-	}
-
-	function runBuild () {
-		//pull out target information
+	var f = ff(function () {
+		if (CREATE_SYMLINK) {
+			createSDKSymlink(dir, f())
+		}
+	}, function () {
 		var targetSplat = target.split("-");
 		var supTarget = targetSplat[0];
 		var subTarget = targetSplat[1] || targetSplat[0];
@@ -122,13 +135,26 @@ function build (dir, target, opts, next) {
 		if (exports.isTargetAvailable(supTarget)) {
 			// if target has been registered
 			require(buildTargets[supTarget])
-				.build(exports, project, subTarget, opts, next);
+				.build(exports, project, subTarget, opts, f());
 		} else {
 			logger.error('Invalid build target');
 			console.log(supTarget, buildTargets);
-			next(1);
+			throw new Error('Invalid build target');
 		}
-	}
+	}, function (buildRes) {
+		for (var addonName in buildAddons) {
+			try {
+				if (buildAddons[addonName].onAfterBuild) {
+					buildAddons[addonName].onAfterBuild(exports, common, project, buildRes.buildOpts, f());
+				}
+			} catch (e) {
+				f.fail(e);
+				logger.error("Error executing onAfterBuild for addon", addonName, e);
+			}
+		}
+		logger.log('\nFinished building.');
+		common.endTime('build');
+	}).cb(cb);
 }
 
 //commandline interface
@@ -166,11 +192,11 @@ function exec (args, config, next) {
 
 		.usage('Usage: ' + clc.greenBright('basil build') + clc.yellowBright(' [target]\n\n')
 			+ 'where ' + clc.yellowBright('[target]') + ' is one of:\n\n'
-			+ '\t' + targetNames.join('\n\t'));
+			+ '\t' + _targetNames.join('\n\t'));
 
 	var argv = optimistParser.argv;
 	var target = argv._[0] && argv._[0].toLowerCase();
-	if (!target || targetNames.indexOf(target) == -1) {
+	if (!target || _targetNames.indexOf(target) == -1) {
 
 		if (!target) {
 			logger.error('no target provided\n');
@@ -188,47 +214,12 @@ function exec (args, config, next) {
 	argv.template = config.template;
 
 	build('.', target, argv, function (failed) {
-
-		var f = ff(function() {
-			if (!failed) {
-				//run after build plugin cbs
-				var project = packageManager.load('.');
-				var addons = packager.getAddonsForApp(project);
-				var buildAddons = {};
-				var group = f.group();
-				Object.keys(addons).forEach(function (addonName) {
-					var addon = addons[addonName];
-					if (addon.hasBuildPlugin()) {
-						try {
-							var buildAddon = require(addon.getPath('build'));
-							buildAddons[addonName] = buildAddon;
-
-						} catch (e) {
-							logger.error("Error initializing build addon", addonName, e);
-						}
-					}
-				}, this);
-
-				for (var addonName in buildAddons) {
-					try {
-						if (buildAddons[addonName].onAfterBuild) {
-							buildAddons[addonName].onAfterBuild(exports, common, project, target, group.slot());
-						}
-					} catch (e) {
-						f.succeed();
-						logger.error("Error executing onAfterBuild for addon", addonName, e);
-					}
-				}
-				logger.log('\nFinished building.');
-				common.endTime('build');
-			}
-
-		}, function() {
-			jvmtools.stop(next || function () { });
-			if(next) next(failed);
-			else process.exit(failed ? 2 : 0);
-		});
-
+		jvmtools.stop(next || function () { });
+		if (next) {
+			next(failed);
+		} else {
+			process.exit(failed ? 2 : 0);
+		}
 	});
 }
 
@@ -250,8 +241,15 @@ exports.git = require("./git");
 exports.JsioCompiler = compile.JsioCompiler;
 
 var _targets = {};
-exports.registerTarget = function (target, path) {
+exports.registerTarget = function (target, path, subtargets) {
 	_targets[target] = path;
+	if (subtargets) {
+		for (var ii = 0; ii < subtargets.length; ++ii) {
+			_targetNames.push(subtargets[ii]);
+		}
+	} else {
+		_targetNames.push(target);
+	}
 }
 
 exports.getTargets = function () {

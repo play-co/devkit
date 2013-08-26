@@ -155,8 +155,19 @@ function updateIcons (templatePath, projectPath, icons) {
 function getConfigObject (project, opts, target) {
 	var manifest = project.manifest;
 	var config = JSON.parse(JSON.stringify(CONFIG_GLOBAL_TEMPLATE));
-	
-	// Augment config object with manifest properties.
+
+	// TODO: move this code/refactor android package naming
+	// This code for the android package name should not be here (but is here so
+	// browser android builds can also get the android package)
+	var packageName = "";
+	if (manifest.studio && manifest.studio.domain && manifest.shortName) {
+		var names = manifest.studio.domain.split(/\./g).reverse();
+		var studio = names.join('.');
+		var shortName = manifest.shortName;
+		packageName = studio + "." + shortName;
+	}
+
+// Augment config object with manifest properties.
 	config.appID = manifest.appID;
 	config.handshakeEnabled = manifest.handshakeEnabled;
 	config.shortName = manifest.shortName;
@@ -167,6 +178,8 @@ function getConfigObject (project, opts, target) {
 	config.disableNativeViews = manifest.disableNativeViews || false;
 	config.unlockViewport = manifest.unlockViewport;
 	config.useDOM = !!manifest.useDOM;
+	config.packageName = packageName;
+	config.bundleID = manifest.ios.bundleID || "example.bundle" 
 	
 	// for noodletown invites
 	config.mpMetricsKey = manifest.mpMetricsKey;
@@ -358,25 +371,6 @@ function validateJS (src, next) {
 	});
 }
 
-/**
- * Create spritesheetSizeMap.json
- * Basically a mapping of saved spritesheet names -> sheet size
- */
-function createSpritesheetSizeMap (spriteMap, appDir, target, cb) {
-	var spriteDir = path.join(appDir, target, "spritesheets");
-	var fontsDir = path.join(appDir, "resources", "fonts");
-	var f = ff(function () {
-		fs.exists(fontsDir, f.slotPlain());
-	}, function (exists) {
-		fontsheetMap.create(fontsDir, "resources/fonts", "fontsheetSizeMap");
-		spritesheetMap.create(spriteMap, spriteDir, "spritesheetSizeMap", f());
-	}).cb(cb)
-	.error(function (e) {
-		logger.log("unexpected error writing spritesheet map");
-		console.error(e);
-	});
-}
-
 // utility function to replace any windows path separators for paths that will be used for URLs
 var regexSlash = /\\/g;
 function useURISlashes (str) { return str.replace(regexSlash, "/"); }
@@ -398,7 +392,9 @@ var Resource = Class(function () {
 //       - other: a list of other resources (json/audio/etc)
 // target : string - the build target, e.g. native-ios
 // output : string - usually something like "build/debug/native-ios/"
-function getResources(project, target, appDir, output, mapMutator, cb) {
+function getResources(project, buildOpts, cb) {
+	var appDir = buildOpts.fullPath;
+
 	var resourceDirectories = [
 			{src: path.join(appDir, 'resources'), target: 'resources'}
 		];
@@ -428,7 +424,7 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 
 	// sprite directory
 	var relativeSpritesheetsDirectory = "spritesheets";
-	var spritesheetsDirectory = path.join(appDir, output, relativeSpritesheetsDirectory);
+	var spritesheetsDirectory = path.join(appDir, buildOpts.localBuildPath, relativeSpritesheetsDirectory);
 
 	// get list of build addons
 	// for each build addon:
@@ -465,7 +461,7 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 			var onFinish = f.wait();
 			try {
 				if (buildAddons[addonName].onBeforeBuild) {
-					buildAddons[addonName].onBeforeBuild(common, project, target, appDir, output, onFinish);
+					buildAddons[addonName].onBeforeBuild(common, project, buildOpts, onFinish);
 				}
 			} catch (e) {
 				onFinish();
@@ -504,20 +500,37 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 			}
 		}
 	}, function () {
-		// add the spritesheetSizeMap to sprites list so that it gets 
-		// copied to the build directories properly as well.
+		var fontsDir = path.join(appDir, "resources", "fonts");
+		f(fontsDir);
+		fs.exists(fontsDir, f.slotPlain());
+	}, function (fontsDir, fontsDirExists) {
+		// relative paths for the output (uses forward slashes)
+		var relativeFontsDir = "resources/fonts";
+		var relativeFontsheetSizeMap = "resources/fonts/fontsheetSizeMap.json";
+
+		// absolute paths for font size output
+		var fontsheetSizeMapFilename = path.join(appDir, buildOpts.localBuildPath, "resources", "fonts", "fontsheetSizeMap.json");
 
 		resources.other.push(new Resource({
-				fullPath: path.join(appDir, "resources/fonts/fontsheetSizeMap.json"),
-				relative: "resources/fonts/fontsheetSizeMap.json"
+				fullPath: fontsheetSizeMapFilename,
+				relative: relativeFontsheetSizeMap
 			}));
 
-		// write spritesheet sizes and fontsheet sizes to json files
-		createSpritesheetSizeMap(resources.imageMap, appDir, output, f());
-	}, function (sizeMapPath) {
+		// Create spritesheetSizeMap.json
+		// Basically a mapping of saved spritesheet names -> sheet size
+		wrench.mkdirSyncRecursive(path.dirname(fontsheetSizeMapFilename));
+
+		if (!fontsDirExists) {
+			fs.writeFile(fontsheetSizeMapFilename, "{}", f.wait());
+		} else {
+			fontsheetMap.create(fontsDir, "resources/fonts", fontsheetSizeMapFilename, f.wait());
+		}
+
+		spritesheetMap.create(resources.imageMap, spritesheetsDirectory, "spritesheetSizeMap", f());
+	}, function (spritesheetMapPath) {
 		resources.other.push(new Resource({
-			fullPath: sizeMapPath,
-			relative: path.basename(sizeMapPath)
+			fullPath: spritesheetMapPath,
+			relative: path.basename(spritesheetMapPath)
 		}));
 
 		var mapPath = path.join(spritesheetsDirectory, 'map.json');
@@ -528,7 +541,7 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 		// add to resources
 		var mapExt = path.extname(mapPath);
 		resources.other.push(new Resource({
-			relative: path.relative(path.resolve(appDir, output), mapPath),
+			relative: path.relative(path.resolve(appDir, buildOpts.localBuildPath), mapPath),
 			fullPath: mapPath
 		}));
 
@@ -548,7 +561,7 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 				"--scale", 1,
 				"--dir", srcDir + "/",
 				"--output", spritesheetsDirectory,
-				"--target", target,
+				"--target", buildOpts.target,
 				"--binaries", common.paths.lib()
 			];
 
@@ -638,8 +651,8 @@ function getResources(project, target, appDir, output, mapMutator, cb) {
 				imageMap[useURISlashes(path.join(targetDir, key))] = rawMap[key];
 			});
 
-			if (typeof mapMutator === "function") {
-				mapMutator(imageMap);
+			if (typeof buildOpts.mapMutator === "function") {
+				buildOpts.mapMutator(imageMap);
 			}
 
 			resources.imageMap = imageMap;
@@ -665,17 +678,17 @@ function writeMetadata(opts, dir, json) {
 
 // Compile resources together and pass a cache object to the next function.
 // runs the spriter and compiles the build code.
-function compileResources (project, opts, initialImport, cb) {
+function compileResources (project, buildOpts, initialImport, cb) {
 	logger.log("Packaging resources...");
 
 	// Font sheets cannot be sprited; add a metadata.json file for fonts (for compatibility)
-	writeMetadata(opts, "resources/fonts", "{\"sprite\": false}");
-	writeMetadata(opts, "resources/icons", "{\"sprite\": false, \"package\": false}");
-	writeMetadata(opts, "resources/splash", "{\"sprite\": false, \"package\": false}");
+	writeMetadata(buildOpts, "resources/fonts", "{\"sprite\": false}");
+	writeMetadata(buildOpts, "resources/icons", "{\"sprite\": false, \"package\": false}");
+	writeMetadata(buildOpts, "resources/splash", "{\"sprite\": false, \"package\": false}");
 
 	var f = ff(function () {
-		getResources(project, opts.target, opts.fullPath, opts.localBuildPath, opts.mapMutator, f());
-		packageJS(project, opts, initialImport, false, f());
+		getResources(project, buildOpts, f());
+		packageJS(project, buildOpts, initialImport, false, f());
 	}, function (files, jsSrc) {
 		logger.log("Finished packaging resources");
 
