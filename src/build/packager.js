@@ -665,7 +665,7 @@ function writeMetadata(opts, dir, json) {
 
 // Compile resources together and pass a cache object to the next function.
 // runs the spriter and compiles the build code.
-function compileResources (project, opts, target, initialImport, cb) {
+function compileResources (project, opts, initialImport, cb) {
 	logger.log("Packaging resources...");
 
 	// Font sheets cannot be sprited; add a metadata.json file for fonts (for compatibility)
@@ -674,7 +674,7 @@ function compileResources (project, opts, target, initialImport, cb) {
 	writeMetadata(opts, "resources/splash", "{\"sprite\": false, \"package\": false}");
 
 	var f = ff(function () {
-		getResources(project, target, opts.fullPath, opts.localBuildPath, opts.mapMutator, f());
+		getResources(project, opts.target, opts.fullPath, opts.localBuildPath, opts.mapMutator, f());
 		packageJS(project, opts, initialImport, false, f());
 	}, function (files, jsSrc) {
 		logger.log("Finished packaging resources");
