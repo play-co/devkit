@@ -530,7 +530,7 @@ function getResources(project, buildOpts, cb) {
 	}, function (spritesheetMapPath) {
 		resources.other.push(new Resource({
 			fullPath: spritesheetMapPath,
-			relative: path.basename(spritesheetMapPath)
+			relative: path.relative(path.resolve(appDir, buildOpts.localBuildPath), spritesheetMapPath)
 		}));
 
 		var mapPath = path.join(spritesheetsDirectory, 'map.json');
