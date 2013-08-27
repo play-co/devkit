@@ -288,9 +288,7 @@ function packageJS (project, opts, initialImport, appendImport, cb) {
 	
 	compiler.inferOptsFromEntry(initialImport);
 
-	if (!/^native/.test(opts.target)) {
-		compiler.opts.includeJsio = false;
-	}
+	compiler.opts.includeJsio = !opts.excludeJsio;
 
 	merge(compiler.opts, {
 		appendImport: appendImport
