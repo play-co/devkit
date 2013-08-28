@@ -196,7 +196,7 @@ exports.load = function (app, argv) {
 	});
 
 	// "native.js.mp3" for testapp
-	app.get('/simulate/:shortName/:target/native.js.mp3', function(req, res, next) {
+	app.get('/simulate/:debug/:shortName/:target/native.js.mp3', function(req, res, next) {
 		common.getProjectList(function (projects) {
 			var project = projects[req.params.shortName.toLowerCase()];
 			var target = req.params.target;
