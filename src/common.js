@@ -85,10 +85,6 @@ process.on('SIGINT', function () {
 	process.exit(2);
 });
 
-process.on('exit', function () {
-	exports.config.stopWatch();
-});
-
 // Run a child process inline.
 exports.child = function (prog, args, opts, cont) {
 	var tool;
@@ -220,124 +216,6 @@ exports.Formatter.getPrefix = function (tag) {
 }
 
 var logger = new exports.Formatter('gcsdk');
-
-var CONFIG_PATH = exports.paths.root('config.json');
-
-// initial reading of config.json can happen synchronously using require
-var _config;
-try {
-	_config = require(CONFIG_PATH);
-} catch (e) {
-	if (e.code != 'MODULE_NOT_FOUND') {
-		logger.error("Error loading", CONFIG_PATH);
-		if (e instanceof SyntaxError) {
-			if (fs.readFileSync(CONFIG_PATH) == "") {
-				logger.warn("Your config.json was an empty file! Writing a new one...")
-			} else {
-				logger.error("Syntax error parsing JSON.");
-				process.exit(1);
-			}
-		} else {
-			logger.error(e);
-		}
-	}
-
-	_config = {};
-}
-
-// create a singleton object for the config
-//   emits 'change' events when listening for config.json file changes
-exports.config = new (require('events').EventEmitter);
-
-// called to re-read the config.json file
-exports.config.reload = function () {
-	fs.readFile(CONFIG_PATH, 'utf8', bind(this, function (err, data) {
-		if (data) {
-			try {
-				_config = JSON.parse(data);
-			} catch (e) {
-				logger.error('unable to parse config.json', e);
-			}
-
-			this.emit('change');
-		}
-	}));
-}
-
-// get a property from the config file
-//
-// Note: nested keys can be accessed using dots or colons,
-//       e.g. get('foo.bar') or get('foo:bar')
-exports.config.get = function (key) {
-	var pieces = (key || '').split(/[.:]/);
-	var data = _config;
-	var i = 0;
-	while (pieces[i]) {
-		if (!data) { return undefined; }
-
-		data = data[pieces[i]];
-		++i;
-	}
-	return data;
-};
-
-// set a property in the config file
-// see note in `get()`
-exports.config.set = function (key, value, cb) {
-	var pieces = (key || '').split(/[.:]/);
-	var data = _config;
-	var i = 0;
-	while (pieces[i + 1]) {
-		if (!data[pieces[i]]) {
-			data[pieces[i]] = {};
-		}
-
-		data = data[pieces[i]];
-		++i;
-	}
-
-	data[pieces[i]] = value;
-	this.write(cb);
-}
-
-// async-safe write using a callback queue
-// callbacks will not fire until all pending writes complete
-exports.config._onWrite = [];
-exports.config.write = function (cb) {
-	// schedule the callback
-	fs.writeFileSync(CONFIG_PATH, JSON.stringify(_config, null, '\t'), 'utf8');
-	if (cb) { 
-		cb();
-	}
-}
-
-// note that gcsdk won't exit after running this unless stopWatch is called
-exports.config.startWatch = function () {
-	if (!this._watcher) {
-		// make sure the file exists
-		this.write(bind(this, function () {
-			// need to check again here
-			if (!this._watcher) {
-				this._watcher = fs.watch(CONFIG_PATH);
-				this._watcher.on('change', bind(this, 'reload'));
-			}
-		}));
-	}
-}
-
-// stop watching config.json
-exports.config.stopWatch = function () {
-	if (this._watcher) {
-		this._watcher.close();
-	}
-}
-
-// write config.json if it doesn't exist the first time
-fs.exists(CONFIG_PATH, function (exists) {
-	if (!exists) {
-		exports.config.write();
-	}
-});
 
 // Get local IP address.
 exports.getLocalIP = function (next) {
@@ -566,3 +444,9 @@ exports.track = function(key, opts) {
 
 //// -- End of Analytics
 
+//// -- load and parse config.json
+
+var ConfigManager = require('./ConfigManager');
+exports.config = new ConfigManager();
+
+//// -- end config.json

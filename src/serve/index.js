@@ -277,9 +277,9 @@ function launchServer () {
 			server.on('error', function (e) {
 				logger.error(e);
 			});
-			
-			common.config.startWatch();
 		}
+
+		common.config.startWatch();
 	});
 
 	return app;
