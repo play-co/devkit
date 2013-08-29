@@ -58,6 +58,8 @@ exports.load = function (app) {
 	// JSON project list for the test app and front-end
 	app.get('/projects', function (req, res) {
 		projectManager.getProjects(function(projects) {
+			res.setHeader('Cache-Control', 'no-cache');
+			res.setHeader('Expires', '-1');
 			res.json(projects);
 		});
 	});
