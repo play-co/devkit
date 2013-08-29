@@ -167,6 +167,12 @@ function launchServer () {
 
 	app.use(express.bodyParser());
 
+	app.use(function(req, res, next) {
+		res.header('Cache-Control', 'no-cache');
+		res.header('Expires', '-1');
+		next();
+	});
+
 	var basePort = argv.port;
 
 	// Serve functionality
