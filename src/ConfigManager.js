@@ -37,7 +37,7 @@ var ConfigManager = module.exports = Class(PubSub, function () {
 
 		// write config.json if it doesn't exist the first time
 		if (!fs.existsSync(CONFIG_PATH)) {
-			this.write();
+			this._write();
 		}
 
 	}
