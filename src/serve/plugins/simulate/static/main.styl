@@ -47,24 +47,32 @@ div::-webkit-scrollbar-corner
 
 // main UI
 
-#_content .button {
-	float: left;
-	border-radius: 5px;-moz-border-radius: 5px;
-	background: -moz-linear-gradient(270deg, rgba(255, 255, 255, 0.3), rgba(100, 100, 100, 0.3) 50%, rgba(0, 0, 0, 0.3) 51%, rgba(0, 0, 0, 0.2));background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.3)), color-stop(0.50, rgba(100, 100, 100, 0.3)), color-stop(0.51, rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.2)));
-	border: 1px solid rgba(0, 0, 0, 0.7);
-	color: #FFF;
-	font: bold 13px Helvetica;
-	padding: 5px 8px;
-	margin: 2px 2px 3px 2px;
-	cursor: default;
-}
+#_content
+	position: absolute
+	top: 0
+	bottom: 0
+	right: 0
+	left: 0
 
-#_content .button:active {
-	background: -moz-linear-gradient(270deg, rgba(50, 50, 50, 0.2), rgba(50, 50, 50, 0.3) 50%, rgba(80, 80, 80, 0.3) 51%, rgba(110, 110, 110, 0.3));background: -webkit-gradient(linear, left top, left bottom, from(rgba(50, 50, 50, 0.2)), color-stop(0.50, rgba(50, 50, 50, 0.3)), color-stop(0.51, rgba(80, 80, 80, 0.3)), to(rgba(110, 110, 110, 0.3)));
-	border: 1px solid rgba(0, 0, 0, 0.7);
-	margin: 3px 2px 2px 2px;
-	cursor: default;
-}
+#_topBar
+	white-space nowrap
+
+#_topBar .button
+	position: relative
+	display inline-block
+	border-radius 5px
+	background linear-gradient(top, rgba(255, 255, 255, 0.3), 50% rgba(100, 100, 100, 0.3), 51% rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2))
+	border 1px solid rgba(0, 0, 0, 0.7)
+	color #FFF
+	font bold 11px Helvetica
+	padding 5px 8px
+	margin 2px 2px 3px 2px
+	cursor default
+
+#_topBar .button:active
+	top: 1px
+	background linear-gradient(top, rgba(50, 50, 50, 0.2), 50% rgba(50, 50, 50, 0.3), 51% rgba(80, 80, 80, 0.3), rgba(110, 110, 110, 0.3))
+	border 1px solid rgba(0, 0, 0, 0.7)
 
 #_content #_frameWrapper {
 	position: relative;
@@ -225,7 +233,7 @@ div::-webkit-scrollbar-corner
 	background: -moz-linear-gradient(90deg, #448, #77A);background: -webkit-gradient(linear, left bottom, left top, from(#448), to(#77A));
 }
 
-.topBar {
+#_topBar {
 	position: fixed;
 	top: 0px;
 	left: 0px;
@@ -236,7 +244,7 @@ div::-webkit-scrollbar-corner
 	z-index: 1000;
 }
 
-.topBar .myIP {
+#_topBar .myIP {
 	position: absolute;
 	top: 5px;
 	right: 5px;

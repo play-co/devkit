@@ -31,7 +31,7 @@ var targetNames = [];
 var targetPaths = []; // Path to targets
 
 function testapp(target, opts, next) {
-	logger.log(clc.yellow.bright('Launching Test App:'), target);
+	logger.log(clc.yellowBright('Launching Test App:'), target);
 
 	common.track("BasilTestApp", {"target":target});
 
@@ -46,8 +46,8 @@ function exec(args, config, next) {
 	var Optimist = require('optimist');
 
 	var optimistParser = new Optimist(args)
-		.usage('Usage: ' + clc.green.bright('basil testapp') + clc.yellow.bright(' [target], ')
-			+ 'where ' + clc.yellow.bright('[target]') + ' may be: ' + clc.yellow.bright(targetNames.join(', ')));
+		.usage('Usage: ' + clc.greenBright('basil testapp') + clc.yellowBright(' [target], ')
+			+ 'where ' + clc.yellowBright('[target]') + ' may be: ' + clc.yellowBright(targetNames.join(', ')));
 
 	var argv = optimistParser.argv;
 	var target = argv._[0] && argv._[0].toLowerCase();

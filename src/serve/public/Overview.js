@@ -184,17 +184,18 @@ exports = Class(squill.TabbedPane, function(supr) {
 
 			var simulateURL = "//" + targetHost + ":" + (+loc.port + 1) + "/simulate/" + proj.id + '/#simulators=[{"name":"Simulator_0","device":"iphone","rotation":'+rot+"}]";
 
-			//var simulateURL = "//" + targetHost + ":" + (+loc.port + 1) + "/simulate/" + proj.id + "/";
+			// We used to open a new window to about:blank and set the opener
+			// to null, which lets us load the simulateURL in a separate
+			// process.  This has the unfortunate side effect of setting
+			// about:blank in the browser history.  Chrome supports opening
+			// links in a new  process from HTML tags, so this method lets us
+			// start a new process without navigating to about:blank first:
 
-			/*
-			 * a new window shares the js process with the parent window in chrome by default,
-			 *  since we want a new process we need to set opener to null (which contains a reference to the parent window)
-			 *  and then redirect to a cross-origin url.
-			 */
-			var win = window.open("about:blank");
-
-			win.opener = null;
-			win.location = simulateURL;
+			var el = document.createElement("a");
+			el.rel = "noreferrer";
+			el.target = "_blank";
+			el.href = simulateURL;
+			el.click();
 		};
 
 		on.projectSelector = function () {

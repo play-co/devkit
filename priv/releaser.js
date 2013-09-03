@@ -87,7 +87,7 @@ function handleBuffer() {
 			if (line.cmd) {
 				logCommand(line);
 			} else if (line.stdout) {
-				console.log("\n" + clc.green.bright(line.stdout) + "\n");
+				console.log("\n" + clc.greenBright(line.stdout) + "\n");
 			}
 
 			if (line.diff) {
@@ -108,14 +108,14 @@ function handleBuffer() {
 }
 
 function logCommand(cmd) {
-	console.log(clc.blue.bright("> " + cmd.cmd.map(function (piece) { return JSON.stringify(piece); }).join(" ")));
+	console.log(clc.blueBright("> " + cmd.cmd.map(function (piece) { return JSON.stringify(piece); }).join(" ")));
 
-	var stdout = cmd.stdout.replace(/(^\s+|\s+$)/g, '').replace(/\n/g, clc.green.bright("\n || "));
-	var stderr = cmd.stderr.replace(/(^\s+|\s+$)/g, '').replace(/\n/g, clc.red.bright("\n || "));
+	var stdout = cmd.stdout.replace(/(^\s+|\s+$)/g, '').replace(/\n/g, clc.greenBright("\n || "));
+	var stderr = cmd.stderr.replace(/(^\s+|\s+$)/g, '').replace(/\n/g, clc.redBright("\n || "));
 
-	stdout && console.log(clc.green.bright(" || ") + stdout);
-	stderr && console.log(clc.red.bright(" || ") + stderr);
+	stdout && console.log(clc.greenBright(" || ") + stdout);
+	stderr && console.log(clc.redBright(" || ") + stderr);
 	
-	console.log(!cmd.code ? "(exit code 0)" : clc.red.bright("(exit code " + cmd.code + ")"));
+	console.log(!cmd.code ? "(exit code 0)" : clc.redBright("(exit code " + cmd.code + ")"));
 }
 

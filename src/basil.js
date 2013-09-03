@@ -71,7 +71,7 @@ function displayHeader () {
 	var versionLength = version.length; //clc adds escape chars
 	version = clc.yellow(version);
 
-	var colouredGCText = clc.white.bright("{{") + clc.cyan.bright(" Game Closure SDK ") + clc.white.bright("}}");
+	var colouredGCText = clc.whiteBright("{{") + clc.cyanBright(" Game Closure SDK ") + clc.whiteBright("}}");
 	console.log([
 		"============================================================",
 		"                   " + colouredGCText + "                   ",

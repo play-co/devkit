@@ -32,6 +32,48 @@ var addonPath = common.paths.root("addons");
 var REGISTRY_PATH	= common.paths.lib('addon-registry');
 var REGISTRY_URL	= "https://github.com/gameclosure/addon-registry";
 
+var SLICE = Array.prototype.slice;
+
+var Addon = Class(function () {
+	this.init = function (name) {
+		this._name = name;
+		this._path = common.paths.addons(name);
+		this._paths = {};
+
+		fs.readdirSync(this._path).forEach(function (filename) {
+			this._paths[filename] = true;
+		}, this);
+	}
+
+	this.getConfig = function () {
+		return this._config;
+	}
+
+	this.getName = function () {
+		return this._name;
+	}
+
+	this.getPath = function () {
+		return common.paths.addons.apply(common.paths, [this._name].concat(SLICE.call(arguments)));
+	}
+
+	this.hasSimulatorPlugin = function () {
+		return !!this._paths.simulator;
+	}
+
+	this.hasIOSPlugin = function () {
+		return !!this._paths.ios;
+	}
+
+	this.hasAndroidPlugin = function () {
+		return !!this._paths.android;
+	}
+
+	this.hasBuildPlugin = function () {
+		return !!this._paths.build;
+	}
+});
+
 var AddonManager = Class(EventEmitter, function () {
 
 	var Registry = Class(EventEmitter, function () {
@@ -144,6 +186,8 @@ var AddonManager = Class(EventEmitter, function () {
 
 	this.init = function () {
 		this._paths = [];
+		this._addons = {};
+
 		this.registry = new Registry();
 	};
 
@@ -336,15 +380,20 @@ var AddonManager = Class(EventEmitter, function () {
 			fs.exists(jsPath, f.slotPlain());
 		}, function (jsPathExists) {
 			if (jsPathExists) {
-				//logger.log("Installing plugin JS path:", jsPath);
-
 				// Remove old symlink if it exists
+				var create = true;
 				if (fs.existsSync(linkPath)) {
-					fs.unlinkSync(linkPath);
+					if (fs.readlinkSync(linkPath) != jsPath) {
+						fs.unlinkSync(linkPath);
+					} else {
+						create = false;
+					}
 				}
 
 				// Add new JS symlink
-				fs.symlink(jsPath, linkPath, 'junction', f.wait());
+				if (create) {
+					fs.symlink(jsPath, linkPath, 'junction', f.wait());
+				}
 			} else {
 				// Stop ff call chain here
 				f.succeed();
@@ -419,34 +468,27 @@ var AddonManager = Class(EventEmitter, function () {
 
 			this.startupPlugins(f.waitPlain());
 		}, function (files) {
-			var addons = [];
-			f(addons);
+			files.forEach(function (addonName) {
+				if (!this._addons[addonName]) {
+					var currentPath = path.join(addonPath, addonName, "index.js");
+					if (fs.existsSync(currentPath)) {
 
-			files.forEach(function (file) {
-				this.activatePluginJS(file, f.wait());
+						this.activatePluginJS(addonName, f.wait());
 
-				var onLoad = f.waitPlain();
-				var currentPath = path.join(addonPath, file, "index.js");
-				fs.exists(currentPath, bind(this, function (exists) {
-					if (exists) {
 						try {
 							var data = require(currentPath).load(common) || {};
-
+							var addon = new Addon(addonName);
 							// merge the paths in
 							this._paths = this._paths.concat(data.paths || []).filter(function (path) { return path; });
 
-							addons.push(file);
+							this._addons[addonName] = addon;
 						} catch (err) {
-							logger.error("Could not load [" + file + "] : No index file with a load method");
+							logger.error("Could not load [" + addonName + "] : No index file with a load method");
 							console.error(err.stack);
 						}
 					}
-
-					onLoad();
-				}));
+				}
 			}, this);
-		}, function (addons) {
-			this._addons = addons;
 		}).cb(cb);
 	};
 
