@@ -322,9 +322,12 @@ function createCompiler (project, opts) {
 
 exports.getAddonsForApp = function (project) {
 	var addonConfig = project.getAddonConfig();
+	if (!Array.isArray(addonConfig)) {
+		addonConfig = Object.keys(addonConfig);
+	}
 	var addons = addonManager.getAddons();
 	var result = {};
-	Object.keys(addonConfig).forEach(function (addonName) {
+	addonConfig.forEach(function (addonName) {
 		if (!addons[addonName]) {
 			logger.error('required addon', addonName, 'not found');
 		} else {
