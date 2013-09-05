@@ -83,45 +83,47 @@ function build (dir, target, opts, cb) {
 	logger.log(clc.yellowBright('Building:'), releasePath);
 
 	// get all the build addons and store them
-	var addons = packager.getAddonsForApp(project);
 	var buildAddons = {};
-	Object.keys(addons).forEach(function (addonName) {
-		var addon = addons[addonName];
-		if (addon.hasBuildPlugin()) {
-			try {
-				var buildAddon = require(addon.getPath('build'));
-				buildAddons[addonName] = buildAddon;
+	var f = ff(function () {
+		packager.getAddonsForApp(project, f.slotPlain());
+	}, function(addons) {
 
-			} catch (e) {
-				logger.error("Error initializing build addon", addonName, e);
+		for (addonName in addons) {
+			var addon = addons[addonName];
+			if (addon.hasBuildPlugin()) {
+				try {
+					var buildAddon = require(addon.getPath('build'));
+					buildAddons[addonName] = buildAddon;
+
+				} catch (e) {
+					logger.error("Error initializing build addon", addonName, e);
+				}
 			}
 		}
-	}, this);
 
-	// URL for API requests
-	if (!opts.servicesURL) {
-		var servers = {
-			dev: "http://dev.api.gameclosure.com",
-			staging: "http://staging.api.gameclosure.com",
-			prod: "http://api.gameclosure.com"
-		};
+		// URL for API requests
+		if (!opts.servicesURL) {
+			var servers = {
+				dev: "http://dev.api.gameclosure.com",
+				staging: "http://staging.api.gameclosure.com",
+				prod: "http://api.gameclosure.com"
+			};
 
-		if (opts.serverDebug) {
-			opts.servicesURL = servers.dev;
-		} else if (opts.stage) {
-			opts.servicesURL = servers.staging;
-		} else {
-			opts.servicesURL = servers.prod;
+			if (opts.serverDebug) {
+				opts.servicesURL = servers.dev;
+			} else if (opts.stage) {
+				opts.servicesURL = servers.staging;
+			} else {
+				opts.servicesURL = servers.prod;
+			}
 		}
-	}
 
-	if (opts.outputDir) {
-		opts.buildPath = path.resolve(project.paths.root, opts.outputDir);
-	} else {
-		opts.buildPath = path.join(project.paths.root, 'build', releasePath);
-	}
+		if (opts.outputDir) {
+			opts.buildPath = path.resolve(project.paths.root, opts.outputDir);
+		} else {
+			opts.buildPath = path.join(project.paths.root, 'build', releasePath);
+		}
 
-	var f = ff(function () {
 		if (CREATE_SYMLINK) {
 			createSDKSymlink(dir, f())
 		}

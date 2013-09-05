@@ -6,5 +6,6 @@
 	["../lib/menus","sdk/menus"],
 	["../lib/shooter","sdk/shooter"],
 	["../lib/isometric","sdk/isometric"],
+	["../lib/adventuremap","sdk/adventuremap"],
 	["../addons/","sdk/addons"]
 ]

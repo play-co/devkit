@@ -266,38 +266,46 @@ function getConfigObject (project, opts, target) {
 }
 
 // Return the JavaScript string that creates the global CONFIG object.
-function getJSConfig (project, opts, target) {
+function getJSConfig (project, opts, target, cb) {
+
 	logger.log("Building JS config... " + opts.version);
-	
-	var defines = exports.getDefines(project, opts);
-	var src = [";(function() {\n"];
-	for (var key in defines) {
-		src.push("window." + key + "=" + JSON.stringify(defines[key]) + ";\n");
-	}
-	return src.concat([
+
+	exports.getDefines(project, opts, function(defines) {
+		var src = [";(function() {\n"];
+		for (var key in defines) {
+			src.push("window." + key + "=" + JSON.stringify(defines[key]) + ";\n");
+		}
+		cb(src.concat([
 				"window.CONFIG=", JSON.stringify(getConfigObject(project, opts, target)), ";\n",
 				"window.CONFIG.baseURL = window.location.toString().match(/(.*\\/).*$/)[1];\n",
-			"})();"
-		]).join("");
+				"})();"
+		]).join(""));
+
+	});
 }
 
 // Package all JavaScript into a single file that can be included with the build.
 // runs jsio against all user code.
 function packageJS (project, opts, initialImport, appendImport, cb) {
-	var compiler = createCompiler(project, opts);
-	
-	compiler.inferOptsFromEntry(initialImport);
+	exports.createCompiler = createCompiler;
 
-	compiler.opts.includeJsio = !opts.excludeJsio;
+	var f = ff(this, function() {
+		createCompiler(project, opts, f.slotPlain());
+	}, function(compiler) {
+		compiler.inferOptsFromEntry(initialImport);
 
-	merge(compiler.opts, {
-		appendImport: appendImport
+		compiler.opts.includeJsio = !opts.excludeJsio;
+
+		merge(compiler.opts, {
+				appendImport: appendImport
+		});
+
+		compiler.compile(initialImport, cb);
 	});
-	
-	compiler.compile(initialImport, cb);
 }
 
-function createCompiler (project, opts) {
+function createCompiler (project, opts, cb) {
+
 	var jsCachePath = opts.jsCachePath;
 	if (!jsCachePath) {
 		jsCachePath = path.join(opts.fullPath, "build/.cache");
@@ -314,27 +322,67 @@ function createCompiler (project, opts) {
 		printOutput: opts.printJSIOCompileOutput
 	});
 
-	compiler.opts.defines = exports.getDefines(project, opts);
-	return compiler;
+	exports.getDefines(project, opts, function(defines) {
+		compiler.opts.defines = defines;
+		cb(compiler);
+	});
 }
 
-exports.getAddonsForApp = function (project) {
-	var addonConfig = project.getAddonConfig();
-	var addons = addonManager.getAddons();
-	var result = {};
-	Object.keys(addonConfig).forEach(function (addonName) {
-		if (!addons[addonName]) {
-			logger.error('required addon', addonName, 'not found');
-		} else {
-			result[addonName] = addons[addonName];
-		}
-	});
 
-	return result;
+exports.getAddonsForApp = function (project, cb) {
+
+	var result = {};
+	var processedAddons = {};
+	var f = ff(exports, function() {
+		var addonConfig = project.getAddonConfig();
+		var addons = addonManager.getAddons();
+
+		var installAddon = function(addonName) {
+			if (!processedAddons[addonName]) {
+				processedAddons[addonName] = true;
+
+				var wait = f.wait();
+				if (!addons[addonName]) {
+					//install
+					addonManager.install(addonName, {}, function (err, res) {
+						if (!err) {
+							var deps = addonManager.getAddonDependencies(addonName);
+							for (var d in deps) {
+								installAddon(deps[d]);
+							}
+
+							addons = addonManager.getAddons();
+							if (addons[addonName]) {
+								result[addonName] = addons[addonName];
+							}
+						}
+						wait();
+					});
+
+				} else {
+					var deps = addonManager.getAddonDependencies(addonName);
+					for (var d in deps) {
+						installAddon(deps[d]);
+					}
+
+					result[addonName] = addons[addonName];
+					wait();
+				}
+
+			}
+		}
+
+		Object.keys(addonConfig).forEach(installAddon);
+
+	}, function() {
+		cb(result);
+	});
+	
 }
 
 // returns a dictionary of constants for JS
-exports.getDefines = function (project, opts) {
+exports.getDefines = function (project, opts, cb) {
+
 	var defines = {
 			BUILD_TARGET: opts.target,
 			BUILD_ENV: opts.target.split("-")[0], // env is browser or mobile (e.g. parses "browser-mobile" or "native-ios")
@@ -342,13 +390,14 @@ exports.getDefines = function (project, opts) {
 			DEV_MODE: !!opts.debug,
 		};
 
-	var addons = exports.getAddonsForApp(project);
-	Object.keys(addons).forEach(function (addonName) {
-		var safeName = addonName.toUpperCase().replace(/-/g, "_");
-		defines["ADDON_" + safeName] = true;
-	});
+		exports.getAddonsForApp(project, function(addons) {
+			Object.keys(addons).forEach(function (addonName) {
+				var safeName = addonName.toUpperCase().replace(/-/g, "_");
+				defines["ADDON_" + safeName] = true;
+			});
 
-	return defines;
+			cb(defines);
+		});
 }
 
 //runs the closure compiler, checks that you have valid code, and if not, yells at you
@@ -424,14 +473,18 @@ function getResources(project, buildOpts, cb) {
 	var relativeSpritesheetsDirectory = "spritesheets";
 	var spritesheetsDirectory = path.join(appDir, buildOpts.localBuildPath, relativeSpritesheetsDirectory);
 
-	// get list of build addons
-	// for each build addon:
-	//  - call onBeforeBuild
-	//  - get list of resource directories
-	var addons = exports.getAddonsForApp(project);
+	
 	var buildAddons = {};
 
-	var f = ff(this, function () {
+	var f = ff(this, function() {
+		// get list of build addons
+		// for each build addon:
+		//  - call onBeforeBuild
+		//  - get list of resource directories
+
+		exports.getAddonsForApp(project, f.slotPlain());
+
+	}, function (addons) {
 		Object.keys(addons).forEach(function (addonName) {
 			var addon = addons[addonName];
 			if (addon.hasBuildPlugin()) {
@@ -444,8 +497,8 @@ function getResources(project, buildOpts, cb) {
 					if (isArray(directories)) {
 						directories.forEach(function (directory) {
 							resourceDirectories.push({
-								src: directory.src,
-								target: path.join('addons', addonName, directory.target)
+									src: directory.src,
+									target: path.join('addons', addonName, directory.target)
 							});
 						});
 					}
@@ -510,9 +563,9 @@ function getResources(project, buildOpts, cb) {
 		var fontsheetSizeMapFilename = path.join(appDir, buildOpts.localBuildPath, "resources", "fonts", "fontsheetSizeMap.json");
 
 		resources.other.push(new Resource({
-				fullPath: fontsheetSizeMapFilename,
-				relative: relativeFontsheetSizeMap
-			}));
+					fullPath: fontsheetSizeMapFilename,
+					relative: relativeFontsheetSizeMap
+		}));
 
 		// Create spritesheetSizeMap.json
 		// Basically a mapping of saved spritesheet names -> sheet size
@@ -527,8 +580,8 @@ function getResources(project, buildOpts, cb) {
 		spritesheetMap.create(resources.imageMap, spritesheetsDirectory, "spritesheetSizeMap", f());
 	}, function (spritesheetMapPath) {
 		resources.other.push(new Resource({
-			fullPath: spritesheetMapPath,
-			relative: path.basename(spritesheetMapPath)
+					fullPath: spritesheetMapPath,
+					relative: path.relative(path.resolve(appDir, buildOpts.localBuildPath), spritesheetMapPath)
 		}));
 
 		var mapPath = path.join(spritesheetsDirectory, 'map.json');
@@ -539,8 +592,8 @@ function getResources(project, buildOpts, cb) {
 		// add to resources
 		var mapExt = path.extname(mapPath);
 		resources.other.push(new Resource({
-			relative: path.relative(path.resolve(appDir, buildOpts.localBuildPath), mapPath),
-			fullPath: mapPath
+					relative: path.relative(path.resolve(appDir, buildOpts.localBuildPath), mapPath),
+					fullPath: mapPath
 		}));
 
 		f(resources);
