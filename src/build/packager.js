@@ -332,36 +332,55 @@ function createCompiler (project, opts, cb) {
 	});
 }
 
+
 exports.getAddonsForApp = function (project, cb) {
 
 	var result = {};
+	var processedAddons = {};
 	var f = ff(exports, function() {
 		var addonConfig = project.getAddonConfig();
 		var addons = addonManager.getAddons();
-		Object.keys(addonConfig).forEach(function (addonName) {
-			var wait = f.wait();
-			if (!addons[addonName]) {
-				//install
-				addonManager.install(addonName, {}, function (err, res) {
-					if (!err) {
-						addons = addonManager.getAddons();
-						if (addons[addonName]) {
-							result[addonName] = addons[addonName];
-						}
-					}
-					wait();
-				});
 
-			} else {
-				result[addonName] = addons[addonName];
-				wait();
+		var installAddon = function(addonName) {
+			if (!processedAddons[addonName]) {
+				processedAddons[addonName] = true;
+
+				var wait = f.wait();
+				if (!addons[addonName]) {
+					//install
+					addonManager.install(addonName, {}, function (err, res) {
+						if (!err) {
+							var deps = addonManager.getAddonDependencies(addonName);
+							for (var d in deps) {
+								installAddon(deps[d]);
+							}
+
+							addons = addonManager.getAddons();
+							if (addons[addonName]) {
+								result[addonName] = addons[addonName];
+							}
+						}
+						wait();
+					});
+
+				} else {
+					var deps = addonManager.getAddonDependencies(addonName);
+					for (var d in deps) {
+						installAddon(deps[d]);
+					}
+
+					result[addonName] = addons[addonName];
+					wait();
+				}
+
 			}
-		});
+		}
+
+		Object.keys(addonConfig).forEach(installAddon);
 
 	}, function() {
 		cb(result);
 	});
-
 	
 }
 

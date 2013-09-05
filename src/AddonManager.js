@@ -191,6 +191,26 @@ var AddonManager = Class(EventEmitter, function () {
 		this.registry = new Registry();
 	};
 
+	this.getAddonDependencies = function(addon) {
+		var addonPath = this.getPath(addon);
+		var configPaths = [path.join(addonPath, "ios", "config.json"), path.join(addonPath, "android", "config.json")];
+		var deps = [];
+
+		for (var i in configPaths) {
+			var configPath = configPaths[i];
+			logger.log(configPath);
+			if (fs.existsSync(configPath)) {
+				var configJson = fs.readFileSync(configPath, 'utf8');
+				if (configJson) {
+					var config = JSON.parse(configJson);
+					deps = deps.concat(config.addonDependencies || []);
+				}
+			}
+		}
+
+		return deps;
+	}
+
 	// install the requested addon at the requested version
 	// @param addon (string)
 	// @param opts {
