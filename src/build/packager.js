@@ -371,7 +371,10 @@ exports.getAddonsForApp = function (project, cb) {
 			}
 		}
 
-		Object.keys(addonConfig).forEach(installAddon);
+		if (!Array.isArray(addonConfig)) {
+			addonConfig = Object.keys(addonConfig);
+		}
+		addonConfig.forEach(installAddon);
 
 	}, function() {
 		cb(result);
