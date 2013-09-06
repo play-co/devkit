@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-$install_type=""
-while [ $# -gt 1 ]; do
+install_type=""
+while [ $# -gt 0 ]; do
     case $1 in
         --basic) install_type="-basic"; shift 1 ;;
         *) shift 1 ;;
@@ -93,7 +93,7 @@ PRIV_SUBMODS=false && [[ "$remoteurl" == *devkit-priv* ]] && PRIV_SUBMODS=true
 if $PRIV_SUBMODS; then
 	echo "Using private submodules..."
 	cp .gitmodules-priv$install_type .gitmodules
-elif
+else
 	cp .gitmodules$install_type .gitmodules
 fi
 
