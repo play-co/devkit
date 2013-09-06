@@ -3,7 +3,7 @@
 install_type=""
 while [ $# -gt 0 ]; do
     case $1 in
-        --basic) install_type="-basic"; shift 1 ;;
+        --basic) install_type="basic"; shift 1 ;;
         *) shift 1 ;;
     esac
 done
@@ -92,9 +92,7 @@ remoteurl=`git config --get remote.origin.url`
 PRIV_SUBMODS=false && [[ "$remoteurl" == *devkit-priv* ]] && PRIV_SUBMODS=true
 if $PRIV_SUBMODS; then
 	echo "Using private submodules..."
-	cp .gitmodules-priv$install_type .gitmodules
-else
-	cp .gitmodules$install_type .gitmodules
+	cp .gitmodules-priv .gitmodules
 fi
 
 if ! git submodule sync; then
@@ -102,7 +100,20 @@ if ! git submodule sync; then
 		exit 1
 fi
 
-git submodule update --init --recursive
+git submodule init
+
+if [[ $install_type == "basic" ]]; then
+	git submodule deinit projects/whack-that-mole
+	git submodule deinit projects/platformer
+	git submodule deinit lib/menus
+	git submodule deinit lib/shooter
+	git submodule deinit projects/demoMenus
+	git submodule deinit projects/demoShooter
+	git submodule deinit lib/isometric
+	git submodule deinit projects/demoIsometricGame
+fi
+
+git submodule update --recursive
 
 if $PRIV_SUBMODS; then
 	git checkout .gitmodules
