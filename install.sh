@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+$install_type=""
+while [ $# -gt 1 ]; do
+    case $1 in
+        --basic) install_type="-basic"; shift 1 ;;
+        *) shift 1 ;;
+    esac
+done
+
+
 # Make sure we are not running as root
 if [[ $EUID -eq 0 ]]; then
    echo "This script should not be run as root" 1>&2
@@ -83,7 +92,9 @@ remoteurl=`git config --get remote.origin.url`
 PRIV_SUBMODS=false && [[ "$remoteurl" == *devkit-priv* ]] && PRIV_SUBMODS=true
 if $PRIV_SUBMODS; then
 	echo "Using private submodules..."
-	cp .gitmodules-priv .gitmodules
+	cp .gitmodules-priv$install_type .gitmodules
+elif
+	cp .gitmodules$install_type .gitmodules
 fi
 
 if ! git submodule sync; then
@@ -106,7 +117,7 @@ fi
 echo
 
 node bin/checkSymlinks
-node src/dependencyCheck.js
+node src/dependencyCheck.js $install_type
 
 if [[ "$1" != "--silent" ]]; then
 	node src/analytics.js
