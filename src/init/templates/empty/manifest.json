@@ -27,7 +27,7 @@
 		}
 	},
 	"ios": {
-		"bundleID": "example.bundle",
+		"bundleID": "",
 		"appleID": "12345678",
 		"version": "1.0.0",
 		"icons": {
