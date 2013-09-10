@@ -326,6 +326,8 @@ function createCompiler (project, opts, cb) {
 		compiler.opts.defines = defines;
 		cb(compiler);
 	});
+
+	return compiler;
 }
 
 exports.getAddonsForApp = function (project, cb) {
