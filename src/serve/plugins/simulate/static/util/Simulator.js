@@ -299,12 +299,12 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		var splash;
 		if (this._rotation % 2 == 0) {
 			//even amounts of rotations mean portrait
-			splash = "/splash/portrait2048";
+			splash = "portrait2048";
 		} else {
 			//oods mean landscape
-			splash = "/splash/landscape1536";
+			splash = "landscape1536";
 		}
-		return new std.uri(this._params.target + splash).toString();
+		return new std.uri(this._params.target + "/splash/" + splash).toString();
 	};
 
 	this.rebuild = function (next) {
