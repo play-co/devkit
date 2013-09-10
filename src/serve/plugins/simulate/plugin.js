@@ -130,13 +130,17 @@ exports.load = function (app, argv) {
 		});
 	});
 
-	app.get('/simulate/:debug/:shortName/:target/splash/:splash', function (req, res, next) {
+	function ServeSplash(req, res, next) {
 		common.getProjectList(function (projects) {
 			var project = projects[req.params.shortName.toLowerCase()];
 			var splash = req.params.splash;
 
 			var img = project && project.manifest.splash && project.manifest.splash[splash];
-			if (!img) {
+			if (img) {
+				img = path.resolve(project.paths.root, img);
+			}
+
+			if (!img || !fs.existsSync(img)) {
 				//if the key does not exist in the manifest we need to generate one
 				var splashSizes = {  
 					"portrait480": "320x480",
@@ -148,52 +152,55 @@ exports.load = function (app, argv) {
 					"landscape1536": "2048x1496"
 				};
 				var outSize = splashSizes[splash];
+				var universalSplashPath;
+
+				// If manifest specifies a splash image,
 				if (project.manifest.splash && project.manifest.splash["universal"] && outSize) {
-					//run the splasher to generate a splash of the desired size
-					logger.log("Splash image mapped from universal ->", splash);
-					var outImg = path.join(project.paths.root,".tempsplash.png");
-					build.jvmtools.exec('splasher', [
-						"-i", path.resolve(project.paths.root, project.manifest.splash["universal"]),
-						"-o", outImg,
-						"-resize", outSize,
-						"-rotate", "auto"
-					], function (splasher) {
-						var formatter = new build.common.Formatter('splasher');
-						splasher.on('out', formatter.out);
-						splasher.on('err', formatter.err);
-						splasher.on('end', function (data) {
-							fs.exists(outImg, function(exists) {
-								if (!exists) {
-									next();
-								} else {
-									var stream = fs.createReadStream(outImg);
-									stream.pipe(res)
-									stream.on('end', function () {
-										//remove out remporary file
-										fs.unlinkSync(outImg);
-									});
-								}
-							});
-						})
-					});
+					universalSplashPath = path.resolve(project.paths.root, project.manifest.splash["universal"]);
+					logger.log("Splash image mapped from universal key (" + universalSplashPath + ") ->", splash);
 				} else {
-					return next();
+					universalSplashPath = build.common.paths.lib('defsplash.png');
+					logger.log("Splash image mapped from default placeholder (" + universalSplashPath + ") ->", splash);
 				}
+
+				//run the splasher to generate a splash of the desired size
+				var outImg = path.join(project.paths.root,".tempsplash.png");
+				build.jvmtools.exec('splasher', [
+					"-i", universalSplashPath,
+					"-o", outImg,
+					"-resize", outSize,
+					"-rotate", "auto"
+				], function (splasher) {
+					var formatter = new build.common.Formatter('splasher');
+					splasher.on('out', formatter.out);
+					splasher.on('err', formatter.err);
+					splasher.on('end', function (data) {
+						fs.exists(outImg, function(exists) {
+							if (!exists) {
+								next();
+							} else {
+								var stream = fs.createReadStream(outImg);
+								stream.pipe(res)
+								stream.on('end', function () {
+									//remove out remporary file
+									fs.unlinkSync(outImg);
+								});
+							}
+						});
+					})
+				});
 			} else {
-				img = path.resolve(project.paths.root, img);
-				var f = ff(function () {
-					fs.exists(img, f.slotPlain());
-				}, function (exists) {
-					if (!exists) {
-						next();
-					} else {
-						logger.log("Splash image mapped from", splash, "->", img);
-						fs.createReadStream(img).pipe(res);
-					}
-				}).error(next);
+				logger.log("Splash image mapped from", splash, "->", img);
+				fs.createReadStream(img).pipe(res);
 			}
 		});
-	});
+	}
+
+	// Splash: Web Simulator version
+	app.get('/simulate/:shortName/:target/splash/:splash', ServeSplash);
+
+	// Splash: TestApp version
+	app.get('/simulate/:debug/:shortName/:target/splash/:splash', ServeSplash);
 
 	// "native.js" for testapp
 	app.get('/simulate/:debug/:shortName/:target/native.js', function(req, res, next) {
