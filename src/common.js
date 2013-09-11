@@ -18,7 +18,7 @@ var path = require('path');
 var request = require('request');
 var querystring = require('querystring');
 var child_process = require('child_process');
-var clc = require('cli-color');
+var color = require('cli-color');
 var mixpanel = require('mixpanel');
 
 var common = exports;
