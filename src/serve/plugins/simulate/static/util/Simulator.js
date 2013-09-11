@@ -654,4 +654,3 @@ exports.buildChromeFromURI = function(uri) {
 		resolution: resolutions.get(uri.hash('device') || uri.query('device'))
 	});
 };
-
