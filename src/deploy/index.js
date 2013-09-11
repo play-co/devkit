@@ -16,6 +16,8 @@
 var packageManager = require('../PackageManager');
 var http = require('http');
 var clc = require('cli-color');
+var fs = require('fs');
+var path = require('path');
 var ff = require('ff');
 var common = require('../common');
 var git = require('../git');
@@ -46,8 +48,13 @@ exports.deploy = function () {
 	}
 
 	var f = ff(this, function () {
-		git.getGithubRepo(process.cwd(), f());
-		git.getGithubBranch(process.cwd(), f());
+		if (fs.existsSync(path.join(process.cwd(), '.git'))) {
+			git.getGithubRepo(process.cwd(), f());
+			git.getGithubBranch(process.cwd(), f());
+		} else {
+			f("");
+			f("");
+		}
 	}, function (repo, branch) {
 		var metadata = {
 			version: 0, //0th version means no build attached
@@ -70,7 +77,7 @@ exports.deploy = function () {
 		var options = {
 			host: argv.host,
 			port: argv.port,
-			path: '/api/apps/'+manifest.appID+"/?auth="+deploy_auth,
+			path: '/v1/apps.update-app?app='+manifest.appID+"&key="+deploy_auth,
 			method: 'POST',
 			headers: {
 					'Content-Type': 'application/json',
@@ -88,9 +95,17 @@ exports.deploy = function () {
 
 			res.on('end', function () {
 				var stitch = chunks.join("");
-				var response = JSON.parse(stitch);
+				var response;
+				try {
+					response = JSON.parse(stitch);
+				} catch (e) {
+					console.log(clc.red("ERROR"), e)
+					console.log(stitch);
+					return;
+				}
+
 				if (response.error) {
-					console.log(clc.red("ERROR"), response.error); 
+					console.log(clc.red("ERROR"), response); 
 				} else if (response.status === "OK") {
 					console.log(clc.green("SUCCESS") +" Deploy successful");
 				}

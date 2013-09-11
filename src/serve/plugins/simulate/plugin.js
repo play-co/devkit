@@ -18,12 +18,14 @@
 var fs = require('fs');
 var ff = require('ff');
 var path = require('path');
+var express = require('express');
 var dgram = require('dgram');
 var build = require('../../../build');
 
 var etag = require('../../etag');
 var common = require('../../../common');
 var git = require('../../../git');
+var addonManager = require('../../../AddonManager');
 var projectManager = require('../../../ProjectManager');
 var pho = require('../../../PackageManager');
 var logger = new common.Formatter('packager');
@@ -42,7 +44,7 @@ var parse = require('url').parse;
 
 function serveProject (project) {
 	var id = project.getID();
-	var root = '/simulate/' + id + '/';
+	var root = '/simulate/';
 
 	if (_routes[id]) { return false; }
 	_routes[id] = true;
@@ -61,11 +63,13 @@ function serveProject (project) {
 	});
 
 	// Static pages.
-	_app.use(root, etag.static(path.join(__dirname, 'static')));
+	_app.use(path.join(root, id), etag.static(path.join(__dirname, 'static')));
 
 	// Compiled targets.
-	_app.use(root, etag.static(path.join(project.paths.root, 'build', 'debug'), {maxAge: 0}));
-	_app.use(root + "resources/", etag.static(path.join(project.paths.root, 'resources')));
+	_app.use(path.join(root, 'debug', id), etag.static(path.join(project.paths.root, 'build', 'debug'), {maxAge: 0}));
+	_app.use(path.join(root, 'debug', id, 'resources/'), etag.static(path.join(project.paths.root, 'resources')));
+
+	_app.use(path.join(root, 'release', id), etag.static(path.join(project.paths.root, 'build', 'release'), {maxAge: 0}));
 
 	// var route = etag.static(path.join(project.paths.root, 'sdk', 'gc', 'debugging'));
 	_app.get(new RegExp('^' + root + '.*?/sdk/gc/debugging/.*?'), function (req, res) {
@@ -85,8 +89,10 @@ exports.load = function (app, argv) {
 		nativeInspectorServer.listen('tcp', {host: 'localhost', port: '9226'});
 	}
 
+	_app.use('/simulate/static/', etag.static(path.join(__dirname, 'static')));
+
 	// Rebuild on commit always
-	app.get('/simulate/:shortName/:target/', function (req, res, next) {
+	app.get('/simulate/:debug/:shortName/:target/', function (req, res, next) {
 		common.getProjectList(function (projects) {
 			var project = projects[req.params.shortName.toLowerCase()];
 			if (!project) {
@@ -103,7 +109,7 @@ exports.load = function (app, argv) {
 			common.getLocalIP(function (err, address) {
 				build.build(project.paths.root, target, {
 					stage: argv.production ? false : true,
-					debug: true,
+					debug: req.params.debug == "debug" ? true : false,
 					isSimulated: true,
 					ip: address
 				}, function () {
@@ -124,13 +130,17 @@ exports.load = function (app, argv) {
 		});
 	});
 
-	app.get('/simulate/:shortName/:target/splash/:splash', function (req, res, next) {
+	function ServeSplash(req, res, next) {
 		common.getProjectList(function (projects) {
 			var project = projects[req.params.shortName.toLowerCase()];
 			var splash = req.params.splash;
 
 			var img = project && project.manifest.splash && project.manifest.splash[splash];
-			if (!img) {
+			if (img) {
+				img = path.resolve(project.paths.root, img);
+			}
+
+			if (!img || !fs.existsSync(img)) {
 				//if the key does not exist in the manifest we need to generate one
 				var splashSizes = {  
 					"portrait480": "320x480",
@@ -142,55 +152,58 @@ exports.load = function (app, argv) {
 					"landscape1536": "2048x1496"
 				};
 				var outSize = splashSizes[splash];
+				var universalSplashPath;
+
+				// If manifest specifies a splash image,
 				if (project.manifest.splash && project.manifest.splash["universal"] && outSize) {
-					//run the splasher to generate a splash of the desired size
-					logger.log("Splash image mapped from universal ->", splash);
-					var outImg = path.join(project.paths.root,".tempsplash.png");
-					build.jvmtools.exec('splasher', [
-						"-i", path.resolve(project.paths.root, project.manifest.splash["universal"]),
-						"-o", outImg,
-						"-resize", outSize,
-						"-rotate", "auto"
-					], function (splasher) {
-						var formatter = new build.common.Formatter('splasher');
-						splasher.on('out', formatter.out);
-						splasher.on('err', formatter.err);
-						splasher.on('end', function (data) {
-							fs.exists(outImg, function(exists) {
-								if (!exists) {
-									next();
-								} else {
-									var stream = fs.createReadStream(outImg);
-									stream.pipe(res)
-									stream.on('end', function () {
-										//remove out remporary file
-										fs.unlinkSync(outImg);
-									});
-								}
-							});
-						})
-					});
+					universalSplashPath = path.resolve(project.paths.root, project.manifest.splash["universal"]);
+					logger.log("Splash image mapped from universal key (" + universalSplashPath + ") ->", splash);
 				} else {
-					return next();
+					universalSplashPath = build.common.paths.lib('defsplash.png');
+					logger.log("Splash image mapped from default placeholder (" + universalSplashPath + ") ->", splash);
 				}
+
+				//run the splasher to generate a splash of the desired size
+				var outImg = path.join(project.paths.root,".tempsplash.png");
+				build.jvmtools.exec('splasher', [
+					"-i", universalSplashPath,
+					"-o", outImg,
+					"-resize", outSize,
+					"-rotate", "auto"
+				], function (splasher) {
+					var formatter = new build.common.Formatter('splasher');
+					splasher.on('out', formatter.out);
+					splasher.on('err', formatter.err);
+					splasher.on('end', function (data) {
+						fs.exists(outImg, function(exists) {
+							if (!exists) {
+								next();
+							} else {
+								var stream = fs.createReadStream(outImg);
+								stream.pipe(res)
+								stream.on('end', function () {
+									//remove out remporary file
+									fs.unlinkSync(outImg);
+								});
+							}
+						});
+					})
+				});
 			} else {
-				img = path.resolve(project.paths.root, img);
-				var f = ff(function () {
-					fs.exists(img, f.slotPlain());
-				}, function (exists) {
-					if (!exists) {
-						next();
-					} else {
-						logger.log("Splash image mapped from", splash, "->", img);
-						fs.createReadStream(img).pipe(res);
-					}
-				}).error(next);
+				logger.log("Splash image mapped from", splash, "->", img);
+				fs.createReadStream(img).pipe(res);
 			}
 		});
-	});
+	}
 
-	// "native.js.mp3" for testapp
-	app.get('/simulate/:shortName/:target/native.js.mp3', function(req, res, next) {
+	// Splash: Web Simulator version
+	app.get('/simulate/:shortName/:target/splash/:splash', ServeSplash);
+
+	// Splash: TestApp version
+	app.get('/simulate/:debug/:shortName/:target/splash/:splash', ServeSplash);
+
+	// "native.js" for testapp
+	app.get('/simulate/:debug/:shortName/:target/native.js', function(req, res, next) {
 		common.getProjectList(function (projects) {
 			var project = projects[req.params.shortName.toLowerCase()];
 			var target = req.params.target;
@@ -223,5 +236,54 @@ exports.load = function (app, argv) {
 	app.post('/simulate/remote/enableDevice/', function (req, res) {
 		nativeInspectorServer.activateRemoteConn(req.body.id);
 		res.send(200);
+	});
+
+	var simulatorAddons = [];
+	var allAddons = addonManager.getAddons();
+	Object.keys(allAddons).forEach(function (addonName) {
+		var addon = allAddons[addonName];
+		if (addon.hasSimulatorPlugin()) {
+			try {
+				simulatorAddons.push(addon);
+
+				var routesJS = addon.getPath('simulator', 'routes.js');
+				if (fs.existsSync(routesJS)) {
+					var routes = require(routesJS);
+					if (routes.initApp) {
+						var addonApp = express();
+						routes.initApp(common, express, addonApp);
+						app.use('/simulate/addons/' + addonName + '/', addonApp);
+					}
+				}
+				
+				var staticFiles = addon.getPath('simulator', 'static');
+				if (fs.existsSync(staticFiles)) {
+					app.use('/simulate/addons/' + addonName + '/static/', etag.static(staticFiles));
+				}
+			} catch (e) {
+				logger.error("simulator addon", addonName, "failed to initialize", e);
+			}
+		}
+	});
+
+	app.get('/simulate/addons/', function (req, res) {
+		res.json(simulatorAddons.map(function (addon) { return addon.getName(); }));
+	});
+
+	app.get('/simulate/addons/:addon/index.js', function (req, res) {
+		var name = req.params.addon;
+		var addonPath = common.paths.addons(name, 'simulator', 'static', 'index.js');
+		if (fs.existsSync(addonPath)) {
+			var JsioCompiler = require(common.paths.root('src', 'build', 'compile')).JsioCompiler;
+			var compiler = new JsioCompiler();
+			compiler.opts.includeJsio = false;
+			compiler.opts.cwd = common.paths.root();
+
+			var path = 'addons.' + name + '.simulator.static.index';
+			compiler.inferOptsFromEnv('browser')
+				.compile(path, function (err, code) {
+					res.send(";(function () { var jsio = GLOBAL.jsio; " + code + "; exports = jsio('import " + path + "')})();");
+			});
+		}
 	});
 };

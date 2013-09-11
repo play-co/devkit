@@ -18,7 +18,7 @@ var path = require('path');
 var request = require('request');
 var querystring = require('querystring');
 var child_process = require('child_process');
-var clc = require('cli-color');
+var color = require('cli-color');
 var mixpanel = require('mixpanel');
 
 var common = exports;
@@ -62,16 +62,16 @@ process.on('uncaughtException', function (e) {
 		console.log("");
 		switch (e.code) {
 			case 'EADDRINUSE':
-				console.error(clc.red("ERROR:"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
+				console.error(color.red("ERROR:"), "Port 9200 already in use, exiting. (Are you serving elsewhere?)");
 				break;
 			default:
-				console.error(clc.red("Uncaught Exception:"), e.stack);
+				console.error(color.red("Uncaught Exception:"), e.stack);
 		}
 
 		common.track("BasilCrash", {"code": e.code, "stack": e.stack});
 
 		console.log("");
-		console.error(clc.red("  Terminating in 5 seconds..."));
+		console.error(color.red("  Terminating in 5 seconds..."));
 		console.log("");
 
 		// Give it time to post
@@ -83,10 +83,6 @@ process.on('uncaughtException', function (e) {
 
 process.on('SIGINT', function () {
 	process.exit(2);
-});
-
-process.on('exit', function () {
-	exports.config.stopWatch();
 });
 
 // Run a child process inline.
@@ -148,6 +144,11 @@ exports.Formatter = Class(function () {
 	}
 
 	this.format = function (str) {
+
+		if (str instanceof Error) {
+			return '\n' + exports.errorToString(str);
+		}
+
 		if (typeof str == 'object') {
 			return str;
 		}
@@ -155,10 +156,10 @@ exports.Formatter = Class(function () {
 		return ('' + str)
 
 			// add colour to our build logs so that it's easier to see if and where things went wrong.
-			.replace(/\d* ?error(s|\(s\))?/gi, function (res) { return clc.bright.red(res); })
-			.replace(/\d* ?warn(ing)?(s|\(s\))?/gi, function (res) { return clc.bright.red(res); })
-			.replace('BUILD SUCCESSFUL', clc.bright.green('BUILD SUCCESSFUL'))
-			.replace('BUILD FAILED', clc.bright.red('BUILD FAILED'))
+			.replace(/\d*(^|\s|[^a-zA-Z0-9-])error(s|\(s\))?/gi, function (res) { return color.redBright(res); })
+			.replace(/\d*(^|\s|[^a-zA-Z0-9-])warn(ing)?(s|\(s\))?/gi, function (res) { return color.redBright(res); })
+			.replace('BUILD SUCCESSFUL', color.greenBright('BUILD SUCCESSFUL'))
+			.replace('BUILD FAILED', color.redBright('BUILD FAILED'))
 
 			// fix new lines
 			.replace(/\r?\n(?!$)/g, '\n' + this._prefix);
@@ -172,11 +173,11 @@ exports.Formatter = Class(function () {
 	}
 
 	this.warn = function () {
-		console.error.apply(console, [this._prefix, clc.bright.red('[warn] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
+		console.error.apply(console, [this._prefix, color.redBright('[warn] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
 	}
 
 	this.error = function () {
-		console.error.apply(console, [this._prefix, clc.bright.red('[error] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
+		console.error.apply(console, [this._prefix, color.redBright('[error] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
 	}
 
 	// hook these up to streaming logs (stdout and stderr)
@@ -214,128 +215,10 @@ exports.Formatter = Class(function () {
 });
 
 exports.Formatter.getPrefix = function (tag) {
-	return clc.cyan.bright(('               [' + tag + ']   ').substr(-15 - Math.max(0, tag.length - 10)));
+	return color.cyanBright(('               [' + tag + ']   ').substr(-15 - Math.max(0, tag.length - 10)));
 }
 
 var logger = new exports.Formatter('gcsdk');
-
-var CONFIG_PATH = exports.paths.root('config.json');
-
-// initial reading of config.json can happen synchronously using require
-var _config;
-try {
-	_config = require(CONFIG_PATH);
-} catch (e) {
-	if (e.code != 'MODULE_NOT_FOUND') {
-		logger.error("Error loading", CONFIG_PATH);
-		if (e instanceof SyntaxError) {
-			if (fs.readFileSync(CONFIG_PATH) == "") {
-				logger.warn("Your config.json was an empty file! Writing a new one...")
-			} else {
-				logger.error("Syntax error parsing JSON.");
-				process.exit(1);
-			}
-		} else {
-			logger.error(e);
-		}
-	}
-
-	_config = {};
-}
-
-// create a singleton object for the config
-//   emits 'change' events when listening for config.json file changes
-exports.config = new (require('events').EventEmitter);
-
-// called to re-read the config.json file
-exports.config.reload = function () {
-	fs.readFile(CONFIG_PATH, 'utf8', bind(this, function (err, data) {
-		if (data) {
-			try {
-				_config = JSON.parse(data);
-			} catch (e) {
-				logger.error('unable to parse config.json', e);
-			}
-
-			this.emit('change');
-		}
-	}));
-}
-
-// get a property from the config file
-//
-// Note: nested keys can be accessed using dots or colons,
-//       e.g. get('foo.bar') or get('foo:bar')
-exports.config.get = function (key) {
-	var pieces = (key || '').split(/[.:]/);
-	var data = _config;
-	var i = 0;
-	while (pieces[i]) {
-		if (!data) { return undefined; }
-
-		data = data[pieces[i]];
-		++i;
-	}
-	return data;
-};
-
-// set a property in the config file
-// see note in `get()`
-exports.config.set = function (key, value, cb) {
-	var pieces = (key || '').split(/[.:]/);
-	var data = _config;
-	var i = 0;
-	while (pieces[i + 1]) {
-		if (!data[pieces[i]]) {
-			data[pieces[i]] = {};
-		}
-
-		data = data[pieces[i]];
-		++i;
-	}
-
-	data[pieces[i]] = value;
-	this.write(cb);
-}
-
-// async-safe write using a callback queue
-// callbacks will not fire until all pending writes complete
-exports.config._onWrite = [];
-exports.config.write = function (cb) {
-	// schedule the callback
-	fs.writeFileSync(CONFIG_PATH, JSON.stringify(_config, null, '\t'), 'utf8');
-	if (cb) { 
-		cb();
-	}
-}
-
-// note that gcsdk won't exit after running this unless stopWatch is called
-exports.config.startWatch = function () {
-	if (!this._watcher) {
-		// make sure the file exists
-		this.write(bind(this, function () {
-			// need to check again here
-			if (!this._watcher) {
-				this._watcher = fs.watch(CONFIG_PATH);
-				this._watcher.on('change', bind(this, 'reload'));
-			}
-		}));
-	}
-}
-
-// stop watching config.json
-exports.config.stopWatch = function () {
-	if (this._watcher) {
-		this._watcher.close();
-	}
-}
-
-// write config.json if it doesn't exist the first time
-fs.exists(CONFIG_PATH, function (exists) {
-	if (!exists) {
-		exports.config.write();
-	}
-});
 
 // Get local IP address.
 exports.getLocalIP = function (next) {
@@ -421,6 +304,10 @@ exports.isValidShortname = function(shortname){
 	return shortname.search(/([^[a-zA-Z0-9])/) === -1;
 };
 
+exports.getEtagServer = function () {
+	return require('./serve/etag');
+}
+
 // Log execution time.
 var times = {};
 exports.startTime = function (key) {
@@ -433,16 +320,94 @@ exports.endTime = function (key) {
 	delete times[key];
 };
 
-//read the version data from the .version file
+// read the version data from the .version file
 exports.readVersionFile = function () {
 	var package = JSON.parse(fs.readFileSync(exports.paths.root("package.json")));
 	exports.sdkVersion = Version.parse(package.channel + '-' + package.version);
 	exports.buildVersion = package.basil['tealeaf-build-tools'];
 };
 
-//call it straight away
+// call it straight away
 exports.readVersionFile();
 
+exports.errorToString = function (error) {
+
+	if (!error.stack) {
+		return error;
+	}
+
+	var out = [];
+	
+	try {
+		var errStr = error.stack;
+		var lines = errStr.split('\n');
+		var i = 0;
+		var msg = [];
+		while (lines[i] && !/^\s*at/.test(lines[i])) {
+			msg.push(lines[i]);
+			++i;
+		}
+
+		var parser = /^\s*at (.*?)\s+\((.*?)\)/;
+		lines = lines.slice(i).reverse();
+		var data = lines.map(function (line) {
+			var match = line.match(parser);
+			if (match) {
+				var result = {
+					func: match[1]
+				};
+
+				var details = match[2].match(/(.*?):(\d+):(\d+)/);
+				if (details && details[1]) {
+					var filename = path.relative(exports.paths.root(), match[2]);
+					var dirname = path.dirname(filename);
+					result.file = path.basename(filename);
+					result.details = './' + (dirname == '.' ? '' : dirname);
+					result.line = details[2];
+				} else {
+					result.details = match[2];
+				}
+
+				return result;
+			} else {
+				return line;
+			}
+		});
+
+		var n = data.length;
+		data.slice(0, n - 1).map(function (data, i) {
+			if (typeof data == 'string') {
+				out.push(data);
+			} else {
+				out.push(new Array(i + 1).join(' ') + '└ '
+					+ color.green(data.file) + ':' + color.blueBright(data.line)
+					+ ' ' + color.whiteBright(data.func)
+					+ color.yellowBright(' (' + data.details + ')'));
+			}
+		});
+
+		var lastLine = data[n - 1];
+		if (lastLine) {
+			var indent = new Array(n).join(' ');
+			var msgLines = msg.join('\n').split('\n');
+			var msgText = msgLines.join('\n   ' + indent);
+			out.push(indent + '└ '
+				+ color.redBright(
+					msgText
+					+ (msgLines.length > 1 ? '\n' + indent : '')
+					+ color.white(' at ')
+					+ color.green(lastLine.file) + ':' + color.blueBright(lastLine.line)
+					+ ' ' + color.redBright(lastLine.func)
+					+ color.yellowBright(' (' + lastLine.details + ')')
+				));
+		}
+	} catch (e) {
+		out.push(e.stack);
+		out.push(error.stack);
+	}
+
+	return out.join('\n');
+}
 
 //// -- MixPanel Analytics: Improve DevKit by sharing anonymous statistics!
 
@@ -476,9 +441,15 @@ exports.track = function(key, opts) {
 		// Launch!
 		mp_tracker && mp_tracker.track(key, opts);
 	} else {
-		//console.error(clc.yellow("WARNING:"), "MixPanel anonymous event tracking disabled (config:optout).  Please consider opting-in to help improve the DevKit!");
+		//console.error(color.yellow("WARNING:"), "MixPanel anonymous event tracking disabled (config:optout).  Please consider opting-in to help improve the DevKit!");
 	}
 }
 
 //// -- End of Analytics
 
+//// -- load and parse config.json
+
+var ConfigManager = require('./ConfigManager');
+exports.config = new ConfigManager();
+
+//// -- end config.json

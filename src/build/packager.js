@@ -25,6 +25,7 @@ var clc = require("cli-color");
 var read = require("read");
 var spritesheetMap = require("./spritesheetMap");
 var fontsheetMap = require("./fontsheetMap");
+var addonManager = require("../AddonManager");
 
 var compile = require("./compile");
 var common = require("../common");
@@ -154,15 +155,31 @@ function updateIcons (templatePath, projectPath, icons) {
 function getConfigObject (project, opts, target) {
 	var manifest = project.manifest;
 	var config = JSON.parse(JSON.stringify(CONFIG_GLOBAL_TEMPLATE));
-	
-	// Augment config object with manifest properties.
+
+	// TODO: move this code/refactor android package naming
+	// This code for the android package name should not be here (but is here so
+	// browser android builds can also get the android package)
+	var packageName = "";
+	if (manifest.studio && manifest.studio.domain && manifest.shortName) {
+		var names = manifest.studio.domain.split(/\./g).reverse();
+		var studio = names.join('.');
+		var shortName = manifest.shortName;
+		packageName = studio + "." + shortName;
+	}
+
+// Augment config object with manifest properties.
 	config.appID = manifest.appID;
 	config.handshakeEnabled = manifest.handshakeEnabled;
 	config.shortName = manifest.shortName;
 	config.title = manifest.title;
+	config.titles = manifest.titles;
 	config.fonts = manifest.fonts;
+	config.addons = manifest.addons;
 	config.disableNativeViews = manifest.disableNativeViews || false;
 	config.unlockViewport = manifest.unlockViewport;
+	config.useDOM = !!manifest.useDOM;
+	config.packageName = packageName;
+	config.bundleID = manifest.ios.bundleID || "example.bundle" 
 	
 	// for noodletown invites
 	config.mpMetricsKey = manifest.mpMetricsKey;
@@ -249,40 +266,46 @@ function getConfigObject (project, opts, target) {
 }
 
 // Return the JavaScript string that creates the global CONFIG object.
-function getJSConfig (project, opts, target) {
+function getJSConfig (project, opts, target, cb) {
+
 	logger.log("Building JS config... " + opts.version);
-	
-	var defines = exports.getDefines(opts);
-	var src = [";(function() {\n"];
-	for (var key in defines) {
-		src.push("window." + key + "=" + JSON.stringify(defines[key]) + ";\n");
-	}
-	return src.concat([
+
+	exports.getDefines(project, opts, function(defines) {
+		var src = [";(function() {\n"];
+		for (var key in defines) {
+			src.push("window." + key + "=" + JSON.stringify(defines[key]) + ";\n");
+		}
+		cb(src.concat([
 				"window.CONFIG=", JSON.stringify(getConfigObject(project, opts, target)), ";\n",
 				"window.CONFIG.baseURL = window.location.toString().match(/(.*\\/).*$/)[1];\n",
-			"})();"
-		]).join("");
+				"})();"
+		]).join(""));
+
+	});
 }
 
 // Package all JavaScript into a single file that can be included with the build.
 // runs jsio against all user code.
-function packageJS (opts, initialImport, appendImport, cb) {
-	var compiler = createCompiler(opts);
-	
-	compiler.inferOptsFromEntry(initialImport);
+function packageJS (project, opts, initialImport, appendImport, cb) {
+	exports.createCompiler = createCompiler;
 
-	if (!/^native/.test(opts.target)) {
-		compiler.opts.includeJsio = false;
-	}
+	var f = ff(this, function() {
+		createCompiler(project, opts, f.slotPlain());
+	}, function(compiler) {
+		compiler.inferOptsFromEntry(initialImport);
 
-	merge(compiler.opts, {
-		appendImport: appendImport
+		compiler.opts.includeJsio = !opts.excludeJsio;
+
+		merge(compiler.opts, {
+				appendImport: appendImport
+		});
+
+		compiler.compile(initialImport, cb);
 	});
-	
-	compiler.compile(initialImport, cb);
 }
 
-function createCompiler (opts) {
+function createCompiler (project, opts, cb) {
+
 	var jsCachePath = opts.jsCachePath;
 	if (!jsCachePath) {
 		jsCachePath = path.join(opts.fullPath, "build/.cache");
@@ -299,12 +322,71 @@ function createCompiler (opts) {
 		printOutput: opts.printJSIOCompileOutput
 	});
 
-	compiler.opts.defines = exports.getDefines(opts);
+	exports.getDefines(project, opts, function(defines) {
+		compiler.opts.defines = defines;
+		cb(compiler);
+	});
+
 	return compiler;
 }
 
+exports.getAddonsForApp = function (project, cb) {
+
+	var result = {};
+	var processedAddons = {};
+	var f = ff(exports, function() {
+		var addonConfig = project.getAddonConfig();
+		var addons = addonManager.getAddons();
+
+		var installAddon = function(addonName) {
+			if (!processedAddons[addonName]) {
+				processedAddons[addonName] = true;
+
+				var wait = f.wait();
+				if (!addons[addonName]) {
+					//install
+					addonManager.install(addonName, {}, function (err, res) {
+						if (!err) {
+							var deps = addonManager.getAddonDependencies(addonName);
+							for (var d in deps) {
+								installAddon(deps[d]);
+							}
+
+							addons = addonManager.getAddons();
+							if (addons[addonName]) {
+								result[addonName] = addons[addonName];
+							}
+						}
+						wait();
+					});
+
+				} else {
+					var deps = addonManager.getAddonDependencies(addonName);
+					for (var d in deps) {
+						installAddon(deps[d]);
+					}
+
+					result[addonName] = addons[addonName];
+					wait();
+				}
+
+			}
+		}
+
+		if (!Array.isArray(addonConfig)) {
+			addonConfig = Object.keys(addonConfig);
+		}
+		addonConfig.forEach(installAddon);
+
+	}, function() {
+		cb(result);
+	});
+	
+}
+
 // returns a dictionary of constants for JS
-exports.getDefines = function (opts) {
+exports.getDefines = function (project, opts, cb) {
+
 	var defines = {
 			BUILD_TARGET: opts.target,
 			BUILD_ENV: opts.target.split("-")[0], // env is browser or mobile (e.g. parses "browser-mobile" or "native-ios")
@@ -312,15 +394,14 @@ exports.getDefines = function (opts) {
 			DEV_MODE: !!opts.debug,
 		};
 
-	var addonManager = require("../AddonManager");
-	if (addonManager) {
-		addonManager.getAddons().forEach(function (addon) {
-			var safeName = addon.toUpperCase().replace(/-/g, "_");
-			defines["ADDON_" + safeName] = true;
-		});
-	}
+		exports.getAddonsForApp(project, function(addons) {
+			Object.keys(addons).forEach(function (addonName) {
+				var safeName = addonName.toUpperCase().replace(/-/g, "_");
+				defines["ADDON_" + safeName] = true;
+			});
 
-	return defines;
+			cb(defines);
+		});
 }
 
 //runs the closure compiler, checks that you have valid code, and if not, yells at you
@@ -341,164 +422,305 @@ function validateJS (src, next) {
 	});
 }
 
-/**
- * Create spritesheetSizeMap.json
- * Basically a mapping of saved spritesheet names -> sheet size
- */
-function createSpritesheetSizeMap (spriteMap, appDir, target, cb) {
-	var spriteDir = path.join(appDir, target, "spritesheets");
-	var fontsDir = path.join(appDir, "resources", "fonts");
-	var f = ff(function () {
-		fs.exists(fontsDir, f.slotPlain());
-	}, function (exists) {
-		fontsheetMap.create(fontsDir, "resources/fonts", "fontsheetSizeMap");
-		spritesheetMap.create(spriteMap, spriteDir, "spritesheetSizeMap", f());
-	}).cb(cb)
-	.error(function (e) {
-		logger.log("unexpected error writing spritesheet map");
-		console.error(e);
-	});
-}
-
 // utility function to replace any windows path separators for paths that will be used for URLs
 var regexSlash = /\\/g;
 function useURISlashes (str) { return str.replace(regexSlash, "/"); }
 
-// The spriter sprites images, but also returns a list of resources. It is a
-// tool of many faces.
-function getResources(manifest, target, appDir, output, mapMutator, cb) {
-	// object on success to pass to cb(err, res);
-	var result = {};
+var Resource = Class(function () {
+	this.init = function (opts) {
+		this.ext = path.extname(opts.fullPath);
+		this.basename = path.basename(opts.fullPath, this.ext);
+		this.fullPath = opts.fullPath;
+		this.relative = useURISlashes(opts.relative);
+	}
+});
+
+// Gather the resources for a specified project, building spritesheets as we go
+//   - calls cb(err, res)
+//     where res contains:
+//       - images: a list of spritesheets
+//       - imageMap: JSON map of original image filenames to their location in the spritesheets
+//       - other: a list of other resources (json/audio/etc)
+// target : string - the build target, e.g. native-ios
+// output : string - usually something like "build/debug/native-ios/"
+function getResources(project, buildOpts, cb) {
+	var appDir = buildOpts.fullPath;
+
+	var resourceDirectories = [
+			{src: path.join(appDir, 'resources'), target: 'resources'}
+		];
+
+	// sprite any localized resources
+	var allFiles = fs.readdirSync(appDir);
+	for (var i = 0; i < allFiles.length; i++) {
+		try {
+			var fileName = allFiles[i];
+			var filePath = path.join(appDir, fileName);
+			var statInfo = fs.statSync(filePath);
+			var localLoc = fileName.indexOf('resources-');
+			if (statInfo.isDirectory() && localLoc == 0) {
+				resourceDirectories.push({src: filePath, target: fileName}); 
+			}
+		} catch (exception) {
+			//do nothing if the file stat fails
+		}
+	}
+
+	// final resources dictionary
+	var resources = {
+			images: [],
+			imageMap: {},
+			other: []
+		};
 
 	// sprite directory
-	var relativeSpriteDir = "spritesheets";
-	var fullSpriteDir = path.join(appDir, output, relativeSpriteDir);
+	var relativeSpritesheetsDirectory = "spritesheets";
+	var spritesheetsDirectory = path.join(appDir, buildOpts.localBuildPath, relativeSpritesheetsDirectory);
 
-	// get the resources from the spriter and reformat the output
-	var f = ff(function () {
-		// array to store spriter output
-		var out = [];
-		var formatter = new common.Formatter("spriter", true, out);
-		var onEnd = f(); // continue to next callback once onEnd is called
+	
+	var buildAddons = {};
 
-		jvmtools.exec("spriter", [
-			"--scale", 1,
-			"--dir", appDir + "/",
-			"--output", fullSpriteDir,
-			"--target", target,
-			"--binaries", common.paths.lib()
-		], function (spriter) {
-			spriter.on("out", formatter.out);
-			spriter.on("err", formatter.err);
-			spriter.on("end", function () { onEnd(!out.length, out.join("")); });
-		});
-	}, function (spriterOutput) {
-		var resources = JSON.parse(spriterOutput);
-		
-		// add the spritesheetSizeMap to sprites list so that it gets 
-		// copied to the build directories properly as well.
-		resources.sprites.push("spritesheetSizeMap.json");
-		resources.other.push("resources/fonts/fontsheetSizeMap.json");
+	var f = ff(this, function() {
+		// get list of build addons
+		// for each build addon:
+		//  - call onBeforeBuild
+		//  - get list of resource directories
 
-		result.sprites = resources.sprites.map(function (filename) {
-			var ext = path.extname(filename);
-			return {
-				basename: path.basename(filename, ext),
-				ext: ext,
-				fullPath: path.resolve(fullSpriteDir, filename),
-				relative: useURISlashes(path.join(relativeSpriteDir, filename))
-			};
-		});
+		exports.getAddonsForApp(project, f.slotPlain());
 
-		var filteredPaths = [];
-
-		result.resources = resources.other.map(function (filename) {
-			if (path.basename(filename) === "metadata.json") {
+	}, function (addons) {
+		Object.keys(addons).forEach(function (addonName) {
+			var addon = addons[addonName];
+			if (addon.hasBuildPlugin()) {
 				try {
-					var filedata = fs.readFileSync(path.resolve(appDir, filename), "utf8");
-					var fileobj = JSON.parse(filedata);
-					if (fileobj.package === false) {
-						var filterPath = path.dirname(filename);
-						logger.log("Not packaging resources from", filterPath);
-						filteredPaths.push(filterPath);
+					var buildAddon = require(addon.getPath('build'));
+					buildAddons[addonName] = buildAddon;
+
+					var addonConfig = project.getAddonConfig();
+					var directories = buildAddon.getResourceDirectories(addonConfig[addonName]);
+					if (isArray(directories)) {
+						directories.forEach(function (directory) {
+							resourceDirectories.push({
+									src: directory.src,
+									target: path.join('addons', addonName, directory.target)
+							});
+						});
 					}
-				} catch (ex) {
-					logger.error("WARNING:", filename, "format is not valid JSON so cannot parse it.");
+				} catch (e) {
+					logger.error("Error initializing build addon", addonName, e);
 				}
 			}
+		}, this);
 
-			var ext = path.extname(filename);
-			return {
-				basename: path.basename(filename, ext),
-				ext: ext,
-				fullPath: path.resolve(appDir, filename),
-				relative: useURISlashes(filename)
-			};
-		});
-
-		// remove paths that have metadata package:false
-		for (var ii = 0; ii < result.resources.length; ++ii) {
-			var filespec = result.resources[ii];
-			var filename = filespec.relative;
-
-			if (path.basename(filename) === "metadata.json") {
-				logger.log("Did not package the metadata file", filename);
-				result.resources.splice(ii--, 1);
-				continue;
-			}
-
-			for (var fp in filteredPaths) {
-				if (filename.indexOf(filteredPaths[fp]) === 0) {
-					logger.log("Did not package resource", filename);
-					result.resources.splice(ii--, 1);
-					continue;
+		for (var addonName in buildAddons) {
+			var onFinish = f.wait();
+			try {
+				if (buildAddons[addonName].onBeforeBuild) {
+					buildAddons[addonName].onBeforeBuild(common, project, buildOpts, onFinish);
 				}
+			} catch (e) {
+				onFinish();
+				logger.error("Error executing onBeforeBuild for addon", addonName, e);
 			}
 		}
+	}, function () {
+		var onFinish = f.wait();
 
-		var mapPath = path.resolve(fullSpriteDir, resources.map);
-		f(mapPath);
-		fs.readFile(mapPath, "utf8", f());
+		// which directory are we on (for async loop)
+		var currentIndex = 0;
 
-	}, function (mapPath, data) {
-		// rewrite JSON data, fixing slashes and appending the spritesheet directory
-		var rawMap = JSON.parse(data);
-		var imageMap = {};
-		Object.keys(rawMap).forEach(function (key) {
-			if (rawMap[key].sheet) {
-				rawMap[key].sheet = useURISlashes(path.join(relativeSpriteDir, rawMap[key].sheet));
+		// sprite all directories and merge results (serially)
+		spriteNextDirectory();
+
+		// async loop over all resource directories
+		function spriteNextDirectory() {
+			var directory = resourceDirectories[currentIndex];
+			if (directory) {
+				spriteDirectory(directory.src, directory.target, function (err, res) {
+					if (!err) {
+						// merge results
+						resources.images = resources.images.concat(res.spritesheets);
+						resources.other = resources.other.concat(res.other);
+						Object.keys(res.imageMap).forEach(function (key) {
+							resources.imageMap[key] = res.imageMap[key];
+						});
+					}
+
+					// next directory
+					++currentIndex;
+					spriteNextDirectory();
+				});
+			} else {
+				onFinish();
 			}
-
-			imageMap[useURISlashes(key)] = rawMap[key];
-		});
-
-		if (typeof mapMutator === "function") {
-			mapMutator(imageMap);
 		}
+	}, function () {
+		var fontsDir = path.join(appDir, "resources", "fonts");
+		f(fontsDir);
+		fs.exists(fontsDir, f.slotPlain());
+	}, function (fontsDir, fontsDirExists) {
+		// relative paths for the output (uses forward slashes)
+		var relativeFontsDir = "resources/fonts";
+		var relativeFontsheetSizeMap = "resources/fonts/fontsheetSizeMap.json";
+
+		// absolute paths for font size output
+		var fontsheetSizeMapFilename = path.join(appDir, buildOpts.localBuildPath, "resources", "fonts", "fontsheetSizeMap.json");
+
+		resources.other.push(new Resource({
+					fullPath: fontsheetSizeMapFilename,
+					relative: relativeFontsheetSizeMap
+		}));
+
+		// Create spritesheetSizeMap.json
+		// Basically a mapping of saved spritesheet names -> sheet size
+		wrench.mkdirSyncRecursive(path.dirname(fontsheetSizeMapFilename));
+
+		if (!fontsDirExists) {
+			fs.writeFile(fontsheetSizeMapFilename, "{}", f.wait());
+		} else {
+			fontsheetMap.create(fontsDir, "resources/fonts", fontsheetSizeMapFilename, f.wait());
+		}
+
+		spritesheetMap.create(resources.imageMap, spritesheetsDirectory, "spritesheetSizeMap", f());
+	}, function (spritesheetMapPath) {
+		resources.other.push(new Resource({
+					fullPath: spritesheetMapPath,
+					relative: path.relative(path.resolve(appDir, buildOpts.localBuildPath), spritesheetMapPath)
+		}));
+
+		var mapPath = path.join(spritesheetsDirectory, 'map.json');
+
+		// write out the new image map
+		fs.writeFile(mapPath, JSON.stringify(resources.imageMap), "utf8", f.wait());
 
 		// add to resources
 		var mapExt = path.extname(mapPath);
-		result.resources.push({
-			basename: path.basename(mapPath, mapExt),
-			ext: mapExt,
-			relative: useURISlashes(path.relative(path.resolve(appDir, output), mapPath)),
-			fullPath: mapPath
+		resources.other.push(new Resource({
+					relative: path.relative(path.resolve(appDir, buildOpts.localBuildPath), mapPath),
+					fullPath: mapPath
+		}));
+
+		f(resources);
+	}).cb(cb);
+
+	// sprite a single directory
+	function spriteDirectory(srcDir, targetDir, cb) {
+		// get the resources from the spriter and reformat the output
+		var f = ff(function () {
+			// array to store spriter output
+			var out = [];
+			var formatter = new common.Formatter("spriter", true, out);
+			var onEnd = f(); // continue to next callback once onEnd is called
+
+			var spriterOpts = [
+				"--scale", 1,
+				"--dir", srcDir + "/",
+				"--output", spritesheetsDirectory,
+				"--target", buildOpts.target,
+				"--binaries", common.paths.lib()
+			];
+
+			logger.log("spriter", spriterOpts
+					.map(function (arg) { return /^--/.test(arg) ? arg : '"' + arg + '"'; })
+					.join(' '));
+
+			jvmtools.exec("spriter", spriterOpts, function (spriter) {
+				spriter.on("out", formatter.out);
+				spriter.on("err", formatter.err);
+				spriter.on("end", function () { onEnd(!out.length, out.join("")); });
+			});
+		}, function (rawSpriterOutput) {
+			try {
+				var spriterOutput = JSON.parse(rawSpriterOutput);
+			} catch (e) {
+				logger.error(rawSpriterOutput);
+				throw e;
+			}
+
+			var resources = {};
+			
+			resources.spritesheets = spriterOutput.sprites.map(function (filename) {
+				var ext = path.extname(filename);
+				return new Resource({
+					fullPath: path.resolve(spritesheetsDirectory, filename),
+					relative: path.join(relativeSpritesheetsDirectory, filename)
+				});
+			});
+
+			var filteredPaths = [];
+
+			resources.other = spriterOutput.other.map(function (filename) {
+				if (path.basename(filename) === "metadata.json") {
+					try {
+						var filedata = fs.readFileSync(path.resolve(srcDir, filename), "utf8");
+						var fileobj = JSON.parse(filedata);
+						if (fileobj.package === false) {
+							var filterPath = path.dirname(filename);
+							logger.log("Not packaging resources from", filterPath);
+							filteredPaths.push(filterPath);
+						}
+					} catch (ex) {
+						logger.error("WARNING:", filename, "format is not valid JSON so cannot parse it.");
+					}
+				}
+
+				return new Resource({
+					fullPath: path.resolve(srcDir, filename),
+					relative: path.join(targetDir, filename)
+				});
+			});
+
+			// remove paths that have metadata package:false
+			for (var ii = 0; ii < resources.other.length; ++ii) {
+				var filespec = resources.other[ii];
+				var filename = filespec.relative;
+
+				if (path.basename(filename) === "metadata.json") {
+					logger.log("Did not package the metadata file", filename);
+					resources.other.splice(ii--, 1);
+					continue;
+				}
+
+				for (var fp in filteredPaths) {
+					if (filename.indexOf(filteredPaths[fp]) === 0) {
+						logger.log("Did not package resource", filename);
+						resources.other.splice(ii--, 1);
+						continue;
+					}
+				}
+			}
+
+			f(resources);
+			var mapPath = path.resolve(spritesheetsDirectory, spriterOutput.map);
+			fs.readFile(mapPath, "utf8", f());
+
+		}, function (resources, mapContents) {
+			// rewrite JSON data, fixing slashes and appending the spritesheet directory
+			var rawMap = JSON.parse(mapContents);
+			var imageMap = {};
+			Object.keys(rawMap).forEach(function (key) {
+				if (rawMap[key].sheet) {
+					rawMap[key].sheet = useURISlashes(path.join(relativeSpritesheetsDirectory, rawMap[key].sheet));
+				}
+
+				imageMap[useURISlashes(path.join(targetDir, key))] = rawMap[key];
+			});
+
+			if (typeof buildOpts.mapMutator === "function") {
+				buildOpts.mapMutator(imageMap);
+			}
+
+			resources.imageMap = imageMap;
+
+			// pass the cb the resources!
+			f(resources);
+		})
+		.cb(cb)
+		.error(function (e) {
+			logger.error("Unexpected exception handling spriter output", e);
+			console.log(e);
 		});
-
-		// pass the cb the result!
-		f(result);
-
-		// write spritesheet sizes and fontsheet sizes to json files
-		createSpritesheetSizeMap(imageMap, appDir, output, f.wait());
-
-		// write out the new image map
-		fs.writeFile(mapPath, JSON.stringify(imageMap), "utf8", f.wait());
-	})
-	.cb(cb)
-	.error(function (e) {
-		logger.error("Unexpected exception handling spriter output");
-		console.error(e);
-	});
+	}
 }
 
 function writeMetadata(opts, dir, json) {
@@ -511,17 +733,17 @@ function writeMetadata(opts, dir, json) {
 
 // Compile resources together and pass a cache object to the next function.
 // runs the spriter and compiles the build code.
-function compileResources (project, opts, target, initialImport, cb) {
+function compileResources (project, buildOpts, initialImport, cb) {
 	logger.log("Packaging resources...");
 
 	// Font sheets cannot be sprited; add a metadata.json file for fonts (for compatibility)
-	writeMetadata(opts, "resources/fonts", "{\"sprite\": false}");
-	writeMetadata(opts, "resources/icons", "{\"sprite\": false, \"package\": false}");
-	writeMetadata(opts, "resources/splash", "{\"sprite\": false, \"package\": false}");
+	writeMetadata(buildOpts, "resources/fonts", "{\"sprite\": false}");
+	writeMetadata(buildOpts, "resources/icons", "{\"sprite\": false, \"package\": false}");
+	writeMetadata(buildOpts, "resources/splash", "{\"sprite\": false, \"package\": false}");
 
 	var f = ff(function () {
-		getResources(project.manifest, target, opts.fullPath, opts.localBuildPath, opts.mapMutator, f());
-		packageJS(opts, initialImport, false, f());
+		getResources(project, buildOpts, f());
+		packageJS(project, buildOpts, initialImport, false, f());
 	}, function (files, jsSrc) {
 		logger.log("Finished packaging resources");
 
@@ -546,6 +768,5 @@ exports.compileResources = compileResources;
 exports.getJSConfig = getJSConfig;
 exports.getSDKHash = getSDKHash;
 exports.getGameHash = getGameHash;
-exports.packageJS = packageJS;
 exports.createCompiler = createCompiler;
 exports.compressCSS = compressCSS;
