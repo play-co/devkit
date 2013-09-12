@@ -76,11 +76,14 @@ function checkTealeafBuildToolsLink (version, cb) {
                     fs.readlink(BUILD_TOOLS_JAR, f2());
                 }, function (link) {
                     var fileVersion = link.match(/tealeaf-build-tools-(.*?)\.jar/);
-                    if (!fileVersion || !version.eq(fileVersion[1])) {
-                        logger.log("tealeaf-build-tools", version, "does not exist");
+                    if (!fileVersion) {
+                    	logger.log("tealeaf-build-tools", version.toString(), "is missing, updating...");
+                    	next();
+                    } else if (!version.eq(fileVersion[1])) {
+                        logger.log("tealeaf-build-tools", version.toString(), "is too old, updating...");
                         next();
                     } else {
-                        logger.log("tealeaf-build-tools", version, "present");
+                        logger.log("tealeaf-build-tools", version.toString(), "present");
                         f.done();
                     }
                 });
@@ -191,7 +194,7 @@ function run() {
 
 		// install/check version for all required addons
 		var addons = package['basil'][
-			fs.readFileSync('.git/config', {encoding: 'utf8'}).indexOf('devkit-priv') == -1
+			fs.readFileSync('.git/config', 'utf8').indexOf('devkit-priv') == -1
 			? 'addons' : 'addons-priv'];
 
 		if (installType.indexOf("basic") == -1) {

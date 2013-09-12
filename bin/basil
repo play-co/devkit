@@ -27,7 +27,18 @@ if [[ $BASIL_DEBUG == 1 ]]; then
 	node "$BASIL_PATH/src/basil" $* 2>&1 | tee $TMPDIR/basil.log
 	EXITC=${PIPESTATUS[0]}
 else
-	node "$BASIL_PATH/src/basil" $*
+	whitespace="[[:space:]]"
+	C=''
+	for i in "$@"
+	do
+		if [[ $i =~ $whitespace ]]
+		then
+			C="$C \"$i\""
+		else
+			C="$C $i"
+		fi
+	done
+	node "$BASIL_PATH/src/basil" $C
 	EXITC=$?
 fi
 

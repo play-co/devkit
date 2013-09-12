@@ -71,7 +71,7 @@ function displayHeader () {
 	var versionLength = version.length; //clc adds escape chars
 	version = clc.yellow(version);
 
-	var colouredGCText = clc.white.bright("{{") + clc.cyan.bright(" Game Closure SDK ") + clc.white.bright("}}");
+	var colouredGCText = clc.whiteBright("{{") + clc.cyanBright(" Game Closure SDK ") + clc.whiteBright("}}");
 	console.log([
 		"============================================================",
 		"                   " + colouredGCText + "                   ",
@@ -266,6 +266,23 @@ if (require.main === module) {
 }
 
 function main () {
+	var newArgv = [];
+	var longArg = "";
+	process.argv.forEach(function(item) {
+		if (longArg) {
+			if (item[item.length-1] == '"') {
+				newArgv.push(longArg + " " + item.slice(0, -1));
+				longArg = "";
+			} else {
+				longArg += " " + item;
+			}
+		} else if (item[0] == '"') {
+			longArg = item.slice(1);
+		} else {
+			newArgv.push(item);
+		}
+	});
+	process.argv = newArgv;
 	var cmd = process.argv[2];
 
 	switch (cmd) {

@@ -16,11 +16,12 @@
 
 var fs = require('fs');
 var ff = require('ff');
+var path = require('path');
 
 var common = require('../common');
 var logger = new common.Formatter('spritesheetMap');
 
-exports.create = function (imageMap, path, targetFilename, cb) {
+exports.create = function (imageMap, directory, targetFilename, cb) {
 	var sheets = {};
 	for (var i in imageMap) {
 		var img = imageMap[i];
@@ -37,14 +38,14 @@ exports.create = function (imageMap, path, targetFilename, cb) {
 		}
 	}
 
-	fs.writeFile(path + "/" + targetFilename +".json", JSON.stringify(sheets), 'utf8', function (err) {
+	var spritesheetMapPath = path.join(directory, targetFilename +".json");
+	fs.writeFile(spritesheetMapPath, JSON.stringify(sheets), 'utf8', function (err) {
 		  if (err) {
 			  logger.log(err);
 		  } else  {
-			  logger.log("wrote " + targetFilename + ".json to " + path);
+			  logger.log("wrote " + targetFilename + ".json to " + spritesheetMapPath);
 		  }
 
-		  cb && cb(err);
+		  cb && cb(err, spritesheetMapPath);
 	});
-
 };

@@ -61,17 +61,17 @@ function run() {
 			logger.log(clc.yellow("By default basil will send anonymous usage and crash reports"));
 			logger.log(clc.yellow("to help us improve the DevKit."));
 
-			ask("Press " + clc.green.bright("enter") + " to continue.  Or type \"" + clc.red.bright("no") + "\" to opt-out: ", f.slotPlain());
+			ask("Press " + clc.greenBright("enter") + " to continue.  Or type \"" + clc.redBright("no") + "\" to opt-out: ", f.slotPlain());
 		}, function (optout) {
 			common.config.set("optout", optout === "no", f.wait());
 
 			if (optout) {
 				logger.log("Opting-out of sending usage and crash reports.");
 			} else {
-				//logger.log(clc.yellow.bright("Thanks"), "for helping out by sending usage and crash reports!");
+				//logger.log(clc.yellowBright("Thanks"), "for helping out by sending usage and crash reports!");
 			}
 
-			logger.log("Please " + clc.green.bright("register") + " your product by providing us with your name and email address.  Leave these " + clc.red.bright("blank") + " to opt-out:");
+			logger.log("Please " + clc.greenBright("register") + " your product by providing us with your name and email address.  Leave these " + clc.redBright("blank") + " to opt-out:");
 
 			ask("Name: ", f.slotPlain());
 		}, function (name_resp) {
@@ -84,7 +84,7 @@ function run() {
 			common.config.set("registerPrompt", true, f.wait());
 
 			if (!email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/)) {
-				logger.log("Sorry you decided not to register.  If you change your mind, the " + clc.yellow.bright("form") + " is available here:");
+				logger.log("Sorry you decided not to register.  If you change your mind, the " + clc.yellowBright("form") + " is available here:");
 				logger.log("https://docs.google.com/a/gameclosure.com/forms/d/1zYBFvzAlmZX4JWmWY1RkPxYlRJXUszLs4aWu2nt_kPs/viewform");
 				f.slotPlain()(false);
 			} else {
@@ -95,9 +95,9 @@ function run() {
 			}
 		}, function (registered) {
 			if (registered) {
-				logger.log("Registration complete.  " + clc.green.bright("Thank you") + " for using the Game Closure Devkit!");
+				logger.log("Registration complete.  " + clc.greenBright("Thank you") + " for using the Game Closure Devkit!");
 			} else {
-				logger.log(clc.green.bright("Thank you") + " for using the Game Closure Devkit!");
+				logger.log(clc.greenBright("Thank you") + " for using the Game Closure Devkit!");
 			}
 			process.exit(0);
 		}).error(function (err) {

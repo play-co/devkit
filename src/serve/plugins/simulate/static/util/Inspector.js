@@ -460,10 +460,6 @@ exports = Class(Widget, function(supr) {
 	};
 
 	this.init = function(opts) {
-		if (opts.simulator) {
-			this.setSimulator(opts.simulator);
-		}
-
 		this._highlight = {timer: 0};
 		this._t = 0;
 		this._highlighted = {};
@@ -491,14 +487,31 @@ exports = Class(Widget, function(supr) {
 		});
 	};
 
+	this.setSimulator = function (simulator) {
+		if (this._simulator) {
+			this._simulator.unsubscribe('ConnChanged', this);
+		}
+
+		this._simulator = simulator;
+		simulator.subscribe('ConnChanged', this, 'setConn');
+
+		var conn = simulator.getConn();
+		if (conn) {
+			this.setConn(conn);
+		}
+	}
+
 	this.getConn = function () { return this._conn; };
 
-	this.onConnection = function (conn, uid) {
+	this.setConn = function (conn) {
+		if (this._conn) {
+			this._conn.onEvent.unsubscribe('INPUT_MOVE', this);
+			this._conn.onEvent.unsubscribe('INPUT_SELECT', this);
+			this._conn.onEvent.unsubscribe('INPUT_TRACE', this);
+			this._conn.onEvent.unsubscribe('POLL_VIEW_POSITION', this);
+		}
+
 		this._conn = conn;
-
-		// conn.sendRequest('ADD_MOUSE_EVT');
-
-		conn.onEvent.removeAllListeners();
 
 		conn.onEvent.subscribe('INPUT_MOVE', this, function (evt) {
 			this.onMouseMove(evt.args);
@@ -517,14 +530,8 @@ exports = Class(Widget, function(supr) {
 			if(evt.args.uid === this._selectedView) this._selectedPos = evt.args;
 		});
 
-		if (this._node) {
-			this._node.destroy();
-		}
-
-		this._node = new ViewNode({id: 'rootNode', inspector: this, viewUID: uid, parent: this._tree});
-
 		if (this._isShowing) {
-			this._connectMouseEvents();
+			this.startDebugging();
 		}
 	};
 
@@ -547,7 +554,32 @@ exports = Class(Widget, function(supr) {
 		}
 	};
 
-	this.startLocalDebugging = function (simulator) {
+	this.startDebugging = function () {
+		if (!this._conn) { return; }
+
+		if (this._simulator.isLocal()) {
+			this.startLocalDebugging();
+		} else {
+			this.startRemoteDebugging();
+		}
+
+		this._connectMouseEvents();
+
+		if (this._node) {
+			this._node.destroy();
+		}
+
+		this._conn.sendRequest('GET_ROOT_UID', null, null, bind(this, function (err, res) {
+			this._node = new ViewNode({
+					parent: this._tree,
+					inspector: this,
+					viewUID: res.uid,
+					id: 'rootNode'
+				});
+		}));
+	}
+
+	this.startLocalDebugging = function () {
 		if (this._unbindMouseout) {
 			this._unbindMouseout();
 			this._unbindMouseout = null;
@@ -555,28 +587,13 @@ exports = Class(Widget, function(supr) {
 
 		var mouseOut = bind(this, 'onMouseOut');
 		var mouseOver = bind(this, 'onMouseOver');
-		var frame = simulator.getFrame();
+		var frame = this._simulator.getFrame();
 		
 		this._unbindMouseout = bind(frame, 'removeEventListener', 'mouseout', mouseOut, true);
 		
 		frame.addEventListener('mouseout', mouseOut, true);
 		frame.addEventListener('mouseover', mouseOver, true);
-		
-		this._simulator = simulator;
-		
-		this._server = simulator.getDebugLoggerServer();
-
-		if (this._server.built) {
-			var conn = this._conn = this._server.getConn();
-			conn.sendRequest("GET_ROOT_UID", {}, null, bind(this, function (err, res) {
-				this.onConnection(conn, res.uid)
-			}));
-		} else {
-			this._server.subscribe('NewConnection', this, 'onConnection');
-			var port = '__debug_timestep_inspector_' + this._simulator._port + '__';
-			net.listen(this._server, 'postmessage', {port: port});
-		}
-	};
+	}
 	
 	this.startRemoteDebugging = function (deviceID) {
 		import lib.PubSub;
@@ -596,17 +613,14 @@ exports = Class(Widget, function(supr) {
 			var conn = new net.protocols.Cuppa();
 	
 			conn.onEvent.subscribeOnce('APP_READY', this, function(evt) {
-				this.onConnection(conn, evt.args.uid);
+				this.setConn(conn, evt.args.uid);
 			});
 	
 			conn.onConnect(this, function () {
 				conn.sendEvent("HANDSHAKE", {
 					"type": "inspector"
 				});
-	
-				conn.sendRequest("GET_ROOT_UID", {}, null, bind(this, function (err, res) {
-					this.onConnection(conn, res.uid);
-				}));
+		
 				this._details.show();
 			});
 	
@@ -846,8 +860,7 @@ exports = Class(Widget, function(supr) {
 		var style = this.getElement().style;
 		style.left = '0px';
 		style.opacity = 1;
-
-		this._connectMouseEvents();
+		this.startDebugging();
 
 		this.startTimer();
 	};
