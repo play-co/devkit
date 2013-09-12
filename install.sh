@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+install_type=""
+while [ $# -gt 0 ]; do
+    case $1 in
+        --basic) install_type="basic"; shift 1 ;;
+        *) shift 1 ;;
+    esac
+done
+
+
 # Make sure we are not running as root
 if [[ $EUID -eq 0 ]]; then
    echo "This script should not be run as root" 1>&2
@@ -91,7 +100,20 @@ if ! git submodule sync; then
 		exit 1
 fi
 
-git submodule update --init --recursive
+git submodule init
+
+if [[ $install_type == "basic" ]]; then
+	git submodule deinit projects/whack-that-mole
+	git submodule deinit projects/platformer
+	git submodule deinit lib/menus
+	git submodule deinit lib/shooter
+	git submodule deinit projects/demoMenus
+	git submodule deinit projects/demoShooter
+	git submodule deinit lib/isometric
+	git submodule deinit projects/demoIsometricGame
+fi
+
+git submodule update --recursive
 
 if $PRIV_SUBMODS; then
 	git checkout .gitmodules
@@ -106,7 +128,7 @@ fi
 echo
 
 node bin/checkSymlinks
-node src/dependencyCheck.js
+node src/dependencyCheck.js $install_type
 
 if [[ "$1" != "--silent" ]]; then
 	node src/analytics.js

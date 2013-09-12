@@ -35,6 +35,8 @@ var addonManager = require('./AddonManager');
 
 var isWindows = require('os').platform() == 'win32';
 
+var installType = process.argv[2] || ""; 
+
 function checkTealeafBuildTools (version, cb) {
 	logger.log("checking for tealeaf-build-tools", version.toString());
 
@@ -195,27 +197,31 @@ function run() {
 			fs.readFileSync('.git/config', 'utf8').indexOf('devkit-priv') == -1
 			? 'addons' : 'addons-priv'];
 
-		addons.forEach(function (addon) {
-			installer.install(addon, null, f.wait());
-		});
+		if (installType.indexOf("basic") == -1) {
+			addons.forEach(function (addon) {
+				installer.install(addon, null, f.wait());
+			});
+		}
 
 		f(package);
 		fs.readdir(common.paths.root('addons'), f());
 	}, function (package, addons) {
 		// check version for all optional addons if they're installed
-		addons.forEach(function (addon) {
-			if (addon.charAt(0) != '.') {
-				console.log("Updating addon", addon);
-				var onFinish = f();
-				addonManager.install(addon, {}, function (err, res) {
-					if (err && (err.NOT_INSTALLED || err.UNKNOWN_ADDON)) {
-						onFinish(); // don't worry about these errors
-					} else {
-						onFinish(err); // forward unexpected errors
-					}
-				});
-			}
-		});
+		if (installType.indexOf("basic") == -1) {
+			addons.forEach(function (addon) {
+				if (addon.charAt(0) != '.') {
+					console.log("Updating addon", addon);
+					var onFinish = f();
+					addonManager.install(addon, {}, function (err, res) {
+						if (err && (err.NOT_INSTALLED || err.UNKNOWN_ADDON)) {
+							onFinish(); // don't worry about these errors
+						} else {
+							onFinish(err); // forward unexpected errors
+						}
+					});
+				}
+			});
+		}
 	}).error(function (err) {
 		logger.error("Error:");
 		console.log(err);
