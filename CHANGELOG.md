@@ -1,11 +1,28 @@
 ## 0.1.35 (September 13, 2013)
  - TextView drop shadow relies on strokeWidth, thanks to Mart Roosmaa
  - SliderView updateOpts accepts Image, thanks to Euan Reid
- - basil update stashes and applies changes
+ - scaleX and scaleY for flexible View stretching
+ - device.stayAwake for preventing device from falling asleep
+ - composite operations
+ - window focus change events - onblur / onfocus
+ - auto-installation of missing addons
+ - basic installation option (only fetches core libraries)
+ - basil update stashes changes and reapplies them if --reapply-changes flag is present
  - no cache headers for all basil express responses
  - manually parse and process command-line quotes, which otherwise get lost
  - TextView debug mode
  - ImageView triggers reflow on updateOpts
+ - improved ParticleEngine external particle API
+ - ScrollView dragging improvements
+ - better text input
+ - improved logic for generating and applying splash screens
+ - faster native clipping
+ - native events catch parse errors
+ - canvas
+   - toDataURL (B64)
+   - canvas can be srcImage for ui.resource.Image
+   - canvas can be resized
+   - backing texture can be destroyed
  - ImageScaleView
    - renderCenter
    - 2slice works w/o destSlices
