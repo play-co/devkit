@@ -13,7 +13,6 @@
  - TextView debug mode
  - ImageView triggers reflow on updateOpts
  - improved ParticleEngine external particle API
- - ScrollView dragging improvements
  - better text input
  - improved logic for generating and applying splash screens
  - faster native clipping
@@ -23,6 +22,9 @@
    - canvas can be srcImage for ui.resource.Image
    - canvas can be resized
    - backing texture can be destroyed
+ - ScrollView
+   - better useLayoutBounds
+   - dragging improvements
  - ImageScaleView
    - renderCenter
    - 2slice works w/o destSlices
