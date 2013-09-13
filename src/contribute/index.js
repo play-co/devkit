@@ -89,15 +89,15 @@ _commands.status = Class(function () {
 					repo.getStatus(f2());
 				}, function (commits, status) {
 					console.log("")
-					repo.log(clc.bright.yellow("---- " + repo.name + " ----"));
+					repo.log(clc.yellowBright("---- " + repo.name + " ----"));
 
 					var summary = "";
 					if (status.staged.length) {
-						summary += clc.bright.green(status.staged.length + " files staged") + " for commit";
+						summary += clc.greenBright(status.staged.length + " files staged") + " for commit";
 					}
 
 					if (status.modified.length) {
-						summary += (summary ? '; ' : '') + clc.bright.red(status.modified.length + " files modified") + " (not staged)";
+						summary += (summary ? '; ' : '') + clc.redBright(status.modified.length + " files modified") + " (not staged)";
 					}
 
 					if (summary) {
@@ -106,19 +106,19 @@ _commands.status = Class(function () {
 
 					if (commits.from.length) {
 						repo.log("");
-						repo.log(repo.getRemoteBranchStr(), "has added", clc.bright.red(commits.from.length + " commits"), "that you have not merged in yet");
+						repo.log(repo.getRemoteBranchStr(), "has added", clc.redBright(commits.from.length + " commits"), "that you have not merged in yet");
 						repo.log("  ", "to see these commits:");
-						repo.log("  ", clc.bright.white("basil contribute show " + repo.name + " unmerged"));
+						repo.log("  ", clc.whiteBright("basil contribute show " + repo.name + " unmerged"));
 					}
 
 					if (commits.to.length) {
 						repo.log("");
-						repo.log("you have added", clc.bright.red(commits.to.length + " commits"), "that are not merged upstream");
+						repo.log("you have added", clc.redBright(commits.to.length + " commits"), "that are not merged upstream");
 						repo.log("  ", "to see these commits:");
-						repo.log("  ", "  ", clc.bright.white("basil contribute show " + repo.name + " commits"));
+						repo.log("  ", "  ", clc.whiteBright("basil contribute show " + repo.name + " commits"));
 						repo.log("");
 						repo.log("  ", "to submit a pull request:");
-						repo.log("  ", "  ", clc.bright.white("basil contribute pullrequest " + repo.name));
+						repo.log("  ", "  ", clc.whiteBright("basil contribute pullrequest " + repo.name));
 					}
 				}).error(function (err) {
 					repo.log("unknown status for", repo.name);
