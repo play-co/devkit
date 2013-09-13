@@ -2,12 +2,12 @@
  - TextView drop shadow relies on strokeWidth, thanks to Mart Roosmaa
  - SliderView updateOpts accepts Image, thanks to Euan Reid
  - scaleX and scaleY for flexible View stretching
- - device.stayAwake for preventing device from falling asleep
  - composite operations
  - window focus change events - onblur / onfocus
  - auto-installation of missing addons
  - basic installation option (only fetches core libraries)
  - basil update stashes changes and reapplies them if --reapply-changes flag is present
+ - smaller games with device-level JavaScript compression
  - no cache headers for all basil express responses
  - manually parse and process command-line quotes, which otherwise get lost
  - TextView debug mode
@@ -32,7 +32,10 @@
    - can't contain an underscore
  - iOS
    - new flags for native builds: --ipa, --developer
-   - use ios.bundleID instead of shortName
+   - bundleID
+     - use ios.bundleID instead of shortName
+     - fall back to Android-style packageName
+   - hide iOS 7 status bar
    - fixed text stroke alignment
  - adventuremap
    - pinch to zoom
