@@ -1,5 +1,5 @@
 ## 0.1.35 (September 13, 2013)
- - TextView drop shadow relies on strokeWidth, thanks to Mart Roosmaa
+ - TextView drop shadow, thanks to Mart Roosmaa
  - SliderView updateOpts accepts Image, thanks to Euan Reid
  - scaleX and scaleY for flexible View stretching
  - composite operations
