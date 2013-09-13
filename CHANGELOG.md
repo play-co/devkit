@@ -39,6 +39,7 @@
      - fall back to Android-style packageName
    - hide iOS 7 status bar
    - fixed text stroke alignment
+   - native support for camera and gallery access
  - adventuremap
    - pinch to zoom
    - scrolling fixed
