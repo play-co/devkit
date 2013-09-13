@@ -1,3 +1,30 @@
+## 0.1.35 (September 13, 2013)
+ - TextView drop shadow relies on strokeWidth, thanks to Mart Roosmaa
+ - SliderView updateOpts accepts Image, thanks to Euan Reid
+ - basil update stashes and applies changes
+ - no cache headers for all basil express responses
+ - manually parse and process command-line quotes, which otherwise get lost
+ - TextView debug mode
+ - ImageView triggers reflow on updateOpts
+ - ImageScaleView
+   - renderCenter
+   - 2slice works w/o destSlices
+   - tile mode enforces row/column defining
+ - basil rejects shortNames that would break native builds
+   - can't start with a number
+   - can't contain an underscore
+ - iOS
+   - new flags for native builds: --ipa, --developer
+   - use ios.bundleID instead of shortName
+   - fixed text stroke alignment
+ - adventuremap
+   - pinch to zoom
+   - scrolling fixed
+ - fixed last line of justified text block
+ - fixed browser builds
+ - fixed basil clean-register
+ - new ImageScaleView tile mode example
+
 ## 0.1.34 (August 23, 2013)
  - squill Selection.deselectAll resets collection count, thanks to Mart Roosmaa
  - activity injection for Android plugins
