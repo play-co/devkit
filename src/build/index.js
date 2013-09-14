@@ -76,6 +76,8 @@ function createSDKSymlink (dir, next) {
 var _targetNames = [];
 
 function build (dir, target, opts, cb) {
+	common.startTime('build');
+
 	var project = packageManager.load(dir);
 
 	// create a path based on the target (debug/release)
@@ -209,8 +211,6 @@ function exec (args, config, next) {
 		next && next();
 		return;
 	}
-
-	common.startTime('build');
 
 	argv.template = config.template;
 
