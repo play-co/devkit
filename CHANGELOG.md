@@ -1,3 +1,7 @@
+## 0.1.36 (September 16, 2013)
+ - fixed basil update
+ - fixed iOS compilation on older versions of Xcode (< 4.6)
+
 ## 0.1.35 (September 13, 2013)
  - TextView drop shadow, thanks to Mart Roosmaa
  - SliderView updateOpts accepts Image, thanks to Euan Reid
