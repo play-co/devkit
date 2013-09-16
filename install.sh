@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
 install_type=""
+is_silent=0
 while [ $# -gt 0 ]; do
     case $1 in
         --basic) install_type="basic"; shift 1 ;;
+        --silent) is_silent=1; shift 1 ;;
         *) shift 1 ;;
     esac
 done
@@ -70,7 +72,7 @@ fi
 # Prompt for global install early to avoid error: 0 problem
 SYSTEM_WIDE_INSTALL=false
 
-if [[ "$1" != "--silent" ]]; then
+if [[ $is_silent != 1 ]]; then
 	if [[ `uname` != MINGW32* ]]; then
 		read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [Y/n] ?" -n 1 -r
 		echo
@@ -130,7 +132,7 @@ echo
 node bin/checkSymlinks
 node src/dependencyCheck.js $install_type
 
-if [[ "$1" != "--silent" ]]; then
+if [[ $is_silent != 1 ]]; then
 	node src/analytics.js
 
 	CURRENT_BASIL_PATH=$(which basil)
