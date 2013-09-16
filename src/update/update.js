@@ -137,7 +137,7 @@ exports.update = function (tag, next) {
 		}
 	}, function (err, data) {
 		if (!err && data) {
-			console.log("Save the changes to", stashDir);
+			console.log("Saving the changes to", stashDir);
 			fs.writeFile(path.join(stashDir, 'stash_'+(+new Date())), String(data), f.wait());
 		}
 		console.log("Checking out version", tag.toString());
