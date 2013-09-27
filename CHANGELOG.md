@@ -1,3 +1,14 @@
+## 0.1.37 (September 27, 2013)
+ - Android install referrer tracking
+ - iOS
+   - prevent status bar from appearing in image picker on iOS 7
+   - fixed iPhone4s iOS 7 memory warnings
+   - fixed iOS 7 stroke text
+   - fixed InputPrompt OK button
+   - fixed user-defined plugin key injection
+ - fixed SSL and redirect issues for remote image loading
+ - fixed basil on Windows
+
 ## 0.1.36 (September 16, 2013)
  - fixed basil update
  - fixed iOS compilation on older versions of Xcode (< 4.6)
