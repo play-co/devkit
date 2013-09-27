@@ -27,11 +27,10 @@ if [[ $BASIL_DEBUG == 1 ]]; then
 	node "$BASIL_PATH/src/basil" $* 2>&1 | tee $TMPDIR/basil.log
 	EXITC=${PIPESTATUS[0]}
 else
-	whitespace="[[:space:]]"
 	C=''
 	for i in "$@"
 	do
-		if [[ $i =~ $whitespace ]]
+		if echo $i | grep -E '[[:space:]]' > /dev/null
 		then
 			C="$C \"$i\""
 		else
