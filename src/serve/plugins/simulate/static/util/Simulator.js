@@ -430,7 +430,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 	}
 
 	this.update = function () {
-		var parent = this._parent;
+		var parent = this._widgetParent;
 		var params = this._params;
 
 		if (!params.canRotate) {
@@ -619,7 +619,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			return;
 		}
 
-		var rect = this._parent.getAvailableRect();
+		var rect = this._widgetParent.getAvailableRect();
 		var width = rect.width;
 		var height = rect.height;
 		

@@ -37,16 +37,29 @@ var ProjectCell = Class(squill.Cell, function() {
 	this.render = function () {
 		var project = this._data;
 
-		var defaultIcon = '/images/defaultIcon.png';
-		this.icon.style.backgroundImage = 'url(' + (project.getIcon(512) || defaultIcon) + ')';
-
-		if (project.manifest.ios && project.manifest.ios.icons && project.manifest.ios.icons.renderGloss) {
-			$.addClass(this.icon, 'gloss');
-		} else {
-			$.removeClass(this.icon, 'gloss');
+		var defaultIconURL = '/images/defaultIcon.png';
+		var iconURL = (project.getIcon(512) || defaultIconURL);
+		if (iconURL != this._iconURL) {
+			this._iconURL = iconURL;
+			this.icon.style.backgroundImage = 'url(' + iconURL + ')';
 		}
 
-		this.name.setLabel(project.manifest && (project.manifest.title || project.manifest.name) || '<unknown>');
+		var hasGloss = project.manifest.ios && project.manifest.ios.icons && project.manifest.ios.icons.renderGloss;
+		if (hasGloss != this._hasGloss) {
+			this._hasGloss = hasGloss;
+
+			if (hasGloss) {
+				$.addClass(this.icon, 'gloss');
+			} else {
+				$.removeClass(this.icon, 'gloss');
+			}
+		}
+
+		var label = project.manifest && (project.manifest.title || project.manifest.name) || '<unknown>';
+		if (label != this._label) {
+			this._label = label;
+			this.name.setLabel(label);
+		}
 	};
 });
 
@@ -171,6 +184,7 @@ exports = Class(sdkPlugin.SDKPlugin, function(supr) {
 	this.buildWidget = function (el) {
 		supr(this, 'buildWidget', arguments);
 
+		window.addEventListener('resize', bind(this.projectList, 'needsRender'), false);
 		this._selectDelegate(this.projectList);
 	};
 });

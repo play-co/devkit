@@ -272,9 +272,9 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 
 	this._def = {
 		children: [
-			{id: '_topBar', type: TopBar},
-			{id: '_content'},
-			{id: '_bottomPanel'}
+			{id: '_top', type: TopBar},
+			{id: '_middle', children: [{id: '_content'}]},
+			{id: '_bottom'}
 		]
 	};
 
@@ -329,7 +329,7 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 	}
 
 	this.reloadActiveSimulator = function () {
-		this._topBar.reloadActiveSimulator();
+		this._top.reloadActiveSimulator();
 	}
 
 	this.getContainer = function () { return this._content || this._el; }
@@ -347,8 +347,8 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 			height: document.body.offsetHeight
 		};
 
-		if (this._topBar) {
-			var el = this._topBar.getElement();
+		if (this._top) {
+			var el = this._top.getElement();
 			rect.y += el.offsetHeight;
 			rect.height -= el.offsetHeight;
 		}
@@ -361,6 +361,30 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 
 		return rect;
 	};
+
+	this.addLeftPane = function (def) {
+		var widget = this.addWidget(def, this._middle);
+		var el = widget.getElement ? widget.getElement() : widget;
+		el.style.order = -100;
+
+		this.positionSimulators();
+		return widget;
+	}
+
+	this.addRightPane = function (def) {
+		var widget = this.addWidget(def, this._middle);
+		var el = widget.getElement ? widget.getElement() : widget;
+		el.style.order = 100;
+
+		this.positionSimulators();
+		return widget;
+	}
+
+	this.positionSimulators = function () {
+		Object.keys(this._simulators).forEach(function (port) {
+			this._simulators[port].onViewportChange();
+		}, this);
+	}
 
 	// simulatorDef defines the parameters for a new simulator
 	// can also pass an array of defs to create multiple simulators
@@ -399,14 +423,14 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 			this._portManager.clearPort(port);
 			simulator.remove();
 
-			this._topBar.populateSimulatorList();
+			this._top.populateSimulatorList();
 			this.updateURI();
 		}
 	};
 
 	this.getActiveSimulator = function () { return this._activeSimulator; };
 	this.getAllSimulators = function () { return this._simulators; };
-	this.getTopBar = function () { return this._topBar; }
+	this.getTopBar = function () { return this._top; }
 
 	this.setActiveSimulator = function (simulator) {
 		if (this._activeSimulator != simulator) {
@@ -485,6 +509,7 @@ exports.start = function () {
 		}
 
 		_controller = new MainController({
+			id: 'mainUI',
 			parent: document.body,
 			manifest: manifest,
 			simulators: simulators
@@ -494,3 +519,7 @@ exports.start = function () {
 	});
 };
 
+$.onEvent(document.body, 'dragenter', this, function (evt) { evt.preventDefault(); });
+$.onEvent(document.body, 'dragover', this, function (evt) { evt.preventDefault(); });
+$.onEvent(document.body, 'dragleave', this, function (evt) { evt.preventDefault(); });
+$.onEvent(document.body, 'drop', this, function (evt) { evt.preventDefault(); });
