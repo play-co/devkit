@@ -446,7 +446,6 @@ var DetailsWidget = Class(Widget, function (supr) {
 exports = Class(Widget, function(supr) {
 	this._def = {
 		style: {
-			left: '-550px',
 			width: '650px'
 		},
 		children: [
@@ -858,6 +857,7 @@ exports = Class(Widget, function(supr) {
 		supr(this, 'onShow', arguments);
 
 		var style = this.getElement().style;
+		style.display = 'block';
 		style.left = '0px';
 		style.opacity = 1;
 		this.startDebugging();
@@ -868,6 +868,7 @@ exports = Class(Widget, function(supr) {
 	this.open = function () {
 		this._isShowing = true;
 		this.show();
+
 		this._simulator.onViewportChange();
 	};
 
@@ -881,6 +882,11 @@ exports = Class(Widget, function(supr) {
 		var style = this._el.style;
 		style.left = -this._el.offsetWidth + 'px';
 		style.opacity = 0;
+		style.pointerEvents = 'none';
+
+		setTimeout(function () {
+			style.display = 'none';
+		}, 250);
 
 		this._selectedView = null;
 		this._highlightUID = null;

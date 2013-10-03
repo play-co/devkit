@@ -10,7 +10,7 @@ body
 	background #08080F
 	color #FFF
 
-div
+div, select, input
 	box-sizing border-box
 
 body, div, span
@@ -22,42 +22,51 @@ body, div, span
 
 // scrollbar styles
 
-div::-webkit-scrollbar
-	width 12px
+// div::-webkit-scrollbar
+// 	width 12px
 
-div::-webkit-scrollbar-track 
-	-webkit-box-shadow inset 0 0 6px rgba(0,0,0,0.3)
-	box-shadow inset 0 0 6px rgba(0,0,0,0.3)
-	-webkit-border-radius 10px
-	border-radius 10px
+// div::-webkit-scrollbar-track 
+// 	-webkit-box-shadow inset 0 0 6px rgba(0,0,0,0.3)
+// 	box-shadow inset 0 0 6px rgba(0,0,0,0.3)
+// 	-webkit-border-radius 10px
+// 	border-radius 10px
 
-div::-webkit-scrollbar-thumb 
-	margin 1px
-	-webkit-border-radius 10px
-	border-radius 10px
-	background rgba(100,100,100,0.8)
-	-webkit-box-shadow inset 0 0 6px rgba(0,0,0,0.5)
-	box-shadow inset 0 0 6px rgba(0,0,0,0.5)
+// div::-webkit-scrollbar-thumb 
+// 	margin 1px
+// 	-webkit-border-radius 10px
+// 	border-radius 10px
+// 	background rgba(100,100,100,0.8)
+// 	-webkit-box-shadow inset 0 0 6px rgba(0,0,0,0.5)
+// 	box-shadow inset 0 0 6px rgba(0,0,0,0.5)
 
-div::-webkit-scrollbar-thumb:window-inactive 
-	background rgba(30,30,30,0.4)
+// div::-webkit-scrollbar-thumb:window-inactive 
+// 	background rgba(30,30,30,0.4)
 
-div::-webkit-scrollbar-corner 
-	background rgba(30,30,30,0.4)
+// div::-webkit-scrollbar-corner 
+// 	background rgba(30,30,30,0.4)
 
 // main UI
 
-#_content
-	position: absolute
-	top: 0
-	bottom: 0
-	right: 0
-	left: 0
+#mainUI
+	display flex
+	flex-direction column
+	height 100%
+	width 100%
+	overflow hidden
 
-#_topBar
+#_content
+	position relative
+	width 100%
+	flex 1
+	display flex
+	flex-direction row
+
+#_top
+	position relative
+	width 100%
 	white-space nowrap
 
-#_topBar .button
+#_top .button
 	position: relative
 	display inline-block
 	border-radius 5px
@@ -69,10 +78,21 @@ div::-webkit-scrollbar-corner
 	margin 2px 2px 3px 2px
 	cursor default
 
-#_topBar .button:active
+#_top .button:active
 	top: 1px
 	background linear-gradient(top, rgba(50, 50, 50, 0.2), 50% rgba(50, 50, 50, 0.3), 51% rgba(80, 80, 80, 0.3), rgba(110, 110, 110, 0.3))
 	border 1px solid rgba(0, 0, 0, 0.7)
+
+#_middle
+	flex 1
+	display flex
+	flex-direction row
+
+.Pane > #_container > div:last-child
+	flex 1 // last item should fill remainder of pane by default
+
+#_content
+	flex 1
 
 #_content #_frameWrapper {
 	position: relative;
@@ -233,18 +253,13 @@ div::-webkit-scrollbar-corner
 	background: -moz-linear-gradient(90deg, #448, #77A);background: -webkit-gradient(linear, left bottom, left top, from(#448), to(#77A));
 }
 
-#_topBar {
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	right: 0px;
+#_top {
 	background: -moz-linear-gradient(90deg, rgba(60, 60, 60, 0.5), rgba(100, 100, 100, 0.5));background: -webkit-gradient(linear, left bottom, left top, from(rgba(60, 60, 60, 0.5)), to(rgba(100, 100, 100, 0.5)));
 	border-bottom: 2px solid black;
-	-moz-box-shadow: 0px 0px 5px #000;-webkit-box-shadow: 0px 0px 5px #000;
 	z-index: 1000;
 }
 
-#_topBar .myIP {
+#_top .myIP {
 	position: absolute;
 	top: 5px;
 	right: 5px;
