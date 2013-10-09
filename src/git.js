@@ -66,6 +66,12 @@ git.getStatus = function (dir, next) {
 
 };
 
+git.getConfigValue = function(dir, key, next) {
+	common.child('git', ['config', key], {
+			cwd: dir
+	}, next);
+}
+
 git.getCurrentHash = function(dir, next) {
 	common.child('git', ['rev-parse', 'HEAD'], {
 			cwd: dir

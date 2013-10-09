@@ -110,3 +110,9 @@ git.getCurrentHash = function(dir, next) {
 	}, next);
 }
 
+git.getConfigValue = function(dir, key, next) {
+	common.child('git', ['config', key], {
+			cwd: dir
+	}, next);
+}
+
