@@ -649,8 +649,10 @@ exports = Class(Widget, function(supr) {
 
 		this._trace.hash = {};
 		this._trace.list = evt.trace;
+		this._trace.autoExpand = {};
 		for (var i = 0, uid; uid = evt.trace[i]; ++i) {
 			this._trace.hash[uid] = true;
+			this._trace.autoExpand[uid] = true;
 		}
 
 		var targetUID = evt.trace[i - 1];
@@ -748,8 +750,11 @@ exports = Class(Widget, function(supr) {
 		for (var i = 0, uid; uid = this._trace.list[i]; ++i) {
 			var node = this._nodeIndex[uid];
 			if (node) {
-				if (!node.isToggled()) {
-					node.toggle();
+				if (this._trace.autoExpand[uid]) {
+					delete this._trace.autoExpand[uid];
+					if (!node.isToggled()) {
+						node.toggle();
+					}
 				}
 
 				node.highlight(true, i == end);
@@ -1055,7 +1060,7 @@ var ViewNode = Class(Widget, function(supr) {
 									viewUID: uid,
 									parent: this._childNodes,
 									indent: this._indent + 1
-								});							
+								});
 							}
 						}
 
