@@ -66,6 +66,12 @@ git.getStatus = function (dir, next) {
 
 };
 
+git.getCurrentHash = function(dir, next) {
+	common.child('git', ['rev-parse', 'HEAD'], {
+			cwd: dir
+	}, next);
+}
+
 git.currentTag = function (gitDir, next) {
 	var tagName = "Unknown";
 	

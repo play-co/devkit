@@ -103,3 +103,10 @@ git.submoduleUpdate = function (dir, opts, next) {
 		cwd: dir
 	}, next);
 }
+
+git.getCurrentHash = function(dir, next) {
+	common.child('git', ['rev-parse', 'HEAD'], {
+			cwd: dir
+	}, next);
+}
+
