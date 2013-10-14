@@ -102,8 +102,8 @@ var BasilJsioInterface = Class(function () {
 	 */
 	this.compress = function (filename, src, opts, cb) {
 		var cachePath;
+
 		if (opts.compressorCachePath && filename) {
-			compressLog.log("compressing", filename, ", cache @", opts.compressorCachePath);
 			try {
 				var cacheFilename = (/^\.\//.test(filename) ? 'R-' + filename.substring(2) : 'A-' + filename)
 					.replace(/\.\.\//g, '--U--')
@@ -121,51 +121,47 @@ var BasilJsioInterface = Class(function () {
 				}
 
 				if (fs.existsSync(cachePath)) {
-					var readDone = function(err, src, fd) {
-						if (typeof fd !== 'undefined') {
-							fs.close(fd);
-						}
-						onCompress(err, src);
-					}.bind(this);
-
-					fs.open(cachePath, 'r', function(err, fd) {
+					fs.readFile(cachePath, 'utf8', function(err, cachedContents) {
 						if (err) {
-							readDone(err, src, fd);
+							onCacheResult(err, src, true);
 						} else {
-							fs.fstat(fd, function(err, stats) {
-								if (err || stats.size <= 0) {
-									readDone(err, src, fd);
-								} else {
-									var buffer = new Buffer(stats.size);
-
-									fs.read(fd, buffer, 0, buffer.length, 0, function(err, bytesRead, buffer) {
-										if (err) {
-											readDone(err, src, fd);
-										} else {
-											var cachedContents = buffer.toString("utf8", 0, buffer.length);
-
-											var i = cachedContents.indexOf('\n');
-											var cachedChecksum = cachedContents.substring(0, i);
-											if (checksum == cachedChecksum) {
-												onCompress(null, cachedContents.substring(i + 1));
-											} else {
-												compressLog.log('current:', checksum, 'cached:', cachedChecksum);
-											}
-
-											fs.close(fd);
-										}
-									}.bind(this));
-								}
-							}.bind(this));
+							var i = cachedContents.indexOf('\n');
+							var cachedChecksum = cachedContents.substring(0, i);
+							if (checksum == cachedChecksum) {
+								// Cache hit!
+								onCacheResult(null, cachedContents.substring(i + 1), false);
+							} else {
+								// File changed, need to compress
+								onCacheResult("cache mismatch", src, true);
+							}
 						}
+
+						exports.strip(src, opts, function (err, src) {
+							cb(src);
+						});
 					}.bind(this));
+				} else {
+					onCacheResult(null, src, true);
 				}
-			} catch (e) {
-				onCompress(e, src);
+			} catch (err) {
+				onCacheResult(err, src, true);
 			}
+		} else {
+			onCacheResult(null, src, true);
 		}
 
-		exports.compress(filename, src, opts, onCompress);
+		function onCacheResult(err, src, cacheMiss) {
+			if (cacheMiss) {
+				if (err) {
+					compressLog.error(err);
+				}
+
+				compressLog.log("Starting JS compression for", filename);
+				exports.compress(filename, src, opts, onCompress);
+			} else {
+				onCompress(err, src);
+			}
+		}
 
 		function onCompress(err, src) {
 			if (err) {
@@ -173,13 +169,14 @@ var BasilJsioInterface = Class(function () {
 			} else {
 				try {
 					if (cachePath) {
+						compressLog.log('Updating cache for', filename, 'at', cachePath);
 						fs.writeFile(cachePath, checksum + '\n' + src);
 					}
 				} catch(e) {
 					compressLog.error(e);
 				}
 			}
-			
+
 			exports.strip(src, opts, function (err, src) {
 				cb(src);
 			});
