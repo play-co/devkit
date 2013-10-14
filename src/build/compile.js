@@ -103,6 +103,10 @@ var BasilJsioInterface = Class(function () {
 	this.compress = function (filename, src, opts, cb) {
 		var cachePath;
 
+		if (!filename) {
+			throw new Error("null filename passed to compress");
+		}
+
 		if (opts.compressorCachePath && filename) {
 			try {
 				var cacheFilename = (/^\.\//.test(filename) ? 'R-' + filename.substring(2) : 'A-' + filename)
@@ -135,10 +139,6 @@ var BasilJsioInterface = Class(function () {
 								onCacheResult("cache mismatch", src, true);
 							}
 						}
-
-						exports.strip(src, opts, function (err, src) {
-							cb(src);
-						});
 					}.bind(this));
 				} else {
 					onCacheResult(null, src, true);
@@ -159,6 +159,9 @@ var BasilJsioInterface = Class(function () {
 				compressLog.log("Starting JS compression for", filename);
 				exports.compress(filename, src, opts, onCompress);
 			} else {
+				// Set cache path to false so it will not be updated in onCompress()
+				cachePath = false;
+
 				onCompress(err, src);
 			}
 		}
@@ -168,7 +171,7 @@ var BasilJsioInterface = Class(function () {
 				compressLog.error(err);
 			} else {
 				try {
-					if (cachePath) {
+					if (cachePath && filename) {
 						compressLog.log('Updating cache for', filename, 'at', cachePath);
 						fs.writeFile(cachePath, checksum + '\n' + src);
 					}
