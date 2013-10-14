@@ -15,7 +15,7 @@
 
 var send = require('send');
 var crypto = require('crypto');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var parse = require('url').parse;
 var path = require('path');
 var hashFile = require('../hashFile');

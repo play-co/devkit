@@ -14,7 +14,7 @@
  */
 
 
-var fs = require('fs');
+var fs = require('graceful-fs');
 var ff = require('ff');
 var path = require('path');
 

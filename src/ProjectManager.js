@@ -14,7 +14,7 @@
  */
 
 var EventEmitter = require('events').EventEmitter;
-var fs = require('fs');
+var fs = require('graceful-fs');
 var path = require('path');
 var ff = require('ff');
 var common = require('./common');

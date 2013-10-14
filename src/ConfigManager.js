@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require('graceful-fs');
 var common = require('./common');
 var PubSub = common.jsio("import lib.PubSub");
 

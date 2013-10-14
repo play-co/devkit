@@ -17,7 +17,7 @@
 
 
 var path = require('path');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var ff = require('ff');
 var optimist = require('optimist');
 var wrench = require('wrench');

@@ -33,7 +33,7 @@ jsio.path.add(require('./common').paths.root('src'));
 //non-local modules
 var spawn = require('child_process').spawn;
 var path = require('path');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var ff = require('ff');
 var clc = require('cli-color');
 var wrench = require('wrench');

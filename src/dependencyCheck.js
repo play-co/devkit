@@ -18,7 +18,7 @@
 * and required addons.
 */
 var ff = require('ff');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var http = require('http');
 var filesize = require('filesize');
 var wrench = require('wrench');

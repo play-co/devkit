@@ -14,7 +14,7 @@
  */
 
 var $ = require('jash');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var ff = require('ff');
 var common = require('../common');
 var logger = new common.Formatter('spritesheetMap');
