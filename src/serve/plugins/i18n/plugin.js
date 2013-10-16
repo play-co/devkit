@@ -15,7 +15,7 @@
 
 // Internationalization plugin
 
-var fs = require('fs');
+var fs = require('graceful-fs');
 var path = require('path');
 var wrench = require('wrench');
 var etag = require('../../etag');

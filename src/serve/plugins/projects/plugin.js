@@ -15,7 +15,7 @@
 
 // Projects plugin
 
-var fs = require('fs');
+var fs = require('graceful-fs');
 var express = require('express');
 var path = require('path');
 

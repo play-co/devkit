@@ -14,7 +14,7 @@
  */
 
 var path = require('path');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var ff = require('ff');
 var express = require('express');
 var EventEmitter = require('events').EventEmitter;

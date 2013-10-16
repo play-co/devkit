@@ -14,7 +14,7 @@
  */
 
 var clc = require('cli-color');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var ff = require('ff');
 var path = require('path');
 var wrench = require('wrench');

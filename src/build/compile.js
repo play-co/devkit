@@ -13,7 +13,7 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-var fs = require('fs');
+var fs = require('graceful-fs');
 var path = require('path');
 var crypto = require('crypto');
 var clc = require('cli-color');
@@ -101,8 +101,8 @@ var BasilJsioInterface = Class(function () {
 	 * Create a custom compression option.
 	 */
 	this.compress = function (filename, src, opts, cb) {
-		compressLog.log("compressing", filename);
 		var cachePath;
+
 		if (opts.compressorCachePath && filename) {
 			try {
 				var cacheFilename = (/^\.\//.test(filename) ? 'R-' + filename.substring(2) : 'A-' + filename)
@@ -121,37 +121,63 @@ var BasilJsioInterface = Class(function () {
 				}
 
 				if (fs.existsSync(cachePath)) {
-
-					var cachedContents = fs.readFileSync(cachePath, 'utf8');
-					var i = cachedContents.indexOf('\n');
-					var cachedChecksum = cachedContents.substring(0, i);
-					if (checksum == cachedChecksum) {
-						onCompress(null, cachedContents.substring(i + 1));
-						return;
-					} else {
-						compressLog.log('current:', checksum, 'cached:', cachedChecksum);
-					}
+					fs.readFile(cachePath, 'utf8', function(err, cachedContents) {
+						if (err) {
+							onCacheResult(err, src, true);
+						} else {
+							var i = cachedContents.indexOf('\n');
+							var cachedChecksum = cachedContents.substring(0, i);
+							if (checksum == cachedChecksum) {
+								// Cache hit!
+								onCacheResult(null, cachedContents.substring(i + 1), false);
+							} else {
+								// File changed, need to compress
+								onCacheResult("cache mismatch", src, true);
+							}
+						}
+					}.bind(this));
+				} else {
+					onCacheResult(null, src, true);
 				}
-			} catch (e) {
-				onCompress(e, src);
+			} catch (err) {
+				onCacheResult(err, src, true);
 			}
+		} else {
+			onCacheResult(null, src, true);
 		}
 
-		exports.compress(filename, src, opts, onCompress);
+		function onCacheResult(err, src, cacheMiss) {
+			if (cacheMiss) {
+				if (err) {
+					compressLog.error(err);
+				}
+
+				compressLog.log("Starting JS compression for", filename ? filename : "(eval)");
+				exports.compress(filename, src, opts, onCompress);
+			} else {
+				// Set cache path to false so it will not be updated in onCompress()
+				cachePath = false;
+
+				compressLog.log('Read from cache:', filename);
+
+				onCompress(err, src);
+			}
+		}
 
 		function onCompress(err, src) {
 			if (err) {
 				compressLog.error(err);
 			} else {
 				try {
-					if (cachePath) {
+					if (cachePath && filename) {
+						compressLog.log('Updating cache for', filename, 'at', cachePath);
 						fs.writeFile(cachePath, checksum + '\n' + src);
 					}
 				} catch(e) {
 					compressLog.error(e);
 				}
 			}
-			
+
 			exports.strip(src, opts, function (err, src) {
 				cb(src);
 			});
@@ -178,7 +204,6 @@ exports.compress = function (filename, src, opts, cb) {
 		compiler.on("err", function (data) {
 			err.push(data);
 		});
-			 // err.push(data); });
 
 		compiler.on("end", function (code) {
 			err = err.join('').replace(/^stdin:(\d+):/mg, 'Line $1:');

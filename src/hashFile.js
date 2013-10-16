@@ -15,7 +15,7 @@
 
 var crypto = require('crypto');
 var ff = require('ff');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var path = require('path');
 
 function md5file (filename, cb) {

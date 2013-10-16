@@ -15,7 +15,7 @@
 
 var common = require('../common');
 var clc = require('cli-color');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var path = require('path');
 var ff = require('ff');
 var Version = require('../shared/Version');

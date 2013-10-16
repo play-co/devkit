@@ -55,7 +55,7 @@ compiler.compile('import ' + files.join(','), function (err, src) {
 		process.exit(1);
 	} else {
 		if (argv.out) {
-			var fs = require('fs');
+			var fs = require('graceful-fs');
 			fs.writeFileSync(argv.out, src);
 			console.log("wrote", argv.out);
 		} else {
