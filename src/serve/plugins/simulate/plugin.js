@@ -63,13 +63,13 @@ function serveProject (project) {
 	});
 
 	// Static pages.
-	_app.use(path.join(root, id), etag.static(path.join(__dirname, 'static')));
+	_app.use(root + id, etag.static(path.join(__dirname, 'static')));
 
 	// Compiled targets.
-	_app.use(path.join(root, 'debug', id), etag.static(path.join(project.paths.root, 'build', 'debug'), {maxAge: 0}));
-	_app.use(path.join(root, 'debug', id, 'resources/'), etag.static(path.join(project.paths.root, 'resources')));
+	_app.use(root + 'debug/' + id, etag.static(path.join(project.paths.root, 'build', 'debug'), {maxAge: 0}));
+	_app.use(root + 'debug/' + id + '/resources/', etag.static(path.join(project.paths.root, 'resources')));
 
-	_app.use(path.join(root, 'release', id), etag.static(path.join(project.paths.root, 'build', 'release'), {maxAge: 0}));
+	_app.use(root + 'release/' + id, etag.static(path.join(project.paths.root, 'build', 'release'), {maxAge: 0}));
 
 	// var route = etag.static(path.join(project.paths.root, 'sdk', 'gc', 'debugging'));
 	_app.get(new RegExp('^' + root + '.*?/sdk/gc/debugging/.*?'), function (req, res) {
