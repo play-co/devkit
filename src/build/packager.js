@@ -16,6 +16,7 @@
 var path = require("path");
 var fs = require("graceful-fs");
 var ff = require("ff");
+var crypto = require('crypto');
 var wrench = require("wrench");
 var util = require("util");
 var request = require("request");
@@ -612,7 +613,13 @@ function getResources(project, buildOpts, cb) {
 			var formatter = new common.Formatter("spriter", true, out);
 			var onEnd = f(); // continue to next callback once onEnd is called
 
+			var md5sum = crypto.createHash('md5');
+			md5sum.update(srcDir);
+			var hash = md5sum.digest('hex');
+
 			var spriterOpts = [
+				"--no-clean", // don't remove unused spritesheets, since we might be spriting multiple source directories into the same target
+				"--cache-file", "spritercache-" + hash,
 				"--scale", 1,
 				"--dir", srcDir + "/",
 				"--output", spritesheetsDirectory,
