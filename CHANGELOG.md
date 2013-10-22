@@ -17,10 +17,10 @@
    - better logging in resource loader
    - added XCassets
    - removed old dependencies
- - image cache
-   - curl multi fetch support
-   - smarter, more efficient cache only fetches new data as necessary
-   - fixed some corner cases
+ - new image cache for remote image requests, featuring
+   - curl multi fetch
+   - full support for https and redirects
+   - uses etags to only fetch new data as necessary
  - rotate camera images based on exif data
  - when possible, use large photos for camera images
  - fixed bitmap scaling in textureloader
