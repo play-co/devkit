@@ -1,3 +1,39 @@
+## 0.1.38 (October 22, 2013)
+ - setHandleEvents fix, thanks to Mart Roosmaa
+ - fixed TextEditView post-break line width calculation, thanks to Jishnu Mohan
+ - fixed Windows simulator
+ - new node file system module, graceful-fs, fixes various io bugs, mostly on Windows
+ - keyboardOpened and keyboardClosed events
+ - faster Android builds with new repack feature
+ - improved UI Inspector
+ - better text wrapping and autoFontSize
+ - smarter, more robust image spriter
+ - improved EditText
+ - iOS
+   - iOS 7 icon support
+   - better static library for SSL/crypto
+   - stack alignment forcing on i386
+   - fixed retina screen photo clipping
+   - better logging in resource loader
+   - added XCassets
+   - removed old dependencies
+ - image cache
+   - curl multi fetch support
+   - smarter, more efficient cache only fetches new data as necessary
+   - fixed some corner cases
+ - rotate camera images based on exif data
+ - when possible, use large photos for camera images
+ - fixed bitmap scaling in textureloader
+ - DOM onerror handler
+ - device.defaultFontWeight
+ - ScoreView vertical alignment
+ - ButtonView only reflows inner TextView without predefined bounds
+ - ScrollView
+   - removeAllSubviews
+   - bounceRadius option
+   - quicker, smoother bounce
+   - removed inappropriate touch tracking code
+
 ## 0.1.37 (September 27, 2013)
  - Android install referrer tracking
  - iOS
