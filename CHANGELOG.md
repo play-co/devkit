@@ -31,7 +31,6 @@
  - ScrollView
    - removeAllSubviews
    - bounceRadius option
-   - quicker, smoother bounce
    - removed inappropriate touch tracking code
 
 ## 0.1.37 (September 27, 2013)
