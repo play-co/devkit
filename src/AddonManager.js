@@ -379,7 +379,7 @@ var AddonManager = Class(EventEmitter, function () {
 				throw new Error("Unable to read plugin JS exist");
 			}
 		}).error(function (e) {
-			logger.error("Failure validating plugin JS:", e);
+			logger.error("Failure validating plugin JS:", JSON.stringify(e));
 		}).cb(next);
 	}
 
@@ -412,6 +412,8 @@ var AddonManager = Class(EventEmitter, function () {
 
 				// Add new JS symlink
 				if (create) {
+					var linkDir = path.dirname(linkPath);
+					wrench.mkdirSyncRecursive(linkDir);
 					fs.symlink(jsPath, linkPath, 'junction', f.wait());
 				}
 			} else {
@@ -419,7 +421,7 @@ var AddonManager = Class(EventEmitter, function () {
 				f.succeed();
 			}
 		}).error(function (e) {
-			logger.error("Failure activating plugin JS for", addon + ":", e);
+			logger.error("Failure activating plugin JS for", addon + ":", JSON.stringify(e));
 		}).cb(next);
 	}
 
