@@ -288,8 +288,6 @@ function getJSConfig (project, opts, target, cb) {
 // Package all JavaScript into a single file that can be included with the build.
 // runs jsio against all user code.
 function packageJS (project, opts, initialImport, appendImport, cb) {
-	exports.createCompiler = createCompiler;
-
 	var f = ff(this, function() {
 		createCompiler(project, opts, f.slotPlain());
 	}, function(compiler) {
