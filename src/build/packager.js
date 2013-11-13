@@ -182,6 +182,7 @@ function getConfigObject (project, opts, target) {
 	config.packageName = packageName;
 	config.bundleID = manifest.ios.bundleID || "example.bundle" 
 	
+	config.browser = manifest.browser || {};
 	// for noodletown invites
 	config.mpMetricsKey = manifest.mpMetricsKey;
 
