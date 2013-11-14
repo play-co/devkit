@@ -1,3 +1,6 @@
+## 0.1.41 (November 13, 2013)
+ - dispatch browser events immediately to let window.open calls work (avoid popup blockers)
+
 ## 0.1.40 (November 13, 2013)
  - updated for native facebook posts and requests
    - add support for native plugin requests
