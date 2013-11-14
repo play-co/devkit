@@ -228,6 +228,7 @@ _commands.release = Class(function () {
 
 			if (!argv.test) {
 				sdkRepo.git('add', 'package.json', f());
+				sdkRepo.git('add', 'CHANGELOG.md', f());
 			}
 		}, function () {
 			logger.log("--- Committing added submodules");
