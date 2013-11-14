@@ -225,9 +225,12 @@ _commands.release = Class(function () {
 			});
 		}, function () {
 			logger.log("--- Adding package.json");
-
 			if (!argv.test) {
 				sdkRepo.git('add', 'package.json', f());
+			}
+		}, function () {
+			logger.log("--- Adding CHANGELOG.md");
+			if (!argv.test) {
 				sdkRepo.git('add', 'CHANGELOG.md', f());
 			}
 		}, function () {
