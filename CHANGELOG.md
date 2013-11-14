@@ -1,3 +1,29 @@
+## 0.1.39 (November 13, 2013)
+ - fix native views memory leak
+ - iOS
+   - faster JPG reading
+   - latest OpenAL
+   - fix memory leaks and double-frees
+   - allows background music to play from another app
+   - add base64 jpg encoding
+ - Android
+   - faster JPG reading
+   - newer Android GLSurfaceView (fixes some GL context bugs)
+   - add base64 jpg encoding
+ - Native text views (iOS and Android)
+   - show native text widgets for text input over timestep views (use EditText class in timestep)
+   - Keyboard show/hide events fired on window object (keyboardOpened, keyboardClosed) with height
+ - Native image caching for remote images
+   - prevents re-downloading based on image ETags if using lots of remote images over HTTP
+ - Improved native plugin API (docs coming soon)
+ - Enable experimental builds for mobile browser (target: browser-mobile)
+   - small improvements for iOS 7 mobile browser
+   - hooks for DevKit addons to insert HTML into browser builds during build process
+ - add custom onTick support for particle engine
+ - Improve mobile web version of basil (browse to project page on mobile browser) 
+   - allows opening games in debug mode on a mobile browser
+ - ui.resource.loader.getImagePaths(prefix) returns all images in a build with a given path prefix
+
 ## 0.1.38 (October 22, 2013)
  - setHandleEvents fix, thanks to Mart Roosmaa
  - fixed TextEditView post-break line width calculation, thanks to Jishnu Mohan
