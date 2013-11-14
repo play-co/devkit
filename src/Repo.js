@@ -15,6 +15,7 @@
 
 var ff = require('ff');
 var path = require('path');
+var fs = require('fs');
 
 var common = require('./common');
 var git = require('./git');
@@ -50,6 +51,10 @@ exports.create = Class(function () {
 		this.location = path.resolve(common.paths.root(), def.path);
 		this.git = git.createClient(this.location, {silent: true});
 		this.logger = new common.Formatter(name);
+
+		if (!fs.existsSync(this.location)) {
+			throw new Error('repo ' + this.name + ' has an invalid location: ' + this.location);
+		}
 	}
 
 	// convenience method for logging messages related to this repository

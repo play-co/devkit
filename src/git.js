@@ -17,7 +17,7 @@ var fs = require('graceful-fs');
 var path = require('path');
 
 var common = require('./common');
-
+var logger = new common.Formatter('git');
 var git = exports;
 
 // Git tools.
@@ -28,6 +28,15 @@ git.createClient = function (dir, opts) {
 	var client = function () {
 		var last = arguments.length - 1;
 		var cb = arguments[last];
+		var onResult = function (code) {
+			if (code) {
+				logger.error("git returned code", code);
+				logger.error("\tparameters:", args);
+				logger.error("\tdirectory:", dir);
+			}
+
+			cb && cb.apply(this, arguments);
+		};
 
 		if (Array.isArray(arguments[0])) {
 			var args = arguments[0];
@@ -36,14 +45,14 @@ git.createClient = function (dir, opts) {
 			var next = function (code, out, err) {
 				_out.push(out);
 				_err.push(err);
-				if (code || !args[i]) { return cb(code, _out, _err); }
+				if (code || !args[i]) { return onResult(code, _out, _err); }
 				common.child('git', args[i++], opts, next);
 			};
 
 			next();
 		} else {
 			var args = Array.prototype.slice.call(arguments, 0, last);
-			common.child('git', args, opts, cb);
+			common.child('git', args, opts, onResult);
 		}
 	};
 
