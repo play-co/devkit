@@ -1,3 +1,7 @@
+## 0.1.40 (November 13, 2013)
+ - updated for native facebook posts and requests
+   - add support for native plugin requests
+
 ## 0.1.39 (November 13, 2013)
  - fix native views memory leak
  - iOS
