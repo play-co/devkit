@@ -51,10 +51,10 @@ exports.create = Class(function () {
 		this.location = path.resolve(common.paths.root(), def.path);
 		this.git = git.createClient(this.location, {silent: true});
 		this.logger = new common.Formatter(name);
+	}
 
-		if (!fs.existsSync(this.location)) {
-			throw new Error('repo ' + this.name + ' has an invalid location: ' + this.location);
-		}
+	this.exists = function () {
+		return fs.existsSync(this.location);
 	}
 
 	// convenience method for logging messages related to this repository

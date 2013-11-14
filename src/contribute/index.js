@@ -51,7 +51,12 @@ function init () {
 		Object.keys(repositories).forEach(function (repoName) {
 			var def = repositories[repoName];
 			if (def.path) {
-				_repos[repoName] = new Repo.create(def.name || repoName, def);
+				var repo = new Repo.create(def.name || repoName, def);
+				if (!repo.exists()) {
+					throw new Error('repo ' + this.name + ' has an invalid location: ' + this.location);
+				} else {
+					_repos[repoName] = repo;
+				}
 			}
 		});
 	}
