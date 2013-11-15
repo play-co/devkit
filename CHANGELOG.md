@@ -1,3 +1,6 @@
+## 0.1.42 (November 14, 2013)
+ - fixes AddonManager (basil install [addon] was broken in the previous release)
+
 ## 0.1.41 (November 13, 2013)
  - dispatch browser events immediately to let window.open calls work (avoid popup blockers)
 
