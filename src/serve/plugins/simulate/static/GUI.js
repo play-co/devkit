@@ -478,6 +478,30 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 
 var _controller;
 
+function getIcon(manifest) {
+	var icon;
+	if (manifest) {
+		if (manifest.icon) {
+			icon = manifest.icon;
+		}
+
+		if (!icon && manifest.icons) {
+			var min = Infinity;
+			Object.keys(manifest.icons).forEach(function (size) {
+				size = parseInt(size);
+				if (size && size < min) {
+					min = size;
+				}
+			});
+			icon = manifest.icons[min];
+		}
+	}
+
+	return icon
+		|| manifest.android && getIcon(manifest.android)
+		|| manifest.ios && getIcon(manifest.ios) || '../../../images/defaultIcon.png';
+}
+
 /**
  * Launch simulator.
  */
@@ -493,6 +517,8 @@ exports.start = function () {
 		util.ajax.get({url: '/projects/' + appID + '/files/manifest.json', type: 'json'}, f.slot());
 	}, function (manifest) {
 		document.title = manifest.title;
+
+		document.querySelector('link[rel=icon]').setAttribute('href', '/projects/' + appID + '/files/' + getIcon(manifest));
 
 		var uri = new URI(window.location);
 		var simulators = JSON.parse(uri.hash('simulators') || '[]');
