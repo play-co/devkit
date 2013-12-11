@@ -1,7 +1,11 @@
-## 0.1.43 (December 2, 2013)
+## 0.1.43 (December 10, 2013)
+ - allow canvas objects to be garbage collected
  - fix native views memory leak
  - fix rare race conditions in remote image cache
+ - fix rare long delay in remote image cache
  - fix word wrap for Chinese text (with no spaces)
+ - fix texture manager out of memory reactions
+ - drop duplicate touch events to improve drag input performance
  - Image is now a subclass of PubSub
  - ScrollView
    - add support for header view
@@ -11,8 +15,10 @@
    - include prebuilt libssl to avoid breaking on older Android devices
    - add Nexus 5 xxxh support in manifest icon "192" (patch from Jishnu)
  - iOS
+   - fix using universal splash image when better ones exist
    - fix crash bug in EditText keyboard
    - fix simulator support
+   - optimize touch event handler
 
 ## 0.1.42 (November 14, 2013)
  - fixes AddonManager (basil install [addon] was broken in the previous release)
