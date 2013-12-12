@@ -1,3 +1,7 @@
+## 0.1.44 (December 12, 2013)
+ - iOS
+   - optimize localStorage updates to run much faster
+
 ## 0.1.43 (December 10, 2013)
  - allow canvas objects to be garbage collected
  - fix native views memory leak
