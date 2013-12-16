@@ -85,8 +85,8 @@ process.on('SIGINT', function () {
 	process.exit(2);
 });
 
-// Run a child process inline.
-exports.child = function (prog, args, opts, cont) {
+
+function runChildCommand(childCommand, prog, args, opts, cont) {
 	var tool;
 	try {
 		//If we are on windows commands need to be sent through cmd so
@@ -96,9 +96,9 @@ exports.child = function (prog, args, opts, cont) {
 				prog = prog.substring(2);
 			}
 			var cmdArgs = ['/c', prog].concat(args);
-			tool = child_process.execFile('cmd', cmdArgs, opts);
+			tool = childCommand('cmd', cmdArgs, opts);
 		} else {
-			tool = child_process.execFile(prog, args, opts);
+			tool = childCommand(prog, args, opts);
 		}
 	} catch (err) {
 		console.error('(' + prog + ' could not be executed: ' + err + ')');
@@ -122,7 +122,18 @@ exports.child = function (prog, args, opts, cont) {
 		tool.stdin.end();
 		cont(code, out.join(''), err.join(''));
 	});
+}
+
+// Run a child process inline.
+exports.child = function (prog, args, opts, cont) {
+	runChildCommand(child_process.execFile, prog, args, opts, cont);
 };
+
+// Spawn a child process
+exports.spawn = function (prog, args, opts, cont) {
+	runChildCommand(child_process.spawn, prog, args, opts, cont);
+};
+
 
 /*
  * The formatter takes a tag and stdout/err streams and prints them nicely. used by things that log.
