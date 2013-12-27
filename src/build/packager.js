@@ -170,6 +170,7 @@ function getConfigObject (project, opts, target) {
 
 // Augment config object with manifest properties.
 	config.appID = manifest.appID;
+	config.supportedOrientations = manifest.supportedOrientations;
 	config.handshakeEnabled = manifest.handshakeEnabled;
 	config.shortName = manifest.shortName;
 	config.title = manifest.title;
