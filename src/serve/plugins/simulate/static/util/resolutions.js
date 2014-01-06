@@ -28,7 +28,7 @@ exports.defaults = {
 		canResize: true
 	},
 	browser: {
-		name: 'Browser (600x800)',
+		name: 'Browser',
 		target: 'browser-desktop',
 		canRotate: false,
 		canResize: true,
@@ -47,7 +47,7 @@ exports.defaults = {
 		}
 	},
 	facebook: {
-		name: 'Facebook (600x760)',
+		name: 'Facebook',
 		target: 'browser-desktop',
 		canRotate: false,
 		canResize: false,
@@ -62,7 +62,7 @@ exports.defaults = {
 		}
 	},
 	ipad: {
-		name: 'iPad 2 (768x1024)',
+		name: 'iPad 2',
 		target: 'native-ios',
 		canRotate: true,
 		canResize: false,
@@ -83,7 +83,7 @@ exports.defaults = {
 		}]
 	},
 	'ipad3': {
-		name: 'iPad 3 (1536x2048)',
+		name: 'iPad 3',
 		target: 'native-ios',
 		devicePixelRatio: 2,
 		canRotate: true,
@@ -105,7 +105,7 @@ exports.defaults = {
 		}]
 	},
 	nexus: {
-		name: 'Nexus S (480x800)',
+		name: 'Nexus S',
 		target: 'native-android',
 		canRotate: true,
 		canResize: false,
@@ -127,7 +127,7 @@ exports.defaults = {
 		}]
 	},
 	iphone: {
-		name: 'iPhone 3GS (320x480)',
+		name: 'iPhone 3GS',
 		target: 'native-ios',
 		canRotate: true,
 		canResize: false,
@@ -142,7 +142,7 @@ exports.defaults = {
 		}
 	},
 	'iphone4': {
-		name: 'iPhone 4 (640x960)',
+		name: 'iPhone 4',
 		target: 'native-ios',
 		devicePixelRatio: 2,
 		canRotate: true,
@@ -158,7 +158,7 @@ exports.defaults = {
 		}
 	},
 	'iphone5': {
-		name: 'iPhone 5 (640x1136)',
+		name: 'iPhone 5',
 		target: 'native-ios',
 		devicePixelRatio: 2,
 		canRotate: true,
@@ -174,7 +174,7 @@ exports.defaults = {
 		}
 	},
 	'iphone-browser': {
-		name: 'Mobile Safari (320x480)',
+		name: 'Mobile Safari',
 		target: 'browser-mobile',
 		userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3',
 		canRotate: true,
@@ -200,7 +200,7 @@ exports.defaults = {
 		}]
 	},
 	'galaxy-nexus': {
-		name: 'Galaxy Nexus (720x1184)',
+		name: 'Galaxy Nexus',
 		target: 'native-android',
 		canRotate: true,
 		canResize: false,

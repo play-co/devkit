@@ -76,7 +76,7 @@ function serveAPI (app) {
 	//usage: make a GET request to /api/ip
 	app.get('/api/ip', function (req, res) {
 		common.getLocalIP(function (err, address) {
-			res.json({ip: [address]});
+			res.json({ip: address});
 		});
 	});
 

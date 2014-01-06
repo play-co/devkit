@@ -37,60 +37,123 @@ var TopBar = Class(squill.Widget, function(supr) {
 	this._def = {
 		className: 'topBar',
 		children: [
-			{id: '_btnSimulatorList', type: 'button', className: 'button', text: 'Choose Simulator'},
-			{id: '_simulatorList', className: 'list', children: [
-				{className: 'device', id: '_btnAddSimulator', text: 'Add Simulator...'}
-			]},
-			{id: '_btnDeviceList', type: 'button', className: 'button', text: 'Choose Device'},
-			{id: '_deviceList', className: 'list', children: []},
-			{id: '_btnReload', type: 'button', className: 'button', text: 'Reload'},
-			{id: '_btnInspect', type: 'button', className: 'button', text: 'UI Inspector'},
-			{id: '_btnRotate', type: 'button', className: 'button', text: 'Rotate'},
-			{id: '_btnScreenShot', type: 'button', className: 'button', text: 'Screenshot'},
-			{id: '_btnNativeBack', type: 'button', className: 'button', text: 'Hardware Back'},
-			{id: '_btnNativeHome', type: 'button', className: 'button', text: 'Home Screen'},
-			{id: '_btnMute', type: 'button', className: 'button', text: 'Mute'},
-			{id: '_btnDrag', type: 'button', className: 'button', text: 'Disable Drag'},
-			{id: '_btnPause', type: 'button', className: 'button', text: 'Pause'},
-			{id: '_btnStep', type: 'button', className: 'button', text: 'Step'},
-			{id: '_btnDebug', type: 'button', className: 'button', text: 'Debug'}
+			{
+				id: '_buttonContainer',
+				children: [
+					{id: '_btnSimulatorList', type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-plus'}]},
+					{id: '_simulatorList', className: 'list', children: [
+						{className: 'device', id: '_btnAddSimulator', text: 'Add Simulator...'}
+					]},
+					{id: '_btnDeviceList', attrs: {tooltip: 'change the device type'}, type: 'button', className: 'button', text: 'Choose Device'},
+					{id: '_btnReload', attrs: {tooltip: 'reload the game'}, type: 'button', className: 'button', text: 'Reload'},
+					{id: '_btnDebug', attrs: {tooltip: 'switch to release build'}, type: 'button', className: 'button', text: 'Debug'},
+					{id: '_btnInspect', attrs: {tooltip: 'inspect the view hierarchy'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-search'}]},
+					{id: '_btnDrag', attrs: {tooltip: 'lock simulator position'}, type: 'button', className: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-move'}]},
+					{id: '_btnRotate', attrs: {tooltip: 'rotate the device'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-repeat'}]},
+					{id: '_btnNativeBack', attrs: {tooltip: 'back button (hardware)'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-chevron-left'}]},
+					{id: '_btnNativeHome', attrs: {tooltip: 'home button (hardware)'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-home'}]},
+					{id: '_btnScreenShot', attrs: {tooltip: 'take a screenshot'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-picture'}]},
+					{id: '_btnMute', attrs: {tooltip: 'mute all sounds'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-music'}]},
+					{id: '_btnPause', attrs: {tooltip: 'pause game timer'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-pause'}]},
+					{id: '_btnStep', attrs: {tooltip: 'step forward 1 frame'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-step-forward'}]},
+					{id: '_myIP', type: 'label'}
+				]
+			},
+			{id: '_deviceList', className: 'list', children: []}
 		]
 	}
 
-	this.init = function (opts) {
-		supr(this, 'init', arguments);
+	this._isDebugMode = true;
+	this._isPaused = false;
+	this._isDragEnabled = true;
 
-		// this.populateSimulatorList();
-		// this.populateDeviceList();
-		// this._btnMute._el.textContent = (_controller.getActiveSimulator().isMuted() ? 'Unmute':'Mute');
-	}
+	this.getContainer = function () { return this._buttonContainer; }
+
+	var DeviceCell = Class(squill.Widget, function () {
+
+		var FIT_TO = 50;
+
+		this._def = {
+			className: 'device',
+			children: [
+				{id: 'previewBg', children: [
+					{id: 'preview'}
+				]},
+				{id: 'label', type: 'label'},
+				{id: 'resolution', type: 'label'}
+			]
+		};
+
+		function getScale(w, h) {
+			var ratio = w / h;
+			return FIT_TO / (ratio > 1 ? w : h)
+		}
+
+		this.buildWidget = function () {
+			var def = this._opts.def;
+			var w = def.width || 1;
+			var h = def.height || 1;
+
+			this.label.setText(def.name);
+			if (def.width && def.height) {
+				this.resolution.setText(w + 'x' + h);
+			}
+
+			this.initMouseEvents();
+
+			var setBg = false;
+			var scale = getScale(w, h);
+			if (def.background) {
+				var bg = def.background;
+				if (isArray(bg)) {
+					bg = bg[0];
+				}
+
+				if (bg.width && bg.height) {
+					setBg = true;
+
+					var bgScale = getScale(bg.width, bg.height);
+					if (bgScale < scale) {
+						scale = bgScale;
+					}
+				}
+			}
+
+			this.preview.style.width = w * scale + 'px';
+			this.preview.style.height = h * scale + 'px';
+			this.preview.style.backgroundImage = 'url(' + this._opts.previewImage + ')';
+
+			if (setBg) {
+				this.previewBg.style.cssText =
+					'background-image: url(images/' + bg.img + ');'
+					+ 'width:' + bg.width * scale + 'px;'
+					+ 'min-height:' + bg.height * scale + 'px;'
+					+ 'padding:' + bg.offsetY * scale + 'px 0 0 ' + bg.offsetX * scale + 'px;'
+			}
+		}
+	});
 
 	var deviceList = []; //NOT this._deviceList
 	this.populateDeviceList = function () {
-		//this doesn't actually need to be public, just done for completeness
-		var i;
-		for (i in deviceList) {
+		for (var i in deviceList) {
 			deviceList[i].remove();
 		}
 		deviceList = [];
-		i = null;
 
-		for (i in Resolutions.defaults) {
-			deviceList.push(new squill.Widget({
-				parent: this._deviceList,
-				id: i,
-				text: Resolutions.defaults[i].name,
-				className: 'device'
-			}));
-		}
+		var previewImage = _controller.getActiveSimulator().getLoadingImageURL();
+		for (var type in Resolutions.defaults) {
+			var cell = new DeviceCell({
+					parent: this._deviceList,
+					type: type,
+					def: Resolutions.defaults[type],
+					previewImage: previewImage
+				}).on('Select', bind(this, function (type) {
+					_controller.getActiveSimulator().setType(type);
+					$.removeClass(this._deviceList, 'active');
+					_controller.updateURI();
+				}, type));
 
-		for(i = 0; i < deviceList.length; ++i) {
-			deviceList[i].onclick(bind(this, function (evt) {
-				_controller.getActiveSimulator().setType(evt.srcElement.id);
-				$.hide(this._deviceList);
-				this._deviceList.shown = false;
-				_controller.updateURI();
-			}));
+			deviceList.push(cell);
 		}
 	}
 
@@ -161,7 +224,7 @@ var TopBar = Class(squill.Widget, function(supr) {
 		this._btnAddSimulator.onclick = bind(this, function () {
 			_controller.addSimulator({
 				device: 'iphone',
-				name: "Simulator_" + _controller._simulators.length
+				name: 'Simulator_' + _controller._simulators.length
 			});
 			_controller.setActiveSimulator(_controller._simulators.length - 1);
 			this.populateSimulatorList(); //refresh the list
@@ -170,6 +233,16 @@ var TopBar = Class(squill.Widget, function(supr) {
 			_controller.updateURI();
 		});
 	}
+
+	this.buildWidget = function () {
+		util.ajax.get({url: '/api/ip', type: 'json'}, bind(this, '_onIP'));
+	}
+
+	this._onIP = function(err, response) {
+		if (!err) {
+			this._myIP.setLabel(response.ip.join(", "));
+		}
+	};
 
 	var sendToActiveSimulator = function (name, args) {
 		_controller.getActiveSimulator().sendEvent(name, args || {});
@@ -195,8 +268,13 @@ var TopBar = Class(squill.Widget, function(supr) {
 
 		on._btnDeviceList = function () {
 			this.populateDeviceList();
-			this._deviceList.shown ? $.hide(this._deviceList) : $.show(this._deviceList);
-			this._deviceList.shown ^= true;
+
+			if (/active/.test(this._deviceList.className)) {
+				$.removeClass(this._deviceList, 'active');
+			} else {
+				$.addClass(this._deviceList, 'active');
+			}
+
 		};
 
 		on._btnReload = function() {
@@ -222,34 +300,79 @@ var TopBar = Class(squill.Widget, function(supr) {
 
 		on._btnNativeHome = function () {
 			sendToActiveSimulator('HOME_BUTTON');
-			this._btnNativeHome._el.textContent = (this._btnNativeHome._el.textContent === 'Home Screen'? 'Resume':'Home Screen')
+
+			this._isAtHomeScreen = !this._isAtHomeScreen;
+			var el = this._btnMute.getElement();
+
+			var el = this._btnNativeHome._el;
+			el.setAttribute('tooltip', this._isAtHomeScreen ? 'return to game' : 'home (hardware button)');
 		};
 
 		on._btnMute = function () {
-			sendToActiveSimulator('MUTE', this._btnMute._el.textContent === 'Mute');
-			this._btnMute._el.textContent = (this._btnMute._el.textContent === 'Mute'? 'Unmute':'Mute');
+			var sim = _controller.getActiveSimulator();
+			var isMuted = !sim.isMuted();
+			sim.setMuted(isMuted);
+
+			var el = this._btnMute.getElement();
+			el.setAttribute('tooltip', isMuted ? 'unmute all sounds' : 'mute all sounds');
+			if (isMuted) {
+				$.addClass(el, 'disabled');
+			} else {
+				$.removeClass(el, 'disabled');
+			}
 		};
 
 		on._btnDrag = function () {
-			sendToAllSimulators('DRAG', this._btnDrag._el.textContent === 'Enable Drag');
-			this._btnDrag._el.textContent = (this._btnDrag._el.textContent === 'Enable Drag'? 'Disable Drag':'Enable Drag');
+			this._isDragEnabled = !this._isDragEnabled;
+			sendToAllSimulators('DRAG', this._isDragEnabled);
+
+			if (!this._isDragEnabled) {
+				$.addClass(el, 'disabled');
+			} else {
+				$.removeClass(el, 'disabled');
+			}
+
+			var el = this._btnDrag._el;
+			el.setAttribute('tooltip', this._isDragEnabled ? 'lock simulator position' : 'unlock simulator position');
 		};
 
 		on._btnPause = function () {
-			sendToActiveSimulator('PAUSE', this._btnPause._el.textContent === 'Pause');
-			this._btnPause._el.textContent = (this._btnPause._el.textContent === 'Pause'? 'Unpause':'Pause');
+			this._isPaused = !this._isPaused;
+			sendToActiveSimulator('PAUSE', this._isPaused);
+			this._updatePaused();
 		};
 
 		on._btnStep = function () {
+			if (!this._isPaused) {
+				this._isPaused = true;
+				this._updatePaused();
+			}
+
 			sendToActiveSimulator('STEP');
-			this._btnPause._el.textContent = 'Unpause';
 		};
 
 		on._btnDebug = function () {
 			sendToActiveSimulator('DEBUG');
-			this._btnDebug._el.textContent = (this._btnDebug._el.textContent === 'Debug' ? 'Release' : 'Debug');
+
+			this._isDebugMode = !this._isDebugMode;
+			var el = this._btnDebug._el;
+			el.setAttribute('tooltip', this._isDebugMode ? 'switch to release build' : 'switch to debug build');
 		}
 	});
+
+	this._updatePaused = function () {
+		var icon = this._btnPause._el.childNodes[0];
+		if (!this._isPaused) {
+			$.addClass(icon, 'icon-pause');
+			$.removeClass(icon, 'icon-play');
+		} else {
+			$.addClass(icon, 'icon-play');
+			$.removeClass(icon, 'icon-pause');
+		}
+
+		var el = this._btnPause._el;
+		el.setAttribute('tooltip', this._isPaused ? 'resume game timer' : 'pause game timer');
+	}
 });
 
 /**
@@ -285,7 +408,7 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 		this._server.listen();
 		this._server.on('HANDSHAKE', bind(this, '_onHandshake'));
 
-		var basePort = parseInt(window.location.port || "80");
+		var basePort = parseInt(window.location.port || '80');
 		this._portManager = new PortManager({
 			start: basePort + 1,
 			end: basePort + 20
@@ -311,7 +434,7 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 
 		util.ajax.get({url: '/simulate/addons/', type: 'json'}, bind(this, function (err, res) {
 			res.forEach(function (name) {
-				jsio.__jsio("import ..addons." + name + ".index").init(this);
+				jsio.__jsio('import ..addons.' + name + '.index').init(this);
 			}, this);
 		}));
 	};
@@ -472,7 +595,7 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 		}
 
 		//TODO: this simulators= thing is a little off, probably need to use the js.io URI class.
-		window.location.hash = "simulators="+JSON.stringify(simulators);
+		window.location.hash = 'simulators='+JSON.stringify(simulators);
 	};
 });
 
@@ -530,7 +653,7 @@ exports.start = function () {
 
 		for (var i in simulators) {
 			if (!simulators[i].name) {
-				simulators[i].name = "Simulator_" + i;
+				simulators[i].name = 'Simulator_' + i;
 			}
 		}
 

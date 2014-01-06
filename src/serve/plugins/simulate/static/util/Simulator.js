@@ -92,7 +92,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 
 		// initialize muted state from localStorage
 		this._isMuted = false;
-		if (localStorage.settingMuted) {
+		if (localStorage.getItem('settingMuted') == 1) {
 			this._isMuted = true;
 		}
 
@@ -118,7 +118,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		} else {
 			conn.sendEvent('INACTIVE');
 		}
-		
+
 		conn.onEvent.subscribe('HIDE_LOADING_IMAGE', this, 'hideLoadingImage');
 		conn.onEvent.subscribe('APP_READY', this, function (evt) {
 			// we want to immediately send the name for logging purposes
@@ -208,7 +208,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 					var min = ('00' + now.getMinutes()).substr(-2);
 					var time = now.getHours() + ':' + min;
 					var date = now.getMonth() + '/' + now.getDate();
-					
+
 					doc.open();
 					doc.write('<html><title>Screenshot ' + date + ' ' + time + '</title></head>'
 						+ '<body style="margin:0px;padding:0px;background-color:#000;">'
@@ -217,17 +217,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 					doc.close();
 				});
 				break;
-			
-			case 'MUTE':
-				this._isMuted ^= true;
-				if (this._isMuted) {
-					localStorage.settingMuted = true;
-				} else {
-					delete localStorage.settingMuted;
-				}
-				this._conn.sendEvent('MUTE', {shouldMute: this._isMuted});
-				return;
-			
+
 			case 'DRAG':
 				this.setDragEnabled(!this._isDragEnabled);
 				break;
@@ -262,7 +252,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		if (params.entry && params.entry != 'intro') {
 			query.test = params.entry;
 		}
-		
+
 		if (params.inviteCode) {
 			query.i = params.inviteCode;
 		}
@@ -294,6 +284,19 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 	this.setDragEnabled = function (isDragEnabled) { this._isDragEnabled = !!isDragEnabled; };
 
 	this.isMuted = function () { return this._isMuted; };
+
+	this.setMuted = function (isMuted) {
+		this._isMuted = isMuted;
+		if (isMuted) {
+			localStorage.setItem('settingMuted', '1');
+		} else {
+			localStorage.setItem('settingMuted', '0');
+		}
+
+		if (this._conn) {
+			this._conn.sendEvent('MUTE', {shouldMute: isMuted});
+		}
+	}
 
 	this.getLoadingImageURL = function () {
 		var splash;
@@ -335,7 +338,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		});
 
 		this.update();
-		
+
 		next && next(err, res);
 	};
 
@@ -420,7 +423,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 	this.getDevicePixelRatio = function () {
 		return this._params.devicePixelRatio || 1;
 	}
-	
+
 	this._setFrameSize = function (width, height) {
 		if (this._frame) {
 			var s = this._frame.style;
@@ -436,7 +439,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		if (!params.canRotate) {
 			this._rotation = 0;
 		}
-		
+
 		var scale = this._scale = 1 / this.getDevicePixelRatio() * this._zoom;
 		var cssScale = 'scale(' + scale + ')';
 
@@ -507,12 +510,12 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 						background: '#435d96'
 					}
 				});
-				
+
 				$.style(parent.getElement(), {
 					background: '#FFF'
 				});
 		}
-		
+
 		// copy background properties from params to our local background properties
 		var bgProps = this._backgroundProps;
 		var props = params.background;
@@ -553,7 +556,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 
 			if (props.style) { $.style(this._el, props.style); }
 		}
-		
+
 		this.onViewportChange();
 	};
 
@@ -613,7 +616,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 	this.onDragStop = function () {
 		this.setTransitionsEnabled(true);
 	};
-	
+
 	this.onViewportChange = function() {
 		if (!this._backgroundProps || !this._frame) {
 			return;
@@ -622,23 +625,23 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		var rect = this._widgetParent.getAvailableRect();
 		var width = rect.width;
 		var height = rect.height;
-		
+
 		/* position the frame in the center, not the chrome -- this ensures that we
 		 * always try to ensure the canvas is entirely on the screen, letting the chrome
 		 * exceed the browser viewport if necessary
 		 */
 		var x = Math.round(Math.max(0, (width - this._width) / 2)) + this._offsetX - this._backgroundProps.offsetX * this._scale;
 		var y = Math.round(Math.max(0, (height - this._height) / 2)) + this._offsetY - this._backgroundProps.offsetY * this._scale;
-		
+
 		$.style(this._frameWrapper, {
 			marginTop: this._backgroundProps.offsetY * this._scale + 'px',
 			marginLeft: this._backgroundProps.offsetX * this._scale + 'px'
 		});
-		
+
 		if (this._params.name == 'facebook' && x > 0) {
 			x = Math.max(0, x - 100);
 		}
-		
+
 		$.style(this._el, {
 			top: rect.y + (this._params.dontCenterY ? 0 : y) + 'px',
 			left: rect.x + x + 'px'
