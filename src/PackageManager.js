@@ -183,10 +183,9 @@ exports.isPackage = function (root) {
  * Package Class
  */
 
-var GCPackage = (function() {
+var GCPackage = Class(function () {
 
-	function GCPackage (root) {
-
+	this.init = function (root) {
 		if (!root) { return; }
 
 		// deprecated: (synchronous is bad)
@@ -206,8 +205,8 @@ var GCPackage = (function() {
 			throw new Error('Invalid JSON: ' + e);
 		}
 	}
-
-	GCPackage.prototype.initPaths = function (root) {
+		
+	this.initPaths = function (root) {
 		if (!exports.isPackage(root)) {
 			return new Error('Invalid game archive (expecting ./ and ./manifest.json)');
 		}
@@ -223,7 +222,7 @@ var GCPackage = (function() {
 		};
 	}
 
-	GCPackage.prototype.load = function (root, cb) {
+	this.load = function (root, cb) {
 		var err = this.initPaths(root);
 		if (err) {
 			cb(err);
@@ -238,7 +237,7 @@ var GCPackage = (function() {
 		}
 	}
 
-	GCPackage.prototype.readManifest = function (cb) {
+	this.readManifest = function (cb) {
 		// load and parse manifest to initialize this object
 		fs.readFile(this.paths.manifest, function (err, contents) {
 
@@ -273,11 +272,11 @@ var GCPackage = (function() {
 
 	/* Manifest */
 
-	GCPackage.prototype.getManifestKey = function (key, def) {
+	this.getManifestKey = function (key, def) {
 		return this.manifest.hasOwnProperty(key) ? this.manifest[key] : def;
 	}
 
-	GCPackage.prototype.populateManifest = function (opts, cb) {
+	this.populateManifest = function (opts, cb) {
 		if (typeof opts !== 'object') { opts = {}; }
 		
 		this.saveManifest(augment({
@@ -298,71 +297,71 @@ var GCPackage = (function() {
 		}, clone(this.manifest)), cb);
 	};
 
-	GCPackage.prototype.saveManifest = function (data, cb) {
+	this.saveManifest = function (data, cb) {
 		this.manifest = data;
 		return fs.writeFile(path.join(this.paths.root, 'manifest.json'), serializeConfig(data), cb);
 	};
 
-	GCPackage.prototype.saveManifestSync = function (data) {
+	this.saveManifestSync = function (data) {
 		this.manifest = data;
 		fs.writeFileSync(path.join(this.paths.root, 'manifest.json'), serializeConfig(data));
 	};
 
-	GCPackage.prototype.getAddonConfig = function () {
+	this.getAddonConfig = function () {
 		return this.manifest.addons || {};
 	}
 
 	/* Resources */
 
-	GCPackage.prototype.listResources = function (exts, next) {
+	this.listResources = function (exts, next) {
 		if (typeof exts == 'function') {
 			next = exts; exts = null;
 		}
 		return listFiles(this.paths.resources, exts, next);
 	};
 
-	GCPackage.prototype.listResourcesSync = function (exts) {
+	this.listResourcesSync = function (exts) {
 		if (typeof exts == 'function') {
 			cb = exts; exts = null;
 		}
 		return listFilesSync(this.paths.resources, exts);
 	};
 
-	GCPackage.prototype.listImages = function(cb) {
+	this.listImages = function(cb) {
 		return listFiles(this.paths.resources, ['png', 'jpg', 'jpeg', 'bmp', 'gif'], cb);
 	};
 
-	GCPackage.prototype.listImagesSync = function() {
+	this.listImagesSync = function() {
 		return listFilesSync(this.paths.resources, ['png', 'jpg', 'jpeg', 'bmp', 'gif']);
 	};
 
-	GCPackage.prototype.listSounds = function(cb) {
+	this.listSounds = function(cb) {
 		return listFiles(this.paths.resources, ['mp3', 'ogg'], cb);
 	};
 
-	GCPackage.prototype.listSoundsSync = function() {
+	this.listSoundsSync = function() {
 		return listFilesSync(this.paths.resources, ['mp3', 'ogg']);
 	};
 
-	GCPackage.prototype.listConfig = function(cb) {
+	this.listConfig = function(cb) {
 		return listFiles(this.paths.resources, ['json'], cb);
 	};
 
-	GCPackage.prototype.listConfigSync = function() {
+	this.listConfigSync = function() {
 		return listFilesSync(this.paths.resources, ['json']);
 	};
 
 	/* Scripts */
 
-	GCPackage.prototype.listScripts = function(cb) {
+	this.listScripts = function(cb) {
 		return listFiles(this.paths.shared, ['js'], cb);
 	};
 
-	GCPackage.prototype.listScriptsSync = function() {
+	this.listScriptsSync = function() {
 		return listFilesSync(this.paths.shared, ['js']);
 	};
 
-	GCPackage.prototype.walkScript = function(path, opts, cb) {
+	this.walkScript = function(path, opts, cb) {
 		var ret;
 		if (typeof opts === 'function') {
 			cb = opts;
@@ -388,7 +387,7 @@ var GCPackage = (function() {
 		return ret;
 	};
 
-	GCPackage.prototype.rewriteScript = function(path, opts, cb) {
+	this.rewriteScript = function(path, opts, cb) {
 		if (cb == null) {
 			cb = null;
 		}
@@ -403,19 +402,19 @@ var GCPackage = (function() {
 
 	/* Translations */
 
-	GCPackage.prototype.getDefaultLanguage = function() {
+	this.getDefaultLanguage = function() {
 		return this.getManifestKey('defaultLang', 'en');
 	};
 
-	GCPackage.prototype.listTranslations = function(cb) {
+	this.listTranslations = function(cb) {
 		return listFiles(this.paths.lang, ['json'], cb);
 	};
 
-	GCPackage.prototype.listTranslationsSync = function() {
+	this.listTranslationsSync = function() {
 		return listFilesSync(this.paths.lang, ['json']);
 	};
 
-	GCPackage.prototype.getTranslation = function(code, cb) {
+	this.getTranslation = function(code, cb) {
 		try {
 			return fs.readFile(path.join(this.paths.lang, code + ".json"), function(err, data) {
 				return data ? cb(JSON.parse(data)) : cb(null);
@@ -425,7 +424,7 @@ var GCPackage = (function() {
 		}
 	};
 
-	GCPackage.prototype.getTranslationSync = function(code) {
+	this.getTranslationSync = function(code) {
 		try {
 			var data = fs.readFileSync(path.join(this.paths.lang, code + ".json"));
 			return data ? JSON.parse(data) : null;
@@ -434,31 +433,31 @@ var GCPackage = (function() {
 		}
 	};
 
-	GCPackage.prototype.removeTranslation = function(code, cb) {
+	this.removeTranslation = function(code, cb) {
 		fs.unlink(path.join(this.paths.lang, code + ".json"), cb);
 	};
 
-	GCPackage.prototype.removeTranslationSync = function(code) {
+	this.removeTranslationSync = function(code) {
 		fs.unlinkSync(path.join(this.paths.lang, code + ".json"));
 		return true
 	};
 
-	GCPackage.prototype.saveTranslation = function(code, json, cb) {
+	this.saveTranslation = function(code, json, cb) {
 		wrench.mkdirSyncRecursive(this.paths.lang);
 		return fs.writeFile(path.join(this.paths.lang, code + ".json"), serializeConfig(json), cb);
 	};
 
-	GCPackage.prototype.saveTranslationSync = function(code, json) {
+	this.saveTranslationSync = function(code, json) {
 		wrench.mkdirSyncRecursive(this.paths.lang, 0777);
 		fs.writeFileSync(path.join(this.paths.lang, code + ".json"), serializeConfig(json));
 		return true
 	};
 
-	GCPackage.prototype.getID = function () {
+	this.getID = function () {
 		return this.manifest.shortName || this.manifest.appID;
 	}
 
-	GCPackage.prototype.toJSON = function () {
+	this.toJSON = function () {
 		return {
 				"id": this.getID(),
 				"paths": this.paths,
@@ -468,9 +467,7 @@ var GCPackage = (function() {
 			};
 	}
 
-	return GCPackage;
-
-})();
+});
 
 exports.load = function(path) {
 	return new GCPackage(path);
