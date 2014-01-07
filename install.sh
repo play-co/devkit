@@ -74,7 +74,11 @@ SYSTEM_WIDE_INSTALL=false
 
 if [[ $is_silent != 1 ]]; then
 	if [[ `uname` != MINGW32* ]]; then
-		read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [Y/n] ?" -n 1 -r
+		read -p "Would you like to install the Game Closure DevKit system-wide in /usr/local/bin [Y/n] ?" -r
+		while [[ ($REPLY != 'y') && ($REPLY != 'Y') && ($REPLY != 'n') && ($REPLY != 'N') ]]; do
+			read -p "Invalid option \"$REPLY\". Please type either Y or n:" -r
+		done
+
 		echo
 
 		if [[ ($REPLY != 'n') && ($REPLY != 'N') ]]; then
