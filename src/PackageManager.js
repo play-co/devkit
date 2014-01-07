@@ -217,6 +217,7 @@ var GCPackage = Class(function () {
 			root: root,
 			shared: path.join(root, 'shared'),
 			resources: path.join(root, 'resources'),
+			icons: path.join(root, 'icons'),
 			lang: path.join(root, 'resources', 'lang'),
 			manifest: path.join(root, 'manifest.json')
 		};
@@ -278,7 +279,7 @@ var GCPackage = Class(function () {
 
 	this.populateManifest = function (opts, cb) {
 		if (typeof opts !== 'object') { opts = {}; }
-		
+
 		this.saveManifest(augment({
 			"appID": createUUID(),
 			"shortName": (typeof opts.shortName === 'undefined') ? "" : opts.shortName,
@@ -325,6 +326,10 @@ var GCPackage = Class(function () {
 			cb = exts; exts = null;
 		}
 		return listFilesSync(this.paths.resources, exts);
+	};
+
+	this.listIcons = function(cb) {
+		return listFiles(this.paths.icons, ['png', 'jpg', 'jpeg', 'bmp', 'gif'], cb);
 	};
 
 	this.listImages = function(cb) {
