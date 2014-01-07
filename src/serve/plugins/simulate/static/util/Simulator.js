@@ -207,7 +207,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 					var now = new Date();
 					var min = ('00' + now.getMinutes()).substr(-2);
 					var time = now.getHours() + ':' + min;
-					var date = now.getMonth() + '/' + now.getDate();
+					var date = (1 + now.getMonth()) + '/' + now.getDate();
 
 					doc.open();
 					doc.write('<html><title>Screenshot ' + date + ' ' + time + '</title></head>'
