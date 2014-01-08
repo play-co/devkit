@@ -60,7 +60,7 @@
 			"billing",
 			"geoloc"
 		],
-		"tealeaf-build-tools": "0.4.0",
+		"tealeaf-build-tools": "0.5.0",
 		"android": "2.1.0"
 	},
 	"channel": "release"
