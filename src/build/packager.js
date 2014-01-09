@@ -342,9 +342,10 @@ exports.getAddonsForApp = function (project, cb) {
 		var installAddon = function(addonName) {
 			if (!processedAddons[addonName]) {
 				processedAddons[addonName] = true;
+				var addonsPath = addonManager.getAddonsPath();
 
 				var wait = f.wait();
-				if (!addons[addonName]) {
+				if (!fs.existsSync(path.join(addonsPath, addonName))) {
 					//install
 					addonManager.install(addonName, {}, function (err, res) {
 						if (!err) {
