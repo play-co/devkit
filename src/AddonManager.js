@@ -518,6 +518,10 @@ var AddonManager = Class(EventEmitter, function () {
 		return this._addons;
 	}
 
+	this.getAddonsPath = function() {
+		return addonPath;
+	}
+
 	this.registerPath = function (path) {
 		this._paths.push(path);
 	};

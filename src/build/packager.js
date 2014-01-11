@@ -342,9 +342,10 @@ exports.getAddonsForApp = function (project, cb) {
 		var installAddon = function(addonName) {
 			if (!processedAddons[addonName]) {
 				processedAddons[addonName] = true;
+				var addonsPath = addonManager.getAddonsPath();
 
 				var wait = f.wait();
-				if (!addons[addonName]) {
+				if (!fs.existsSync(path.join(addonsPath, addonName))) {
 					//install
 					addonManager.install(addonName, {}, function (err, res) {
 						if (!err) {
@@ -656,7 +657,14 @@ function getResources(project, buildOpts, cb) {
 
 			var filteredPaths = [];
 
-			resources.other = spriterOutput.other.map(function (filename) {
+			var extensionsToFilter = [".ui"];	
+			extensionsToFilter.forEach(function(ext){
+				resources.other = spriterOutput.other.filter(function(filename) {
+					return !(path.basename(filename).indexOf(ext) == path.basename(filename).length - ext.length);;
+				});
+			});
+
+			resources.other = resources.other.map(function (filename) {
 				if (path.basename(filename) === "metadata.json") {
 					try {
 						var filedata = fs.readFileSync(path.resolve(srcDir, filename), "utf8");
