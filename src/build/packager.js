@@ -493,7 +493,7 @@ function getResources(project, buildOpts, cb) {
 	}, function (addons) {
 		Object.keys(addons).forEach(function (addonName) {
 			var addon = addons[addonName];
-			if (addon.hasBuildPlugin()) {
+			if (addon && addon.hasBuildPlugin()) {
 				try {
 					var buildAddon = require(addon.getPath('build'));
 					buildAddons[addonName] = buildAddon;

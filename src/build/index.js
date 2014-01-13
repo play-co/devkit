@@ -92,14 +92,13 @@ function build (dir, target, opts, cb) {
 
 		for (addonName in addons) {
 			var addon = addons[addonName];
-			if (addon.hasBuildPlugin()) {
-				try {
+			try {
+				if (addon && addon.hasBuildPlugin()) {
 					var buildAddon = require(addon.getPath('build'));
 					buildAddons[addonName] = buildAddon;
-
-				} catch (e) {
-					logger.error("Error initializing build addon", addonName, e);
 				}
+			} catch (e) {
+				logger.error("Error initializing build addon", addonName, e);
 			}
 		}
 
