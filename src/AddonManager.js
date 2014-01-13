@@ -89,6 +89,7 @@ var AddonManager = Class(EventEmitter, function () {
 				//create the directory structure and clone it
 				wrench.mkdirSyncRecursive(REGISTRY_PATH);
 
+				logger.log("Cloning from", REGISTRY_URL, "please wait (this may take a minute...)");
 				this._client('clone', REGISTRY_URL, ".", cb);
 			} else {
 				cb();
@@ -307,7 +308,7 @@ var AddonManager = Class(EventEmitter, function () {
 				}
 			}
 		}, function () {
-			logger.log("Downloading addon " + account + "/" + repo);
+			logger.log("Downloading addon " + account + "/" + repo, "PLEASE WAIT (this may take a minute...)");
 
 			// clone the add on
 			logger.log("URL:", url);
