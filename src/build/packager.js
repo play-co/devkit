@@ -493,8 +493,8 @@ function getResources(project, buildOpts, cb) {
 	}, function (addons) {
 		Object.keys(addons).forEach(function (addonName) {
 			var addon = addons[addonName];
-			if (addon && addon.hasBuildPlugin()) {
-				try {
+			try {
+				if (addon && addon.hasBuildPlugin()) {
 					var buildAddon = require(addon.getPath('build'));
 					buildAddons[addonName] = buildAddon;
 
@@ -508,9 +508,9 @@ function getResources(project, buildOpts, cb) {
 							});
 						});
 					}
-				} catch (e) {
-					logger.error("Error initializing build addon", addonName, e);
 				}
+			} catch (e) {
+				logger.error("Error initializing build addon", addonName, e);
 			}
 		}, this);
 
