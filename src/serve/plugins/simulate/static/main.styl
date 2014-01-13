@@ -8,7 +8,7 @@ html, body
 body
 	font-family Helvetica, Tahoma
 	background #08080F
-	color #FFF
+	color #AAA
 
 div, select, input
 	box-sizing border-box
@@ -319,6 +319,67 @@ body, div, span
 	width: 100%;
 	height: 100%;
 }
+
+label.squill-select
+	position relative
+	margin 2px 3px 2px 0px
+
+label.squill-select:after
+	content ""
+
+	position absolute
+	right 5px
+	top 3px
+	width 14px
+	height 14px
+
+	background url("images/glyphicons-halflings-white.png") center right no-repeat
+	background-position -313px -119px
+	pointer-events none
+
+	opacity 0.4
+
+select
+	margin 0px
+	max-width 100%
+	outline none
+	border 1px solid #555
+	background-color rgba(255, 255, 255, 0.3)
+	color #AAA
+	-webkit-appearance: none;
+	padding 3px 20px 3px 5px
+
+
+input[type='checkbox']
+	display:none;
+
+input[type="checkbox"] + #label:before
+
+	border: 1px solid #555
+	border-radius: 3px
+	display inline-block
+	width 14px
+	height 14px
+	margin -1px 4px 2px 3px
+	vertical-align middle
+	content ""
+	cursor pointer
+
+input[type="checkbox"]:checked + #label:before
+	background url("images/glyphicons-halflings-white.png") center center no-repeat
+	background-position: -288px 0;
+
+input[type="button"], button
+	background #333
+	border 1px solid #555
+	border-radius 3px
+	color #AAA
+
+input[type="text"]
+	background #001
+	border 1px solid #555
+	border-radius 3px
+	color #AAA
 
 .sdkTab {
 	position: relative;
