@@ -326,14 +326,13 @@ var TopBar = Class(squill.Widget, function(supr) {
 			this._isDragEnabled = !this._isDragEnabled;
 			sendToAllSimulators('DRAG', this._isDragEnabled);
 
+			var el = this._btnDrag.getElement();
+			el.setAttribute('tooltip', this._isDragEnabled ? 'lock simulator position' : 'unlock simulator position');
 			if (!this._isDragEnabled) {
 				$.addClass(el, 'disabled');
 			} else {
 				$.removeClass(el, 'disabled');
 			}
-
-			var el = this._btnDrag._el;
-			el.setAttribute('tooltip', this._isDragEnabled ? 'lock simulator position' : 'unlock simulator position');
 		};
 
 		on._btnPause = function () {
