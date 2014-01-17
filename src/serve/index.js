@@ -82,6 +82,7 @@ function serveAPI (app) {
 
 	//syntax checker.
 	//TODO: figure out usage
+	app.use('/.syntax', express.json());
 	app.post('/.syntax', function(req, res) {
 		var jvmtools = require('../build/jvmtools');
 		jvmtools.exec("closure", [
@@ -91,11 +92,11 @@ function serveAPI (app) {
 			"--js", "-"
 		], req.body.javascript, function (compiler) {
 			var out = [];
-			
+
 			compiler.on("err", function (data) {
 				out.push(data);
 			});
-		
+
 			compiler.on("end", function (data) {
 				var errors = [];
 				var block = {};
@@ -219,8 +220,6 @@ function launchServer () {
 	var express = require('express');
 	var app = express();
 
-	app.use(express.bodyParser());
-
 	app.use(function(req, res, next) {
 		res.header('Cache-Control', 'no-cache');
 		res.header('Expires', '-1');
@@ -250,7 +249,7 @@ function launchServer () {
 	}
 
 	app.use('/', express.static(path.join(__dirname, './public/')));
-	
+
 	serveAPI(app);
 	serveFrontend(app);
 
@@ -303,6 +302,6 @@ exports.cli = function () {
 	if (fs.existsSync('./manifest.json')) {
 		logger.log('Serving from project directory, attempting to automatically register..');
 		require('../register').register('.', false, launchServer);
-	} 
+	}
 	launchServer();
 };

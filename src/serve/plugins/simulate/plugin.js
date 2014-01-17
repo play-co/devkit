@@ -82,7 +82,7 @@ exports.serveProject = serveProject;
 
 exports.load = function (app, argv) {
 	_app = app;
-	
+
 	if (!nativeInspectorServer) {
 		nativeInspectorServer = nativeInspector.createServer();
 		nativeInspectorServer.listen('csp', {host: 'localhost', port: '9225'});
@@ -121,7 +121,7 @@ exports.load = function (app, argv) {
 			if (project.manifest.sdkVersion !== common.sdkVersion.toString()) {
 
 				project.manifest.sdkVersion = common.sdkVersion.toString();
-				
+
 				fs.writeFile(
 					path.join(project.paths.root, "manifest.json"),
 					JSON.stringify(project.manifest, null, '\t')
@@ -233,6 +233,7 @@ exports.load = function (app, argv) {
 		res.json(nativeInspectorServer.getRemoteConnections() || null);
 	});
 
+	app.use('/simulate/remote/enableDevice/', express.json());
 	app.post('/simulate/remote/enableDevice/', function (req, res) {
 		nativeInspectorServer.activateRemoteConn(req.body.id);
 		res.send(200);
@@ -255,7 +256,7 @@ exports.load = function (app, argv) {
 						app.use('/simulate/addons/' + addonName + '/', addonApp);
 					}
 				}
-				
+
 				var staticFiles = addon.getPath('simulator', 'static');
 				if (fs.existsSync(staticFiles)) {
 					app.use('/simulate/addons/' + addonName + '/static/', etag.static(staticFiles));
