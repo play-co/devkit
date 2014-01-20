@@ -1,3 +1,6 @@
+## 0.1.45 (January 20, 2014)
+ - add new animation easing functions from oodavid
+
 ## 0.1.44 (December 12, 2013)
  - iOS
    - optimize localStorage updates to run much faster

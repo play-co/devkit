@@ -62,25 +62,29 @@ exports.load = function (app) {
 		});
 	});
 
+	app.use("/projects/manifest/save/", express.json());
+
 	// Manifest saving.
 	// TODO this is a bad API, should be changed later on.
 	app.post("/projects/manifest/save/:shortName", function(req, res) {
+
+
 		projectManager.getProjects(function(projects) {
 			var project = projects.filter(function (project) {
 				return project.manifest.shortName == req.params.shortName || project.manifest.appID == req.params.shortName;
 			})[0];
-			
+
 			if (!project) {
 				res.json({ok: false, error: 'Manifest for project not found'}, 404);
 				return;
 			}
-			
+
 			// Duplicate manifest, copy files from the request into manifest.
 			var currentManifest = project.manifest;
 			for(var key in req.body) {
 				currentManifest[key] = req.body[key];
 			}
-			
+
 			project.saveManifest(currentManifest, function() {
 				res.json({"ok": true});
 			});
