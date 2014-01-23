@@ -181,8 +181,9 @@ function getConfigObject (project, opts, target) {
 	config.unlockViewport = manifest.unlockViewport;
 	config.useDOM = !!manifest.useDOM;
 	config.packageName = packageName;
-	config.bundleID = manifest.ios.bundleID || "example.bundle" 
-	
+	config.embeddedFonts = opts.embeddedFonts;
+	config.bundleID = manifest.ios.bundleID || "example.bundle"
+
 	config.browser = manifest.browser || {};
 	// for noodletown invites
 	config.mpMetricsKey = manifest.mpMetricsKey;
