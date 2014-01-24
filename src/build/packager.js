@@ -480,7 +480,6 @@ function getResources(project, buildOpts, cb) {
 	var relativeSpritesheetsDirectory = "spritesheets";
 	var spritesheetsDirectory = path.join(appDir, buildOpts.localBuildPath, relativeSpritesheetsDirectory);
 
-	
 	var buildAddons = {};
 
 	var f = ff(this, function() {
@@ -543,8 +542,13 @@ function getResources(project, buildOpts, cb) {
 					if (!err) {
 						// merge results
 						resources.images = resources.images.concat(res.spritesheets);
-						resources.other = resources.other.concat(res.other);
+						if (resources.other) {
+							resources.other = resources.other.concat(res.other);
+						}
 						Object.keys(res.imageMap).forEach(function (key) {
+							if (resources.imageMap[key]) {
+								logger.log("WARNING: Resource aliasing.  A resource (", JSON.stringify(res.imageMap[key]), ") overwrote another one (", JSON.stringify(resources.imageMap[key]), ") in map.json.  This is probably NOT what you want.");
+							}
 							resources.imageMap[key] = res.imageMap[key];
 						});
 					}
@@ -658,12 +662,20 @@ function getResources(project, buildOpts, cb) {
 
 			var filteredPaths = [];
 
-			var extensionsToFilter = [".ui"];	
-			extensionsToFilter.forEach(function(ext){
-				resources.other = spriterOutput.other.filter(function(filename) {
-					return !(path.basename(filename).indexOf(ext) == path.basename(filename).length - ext.length);;
+			// Add sound files to the map.json for preloader
+			var directoryContents = wrench.readdirSyncRecursive(srcDir);
+			var extensionsWhitelist = [".mp3", ".ogg", ".json"];	
+			directoryContents = directoryContents.filter(function(filename) {
+				var success = false;
+				extensionsWhitelist.forEach(function(ext){
+					if (path.extname(filename) == ext) {
+						success = true;
+					}
 				});
+				return success;
 			});
+
+			resources.other = directoryContents.concat(spriterOutput.other);
 
 			resources.other = resources.other.map(function (filename) {
 				if (path.basename(filename) === "metadata.json") {
@@ -714,6 +726,13 @@ function getResources(project, buildOpts, cb) {
 			// rewrite JSON data, fixing slashes and appending the spritesheet directory
 			var rawMap = JSON.parse(mapContents);
 			var imageMap = {};
+			Object.keys(resources.other).forEach(function (key) {
+				var relPath = resources.other[key].relative;
+
+				if (relPath) {
+					imageMap[relPath] = {};
+				}
+			});
 			Object.keys(rawMap).forEach(function (key) {
 				if (rawMap[key].sheet) {
 					rawMap[key].sheet = useURISlashes(path.join(relativeSpritesheetsDirectory, rawMap[key].sheet));
