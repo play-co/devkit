@@ -541,6 +541,9 @@ function getResources(project, buildOpts, cb) {
 					if (!err) {
 						// merge results
 						resources.images = resources.images.concat(res.spritesheets);
+						if (resources.other) {
+							resources.other = resources.other.concat(res.other);
+						}
 						Object.keys(res.imageMap).forEach(function (key) {
 							if (resources.imageMap[key]) {
 								logger.log("WARNING: Resource aliasing.  A resource (", JSON.stringify(res.imageMap[key]), ") overwrote another one (", JSON.stringify(resources.imageMap[key]), ") in map.json.  This is probably NOT what you want.");
@@ -670,7 +673,8 @@ function getResources(project, buildOpts, cb) {
 				});
 				return success;
 			});
-			resources.other = merge(directoryContents, resources.other);
+
+			resources.other = directoryContents.concat(spriterOutput.other);
 
 			resources.other = resources.other.map(function (filename) {
 				if (path.basename(filename) === "metadata.json") {
