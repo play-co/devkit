@@ -547,7 +547,7 @@ function getResources(project, buildOpts, cb) {
 						}
 						Object.keys(res.imageMap).forEach(function (key) {
 							if (resources.imageMap[key]) {
-								logger.log("WARNING: Resource aliasing.  A resource (", JSON.stringify(res.imageMap[key]), ") overwrote another one (", JSON.stringify(resources.imageMap[key]), ") in map.json.  This is probably NOT what you want.");
+								logger.log("WARNING: Resource aliasing.  A resource (", key, ") overwrote its key in map.json.  This is probably NOT what you want.");
 							}
 							resources.imageMap[key] = res.imageMap[key];
 						});
