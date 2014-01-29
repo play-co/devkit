@@ -662,22 +662,7 @@ function getResources(project, buildOpts, cb) {
 
 			var filteredPaths = [];
 
-			// Add sound files to the map.json for preloader
-			var directoryContents = wrench.readdirSyncRecursive(srcDir);
-			var extensionsWhitelist = [".mp3", ".ogg", ".json"];	
-			directoryContents = directoryContents.filter(function(filename) {
-				var success = false;
-				extensionsWhitelist.forEach(function(ext){
-					if (path.extname(filename) == ext) {
-						success = true;
-					}
-				});
-				return success;
-			});
-
-			resources.other = directoryContents.concat(spriterOutput.other);
-
-			resources.other = resources.other.map(function (filename) {
+			resources.other = spriterOutput.other.map(function (filename) {
 				if (path.basename(filename) === "metadata.json") {
 					try {
 						var filedata = fs.readFileSync(path.resolve(srcDir, filename), "utf8");
