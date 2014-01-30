@@ -547,7 +547,7 @@ function getResources(project, buildOpts, cb) {
 						}
 						Object.keys(res.imageMap).forEach(function (key) {
 							if (resources.imageMap[key]) {
-								logger.log("WARNING: Resource aliasing.  A resource (", JSON.stringify(res.imageMap[key]), ") overwrote another one (", JSON.stringify(resources.imageMap[key]), ") in map.json.  This is probably NOT what you want.");
+								logger.log("WARNING: Resource aliasing.  A resource (", key, ") overwrote its key in map.json.  This is probably NOT what you want.");
 							}
 							resources.imageMap[key] = res.imageMap[key];
 						});
@@ -662,22 +662,7 @@ function getResources(project, buildOpts, cb) {
 
 			var filteredPaths = [];
 
-			// Add sound files to the map.json for preloader
-			var directoryContents = wrench.readdirSyncRecursive(srcDir);
-			var extensionsWhitelist = [".mp3", ".ogg", ".json"];	
-			directoryContents = directoryContents.filter(function(filename) {
-				var success = false;
-				extensionsWhitelist.forEach(function(ext){
-					if (path.extname(filename) == ext) {
-						success = true;
-					}
-				});
-				return success;
-			});
-
-			resources.other = directoryContents.concat(spriterOutput.other);
-
-			resources.other = resources.other.map(function (filename) {
+			resources.other = spriterOutput.other.map(function (filename) {
 				if (path.basename(filename) === "metadata.json") {
 					try {
 						var filedata = fs.readFileSync(path.resolve(srcDir, filename), "utf8");
