@@ -710,10 +710,10 @@ function getResources(project, buildOpts, cb) {
 				}
 
 				for (var fp in filteredPaths) {
-					if (filename.indexOf(filteredPaths[fp]) === 0) {
+					if (filename.indexOf(fp) !== -1) {
 						logger.log("Did not package resource", filename);
 						resources.other.splice(ii--, 1);
-						continue;
+						break;
 					}
 				}
 			}
