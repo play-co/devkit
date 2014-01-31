@@ -49,25 +49,11 @@ function serveProject (project) {
 	if (_routes[id]) { return false; }
 	_routes[id] = true;
 
-	_app.get(root, function (req, res, next) {
-		// hacky way to not serve removed projects since we
-		// can never remove these routes once they're registered
-		// with the app without hacking express...
-		common.getProjectList(function(projects) {
-			if (!projects[id.toLowerCase()]) {
-				res.send(404);
-			} else {
-				next();
-			}
-		});
-	});
-
 	// Static pages.
 	_app.use(root + id, etag.static(path.join(__dirname, 'static')));
 
 	// Compiled targets.
 	_app.use(root + 'debug/' + id, etag.static(path.join(project.paths.root, 'build', 'debug'), {maxAge: 0}));
-	_app.use(root + 'debug/' + id + '/resources/', etag.static(path.join(project.paths.root, 'resources')));
 
 	_app.use(root + 'release/' + id, etag.static(path.join(project.paths.root, 'build', 'release'), {maxAge: 0}));
 
