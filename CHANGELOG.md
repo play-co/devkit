@@ -1,9 +1,10 @@
 ## 0.1.45 (January 28, 2014)
  - new spriter: Run ./install.sh to grab it
- - fixes some browser build issues with DOM-based rendering
+ - fix some browser build issues with DOM-based rendering
  - add new animation easing functions from oodavid
+ - fix back button in simulator
  - Android
-   - fixed freeze bugs on home-screening out of the games
+   - fix freeze bugs on home-screening out of the games
    - openGL out-of-memory half-sizing UX flow is now much smoother
 
 ## 0.1.44 (December 12, 2013)
