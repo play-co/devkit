@@ -152,14 +152,7 @@ function updateIcons (templatePath, projectPath, icons) {
 	return icons;
 }
 
-// Return a JSON object for the global CONFIG object.
-function getConfigObject (project, opts, target) {
-	var manifest = project.manifest;
-	var config = JSON.parse(JSON.stringify(CONFIG_GLOBAL_TEMPLATE));
-
-	// TODO: move this code/refactor android package naming
-	// This code for the android package name should not be here (but is here so
-	// browser android builds can also get the android package)
+function getPackageName(manifest) {
 	var packageName = "";
 	if (manifest.studio && manifest.studio.domain && manifest.shortName) {
 		var names = manifest.studio.domain.split(/\./g).reverse();
@@ -167,6 +160,15 @@ function getConfigObject (project, opts, target) {
 		var shortName = manifest.shortName;
 		packageName = studio + "." + shortName;
 	}
+	return packageName;
+}
+
+// Return a JSON object for the global CONFIG object.
+function getConfigObject (project, opts, target) {
+	var manifest = project.manifest;
+	var config = JSON.parse(JSON.stringify(CONFIG_GLOBAL_TEMPLATE));
+
+	var packageName = getPackageName(manifest);
 
 // Augment config object with manifest properties.
 	config.appID = manifest.appID;
@@ -785,6 +787,7 @@ function compileResources (project, buildOpts, initialImport, cb) {
 
 exports.getBuildOptions = getBuildOptions;
 exports.compileResources = compileResources;
+exports.getPackageName = getPackageName;
 exports.getJSConfig = getJSConfig;
 exports.getSDKHash = getSDKHash;
 exports.getGameHash = getGameHash;
