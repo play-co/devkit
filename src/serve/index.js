@@ -82,7 +82,7 @@ function serveAPI (app) {
 
 	//syntax checker.
 	//TODO: figure out usage
-	app.use('/.syntax', express.json());
+	app.stack.unshift({route: '/.syntax', handle: express.urlencoded()});
 	app.post('/.syntax', function(req, res) {
 		var jvmtools = require('../build/jvmtools');
 		jvmtools.exec("closure", [
@@ -134,6 +134,11 @@ function serveAPI (app) {
 							if (chr === null) {
 								chr = line[i];
 							} else if (chr != line[i]) {
+								chr = false;
+								break;
+							}
+
+							if (!/\s/.test(chr)) {
 								chr = false;
 								break;
 							}
