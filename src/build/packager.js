@@ -323,7 +323,8 @@ function createCompiler (project, opts, cb) {
 
 	merge(compiler.opts, {
 		compressorCachePath: jsCachePath,
-		printOutput: opts.printJSIOCompileOutput
+		printOutput: opts.printJSIOCompileOutput,
+		gcManifest: path.join(project.paths.root, 'manifest.json')
 	});
 
 	exports.getDefines(project, opts, function(defines) {
