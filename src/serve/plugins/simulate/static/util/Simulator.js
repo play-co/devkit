@@ -58,6 +58,7 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 
 		this._controller = opts.controller;
 		this._port = opts.port || 9201;
+		this._manifest = opts.manifest;
 		this._debug = true;
 
 		this._rotation = opts.rotation || 0;
@@ -176,6 +177,8 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 
 		this.update();
 	};
+
+	this.canRotate = function () { return this._canRotate; }
 
 	this.setActive = function (isActive) {
 		if (this._isActive != isActive) {
@@ -396,20 +399,24 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 	};
 
 	this.rotate = function () {
-		++this._rotation;
 
-		this.setTransitionsEnabled(true);
-		this._el.style.WebkitTransform = 'rotate(' + (this._rotation % 2 ? 90 : -90) + 'deg)';
+		if (this._canRotate) {
+			++this._rotation;
 
-		var onRotate = bind(this, function () {
-			this._el.removeEventListener("webkitTransitionEnd", onRotate);
-			this.setTransitionsEnabled(false);
-			this._el.style.WebkitTransform = '';
-			this.update();
-			setTimeout(bind(this, 'setTransitionsEnabled', true), 0);
-		});
+			this.setTransitionsEnabled(true);
+			this._el.style.WebkitTransform = 'rotate(' + (this._rotation % 2 ? 90 : -90) + 'deg)';
 
-		this._el.addEventListener("webkitTransitionEnd", onRotate);
+			var onRotate = bind(this, function () {
+				this._el.removeEventListener("webkitTransitionEnd", onRotate);
+				this.setTransitionsEnabled(false);
+				this._el.style.WebkitTransform = '';
+				this.update();
+				setTimeout(bind(this, 'setTransitionsEnabled', true), 0);
+			});
+
+			this._el.addEventListener("webkitTransitionEnd", onRotate);
+		}
+
 		return this._rotation;
 	};
 
@@ -436,6 +443,9 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		var parent = this._widgetParent;
 		var params = this._params;
 
+		this._canRotate = 'canRotate' in params ? !!params.canRotate : true;
+		this._isDragEnabled = 'canDrag' in params ? !!params.canDrag : true;
+
 		if (!params.canRotate) {
 			this._rotation = 0;
 		}
@@ -443,8 +453,16 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 		var scale = this._scale = 1 / this.getDevicePixelRatio() * this._zoom;
 		var cssScale = 'scale(' + scale + ')';
 
-		var width = this._customSize.width || params.width;
-		var height = this._customSize.height || params.height;
+		var frame = {};
+		if (params.target == 'browser-desktop') {
+			var browserOpts = this._manifest.browser;
+			if (browserOpts && browserOpts.frame) {
+				frame = browserOpts.frame;
+			}
+		}
+
+		var width = this._customSize.width || frame.width || params.width;
+		var height = this._customSize.height || frame.height || params.height;
 		if (params.canRotate && this._rotation % 2 == 1) {
 			var h = width;
 			width = height;
@@ -483,37 +501,63 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			this._setFrameSize(width, height);
 		}
 
+		var parentNode = this.getElement().parentNode;
 		switch (params.name) {
 			case 'facebook':
 				params.dontCenterY = true;
 
-				var bar = $.create({
-					parent: parent.getElement(),
-					style: {
-						position: 'absolute',
-						top: '0px',
-						left: '0px',
-						width: 'auto',
-						height: '40px',
-						float: 'left',
-						zIndex: 1
-					}
-				});
-				$.create({
-					parent: parent.getElement(),
-					style: {
-						position: 'absolute',
-						top: '0px',
-						left: '0px',
-						width: '100%',
-						height: '40px',
-						background: '#435d96'
-					}
-				});
+				if (!this._facebookBar) {
+					var bar = this._facebookBar = $.create({
+						parent: parent,
+						style: {
+							position: 'absolute',
+							top: '0px',
+							left: '0px',
+							right: '0px',
+							bottom: '0px',
+							zIndex: 0,
+							minWidth: '1052px',
+							background: 'url("images/facebook-header-center.png") repeat-x'
+						}
+					});
 
-				$.style(parent.getElement(), {
+					bar.innerHTML = "<div style='position:absolute;top:0px;left:0px;width:636px;height:44px;background:url(images/facebook-header-left.png)'></div>"
+						+ "<div style='position:absolute;top:0px;right:0px;width:296px;height:44px;background:url(images/facebook-header-right.png)'></div>"
+						+ "<div style=\"position:absolute;top:13px;left:56px;width:550px;height:20px;cursor:default;color:#141823; white-space: nowrap; overflow: hidden; font: 14px 'Helvetica Neue', Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif; font-weight: bold; \"></div>";
+
+					$.setText(bar.lastChild, this._manifest.title);
+
+					var rightBar = $.create({
+						parent: bar,
+						style: {
+							position: 'absolute',
+							top: '44px',
+							bottom: '0px',
+							right: '10px',
+							width: '244px',
+							backgroundColor: '#FAFAF9',
+							borderColor: '#B3B3B3',
+							borderWidth: '0px 1px',
+							borderStyle: 'solid',
+							zIndex: 1
+						}
+					});
+				}
+
+				$.style(parentNode, {
 					background: '#FFF'
 				});
+				break;
+			default:
+				if (this._facebookBar) {
+					$.remove(this._facebookBar);
+					$.style(parentNode, {
+						background: '#000'
+					});
+
+					this._facebookBar = null;
+				}
+				break;
 		}
 
 		// copy background properties from params to our local background properties
@@ -642,10 +686,15 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			x = Math.max(0, x - 100);
 		}
 
+		$.addClass(this._el, 'onViewportChange');
 		$.style(this._el, {
 			top: rect.y + (this._params.dontCenterY ? 0 : y) + 'px',
 			left: rect.x + x + 'px'
 		});
+
+		setTimeout(bind(this, function () {
+			$.removeClass(this._el, 'onViewportChange');
+		}), 0);
 	};
 });
 

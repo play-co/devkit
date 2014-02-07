@@ -51,6 +51,7 @@ exports.defaults = {
 		target: 'browser-desktop',
 		canRotate: false,
 		canResize: false,
+		canDrag: false,
 		height: 600,
 		width: 760,
 		background: {
@@ -246,7 +247,7 @@ exports.demo = {
 		imageHeight: 417,
 		imageWidth: 540,
 		xChromeOffset: '24px',
-		yChromeOffset: '20px' 
+		yChromeOffset: '20px'
 	},
 	iphone: {
 		canRotate: true,
@@ -256,6 +257,6 @@ exports.demo = {
 		imageHeight: 255,
 		imageWidth: 485 ,
 		xChromeOffset: '88px',
-		yChromeOffset: '20px' 
+		yChromeOffset: '20px'
 	}
 };

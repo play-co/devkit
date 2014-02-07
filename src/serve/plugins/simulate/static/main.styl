@@ -58,13 +58,31 @@ body, div, span
 #_content
 	position relative
 	width 100%
+	overflow hidden
 	flex 1
 	display flex
 	flex-direction row
 
 #_top
 	position relative
-	z-index: 999000;
+	z-index 999000
+	transition all 0.3s ease-out
+
+#_autoHideArea
+	position fixed
+	top 0px
+	left 0px
+	right 0px
+	height 100px
+	z-index 2
+
+#_top.autoHide
+	top -50px
+	opacity 0
+
+#_top.autoHide.show, #_top:hover
+	opacity 1
+	top 0
 
 #_top, #_top .button
 	font bold 11px Helvetica
@@ -238,6 +256,10 @@ body, div, span
 	background-repeat: no-repeat;
 	z-index: 400;
 	-webkit-transition: all 1s;
+}
+
+#_content .frameChrome.onViewportChange {
+	-webkit-transition: none;
 }
 
 #_content #_frameWrapper,

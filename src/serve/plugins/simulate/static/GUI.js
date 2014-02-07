@@ -396,7 +396,8 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 		children: [
 			{id: '_top', type: TopBar},
 			{id: '_middle', children: [{id: '_content'}]},
-			{id: '_bottom'}
+			{id: '_bottom'},
+			{id: '_autoHideArea'}
 		]
 	};
 
@@ -436,6 +437,9 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 				jsio.__jsio('import ..addons.' + name + '.index').init(this);
 			}, this);
 		}));
+
+		$.onEvent(this._autoHideArea, 'mouseover', bind(this, '_onAutoHideOver', true));
+		$.onEvent(this._autoHideArea, 'mouseout', bind(this, '_onAutoHideOver', false));
 	};
 
 	this._onHandshake = function (conn, evt) {
@@ -484,6 +488,28 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 		return rect;
 	};
 
+	this.setAutoHide = function (isAutoHide) {
+		this._isAutoHide = isAutoHide;
+
+		var el = this._top.getElement();
+		if (isAutoHide) {
+			$.addClass(el, 'autoHide');
+		} else {
+			$.removeClass(el, 'autoHide');
+		}
+
+		this.positionSimulators();
+	}
+
+	this._onAutoHideOver = function (isOver) {
+		var el = this._top.getElement();
+		if (isOver) {
+			$.addClass(el, 'show');
+		} else {
+			$.removeClass(el, 'show');
+		}
+	}
+
 	this.addLeftPane = function (def) {
 		var widget = this.addWidget(def, this._middle);
 		var el = widget.getElement ? widget.getElement() : widget;
@@ -521,6 +547,7 @@ var MainController = exports = Class(squill.Widget, function(supr) {
 		var simulator = new Simulator({
 			controller: this,
 			parent: this,
+			manifest: this._manifest,
 			appName: this._manifest.shortName || this._manifest.appID,
 			port: port,
 			rotation: parseInt(simulatorDef.rotation, 10),
