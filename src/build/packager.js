@@ -100,13 +100,13 @@ var CONFIG_GLOBAL_TEMPLATE = {
 	disableNativeViews: false, // boolean
 	unlockViewport: false, // boolean
 	scaleDPR: false,
-	
+
 	target: null, // String
 	version: null, // String
-	servicesURL: null, // String 
+	servicesURL: null, // String
 	noRedirect: false, // boolean
 	inviteURLTemplate: null, // String
-	splash: {} // Map<String, String> 
+	splash: {} // Map<String, String>
 };
 
 function copyFile (from, to) {
@@ -191,10 +191,10 @@ function getConfigObject (project, opts, target) {
 	config.mpMetricsKey = manifest.mpMetricsKey;
 
 	config.scaleDPR = manifest.scaleDPR;
-	
+
 	// Disable native views.
 	logger.log("Native views enabled:", manifest.disableNativeViews);
-	
+
 	// Configuration.
 	config.target = target;
 	config.version = opts.version;
@@ -210,7 +210,7 @@ function getConfigObject (project, opts, target) {
 	// Staging URL.
 	config.servicesURL = opts.servicesURL;
 	config.noRedirect = opts.isSimulated || opts.noRedirect;
-	
+
 	logger.log("Using services URL " + config.servicesURL);
 
 	if (!manifest.splash || !Object.keys(manifest.splash).length) {
@@ -324,7 +324,8 @@ function createCompiler (project, opts, cb) {
 	merge(compiler.opts, {
 		compressorCachePath: jsCachePath,
 		printOutput: opts.printJSIOCompileOutput,
-		gcManifest: path.join(project.paths.root, 'manifest.json')
+		gcManifest: path.join(project.paths.root, 'manifest.json'),
+		gcDebug: opts.debug
 	});
 
 	exports.getDefines(project, opts, function(defines) {
@@ -387,7 +388,7 @@ exports.getAddonsForApp = function (project, cb) {
 	}, function() {
 		cb(result);
 	});
-	
+
 }
 
 // returns a dictionary of constants for JS
@@ -421,7 +422,7 @@ function validateJS (src, next) {
 		compiler.on("err", function (data) {
 			process.stderr.write("	[validate]	" + data);
 		});
-	
+
 		compiler.on("end", function (data) {
 			next(null, out.join(""));
 		});
@@ -465,7 +466,7 @@ function getResources(project, buildOpts, cb) {
 			var statInfo = fs.statSync(filePath);
 			var localLoc = fileName.indexOf('resources-');
 			if (statInfo.isDirectory() && localLoc == 0) {
-				resourceDirectories.push({src: filePath, target: fileName}); 
+				resourceDirectories.push({src: filePath, target: fileName});
 			}
 		} catch (exception) {
 			//do nothing if the file stat fails
@@ -654,7 +655,7 @@ function getResources(project, buildOpts, cb) {
 			}
 
 			var resources = {};
-			
+
 			resources.spritesheets = spriterOutput.sprites.map(function (filename) {
 				var ext = path.extname(filename);
 				return new Resource({
