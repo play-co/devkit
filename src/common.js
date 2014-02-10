@@ -168,7 +168,7 @@ exports.Formatter = Class(function () {
 
 			// add colour to our build logs so that it's easier to see if and where things went wrong.
 			.replace(/\d*(^|\s|[^a-zA-Z0-9-])error(s|\(s\))?/gi, function (res) { return color.redBright(res); })
-			.replace(/\d*(^|\s|[^a-zA-Z0-9-])warn(ing)?(s|\(s\))?/gi, function (res) { return color.redBright(res); })
+			.replace(/\d*(^|\s|[^a-zA-Z0-9-])warn(ing)?(s|\(s\))?/gi, function (res) { return color.yellowBright(res); })
 			.replace('BUILD SUCCESSFUL', color.greenBright('BUILD SUCCESSFUL'))
 			.replace('BUILD FAILED', color.redBright('BUILD FAILED'))
 
@@ -184,7 +184,7 @@ exports.Formatter = Class(function () {
 	}
 
 	this.warn = function () {
-		console.error.apply(console, [this._prefix, color.redBright('[warn] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
+		console.error.apply(console, [this._prefix, color.yellowBright('[warn] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
 	}
 
 	this.error = function () {
