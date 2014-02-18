@@ -268,19 +268,27 @@ function getConfigObject (project, opts, target) {
 		config["inviteURLTemplate"] = "http://" + urlOpts.short_name + "."  + urlOpts.domain + "/?i={code}";
 	}
 
-	var targetParts = target.split('-');
-	var major = targetParts[0];
-	var minor = targetParts[1];
 	var serverName;
-	// TODO XXX is this an ok way to infer browser
-	if (major == 'browser') {
+	if (opts.isSimulated) {
+		// local for serving
+		// use window.location + path to basil server proxy
+		serverName = 'localProxy';
+	} else if (/^browser-/.test(target)) {
 		// we don't want to set the host:port here - just use window.location
 		serverName = 'inherit';
+	} else if (opts.argv && opts.argv.server) {
+		serverName = opts.argv && opts.argv.server;
+	} else if (opts.debug) {
+		serverName = 'local';
 	} else {
-		serverName = (opts.argv && opts.argv.server) || 'local';
-		config.localServerURL = common.getLocalIP()[0];
-
+		serverName = 'production';
 	}
+
+	if (serverName == 'localProxy') {
+		config.localServerURL = common.getLocalIP()[0] + ':9200';
+	}
+
+	logger.log("using server name", serverName);
 	config.serverName = serverName;
 	return config;
 }
