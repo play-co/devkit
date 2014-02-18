@@ -268,6 +268,20 @@ function getConfigObject (project, opts, target) {
 		config["inviteURLTemplate"] = "http://" + urlOpts.short_name + "."  + urlOpts.domain + "/?i={code}";
 	}
 
+	var targetParts = target.split('-');
+	var major = targetParts[0];
+	var minor = targetParts[1];
+	var serverName;
+	//TODO XXX is this an ok way to infer browser
+	if (major == 'browser') {
+	    //we don't want to set the host:port here - just use window.location
+	    serverName = 'inherit';
+	} else {
+	    serverName = (opts.argv && opts.argv.server) || 'local';
+	    config.localServerURL = common.getLocalIP()[0];
+
+	}
+	config.serverName = serverName;
 	return config;
 }
 
