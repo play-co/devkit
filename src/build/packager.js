@@ -272,13 +272,13 @@ function getConfigObject (project, opts, target) {
 	var major = targetParts[0];
 	var minor = targetParts[1];
 	var serverName;
-	//TODO XXX is this an ok way to infer browser
+	// TODO XXX is this an ok way to infer browser
 	if (major == 'browser') {
-	    //we don't want to set the host:port here - just use window.location
-	    serverName = 'inherit';
+		// we don't want to set the host:port here - just use window.location
+		serverName = 'inherit';
 	} else {
-	    serverName = (opts.argv && opts.argv.server) || 'local';
-	    config.localServerURL = common.getLocalIP()[0];
+		serverName = (opts.argv && opts.argv.server) || 'local';
+		config.localServerURL = common.getLocalIP()[0];
 
 	}
 	config.serverName = serverName;
