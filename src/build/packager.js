@@ -61,27 +61,52 @@ function compressJSON (str) {
 }
 
 // Build options. Gets a default list of options.
-function getBuildOptions (combineOpts) {
-	var opts = {
-		// Package info.
-		appID: "", // Application ID.
-		version: "1", // Version number.
+function getBuildOpts (project, baseOpts, targetOpts) {
 
-		fullPath: null, // DEPRECATED The path of the current project.
+	var buildOpts = {};
 
-		compress: true, // Compress JavaScript flag.
+	// application id
+	buildOpts.appID = project.manifest.appID || "";
 
-		debug: false, // Development version or release.
-		release: true, // Release build.
+	// studio domain name from manifest under studio.domain
+	var studio = project.manifest.studio;
+	buildOpts.studio = studio && studio.domain || 'gameclosure.com';
 
-		servicesURL: null //String servicesURL = null;
-	};
+	// build version from command line or manifest
+	buildOpts.version = baseOpts.version || baseOpts.debug && 'debug' || project.manifest.version || '';
 
-	// Return combine options.
-	for (var key in combineOpts) {
-		opts[key] = combineOpts[key];
+	// project base directory
+	buildOpts.fullPath = project.paths.root;
+
+	// target build directory
+	// Note: may be overwritten later, e.g. for native builds
+	buildOpts.output = baseOpts.buildPath;
+
+	// target build directory relative to project base directory
+	buildOpts.localBuildPath = path.relative(buildOpts.fullPath, buildOpts.output);
+
+	// debug build, if true does several things including defining DEBUG in
+	// JavaScript and enabling native logging
+	buildOpts.debug = !!baseOpts.debug;
+
+	// enable JavaScript compression
+	buildOpts.compress = !!baseOpts.compress;
+
+	// for native builds:
+	//  - isSimulated: are we building for the browser simulator
+	//  - isTestApp: are we building for the test app
+	buildOpts.isSimulated = !!baseOpts.isSimulated;
+	buildOpts.isTestApp = !!baseOpts.isTestApp;
+
+	// your ip
+	buildOpts.ip = baseOpts.ip;
+
+	// override/add target-specific opts
+	for (var key in targetOpts) {
+		buildOpts[key] = targetOpts[key];
 	}
-	return opts;
+
+	return buildOpts;
 }
 
 /**
@@ -89,7 +114,6 @@ function getBuildOptions (combineOpts) {
  */
 var CONFIG_GLOBAL_TEMPLATE = {
 	appID: null, // String
-	handshakeEnabled: false, // boolean
 	shortName: "", // String
 	// gifts
 	// achievements
@@ -100,13 +124,11 @@ var CONFIG_GLOBAL_TEMPLATE = {
 	disableNativeViews: false, // boolean
 	unlockViewport: false, // boolean
 	scaleDPR: false,
-	
+
 	target: null, // String
 	version: null, // String
-	servicesURL: null, // String 
 	noRedirect: false, // boolean
-	inviteURLTemplate: null, // String
-	splash: {} // Map<String, String> 
+	splash: {} // Map<String, String>
 };
 
 function copyFile (from, to) {
@@ -173,7 +195,6 @@ function getConfigObject (project, opts, target) {
 // Augment config object with manifest properties.
 	config.appID = manifest.appID;
 	config.supportedOrientations = manifest.supportedOrientations;
-	config.handshakeEnabled = manifest.handshakeEnabled;
 	config.shortName = manifest.shortName;
 	config.title = manifest.title;
 	config.titles = manifest.titles;
@@ -185,19 +206,14 @@ function getConfigObject (project, opts, target) {
 	config.packageName = packageName;
 	config.embeddedFonts = opts.embeddedFonts;
 	config.bundleID = manifest.ios.bundleID || "example.bundle"
-
-	config.browser = manifest.browser || {};
-	// for noodletown invites
-	config.mpMetricsKey = manifest.mpMetricsKey;
-
 	config.scaleDPR = manifest.scaleDPR;
-	
+
 	// Disable native views.
 	logger.log("Native views enabled:", manifest.disableNativeViews);
-	
+
 	// Configuration.
 	config.target = target;
-	config.version = opts.version;
+	config.version = opts.version || '';
 
 	// Get SDK version from reading Basil config.
 	try {
@@ -208,10 +224,7 @@ function getConfigObject (project, opts, target) {
 	}
 
 	// Staging URL.
-	config.servicesURL = opts.servicesURL;
 	config.noRedirect = opts.isSimulated || opts.noRedirect;
-	
-	logger.log("Using services URL " + config.servicesURL);
 
 	if (!manifest.splash || !Object.keys(manifest.splash).length) {
 		wrench.mkdirSyncRecursive(path.join(opts.fullPath, "resources/splash"));
@@ -256,18 +269,28 @@ function getConfigObject (project, opts, target) {
 		"staging_domain": (manifest.studio || {})["stagingDomain"]
 	};
 
-	if (process.opts.inviteURLTemplate) {
-		config["inviteURLTemplate"] = process.opts.inviteURLTemplate;
-	} else if (manifest.inviteURLTemplate) {
-		config["inviteURLTemplate"] = manifest.inviteURLTemplate;
-	} else if (opts.isSimulated) {
-		config["inviteURLTemplate"] = "http://" + common.getLocalIP()[0] + ":9200/simulate/" + manifest.shortName + "/browser-desktop/?i={code}";
-	} else if (opts.stage) {
-		config["inviteURLTemplate"] = "http://" + urlOpts.short_name + "." + urlOpts.staging_domain + "/?i={code}";
+	var serverName;
+	if (opts.isSimulated) {
+		// local for serving
+		// use window.location + path to basil server proxy
+		serverName = 'local';
+	} else if (/^browser-/.test(target)) {
+		// we don't want to set the host:port here - just use window.location
+		serverName = 'inherit';
+	} else if (opts.argv && opts.argv.server) {
+		serverName = opts.argv && opts.argv.server;
+	} else if (opts.debug) {
+		serverName = 'local';
 	} else {
-		config["inviteURLTemplate"] = "http://" + urlOpts.short_name + "."  + urlOpts.domain + "/?i={code}";
+		serverName = 'production';
 	}
 
+	if (serverName == 'local') {
+		config.localServerURL = common.getLocalIP()[0] + ':9200';
+	}
+
+	logger.log("using server name", serverName);
+	config.serverName = serverName;
 	return config;
 }
 
@@ -324,7 +347,8 @@ function createCompiler (project, opts, cb) {
 	merge(compiler.opts, {
 		compressorCachePath: jsCachePath,
 		printOutput: opts.printJSIOCompileOutput,
-		gcManifest: path.join(project.paths.root, 'manifest.json')
+		gcManifest: path.join(project.paths.root, 'manifest.json'),
+		gcDebug: opts.debug
 	});
 
 	exports.getDefines(project, opts, function(defines) {
@@ -387,7 +411,7 @@ exports.getAddonsForApp = function (project, cb) {
 	}, function() {
 		cb(result);
 	});
-	
+
 }
 
 // returns a dictionary of constants for JS
@@ -421,7 +445,7 @@ function validateJS (src, next) {
 		compiler.on("err", function (data) {
 			process.stderr.write("	[validate]	" + data);
 		});
-	
+
 		compiler.on("end", function (data) {
 			next(null, out.join(""));
 		});
@@ -465,7 +489,7 @@ function getResources(project, buildOpts, cb) {
 			var statInfo = fs.statSync(filePath);
 			var localLoc = fileName.indexOf('resources-');
 			if (statInfo.isDirectory() && localLoc == 0) {
-				resourceDirectories.push({src: filePath, target: fileName}); 
+				resourceDirectories.push({src: filePath, target: fileName});
 			}
 		} catch (exception) {
 			//do nothing if the file stat fails
@@ -654,7 +678,7 @@ function getResources(project, buildOpts, cb) {
 			}
 
 			var resources = {};
-			
+
 			resources.spritesheets = spriterOutput.sprites.map(function (filename) {
 				var ext = path.extname(filename);
 				return new Resource({
@@ -786,7 +810,7 @@ function compileResources (project, buildOpts, initialImport, cb) {
  * Module API.
  */
 
-exports.getBuildOptions = getBuildOptions;
+exports.getBuildOpts = getBuildOpts;
 exports.compileResources = compileResources;
 exports.getPackageName = getPackageName;
 exports.getJSConfig = getJSConfig;

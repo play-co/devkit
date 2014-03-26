@@ -42,7 +42,7 @@ var CREATE_SYMLINK = true;
 /**
  * Module API.
  */
- 
+
 function createSDKSymlink (dir, next) {
 	var from = common.paths.sdk(), to = path.join(dir, './sdk');
 
@@ -57,14 +57,14 @@ function createSDKSymlink (dir, next) {
 			if (path.resolve(dir, link) == fs.realpathSync(from)) {
 				next();
 			} else {
-				logger.log('Relinking ./sdk'); 
+				logger.log('Relinking ./sdk');
 				fs.unlinkSync(to);
 				fs.symlink(from, to,'junction', next);
 			}
 		});
 	} catch (e) {
 		if (e.code == "ENOENT") {
-			logger.log('Creating symlink ./sdk'); 
+			logger.log('Creating symlink ./sdk');
 			fs.symlink(from, to, 'junction', next);
 		} else {
 			logger.warn('Unexpected exception trying to create a symlink at', to);
@@ -173,17 +173,10 @@ function exec (args, config, next) {
 		.boolean('compress')
 			.default('compress', config.template == "release")
 			.describe('compress', '[js] minifies JavaScript files')
-		
-		.boolean('stage')
-			.default('stage', false)
-			.describe('stage', '[server] use the staging server')
 
-		.boolean('serverDebug')
-			.default('serverDebug', false)
-			.describe('serverDebug', '[server] internal use only')
-
-		.string('servicesURL')
-			.describe('servicesURL', '[server] internal use only')
+		.boolean('serverName')
+			.default('serverName', 'local')
+			.describe('serverName', '[server] which server to build against, either a hostname or (local | staging | production)')
 
 		.string('outputDir')
 			.describe('outputDir', '[sdk] ')
@@ -191,6 +184,9 @@ function exec (args, config, next) {
 		.boolean('isSimulated')
 			.default('isSimulated', false)
 			.describe('isSimulated', '[sdk] internal use only')
+
+		.string('version')
+			.describe('version', 'overrides manifest version if provided, specifies CONFIG.version')
 
 		.usage('Usage: ' + clc.greenBright('basil build') + clc.yellowBright(' [target]\n\n')
 			+ 'where ' + clc.yellowBright('[target]') + ' is one of:\n\n'
