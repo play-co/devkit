@@ -640,12 +640,11 @@ function getResources(project, buildOpts, cb) {
 	// sprite a single directory
 	function spriteDirectory(srcDir, targetDir, cb) {
 		// get the resources from the spriter and reformat the output
+		// array to store spriter output
+		var out = [];
+		var formatter = new common.Formatter("spriter", true, out);
 		var f = ff(function () {
-			// array to store spriter output
-			var out = [];
-			var formatter = new common.Formatter("spriter", true, out);
 			var onEnd = f(); // continue to next callback once onEnd is called
-
 			var md5sum = crypto.createHash('md5');
 			md5sum.update(srcDir);
 			var hash = md5sum.digest('hex');
@@ -657,7 +656,8 @@ function getResources(project, buildOpts, cb) {
 				"--dir", srcDir + "/",
 				"--output", spritesheetsDirectory,
 				"--target", buildOpts.target,
-				"--binaries", common.paths.lib()
+				"--binaries", common.paths.lib(),
+				"--spriter-png-fallback", !!(buildOpts.argv && buildOpts.argv['spriter-png-fallback'])
 			];
 
 			logger.log("spriter", spriterOpts
@@ -675,6 +675,12 @@ function getResources(project, buildOpts, cb) {
 			} catch (e) {
 				logger.error(rawSpriterOutput);
 				throw e;
+			}
+
+			// If the spriter gives an error, display it and end the process
+			if (spriterOutput.error) {
+				formatter.error(spriterOutput.error);
+				process.exit(0);
 			}
 
 			var resources = {};
