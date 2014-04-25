@@ -657,6 +657,7 @@ function getResources(project, buildOpts, cb) {
 				"--output", spritesheetsDirectory,
 				"--target", buildOpts.target,
 				"--binaries", common.paths.lib(),
+				"--is-simulator", buildOpts.isSimulated,
 				"--spriter-png-fallback", !!(buildOpts.argv && buildOpts.argv['spriter-png-fallback'])
 			];
 
