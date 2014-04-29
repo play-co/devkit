@@ -93,10 +93,15 @@ exports.load = function (app, argv) {
 			}
 
 			common.getLocalIP(function (err, address) {
+				var isPlatformBridge = false;
+				if(req.query.isPlatformBridge === 'true') {
+					isPlatformBridge = true;
+				}
 				build.build(project.paths.root, target, {
 					stage: argv.production ? false : true,
 					debug: req.params.debug == "debug" ? true : false,
 					isSimulated: true,
+					isPlatformBridge: isPlatformBridge,
 					ip: address
 				}, function () {
 					next();

@@ -260,6 +260,9 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			query.i = params.inviteCode;
 		}
 
+		var uri = new std.uri(window.location)
+		query.isPlatformBridge = uri.hash('isPlatformBridge') || false;
+
 		if (!this._debug) {
 			query.debug = 'false';
 		}
