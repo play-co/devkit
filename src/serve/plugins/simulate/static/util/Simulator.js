@@ -264,6 +264,17 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			query.debug = 'false';
 		}
 
+		// include any additional hash parameters in the browser location bar.
+		// keys already in the query object are considered reserved.
+		var uri = new std.uri(window.location)
+		var hashKeys = Object.keys(std.uri.parseQuery(uri.getAnchor()));
+		var reservedKeys = ['debug', 'displayName', 'rotation', 'mute', 'appID',
+							'test', 'i'];
+		hashKeys.forEach(function(hashKey) {
+			if(reservedKeys.indexOf(hashKey) !== -1) { return; }
+			query[hashKey] = uri.hash(hashKey);
+		});
+
 		if (params.displayName) {
 			hash.displayName = params.displayName;
 		}

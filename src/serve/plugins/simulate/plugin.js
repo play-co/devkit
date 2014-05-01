@@ -93,12 +93,15 @@ exports.load = function (app, argv) {
 			}
 
 			common.getLocalIP(function (err, address) {
-				build.build(project.paths.root, target, {
+				// options to pass to simulator plugin
+				var include = merge({
 					stage: argv.production ? false : true,
 					debug: req.params.debug == "debug" ? true : false,
 					isSimulated: true,
 					ip: address
-				}, function () {
+				}, req.query);
+
+				build.build(project.paths.root, target, include, function () {
 					next();
 				});
 			});

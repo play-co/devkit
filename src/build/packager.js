@@ -63,7 +63,7 @@ function compressJSON (str) {
 // Build options. Gets a default list of options.
 function getBuildOpts (project, baseOpts, targetOpts) {
 
-	var buildOpts = {};
+	var buildOpts = merge({}, baseOpts);
 
 	// application id
 	buildOpts.appID = project.manifest.appID || "";
