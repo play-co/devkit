@@ -93,17 +93,24 @@ exports.load = function (app, argv) {
 			}
 
 			common.getLocalIP(function (err, address) {
-				var isPlatformBridge = false;
-				if(req.query.isPlatformBridge === 'true') {
-					isPlatformBridge = true;
-				}
-				build.build(project.paths.root, target, {
+				// options to pass to simulator plugin
+				var include = {
 					stage: argv.production ? false : true,
 					debug: req.params.debug == "debug" ? true : false,
 					isSimulated: true,
-					isPlatformBridge: isPlatformBridge,
 					ip: address
-				}, function () {
+				};
+
+				// include parameters in query for plugin
+				var reservedOptions = ['stage', 'debug', 'isSimulated', 'ip'];
+				reservedOptions.forEach(function(key) {
+					if(Object.prototype.hasOwnProperty.call(req.query, key)) {
+						delete req.query[key];
+					}
+				});
+				var include = merge(include, req.query);
+
+				build.build(project.paths.root, target, include, function () {
 					next();
 				});
 			});
