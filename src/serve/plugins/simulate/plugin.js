@@ -94,21 +94,12 @@ exports.load = function (app, argv) {
 
 			common.getLocalIP(function (err, address) {
 				// options to pass to simulator plugin
-				var include = {
+				var include = merge({
 					stage: argv.production ? false : true,
 					debug: req.params.debug == "debug" ? true : false,
 					isSimulated: true,
 					ip: address
-				};
-
-				// include parameters in query for plugin
-				var reservedOptions = ['stage', 'debug', 'isSimulated', 'ip'];
-				reservedOptions.forEach(function(key) {
-					if(Object.prototype.hasOwnProperty.call(req.query, key)) {
-						delete req.query[key];
-					}
-				});
-				var include = merge(include, req.query);
+				}, req.query);
 
 				build.build(project.paths.root, target, include, function () {
 					next();
