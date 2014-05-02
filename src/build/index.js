@@ -148,6 +148,7 @@ function build (dir, target, opts, cb) {
 		for (var addonName in buildAddons) {
 			try {
 				if (buildAddons[addonName].onAfterBuild) {
+					console.log("onAfterBuild", addonName)
 					buildAddons[addonName].onAfterBuild(exports, common, project, buildRes.buildOpts, f());
 				}
 			} catch (e) {
@@ -155,6 +156,7 @@ function build (dir, target, opts, cb) {
 				logger.error("Error executing onAfterBuild for addon", addonName, e);
 			}
 		}
+	}, function () {
 		logger.log('\nFinished building.');
 		common.endTime('build');
 	}).cb(cb);
