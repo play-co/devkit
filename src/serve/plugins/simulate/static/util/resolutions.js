@@ -54,11 +54,11 @@ exports.defaults = {
 		height: 600,
 		width: 760,
 		background: {
-			img: 'facebook-header.png',
+			img: 'facebook.png',
 			width: 1002,
-			height: 158,
+			height: 642,
 			offsetX: 0,
-			offsetY: 70
+			offsetY: 42
 		}
 	},
 	ipad: {
