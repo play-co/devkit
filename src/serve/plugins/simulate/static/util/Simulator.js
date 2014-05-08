@@ -285,11 +285,16 @@ var Chrome = exports = Class(squill.Widget, function (supr) {
 			hash.mute = "true";
 		}
 
+		var hostname = window.location.hostname;
+		if (hostname == '127.0.0.1') {
+			hostname = 'localhost';
+		}
+
 		var r = new std.uri('/simulate/' + (this._debug ? 'debug' : 'release') + '/' + this._appID + '/' + this._params.target + '/')
 			.addQuery(query)
 			.addHash(hash)
 			.setProtocol("http")
-			.setHost(window.location.hostname)
+			.setHost(hostname)
 			.setPort(this._port);
 
 		return r;
