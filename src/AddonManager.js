@@ -34,6 +34,31 @@ var REGISTRY_URL	= "https://github.com/gameclosure/addon-registry";
 
 var SLICE = Array.prototype.slice;
 
+var AddonCommand = Class(function() {
+    this.init = function(opts) {
+        this._name = opts.name;
+        this._shortDescription = opts.shortDescription;
+        this._help = opts.help;
+        this._handler = opts.handler;
+    };
+
+    this.getShortDescription = function() {
+        return this._shortDescription || this._name;
+    };
+
+    this.getName = function() {
+        return this._name;
+    };
+
+    this.getHelp = function() {
+        return this._help;
+    };
+
+    this.getHandler = function() {
+        return this._handler;
+    };
+});
+
 var Addon = Class(function () {
 	this.init = function (name) {
 		this._name = name;
@@ -79,7 +104,7 @@ var AddonManager = Class(EventEmitter, function () {
 	var Registry = Class(EventEmitter, function () {
 		this.init = function () {
 			this._registry = null;
-			
+
 			this._client = _git.createClient(REGISTRY_PATH)
 		};
 
@@ -486,6 +511,8 @@ var AddonManager = Class(EventEmitter, function () {
 	 * load method.
 	 */
 	this.scanAddons = function (cb) {
+        this._commands = [];
+        this._commandsByName = {};
 		var f = ff(this, function () {
 			fs.readdir(addonPath, f());
 
@@ -505,6 +532,13 @@ var AddonManager = Class(EventEmitter, function () {
 							this._paths = this._paths.concat(data.paths || []).filter(function (path) { return path; });
 
 							this._addons[addonName] = addon;
+                            if (data.commands) {
+                                data.commands.forEach(bind(this, function(command) {
+                                    var c = new AddonCommand(command);
+                                    this._commands.push(c);
+                                    this._commandsByName[c.getName()] = c;
+                                }));
+                            }
 						} catch (err) {
 							logger.error("Could not load [" + addonName + "] : No index file with a load method");
 							console.error(err.stack);
@@ -530,6 +564,14 @@ var AddonManager = Class(EventEmitter, function () {
 	this.getPaths = function () {
 		return this._paths;
 	};
+
+    this.getCommands = function() {
+        return this._commands;
+    };
+
+    this.getCommand = function(command) {
+        return this._commandsByName[command];
+    };
 });
 
 //singleton!

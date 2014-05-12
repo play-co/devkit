@@ -41,6 +41,7 @@ var wrench = require('wrench');
 //local modules
 // Load common module and ecmascript 5 polyfills.
 var common = require('./common');
+var AddonManager = require('./AddonManager');
 common.polyfill();
 
 var logger = new common.Formatter("basil");
@@ -105,6 +106,10 @@ function ensureJava (next) {
 }
 
 function printHelp () {
+    var addonCommands = AddonManager.getCommands();
+    var addonCommandDescriptions = addonCommands.map(function(command) {
+        return "  " + command.getShortDescription();
+    });
 	console.log([
 		"basil [command]",
 		"  about",
@@ -116,14 +121,15 @@ function printHelp () {
 		"  unregister",
 		"  clean-register",
 		"  install {addon}",
-		"  update",
+		"  update"
+    ].concat(addonCommandDescriptions).concat([
 		"",
 		"For command-specific help, type basil help [command].",
-		""].join('\n'));
+        ""
+    ]).join('\n'));
 }
 
 function commandHelp (command) {
-	
 	switch (command) {
 		case 'build':
 			console.log([
@@ -234,14 +240,19 @@ function commandHelp (command) {
 				""].join('\n'));
 			break;
 		default:
-			console.log("There's no help for " + command + ".");
+            var addonCommand = AddonManager.getCommand(command);
+            if (!addonCommand) {
+                console.log("There's no help for " + command + ".");
+            } else {
+                console.log(addonCommand.getHelp(process.argv));
+            }
 	}
 
 	process.exit(0);
 }
 
 function initAddons (cb) {
-	require('./AddonManager').scanAddons(cb);
+	AddonManager.scanAddons(cb);
 }
 
 function initBuild (cb) {
@@ -398,7 +409,12 @@ function main () {
 		
 		//invaild command, print help
 		default:
-			printHelp();
-			process.exit(2);
+            var command = AddonManager.getCommand(cmd);
+            if (!command) {
+                printHelp();
+                process.exit(2);
+            } else {
+                command.handler(process.argv);
+            }
 	}
 }
