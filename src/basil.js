@@ -414,7 +414,7 @@ function main () {
                 printHelp();
                 process.exit(2);
             } else {
-                command.handler(process.argv);
+                command.run(process.argv.slice(3));
             }
 	}
 }

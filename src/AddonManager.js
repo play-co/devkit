@@ -54,8 +54,8 @@ var AddonCommand = Class(function() {
         return this._help;
     };
 
-    this.getHandler = function() {
-        return this._handler;
+    this.run = function() {
+        return this._handler.apply(this, arguments);
     };
 });
 
