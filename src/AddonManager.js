@@ -35,15 +35,15 @@ var REGISTRY_URL	= "https://github.com/gameclosure/addon-registry";
 var SLICE = Array.prototype.slice;
 
 var AddonCommand = Class(function() {
-    this.init = function(opts) {
-        this._name = opts.name;
+    this.init = function(addonName, opts) {
+        this._name = addonName + '.' + opts.name;
         this._shortDescription = opts.shortDescription;
         this._help = opts.help;
         this._handler = opts.handler;
     };
 
     this.getShortDescription = function() {
-        return this._shortDescription || this._name;
+        return this._name + (this._shortDescription ? ': ' + this._shortDescription : '');
     };
 
     this.getName = function() {
@@ -534,7 +534,7 @@ var AddonManager = Class(EventEmitter, function () {
 							this._addons[addonName] = addon;
                             if (data.commands) {
                                 data.commands.forEach(bind(this, function(command) {
-                                    var c = new AddonCommand(command);
+                                    var c = new AddonCommand(addonName, command);
                                     this._commands.push(c);
                                     this._commandsByName[c.getName()] = c;
                                 }));
