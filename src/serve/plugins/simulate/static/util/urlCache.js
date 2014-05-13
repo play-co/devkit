@@ -3,25 +3,28 @@
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
  * it under the terms of the Mozilla Public License v. 2.0 as published by Mozilla.
- 
+
  * The Game Closure SDK is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License v. 2.0 for more details.
- 
+
  * You should have received a copy of the Mozilla Public License v. 2.0
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
+
 jsio('import std.uri as URI');
 jsio('import math.util');
-exports.noCacheURL = function (url) {
-    return '/.rand_' + math.util.random(0, 10000) + url;
+
+exports.noCacheURL = function(url) {
+	return '/.rand_' + math.util.random(0, 10000) + url;
 };
-exports.reloadURL = function (url) {
-    var oldURI = new URI(url);
-    var result = oldURI._path.match(/\/\.rand_\d+\/(.*)$/);
-    if (result) {
-        oldURI.path = exports.noCacheURL(result[1]);
-    }
-    return oldURI.toString();
+
+exports.reloadURL = function(url) {
+	var oldURI = new URI(url);
+	var result = oldURI._path.match(/\/\.rand_\d+\/(.*)$/);
+	if (result) {
+		oldURI.path = exports.noCacheURL(result[1]);
+	}
+	return oldURI.toString();
 };
