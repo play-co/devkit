@@ -43,7 +43,7 @@ function createUUID (a) {
 }
 
 //initialise an empty repo
-exports.init = function(args) {
+exports.init = function(args, cb) {
 	// basil init
 	// basil init ./cake
 
@@ -52,16 +52,17 @@ exports.init = function(args) {
 		process.exit(2);
 	}
 	
-	initProject(argv.template || 'empty', args[0]);
+	initProject(argv.template || 'empty', args[0], cb);
 };
 
 //copies files from a template.
-var initProject = function(template, dest){
+var initProject = function(template, dest, cb){
 	var shortName = path.basename(dest);
 
 	common.getProjectList(function(projects) {
 		if (projects[shortName.toLowerCase()]) {
 			console.log("That project shortName is already taken.  Please rename your project or erase the old project and run `basil clean-register`");
+            cb && cb(true);
 			return;
 		}
 
@@ -71,6 +72,7 @@ var initProject = function(template, dest){
 
 		if (fs.existsSync(newLocation)) {
 			console.log("There's already a project at this location!");
+            cb && cb(true);
 			return;
 		}
 
@@ -96,6 +98,7 @@ var initProject = function(template, dest){
 
 		//now register the new project
 		register(newLocation);
+        cb && cb(null);
 	});
 };
 

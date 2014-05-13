@@ -25,6 +25,8 @@ var clc = require('cli-color');
 var wrench = require('wrench');
 var Repo = require('./Repo');
 
+var CommandManager = require('./CommandManager');
+
 var logger = new common.Formatter('addons');
 
 var addonPath = common.paths.root("addons");
@@ -33,31 +35,6 @@ var REGISTRY_PATH	= common.paths.lib('addon-registry');
 var REGISTRY_URL	= "https://github.com/gameclosure/addon-registry";
 
 var SLICE = Array.prototype.slice;
-
-var AddonCommand = Class(function() {
-    this.init = function(addonName, opts) {
-        this._name = addonName + '.' + opts.name;
-        this._shortDescription = opts.shortDescription;
-        this._help = opts.help;
-        this._handler = opts.handler;
-    };
-
-    this.getShortDescription = function() {
-        return this._name + (this._shortDescription ? ': ' + this._shortDescription : '');
-    };
-
-    this.getName = function() {
-        return this._name;
-    };
-
-    this.getHelp = function() {
-        return this._help;
-    };
-
-    this.run = function() {
-        return this._handler.apply(this, arguments);
-    };
-});
 
 var Addon = Class(function () {
 	this.init = function (name) {
@@ -511,8 +488,6 @@ var AddonManager = Class(EventEmitter, function () {
 	 * load method.
 	 */
 	this.scanAddons = function (cb) {
-        this._commands = [];
-        this._commandsByName = {};
 		var f = ff(this, function () {
 			fs.readdir(addonPath, f());
 
@@ -533,11 +508,9 @@ var AddonManager = Class(EventEmitter, function () {
 
 							this._addons[addonName] = addon;
                             if (data.commands) {
-                                data.commands.forEach(bind(this, function(command) {
-                                    var c = new AddonCommand(addonName, command);
-                                    this._commands.push(c);
-                                    this._commandsByName[c.getName()] = c;
-                                }));
+                                data.commands.forEach(function(command) {
+                                    CommandManager.addCommand(addonName, command);
+                                });
                             }
 						} catch (err) {
 							logger.error("Could not load [" + addonName + "] : No index file with a load method");
@@ -565,13 +538,6 @@ var AddonManager = Class(EventEmitter, function () {
 		return this._paths;
 	};
 
-    this.getCommands = function() {
-        return this._commands;
-    };
-
-    this.getCommand = function(command) {
-        return this._commandsByName[command];
-    };
 });
 
 //singleton!

@@ -42,6 +42,7 @@ var wrench = require('wrench');
 // Load common module and ecmascript 5 polyfills.
 var common = require('./common');
 var AddonManager = require('./AddonManager');
+var CommandManager = require('./CommandManager');
 common.polyfill();
 
 var logger = new common.Formatter("basil");
@@ -105,24 +106,43 @@ function ensureJava (next) {
 	});
 }
 
+CommandManager.addCommand({
+    name: "init",
+    shortDescription: "init {name}",
+    help: [
+				"Initialise a new project either in the current directory or in the path specified.",
+				"  basil init [path] [-t | --template TEMPLATE]",
+				"",
+				"Example usage:",
+				"  basil init ./projects/myNewProject",
+				"",
+				"Templates:",
+				"  empty",
+				"  stackview",
+				"",
+				"Further information:",
+				"  The shortName of the new game is generated from the path supplied.",
+				"  This also automatically runs basil register.",
+				""].join('\n'),
+    handler: function(args, cb) {
+        require('./init').init(args, cb);
+    }
+});
+
 function printHelp () {
-    var addonCommands = AddonManager.getCommands();
-    var addonCommandDescriptions = addonCommands.map(function(command) {
-        return "  " + command.getShortDescription();
-    });
-	console.log([
+    var commandDescriptions = CommandManager.getAllCommandHelp();
+        console.log([
 		"basil [command]",
 		"  about",
 		"  build {target}",
 		"  serve",
 		"  testapp",
-		"  init {name}",
 		"  register",
 		"  unregister",
 		"  clean-register",
 		"  install {addon}",
 		"  update"
-    ].concat(addonCommandDescriptions).concat([
+    ].concat(commandDescriptions).concat([
 		"",
 		"For command-specific help, type basil help [command].",
         ""
@@ -222,29 +242,13 @@ function commandHelp (command) {
 				"  for malformed JSON.",
 				""].join('\n'));
 			break;
-		case 'init':
-			console.log([
-				"Initialise a new project either in the current directory or in the path specified.",
-				"  basil init [path] [-t | --template TEMPLATE]",
-				"",
-				"Example usage:",
-				"  basil init ./projects/myNewProject",
-				"",
-				"Templates:",
-				"  empty",
-				"  stackview",
-				"",
-				"Further information:",
-				"  The shortName of the new game is generated from the path supplied.",
-				"  This also automatically runs basil register.",
-				""].join('\n'));
-			break;
+			
 		default:
-            var addonCommand = AddonManager.getCommand(command);
-            if (!addonCommand) {
+            var pluggedCommand = CommandManager.getCommand(command);
+            if (!pluggedCommand) {
                 console.log("There's no help for " + command + ".");
             } else {
-                console.log(addonCommand.getHelp(process.argv));
+                console.log(pluggedCommand.getHelp(process.argv));
             }
 	}
 
@@ -314,17 +318,13 @@ function main () {
 				logger.error(e);
 			});
 			break;
-		
+
 		case 'testapp':
 			require('./testapp').launch(process.argv.splice(3));
 			break;
 
 		case 'about':
 			require('./about/about').about();
-			break;
-
-		case 'init':
-			require('./init').init(process.argv.splice(3));
 			break;
 
 		case 'update':
@@ -374,11 +374,11 @@ function main () {
 		case 'register':
 			require('./register').register(process.argv[3] || '.', true);
 			break;
-			
+
 		case 'unregister':
 			require('./register').unregister(process.argv[3] || '.');
 			break;
-	
+
 		case 'clean-register':
 			require('./register').clean();
 			break;
@@ -406,15 +406,21 @@ function main () {
 		case "uninstall":
 			require('./install').uninstall(process.argv[3]);
 			break;
-		
-		//invaild command, print help
+
+		//invalid command, print help
 		default:
-            var command = AddonManager.getCommand(cmd);
+            var command = CommandManager.getCommand(cmd);
             if (!command) {
                 printHelp();
                 process.exit(2);
             } else {
-                command.run(process.argv.slice(3));
+                if (command.getBefore()) {
+                    require('./init').init(process.argv.splice(3));
+                }
+                console.log('running command');
+                command.run(process.argv.slice(3), function(err) {
+                    //TODO handler errors here
+                });
             }
 	}
 }
