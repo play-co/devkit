@@ -40,22 +40,22 @@ var TopBar = Class(squill.Widget, function(supr) {
 			{
 				id: '_buttonContainer',
 				children: [
-					{id: '_btnSimulatorList', type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-plus'}]},
+					{id: '_btnSimulatorList', type: 'button', className: 'button', children: [{tag: 'i', className: 'glyphicon glyphicon-plus'}]},
 					{id: '_simulatorList', className: 'list', children: [
 						{className: 'device', id: '_btnAddSimulator', text: 'Add Simulator...'}
 					]},
 					{id: '_btnDeviceList', attrs: {tooltip: 'change the device type'}, type: 'button', className: 'button', text: 'Choose Device'},
 					{id: '_btnReload', attrs: {tooltip: 'reload the game'}, type: 'button', className: 'button', text: 'Reload'},
 					{id: '_btnDebug', attrs: {tooltip: 'switch to release build'}, type: 'button', className: 'button', text: 'Debug'},
-					{id: '_btnInspect', attrs: {tooltip: 'inspect the view hierarchy'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-search'}]},
-					{id: '_btnDrag', attrs: {tooltip: 'lock simulator position'}, type: 'button', className: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-move'}]},
-					{id: '_btnRotate', attrs: {tooltip: 'rotate the device'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-repeat'}]},
-					{id: '_btnNativeBack', attrs: {tooltip: 'back button (hardware)'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-chevron-left'}]},
-					{id: '_btnNativeHome', attrs: {tooltip: 'home button (hardware)'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-home'}]},
-					{id: '_btnScreenShot', attrs: {tooltip: 'take a screenshot'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-picture'}]},
-					{id: '_btnMute', attrs: {tooltip: 'mute all sounds'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-music'}]},
-					{id: '_btnPause', attrs: {tooltip: 'pause game timer'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-pause'}]},
-					{id: '_btnStep', attrs: {tooltip: 'step forward 1 frame'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'icon-white icon-step-forward'}]},
+					{id: '_btnInspect', attrs: {tooltip: 'inspect the view hierarchy'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'glyphicon glyphicon-search'}]},
+					{id: '_btnDrag', attrs: {tooltip: 'lock simulator position'}, type: 'button', className: 'button', className: 'button', children: [{tag: 'i', className: 'glyphicon glyphicon-move'}]},
+					{id: '_btnRotate', attrs: {tooltip: 'rotate the device'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'glyphicon glyphicon-repeat'}]},
+					{id: '_btnNativeBack', attrs: {tooltip: 'back button (hardware)'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'glyphicon glyphicon-chevron-left'}]},
+					{id: '_btnNativeHome', attrs: {tooltip: 'home button (hardware)'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'glyphicon glyphicon-home'}]},
+					{id: '_btnScreenShot', attrs: {tooltip: 'take a screenshot'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'glyphicon glyphicon-picture'}]},
+					{id: '_btnMute', attrs: {tooltip: 'mute all sounds'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'glyphicon glyphicon-music'}]},
+					{id: '_btnPause', attrs: {tooltip: 'pause game timer'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'glyphicon glyphicon-pause'}]},
+					{id: '_btnStep', attrs: {tooltip: 'step forward 1 frame'}, type: 'button', className: 'button', children: [{tag: 'i', className: 'glyphicon glyphicon-step-forward'}]},
 					{id: '_myIP', type: 'label'}
 				]
 			},
@@ -362,11 +362,11 @@ var TopBar = Class(squill.Widget, function(supr) {
 	this._updatePaused = function () {
 		var icon = this._btnPause._el.childNodes[0];
 		if (!this._isPaused) {
-			$.addClass(icon, 'icon-pause');
-			$.removeClass(icon, 'icon-play');
+			$.addClass(icon, 'glyphicon-pause');
+			$.removeClass(icon, 'glyphicon-play');
 		} else {
-			$.addClass(icon, 'icon-play');
-			$.removeClass(icon, 'icon-pause');
+			$.addClass(icon, 'glyphicon-play');
+			$.removeClass(icon, 'glyphicon-pause');
 		}
 
 		var el = this._btnPause._el;
