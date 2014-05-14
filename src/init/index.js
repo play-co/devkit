@@ -97,8 +97,7 @@ var initProject = function(template, dest, cb){
 		common.track("BasilInit", {"template":template, "shortName":shortName});
 
 		//now register the new project
-		register(newLocation);
-        cb && cb(null);
-	});
+        register(newLocation, null, cb);
+    });
 };
 
