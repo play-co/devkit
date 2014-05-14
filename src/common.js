@@ -463,4 +463,7 @@ exports.track = function(key, opts) {
 var ConfigManager = require('./ConfigManager');
 exports.config = new ConfigManager();
 
+exports.packageManager = require('./PackageManager');
+
+
 //// -- end config.json

@@ -78,7 +78,9 @@ exports.register = function (directories, warn, cb) {
 		if (toAdd.length) {
 			var projects = common.config.get('projects') || [];
 			common.config.set('projects', projects.concat(toAdd), cb);
-		}
+		} else {
+            cb && cb();
+        }
 	});
 };
 

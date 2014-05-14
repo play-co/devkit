@@ -25,6 +25,8 @@ var clc = require('cli-color');
 var wrench = require('wrench');
 var Repo = require('./Repo');
 
+var CommandManager = require('./CommandManager');
+
 var logger = new common.Formatter('addons');
 
 var addonPath = common.paths.root("addons");
@@ -79,7 +81,7 @@ var AddonManager = Class(EventEmitter, function () {
 	var Registry = Class(EventEmitter, function () {
 		this.init = function () {
 			this._registry = null;
-			
+
 			this._client = _git.createClient(REGISTRY_PATH)
 		};
 
@@ -505,6 +507,11 @@ var AddonManager = Class(EventEmitter, function () {
 							this._paths = this._paths.concat(data.paths || []).filter(function (path) { return path; });
 
 							this._addons[addonName] = addon;
+                            if (data.commands) {
+                                data.commands.forEach(function(command) {
+                                    CommandManager.addCommand(addonName, command);
+                                });
+                            }
 						} catch (err) {
 							logger.error("Could not load [" + addonName + "] : No index file with a load method");
 							console.error(err.stack);
@@ -530,6 +537,7 @@ var AddonManager = Class(EventEmitter, function () {
 	this.getPaths = function () {
 		return this._paths;
 	};
+
 });
 
 //singleton!
