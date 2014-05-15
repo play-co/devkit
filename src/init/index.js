@@ -47,12 +47,12 @@ exports.init = function(args, cb) {
 	// basil init
 	// basil init ./cake
 
-	if (!args[0]) {
+	if (!args._[0]) {
 		console.log('Usage: basil init [folder path]');
 		process.exit(2);
 	}
 	
-	initProject(argv.template || 'empty', args[0], cb);
+	initProject(argv.template || 'empty', args._[0], cb);
 };
 
 //copies files from a template.

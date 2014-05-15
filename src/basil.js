@@ -418,7 +418,8 @@ function main () {
                     require('./init').init(process.argv.splice(3));
                 }
                 console.log('running command');
-                command.run(process.argv.slice(3), function(err) {
+                var args = require('optimist')(process.argv.slice(3)).argv;
+                command.run(args, function(err) {
                     //TODO handler errors here
                 });
             }
