@@ -138,6 +138,54 @@ CommandManager.addCommand({
     }
 });
 
+
+function build(cmd, args, cb) {
+    ensureLocalProject();
+    var f = ff(this, function () {
+        ensureJava(f());
+    }, function () {
+        require('./build').exec(process.argv.slice(3), {
+            template: cmd, // debug/release/build
+            android: common.config.get('android'),
+            ios: common.config.get('ios'),
+            sdk: common.paths.sdk()
+        }, f());
+    }).error(function(e) {
+        logger.err(e);
+        cb(e);
+    }).success(cb);
+}
+
+function addBuildCommand(commandName, hidden) {
+    var buildHelp = [
+        "Builds a packaged game for the platform you specify.",
+        "  basil {COMMAND} [platform] [--no-compress] [--clean] [--debug]",
+        "",
+        "Example usage:",
+        "  basil {COMMAND} native-android --no-compress",
+        "",
+        "Platforms:",
+        "  native-android",
+        "  native-ios",
+        "  browser-mobile",
+        "  browser-desktop",
+        ""].join('\n').replace(/\{COMMAND\}/g, commandName);
+
+    CommandManager.addCommand({
+        name: commandName,
+        shortDescription: commandName + " [platform]",
+        help: buildHelp,
+        handler: function(args, cb) {
+            build(commandName, args, cb);
+        },
+        hidden: hidden
+    });
+}
+addBuildCommand("build");
+addBuildCommand("debug", true);
+addBuildCommand("release", true);
+
+
 var getCommandNames = function() {
     return ["about",
 		"build",
@@ -172,22 +220,7 @@ function printHelp () {
 
 function commandHelp (command) {
 	switch (command) {
-		case 'build':
-			console.log([
-				"Builds a packaged game for the platform you specify.",
-				"  basil build [platform] [--no-compress] [--clean] [--debug]",
-				"",
-				"Example usage:",
-				"  basil build native-android --no-compress",
-				"",
-				"Platforms:",
-				"  native-android",
-				"  native-ios",
-				/*"  browser-mobile", taking this out until it is supported -cat */
-				"  browser-desktop",
-				""].join('\n'));
-			break;
-		case 'serve':
+        case 'serve':
 			console.log([
 				"Serves the basil web interface to (by default) http://localhost:9200.",
 				"  basil serve [-p | --port PORT] [--production]",
@@ -356,23 +389,7 @@ function main () {
 			require('./contribute').main(process.argv.splice(3));
 			return;
 
-		case 'debug':
-		case 'release':
-		case 'build':
-			ensureLocalProject();
-			var f = ff(this, function () {
-				ensureJava(f());
-			}, function () {
-				require('./build').exec(process.argv.slice(3), {
-					template: cmd, // debug/release/build
-					android: common.config.get('android'),
-					ios: common.config.get('ios'),
-					sdk: common.paths.sdk()
-				});
-			}).error(function(e) {
-				logger.err(e);
-			});
-			break;
+		
 
 		case 'which':
 			console.log(common.paths.root());
