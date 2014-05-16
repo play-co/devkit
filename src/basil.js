@@ -129,6 +129,27 @@ CommandManager.addCommand({
     }
 });
 
+CommandManager.addCommand({
+    name: "get-commands",
+    hidden: true,
+    handler: function(args, cb) {
+        console.log(getCommandNames().join(' '));
+        cb(null);
+    }
+});
+
+var getCommandNames = function() {
+    return ["about",
+		"build",
+		"serve",
+		"testapp",
+		"register",
+		"unregister",
+		"clean-register",
+		"install",
+		"update"].concat(CommandManager.getAllCommandNames());
+};
+
 function printHelp () {
     var commandDescriptions = CommandManager.getAllCommandHelp();
         console.log([
@@ -417,7 +438,6 @@ function main () {
                 if (command.getBefore()) {
                     require('./init').init(process.argv.splice(3));
                 }
-                console.log('running command');
                 var args = require('optimist')(process.argv.slice(3)).argv;
                 command.run(args, function(err) {
                     //TODO handler errors here

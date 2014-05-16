@@ -13,6 +13,7 @@ var Command = Class(function() {
         this._help = opts.help;
         this._handler = opts.handler;
         this._steps = opts.steps;
+        this._hidden = opts.hidden;
     };
 
     this.getShortDescription = function() {
@@ -25,6 +26,10 @@ var Command = Class(function() {
 
     this.getHelp = function() {
         return this._help;
+    };
+
+    this.isHidden = function() {
+        return this._hidden;
     };
 
     function nextStep(steps, args, cb) {
@@ -87,8 +92,18 @@ var CommandManager = Class(function() {
     };
 
     this.getAllCommandHelp = function() {
-        return this._commands.map(function(command) {
+        return this._commands.filter(function(command) {
+            return !command.isHidden();
+        }).map(function(command) {
             return "  " + command.getShortDescription();
+        });
+    };
+
+    this.getAllCommandNames = function() {
+        return this._commands.filter(function(command) {
+            return !command.isHidden();
+        }).map(function(command) {
+            return command.getName();
         });
     };
 });
