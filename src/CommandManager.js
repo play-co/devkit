@@ -37,9 +37,14 @@ var Command = Class(function() {
             cb(null);
         } else {
             var step = steps.shift();
+            var opts = merge({}, args);
+            if (typeof step == 'object') {
+                opts = merge(opts, step.opts);
+                step = step.command;
+            }
             var command = singleton.getCommand(step);
             if (command && command.run) {
-                command.run(args, function(err) {
+                command.run(opts, function(err) {
                     if (!err) {
                         nextStep(steps, args, cb);
                     } else {
