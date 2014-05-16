@@ -26,6 +26,7 @@ var wrench = require('wrench');
 var Repo = require('./Repo');
 
 var CommandManager = require('./CommandManager');
+var TemplateManager = require('./TemplateManager');
 
 var logger = new common.Formatter('addons');
 
@@ -510,6 +511,11 @@ var AddonManager = Class(EventEmitter, function () {
                             if (data.commands) {
                                 data.commands.forEach(function(command) {
                                     CommandManager.addCommand(addonName, command);
+                                });
+                            }
+                            if (data.templates) {
+                                data.templates.forEach(function(template) {
+                                    TemplateManager.addTemplate(template);
                                 });
                             }
 						} catch (err) {

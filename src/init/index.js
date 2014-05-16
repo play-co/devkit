@@ -20,6 +20,16 @@ var optimist = require('optimist');
 
 var common = require('../common');
 var register = require('../register').register;
+var TemplateManager = require('../TemplateManager');
+
+TemplateManager.addTemplate({
+    name: 'empty',
+    path: path.join(__dirname, 'templates', 'empty')
+});
+TemplateManager.addTemplate({
+    name: 'stackview',
+    path: path.join(__dirname, 'templates', 'stackview')
+});
 
 /**
  * Command line.
@@ -51,12 +61,12 @@ exports.init = function(args, cb) {
 		console.log('Usage: basil init [folder path]');
 		process.exit(2);
 	}
-	
-	initProject(argv.template || 'empty', args._[0], cb);
+
+	initProject(args.template || 'empty', args._[0], cb);
 };
 
 //copies files from a template.
-var initProject = function(template, dest, cb){
+var initProject = function(templateName, dest, cb){
 	var shortName = path.basename(dest);
 
 	common.getProjectList(function(projects) {
@@ -66,7 +76,13 @@ var initProject = function(template, dest, cb){
 			return;
 		}
 
-		var templatePath = path.join(__dirname, "templates", template);
+		var template = TemplateManager.getTemplate(templateName);
+        if (!template) {
+            template = TemplateManager.getTemplate("empty");
+            templateName = 'empty';
+        }
+        var templatePath = template.getPath();
+        console.log(templateName, templatePath);
 		var newLocation = dest;
 		var sdkLocation = path.join(__dirname, "..", "..", "sdk");
 
@@ -92,9 +108,9 @@ var initProject = function(template, dest, cb){
 
 		fs.writeFileSync(manPath, JSON.stringify(man, null, '\t'));
 
-		console.log('Created a new ' + template + ' project at ' + newLocation);
+		console.log('Created a new ' + templateName + ' project at ' + newLocation);
 
-		common.track("BasilInit", {"template":template, "shortName":shortName});
+		common.track("BasilInit", {"template":templateName, "shortName":shortName});
 
 		//now register the new project
         register(newLocation, null, cb);
