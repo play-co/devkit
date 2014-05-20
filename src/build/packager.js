@@ -526,7 +526,7 @@ function getResources(project, buildOpts, cb) {
 					buildAddons[addonName] = buildAddon;
 
 					var addonConfig = project.getAddonConfig();
-					var directories = buildAddon.getResourceDirectories && buildAddon.getResourceDirectories(addonConfig[addonName]);
+					var directories = buildAddon.getResourceDirectories && buildAddon.getResourceDirectories(addonConfig[addonName], appDir);
 					if (isArray(directories)) {
 						directories.forEach(function (directory) {
 							resourceDirectories.push({
