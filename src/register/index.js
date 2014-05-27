@@ -114,6 +114,13 @@ exports.unregister = function (dirtounreg, next) {
 	});
 };
 
+// removes all projects from the register.
+exports.unregisterAll = function () {
+	common.config.set('projects', [], function () {
+		console.log('Cleaned out all projects from the register.');
+	});
+};
+
 // removes incorrect projects from the register.
 exports.clean = function (next) {
 	var register = common.config.get('projects') || [];

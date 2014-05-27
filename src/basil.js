@@ -185,6 +185,26 @@ addBuildCommand("build");
 addBuildCommand("debug", true);
 addBuildCommand("release", true);
 
+function addUnregisterAllCommand() {
+    var unregisterAllHelp = [
+        "Removes all registered projects from the basil registry.",
+		"  basil unregister-all",
+		"",
+		"Example usage:",
+		"  basil unregister-all",
+		""].join('\n');
+
+    CommandManager.addCommand({
+        name: "unregister-all",
+        help: unregisterAllHelp,
+        handler: function(args, cb) {
+            require('./register').unregisterAll();
+        },
+        hidden: false
+    });
+}
+addUnregisterAllCommand();
+
 
 var getCommandNames = function() {
     return ["about",
