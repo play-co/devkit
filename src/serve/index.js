@@ -307,6 +307,7 @@ exports.cli = function () {
 	if (fs.existsSync('./manifest.json')) {
 		logger.log('Serving from project directory, attempting to automatically register..');
 		require('../register').register('.', false, launchServer);
+	} else {
+		launchServer();
 	}
-	launchServer();
 };
