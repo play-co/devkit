@@ -165,36 +165,40 @@ function build (dir, target, opts, cb) {
 //commandline interface
 //parses args and passes them into buid
 function exec (args, config, next) {
-	var Optimist = require('optimist');
+    if (!args._) {
+        var Optimist = require('optimist');
 
-	var optimistParser = new Optimist(args)
-		.boolean('debug')
-			.default('debug', config.template == "debug")
-			.describe('debug', '[native] builds a version with debugging support')
+        var optimistParser = new Optimist(args)
+            .boolean('debug')
+                .default('debug', config.template == "debug")
+                .describe('debug', '[native] builds a version with debugging support')
 
-		.boolean('compress')
-			.default('compress', config.template == "release")
-			.describe('compress', '[js] minifies JavaScript files')
+            .boolean('compress')
+                .default('compress', config.template == "release")
+                .describe('compress', '[js] minifies JavaScript files')
 
-		.boolean('serverName')
-			.default('serverName', 'local')
-			.describe('serverName', '[server] which server to build against, either a hostname or (local | staging | production)')
+            .boolean('serverName')
+                .default('serverName', 'local')
+                .describe('serverName', '[server] which server to build against, either a hostname or (local | staging | production)')
 
-		.string('outputDir')
-			.describe('outputDir', '[sdk] ')
+            .string('outputDir')
+                .describe('outputDir', '[sdk] ')
 
-		.boolean('isSimulated')
-			.default('isSimulated', false)
-			.describe('isSimulated', '[sdk] internal use only')
+            .boolean('isSimulated')
+                .default('isSimulated', false)
+                .describe('isSimulated', '[sdk] internal use only')
 
-		.string('version')
-			.describe('version', 'overrides manifest version if provided, specifies CONFIG.version')
+            .string('version')
+                .describe('version', 'overrides manifest version if provided, specifies CONFIG.version')
 
-		.usage('Usage: ' + clc.greenBright('basil build') + clc.yellowBright(' [target]\n\n')
-			+ 'where ' + clc.yellowBright('[target]') + ' is one of:\n\n'
-			+ '\t' + _targetNames.join('\n\t'));
+            .usage('Usage: ' + clc.greenBright('basil build') + clc.yellowBright(' [target]\n\n')
+                + 'where ' + clc.yellowBright('[target]') + ' is one of:\n\n'
+                + '\t' + _targetNames.join('\n\t'));
 
-	var argv = optimistParser.argv;
+        var argv = optimistParser.argv;
+    } else {
+        argv = args;
+    }
 	var target = argv._[0] && argv._[0].toLowerCase();
 	if (!target || _targetNames.indexOf(target) == -1) {
 
