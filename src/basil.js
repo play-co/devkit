@@ -330,7 +330,9 @@ function commandHelp (command) {
 }
 
 function initAddons (cb) {
-	AddonManager.scanAddons(cb);
+    var projectPath = process.argv[4] || process.cwd();
+    logger.log('projectPath is', projectPath);
+	AddonManager.scanAddons(projectPath, cb);
 }
 
 function initBuild (cb) {

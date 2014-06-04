@@ -488,43 +488,55 @@ var AddonManager = Class(EventEmitter, function () {
 	 * every addon by loading an index file and executing a
 	 * load method.
 	 */
-	this.scanAddons = function (cb) {
+	this.scanAddons = function (projectPath, cb) {
+        function installAddon(projectPath, addonName) {
+            if (!this._addons[addonName]) {
+                var currentPath = path.join(addonPath, addonName, "index.js");
+                if (fs.existsSync(currentPath)) {
+
+                    this.activatePluginJS(addonName, f.wait());
+
+                    try {
+                        var addonModule = require(currentPath);
+                        var data;
+                        if (addonModule.load) {
+                            data = addonModule.load(common, projectPath) || {};
+                        } else {
+                            data = {};
+                        }
+                        var addon = new Addon(addonName);
+                        // merge the paths in
+                        this._paths = this._paths.concat(data.paths || []).filter(function (path) { return path; });
+
+                        this._addons[addonName] = addon;
+                        if (data.commands) {
+                            data.commands.forEach(function(command) {
+                                CommandManager.addCommand(addonName, command);
+                            });
+                        }
+                        if (data.templates) {
+                            data.templates.forEach(function(template) {
+                                TemplateManager.addTemplate(template);
+                            });
+                        }
+                        if (data.addons) {
+                            data.addons.forEach(function(subAddonName) {
+                                logger.log('addon', addonName, 'requires', subAddonName);
+                                installAddon.call(this, projectPath, subAddonName);
+                            }, this);
+                        }
+                    } catch (err) {
+                        logger.error("Could not load [" + addonName + "] : No index file with a load method");
+                        console.error(err.stack);
+                    }
+                }
+            }
+        }
 		var f = ff(this, function () {
 			fs.readdir(addonPath, f());
-
 			this.startupPlugins(f.waitPlain());
 		}, function (files) {
-			files.forEach(function (addonName) {
-				if (!this._addons[addonName]) {
-					var currentPath = path.join(addonPath, addonName, "index.js");
-					if (fs.existsSync(currentPath)) {
-
-						this.activatePluginJS(addonName, f.wait());
-
-						try {
-							var data = require(currentPath).load(common) || {};
-							var addon = new Addon(addonName);
-							// merge the paths in
-							this._paths = this._paths.concat(data.paths || []).filter(function (path) { return path; });
-
-							this._addons[addonName] = addon;
-                            if (data.commands) {
-                                data.commands.forEach(function(command) {
-                                    CommandManager.addCommand(addonName, command);
-                                });
-                            }
-                            if (data.templates) {
-                                data.templates.forEach(function(template) {
-                                    TemplateManager.addTemplate(template);
-                                });
-                            }
-						} catch (err) {
-							logger.error("Could not load [" + addonName + "] : No index file with a load method");
-							console.error(err.stack);
-						}
-					}
-				}
-			}, this);
+			files.forEach(bind(this, installAddon, projectPath));
 		}).cb(cb);
 	};
 
