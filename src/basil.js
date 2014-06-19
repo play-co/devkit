@@ -144,7 +144,7 @@ function build(cmd, args, cb) {
     var f = ff(this, function () {
         ensureJava(f());
     }, function () {
-        require('./build').exec(process.argv.slice(3), {
+        require('./build').exec(args, {
             template: cmd, // debug/release/build
             android: common.config.get('android'),
             ios: common.config.get('ios'),
@@ -330,7 +330,9 @@ function commandHelp (command) {
 }
 
 function initAddons (cb) {
-	AddonManager.scanAddons(cb);
+    var projectPath = process.argv[4] || process.cwd();
+    logger.log('projectPath is', projectPath);
+	AddonManager.scanAddons(projectPath, cb);
 }
 
 function initBuild (cb) {
