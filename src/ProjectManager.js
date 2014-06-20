@@ -19,6 +19,7 @@ var path = require('path');
 var ff = require('ff');
 var common = require('./common');
 var packageManager = require('./PackageManager');
+var packager = require('./build/packager');
 
 var logger = new common.Formatter('games');
 
@@ -52,20 +53,46 @@ var ProjectManager = Class(EventEmitter, function () {
 		var projects = {};
 		var added = [];
 		var removed = merge({}, this._projects);
-		var f = ff(this, function () {
+		var f = ff(this, function() {
 			this._projectDirs.forEach(function (dir) {
-				var onProjectLoad = f.wait();
+				var next = f.wait();
 				
 				packageManager.getProject(dir, bind(this, function (err, project) {
 					if (err) {
 						logger.error('Game at', dir, 'could not be loaded.  Run `basil clean-register` to remove it.');
 						logger.error('Specific report:', err);
 
+						next();
 					} else {
 						var id = project.getID().toLowerCase();
 
 						// insert into working copy of projects
 						projects[id] = project;
+
+						// For every addon in each project, call onProjectLoad 
+						packager.getAddonsForApp(project, function (addons) {
+							var f2 = ff(this, function () {
+								for (var addonName in addons) {
+									var addon = addons[addonName];
+
+									if (addon && addon.hasBuildPlugin()) {
+										var buildAddon = require(addon.getPath('build'));
+
+										var onFinish = f.wait();
+										try {
+											if (buildAddon && buildAddon.onProjectLoad) {
+												buildAddon.onProjectLoad(project, onFinish);
+											} else {
+												onFinish();
+											}
+										} catch (e) {
+											onFinish();
+											logger.error("Error executing onProjectLoad for addon", addonName, e);
+										}
+									}
+								}
+							}).success(next).error(next);
+						});
 
 						// track added and removed projects
 						if (!(id in this._projects)) {
@@ -75,7 +102,6 @@ var ProjectManager = Class(EventEmitter, function () {
 						}
 					}
 
-					onProjectLoad();
 				}));
 			}, this);
 		}, function () {
