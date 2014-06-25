@@ -16,6 +16,7 @@
 var EventEmitter = require('events').EventEmitter;
 var fs = require('graceful-fs');
 var path = require('path');
+var util = require('util');
 var ff = require('ff');
 var common = require('./common');
 var packageManager = require('./PackageManager');
@@ -69,10 +70,14 @@ var ProjectManager = Class(EventEmitter, function () {
 						// insert into working copy of projects
 						projects[id] = project;
 
-						// For every addon in each project, call onProjectLoad 
+						// For every addon in each project, call onProjectLoad
 						packager.getAddonsForApp(project, function (addons) {
 							var f2 = ff(this, function () {
-								for (var addonName in addons) {
+                                //backwards compatibility with old manifest style
+								if (!util.isArray(addons)) {
+									addons = Object.keys(addons);
+								}
+								addons.forEach(function(addonName) {
 									var addon = addons[addonName];
 
 									if (addon && addon.hasBuildPlugin()) {
@@ -90,7 +95,7 @@ var ProjectManager = Class(EventEmitter, function () {
 											logger.error("Error executing onProjectLoad for addon", addonName, e);
 										}
 									}
-								}
+								});
 							}).success(next).error(next);
 						});
 
