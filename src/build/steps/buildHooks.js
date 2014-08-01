@@ -11,7 +11,9 @@ exports.onAfterBuild = function(app, config, cb) {
 
 function executeHook(buildHook, app, config, cb) {
   var f = ff(function () {
-    app.getModules().forEach(function (module) {
+    var modules = app.getModules();
+    Object.keys(modules).forEach(function (moduleName) {
+      var module = modules[moduleName];
       var buildExtension = module.loadExtension('build');
       if (!buildExtension || !buildExtension[buildHook]) {
         return;

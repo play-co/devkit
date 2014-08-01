@@ -23,7 +23,7 @@ var App = module.exports = Class(function () {
 
   this.getModules = function () {
     if (!this._modules) {
-      this.loadModules();
+      this._loadModules(this.paths.modules);
     }
 
     return this._modules;
@@ -32,7 +32,8 @@ var App = module.exports = Class(function () {
   this.getClientPaths = function () {
     var appPath = this.paths.root;
     var paths = {'*': []};
-    this.getModules().map(function (module) {
+    Object.keys(this.getModules()).forEach(function (moduleName) {
+      var module = this._modules[moduleName];
       var clientPaths = module.getClientPaths();
       for (var key in clientPaths) {
         var p = path.relative(appPath, path.resolve(module.path, clientPaths[key]));
@@ -42,40 +43,60 @@ var App = module.exports = Class(function () {
           paths[key] = p;
         }
       }
-    });
+    }, this);
 
     return paths;
   }
 
-  this.loadModules = function () {
-    this._modules = [];
+  this._loadModules = function (basePath) {
+    if (!this._modules) {
+      this._modules = {};
+    }
+
+    var _queue = [];
 
     try {
-      var modules = fs.readdirSync(this.paths.modules);
+      _queue.push.apply(_queue, fs.readdirSync(basePath));
     } catch (e) {
       logger.log(e);
     }
 
-    if (modules) {
-      modules.forEach(function (module) {
-        var modulePath = path.join(this.paths.modules, module);
-        var packageFile = path.join(modulePath, 'package.json');
-        if (fs.existsSync(packageFile)) {
-          var packageContents;
-          try {
-            packageContents = require(packageFile);
-          } catch (e) {
-            return logger.warn("Module", module, "failed to load");
-          }
+    while (_queue[0]) {
+      var module = _queue.shift();
+      var modulePath = path.join(basePath, module);
+      console.log("->'", modulePath)
+      var packageFile = path.join(modulePath, 'package.json');
+      if (fs.existsSync(packageFile)) {
+        var packageContents;
+        try {
+          packageContents = require(packageFile);
+        } catch (e) {
+          return logger.warn("Module", module, "failed to load");
+        }
 
-          if (packageContents.devkit) {
-            this._modules.push(new Module(packageContents.name, modulePath, packageContents.devkit));
+        if (packageContents.devkit) {
+          var existingModule = this._modules[packageContents.name];
+          if (existingModule) {
+            if (existingModule.version != packageContents.version) {
+              throw new Error(packageContents.name + ' included twice with different versions:\n'
+                  + existingModule.version + ': ' + existingModule.path + '\n'
+                  + packageContents.version + ': ' + modulePath);
+            }
+          } else {
+            this._modules[packageContents.name] = new Module(packageContents.name, modulePath, packageContents);
           }
         }
-      }, this);
-    }
 
-    return this._modules;
+        var modulesPath = path.join(modulePath, 'node_modules');
+        if (fs.existsSync(modulesPath)) {
+          try {
+            _queue.push.apply(_queue, fs.readdirSync(modulesPath).map(function (dir) {
+              return path.join(packageContents.name, 'node_modules', dir);
+            }));
+          } catch (e) {}
+        }
+      }
+    }
   }
 
   /* Manifest */
@@ -180,9 +201,9 @@ var App = module.exports = Class(function () {
   // defines the public JSON API for DevKit extensions
   this.toJSON = function () {
     var modules = {};
-    this.loadModules().forEach(function (module) {
-      modules[module.name] = module.toJSON();
-    });
+    Object.keys(this.getModules()).forEach(function (moduleName) {
+      modules[moduleName] = this._modules[moduleName].toJSON();
+    }, this);
 
     return {
         "id": this.paths.root,

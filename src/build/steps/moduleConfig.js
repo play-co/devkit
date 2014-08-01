@@ -4,10 +4,12 @@ exports.getConfig = function(app, config, cb) {
   // find the build module
   var buildModule;
   var modules = app.getModules();
-  for (var i = 0, module; module = modules[i]; ++i) {
-    buildModule = module.loadBuildTarget(config.target);
-    if (buildModule) { break; }
-  }
+  Object.keys(modules).forEach(function (moduleName) {
+    if (!buildModule) {
+      var module = modules[moduleName];
+      buildModule = module.loadBuildTarget(config.target);
+    }
+  });
 
   if (buildModule && buildModule.configure) {
     buildModule.configure(api, app, config, function (err, res) {

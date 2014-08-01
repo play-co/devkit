@@ -10,13 +10,15 @@ var logger = require('../util/logging').get('apps');
  */
 
 var Module = module.exports = Class(function () {
-  this.init = function (name, modulePath, opts) {
+  this.init = function (name, modulePath, packageContents) {
     this.name = name;
     this.path = modulePath;
+    this.version = packageContents.version;
 
     // game-side js.io path for importing client code from this module
     this._clientPaths = {};
 
+    var opts = packageContents.devkit;
     if (opts.clientPaths) {
       for (var key in opts.clientPaths) {
         this._clientPaths[key] = opts.clientPaths[key];
