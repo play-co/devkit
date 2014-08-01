@@ -1,0 +1,99 @@
+@import "nib"
+
+@import "includes/base"
+@import "includes/ui"
+
+body
+  font-size 14px
+
+#leftPane
+  absoluteBox(,55%)
+  display flex
+  flex-direction column
+  align-items center
+  justify-content center
+
+#rightPane
+  absoluteBox(,,,55%)
+
+#separator
+  absoluteBox(40px, 50%, 40px, auto)
+  width 1px
+  background linear-gradient(180deg,
+      rgba(0, 0, 26, 0) 0%,
+      rgba(0, 0, 26, 0.15) 20%,
+      rgba(0, 0, 26, 0.15) 80%,
+      rgba(0, 0, 26, 0) 100%)
+
+#logo
+  width 68px
+  height 54px
+  margin-top 80px
+  background url('/images/logo.png')
+  opacity 0.1
+
+.actionCell
+  padding 30px
+  min-height 50px
+  white-space nowrap
+
+.actionCell #title
+  margin-top 10px
+
+.actionCell #icon
+  width 40px
+  height 40px
+  background center no-repeat
+  float left
+  margin-right 10px
+
+/*** Panel containing the content of the plugin ***/
+.mainPanel
+  absoluteBox()
+  background bglight()
+  border-top 1px solid rgba(255, 255, 255, 0.3)
+
+div#ip
+  position absolute
+  bottom 15px
+  left 0
+  right 0
+  z-index 5
+  overflow hidden
+  text-align center
+  padding 7px 7px 2px 7px
+
+  color #808080
+  padding 5px 7px 2px 7px
+
+
+#appList
+  absoluteBox()
+  overflow auto
+  padding 80px 0px
+
+.appCell
+  position absolute
+  height 80px
+  left 0
+  right 0
+  padding 15px 10px 20px 90px
+  border-radius 10px
+  border-top 1px solid rgba(0, 0, 0, 0)
+  border-bottom 1px solid rgba(0, 0, 0, 0)
+
+.appCell .appIcon
+  position absolute
+  left 10px
+  top 0
+
+.appCell .appPath
+  color #808080
+  white-space nowrap
+  text-overflow ellipsis
+  overflow hidden
+  font-size 10px
+
+.appCell:hover:not(.selected)
+  cursor pointer
+  text-shadow 0px 1px 5px rgba(255, 255, 255, 0.5)

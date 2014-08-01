@@ -1,0 +1,220 @@
+lightColor = #222
+
+#inspector
+  border-top 1px solid lightColor
+  border-right 1px solid lightColor
+  pointer-events none
+  z-index 500
+  background rgba(0, 0, 0, 0.85)
+
+  display none
+  opacity 0
+
+  flex-direction row
+  justify-content stretch
+
+  transition all 0.25s
+
+  input
+    font-size 11px
+
+  button.toggled
+    background rgba(0, 0, 100, 0.9)
+    border-color white
+
+  #_tree
+    flex 1
+    color #bbb9ff
+    border-right 1px solid lightColor
+    // box-shadow inset -1px 0px 1px rgba(255, 255, 255, 0.1)
+    pointer-events auto
+    overflow auto
+    padding 10px 10px 10px 0px
+
+    transition all 0.25s
+
+    .label
+      white-space nowrap
+      border-radius 0px 8px 8px 0px
+      cursor pointer
+      padding 1px
+      height 18px
+      border-top 1px solid rgba(255, 255, 0, 0.0)
+
+    .label span
+      display inline-block
+      padding-top 1px
+
+    .viewNode.highlightParent > .label
+      background #222
+      border-top 1px solid #000
+      border-bottom 1px solid #000
+
+    .viewNode.highlight > .label
+      background #333
+
+    .viewNode.selected > .label
+      background rgba(80, 80, 200, 0.4)
+      color #bbb9ff
+
+    .viewNode.selected > .label:before
+      content "\25C9"
+      float right
+      position relative
+      top -1px
+      left -2px
+
+    .toggleBtn
+      width 20px
+
+      display inline-block
+      vertical-align top
+      padding 2px 4px 2px 4px
+      font-size 8px
+
+    .children
+      display none
+
+  #_details
+    flex 1
+    pointer-events auto
+    user-select auto
+    overflow auto
+    word-wrap break-word
+
+    display flex
+    flex-direction column
+
+    #_header
+      position relative
+      border-bottom 1px solid #222
+      padding 10px 10px 8px 10px
+      font-size 12px
+
+      #_closeBtn
+        border none
+        color #AAA
+
+        padding-top 6px
+        font-size 13px
+
+        z-index 10
+        transition all 0.25s
+        cursor pointer
+
+        position absolute
+        right 0px
+        top 0px
+        bottom 0px
+        width 40px
+
+      #_closeBtn:hover
+        color #CCC
+
+    #detailsScroller
+      flex 1
+      overflow-y auto
+
+    #viewDetails
+      whitespace pre
+      padding 12px 18px 12px
+      color #bbb9ff
+      min-height 55px
+
+    .propSection
+      color #bbb9ff
+      font-size 11px
+      font-weight bold
+      margin 0
+      padding 7px 4px 4px 105px
+
+
+    #detailsScroller .propRow:nth-child(even)
+      background #1A1A1A
+
+    .propTitle:first-child
+      min-width 100px
+
+    .propTitle
+      min-width 60px
+      text-align right
+      color #bbb9ff
+
+      padding-right 5px
+      padding-top 3px
+
+    input
+      background none
+      font bold 10px Monaco
+      width 108px
+      color #ccca9e
+      margin 0px 0px -1px 0px
+      border none
+      padding 2px 2px 2px 5px
+
+      box-sizing border-box
+
+    .propRow div
+      display inline-block
+
+    .propRow.propCount2 input
+      width 55px
+
+    inputfocus
+      position relative
+      z-index 1
+
+  #dropArea
+    line-height 120px
+    font-size 20px
+    color #666
+    margin 10px
+    height 130px
+
+    background #111
+    border 4px dashed #222
+    left 0
+    right 0
+    text-align center
+    display none
+
+  #dropArea.over
+    background #eee
+    border-color #E33
+
+  button#saveImg
+    position absolute
+    left 50px
+    top 75px
+    display none
+
+  #_deepTrace
+    min-width 200px
+    position absolute
+    border 1px solid #CCC
+    background #EEE
+    color #111
+    font-size 13px
+    border-radius 5px
+    box-shadow 1px 1px 5px 1px #333
+    z-index 1000
+    opacity 0.8
+    display none
+
+    div
+      padding 5px 8px
+      cursor pointer
+
+    div.active
+      font-weight bold
+
+    div.active:before
+      content "✗ "
+      color red
+
+    div:hover
+      background rgba(80, 80, 200, 0.3)
+
+#inspector.closed
+  pointer-events none
+  position absolute

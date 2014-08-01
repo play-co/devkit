@@ -1,0 +1,96 @@
+<style>
+html, body { padding: 0px; margin: 0px; }
+
+#toolbar {
+  position: fixed;
+  top: 0px;
+  z-index: 2;
+}
+
+iframe {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  border: 0px;
+}
+</style>
+
+<body></body>
+<script>
+require('./globals');
+
+var serve = require('./serve');
+var iframe;
+
+serve.serveWeb(9200, function () {
+  iframe = document.createElement('iframe');
+  iframe.onload = function () {
+    iframe.contentWindow.process = process;
+    iframe.contentWindow.navigator.isNodeWebkit = true;
+    iframe.contentWindow.gui = require('nw.gui');
+  };
+  iframe.src = "http://localhost:9200";
+  document.body.appendChild(iframe);
+});
+
+(function () {
+  var jsio = require('jsio');
+  jsio.__env.global.document = document;
+  jsio.__env.global.navigator = navigator;
+
+  jsio.path.cache['squill'] = 'node_modules/squill/';
+  var merge = jsio("import base").merge;
+  var Class = jsio("import base").Class;
+  var Widget = jsio("import squill.Widget");
+  var Delegate = jsio("import squill.Delegate");
+  var Toolbar = Class(Widget, function (supr) {
+    this._def = {
+      id: 'toolbar',
+
+      children: [{
+        id: 'reloadAll',
+        type: 'button',
+        text: 'reload all'
+      }, {
+        id: 'reloadCss',
+        type: 'button',
+        text: 'reload css'
+      }, {
+        id: 'inspect',
+        type: 'button',
+        text: 'inspect'
+      }, {
+        id: 'debug',
+        type: 'button',
+        text: 'debug'
+      }]
+    };
+
+    this.delegate = new Delegate(function (on) {
+      on.inspect = function () {
+        var gui = require('nw.gui');
+        var win = gui.Window.get();
+        win.showDevTools();
+      };
+
+      on.reloadAll = function () {
+        iframe.contentWindow.location.reload();
+      };
+
+      on.reloadCss = function () {
+        iframe.contentWindow.reloadCss();
+      };
+
+      on.debug = function () {
+        // top.api.debug();
+      };
+    });
+  });
+
+  new Toolbar().appendTo(document.body);
+})();
+
+
+</script>

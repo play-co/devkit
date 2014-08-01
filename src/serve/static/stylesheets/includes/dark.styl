@@ -1,0 +1,80 @@
+body
+  background #08080F
+  color #AAA
+
+label.squill-select
+  position relative
+  margin 0px 5px 5px 0px
+
+label.squill-select:after
+  content "\e114"
+
+  position absolute
+  right 7px
+  top 7px
+  color #888
+
+  font-family 'Glyphicons Halflings'
+  pointer-events none
+
+select
+  margin 2px 0px
+  max-width 100%
+  outline none
+  border none
+  background-color #222
+  color #AAA
+  appearance none
+  padding 0px 20px 0px 5px
+
+.squill-checkbox
+  margin 5px 0px
+
+input[type='checkbox']
+  display none
+
+input[type="checkbox"] + #label:before
+  border 1px solid #555
+  border-radius 7px
+  display inline-block
+  width 14px
+  height 14px
+  margin -1px 4px 2px 3px
+  vertical-align middle
+  content ""
+  cursor pointer
+
+input[type="checkbox"]:checked + #label:before
+  content "\e013"
+
+  position: relative;
+  top: 0px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  text-align: center;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+input[type="button"], button
+  background #222
+  border 1px solid #444
+  border-radius 3px
+  color #AAA
+  margin-bottom 2px
+
+input[type="text"]
+  background #001
+  border 1px solid #555
+  border-radius 3px
+  color #AAA
+
+.squill-menu
+  background rgba(20, 20, 20, 0.95)
+  box-shadow 0px 5px 20px rgba(0,0,0,0.7)
+
+  border 1px solid #222
+  border-bottom-width 3px

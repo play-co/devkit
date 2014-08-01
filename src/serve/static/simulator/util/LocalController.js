@@ -1,0 +1,40 @@
+import std.uri;
+import util.ajax;
+
+exports = Class(function () {
+
+  this.init = function (opts) {
+    this._device = opts.device;
+    this._app = opts.app || new std.uri(window.location).query('app');
+    this._debug = true;
+  }
+
+  this.rebuild = function (params, cb) {
+    var simulator = this._device.getSimulator();
+
+    // get or update a simulator port with the following options
+    util.ajax.get({
+      url: '/api/simulate/',
+      query: {
+        app: this._app,
+        deviceType: this._device.getType(),
+        deviceId: this._device.getId(),
+        scheme: this._device.isDebug() ? 'debug' : 'release',
+        target: this._device.getBuildTarget()
+      }
+    }, bind(this, function (err, res) {
+
+      if (err) {
+        cb && cb(err);
+      } else {
+        if (res.port) {
+          this._port = res.port;
+        }
+
+        simulator.loadURL('http://' + location.hostname + ':' + res.port + '/');
+
+        cb && cb(null, res);
+      }
+    }));
+  };
+});

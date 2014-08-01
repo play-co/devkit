@@ -1,0 +1,30 @@
+@import "icons"
+
+tr, td
+  border-spacing 0px !important
+  font-size 1px
+
+absoluteBox(top = 0px, right = 0px, bottom = 0px, left = 0px)
+  position absolute
+  top top
+  bottom bottom
+  left left
+  right right
+
+
+/* Game Sidebar */
+radius-factor = 5.7 // Apple computes border radius by dividing by 5.7
+large-icon-size = 65
+large-icon-radius = round(large-icon-size / radius-factor)
+
+.appIcon
+  width (large-icon-size)px
+  height (large-icon-size)px
+  margin-bottom 10px
+  display block
+  border-radius unit(large-icon-radius, px)
+  position relative
+  background-size contain
+
+.monospace
+  font-family 'Menlo', Monaco, 'Bitstream Vera Sans Mono', 'Lucida Console', Terminal, monospace
