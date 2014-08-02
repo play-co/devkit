@@ -64,7 +64,6 @@ var App = module.exports = Class(function () {
     while (_queue[0]) {
       var module = _queue.shift();
       var modulePath = path.join(basePath, module);
-      console.log("->'", modulePath)
       var packageFile = path.join(modulePath, 'package.json');
       if (fs.existsSync(packageFile)) {
         var packageContents;

@@ -112,9 +112,9 @@ var Config = Class(EventEmitter, function () {
 	// callbacks will not fire until all pending writes complete
 	this._write = function () {
 		this._isScheduled = false;
-console.log(new Error().stack);
+
 		// schedule the callback
-		fs.writeFileSync(CONFIG_PATH, JSON.stringify(this._config, null, '  '), 'utf8');
+		fs.writeFileSync(CONFIG_PATH, stringify(this._config), 'utf8');
 		if (this._writeCbs.length) {
 			var cbs = this._writeCbs;
 			this._writeCbs = [];

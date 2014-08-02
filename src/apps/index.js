@@ -32,7 +32,7 @@ var AppManager = Class(EventEmitter, function () {
     this.reload();
   };
 
-  this._load = function (appPath, cb) {
+  this._load = function (appPath, persist, cb) {
     var appPath = path.resolve(process.cwd(), appPath);
 
     if (this._apps[appPath]) {
@@ -55,7 +55,9 @@ var AppManager = Class(EventEmitter, function () {
           this._apps[appPath] = app;
           this.emit('add', app);
 
-          this.persist();
+          if (persist) {
+            this.persist();
+          }
         }
 
         cb && cb(null, this._apps[appPath]);
@@ -76,7 +78,7 @@ var AppManager = Class(EventEmitter, function () {
     this._isReloading = true;
     var f = ff(this, function () {
       appDirs.forEach(function (dir) {
-        this._load(dir, f.waitPlain());
+        this._load(dir, false, f.waitPlain());
       }, this);
     }, function () {
       this.persist();
@@ -113,7 +115,7 @@ var AppManager = Class(EventEmitter, function () {
         return cb && cb(new Error("app not found"));
       }
 
-      this._load(appPath, cb);
+      this._load(appPath, true, cb);
     }));
   }
 
