@@ -24,6 +24,7 @@ process.opts = require("optimist").argv;
  * Command line interface.
  */
 
+require = require('jsio');
 require('./globals');
 
 var path = require('path');
@@ -31,6 +32,7 @@ var clc = require('cli-color');
 var printf = require('printf');
 
 var logging = require('./util/logging');
+
 var logger = logging.get('devkit');
 
 process.on('uncaughtException', function (e) {

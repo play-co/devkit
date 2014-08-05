@@ -49,7 +49,7 @@ exports.serveWeb = function (basePort, cb) {
   server.listen(basePort, function () {
     exports.serveTestApp(basePort);
 
-    logger.log(printf('serving at http://localhost:%(port)s/ and http://%(ip)s:%(port)s/\n', {
+    logger.log(printf('serving at http://localhost:%(port)s/ and http://%(ip)s:%(port)s/', {
       ip: ip.getLocalIP(),
       port: basePort
     }));

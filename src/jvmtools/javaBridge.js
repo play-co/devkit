@@ -25,7 +25,7 @@ var logging = require('../util/logging');
 var logger = logging.get('jvmtools');
 
 var jsio = require('jsio');
-var Callback = jsio('import lib.Callback');
+var Callback = require('jsio/lib/Callback');
 
 // JVMTools Module
 // ===============

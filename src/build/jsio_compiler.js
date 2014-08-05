@@ -45,12 +45,18 @@ var DevKitJsioInterface = Class(function () {
 exports.JsioCompiler = Class(EventEmitter, function () {
 
   this.init = function (opts) {
+    var basePath = jsio.__env.getPath();
+
     this.opts = merge(opts, {
       environment: 'browser',
       includeJsio: true,
       appendImport: true,
+      jsioPath: basePath,
+      path: [],
       preprocessors: ['import', 'cls', 'logger']
     });
+
+    this.opts.path.push(basePath);
   }
 
   this.compile = function (imports) {
@@ -59,15 +65,11 @@ exports.JsioCompiler = Class(EventEmitter, function () {
 
     var compilerPath = path.join(jsio.__env.getPath(), '..', 'compilers');
     _jsio.path.add(compilerPath);
-    var compiler = _jsio('import jsio_compile.compiler');
 
-    var cwd = this.opts.cwd || '.';
-    var basePath = path.relative(cwd, path.resolve(jsio.__env.getCwd(), jsio.__env.getPath()));
-    this.opts.jsioPath = basePath;
+    var compiler = _jsio('import jsio_compile.compiler');
 
     // for debugging purposes, build the equivalent command that can be executed
     // from the command-line (not used for anything other than logging to the screen)
-    console.log(importStatement);
     var cmd = ["jsio_compile", JSON.stringify(importStatement)];
     for (var key in this.opts) {
       cmd.push('--' + key);

@@ -8,7 +8,7 @@ var stringify = require('./util/stringify');
 // create a singleton object for the config
 //   emits 'change' events when listening for config.json file changes
 var Config = Class(EventEmitter, function () {
-	var logger = logging.get('devkit-config');
+	var logger = logging.get('devkit');
 	var CONFIG_PATH = path.join(__dirname, '..', 'config.json');
 
 	this.init = function () {

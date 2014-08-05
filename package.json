@@ -25,10 +25,10 @@
     "mkdirp": "0.5.0",
     "stylus": "0.47.x",
     "nib": "1.x",
-    "jsio": "git+https://github.com/gameclosure/js.io/#develop",
+    "jsio": "git+https://github.com/gameclosure/js.io/#fd15c6e",
     "printf": "0.2.0",
     "mixpanel": "0.0.18",
-    "squill": "git+https://github.com/gameclosure/squill/#bindings"
+    "squill": "git+https://github.com/gameclosure/squill/#7563b0"
   },
   "private": true,
   "devkit": {

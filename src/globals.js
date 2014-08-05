@@ -1,5 +1,4 @@
-var jsio = require('jsio');
-var base = jsio("import base");
+var base = require('jsio.base');
 
 GLOBAL.Class = base.Class;
 GLOBAL.merge = base.merge;

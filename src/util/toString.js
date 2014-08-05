@@ -67,7 +67,7 @@ exports.errorToString = function (error) {
           + color.redBright(
             msgText
             + (msgLines.length > 1 ? '\n' + indent : '')
-            + ' ' + color.redBright(lastLine.func)
+            + ' ' + color.whiteBright('at ' + lastLine.func)
             + color.yellowBright(' (' + lastLine.details + ')')
           ));
       }

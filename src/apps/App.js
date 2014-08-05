@@ -57,9 +57,7 @@ var App = module.exports = Class(function () {
 
     try {
       _queue.push.apply(_queue, fs.readdirSync(basePath));
-    } catch (e) {
-      logger.log(e);
-    }
+    } catch (e) {}
 
     while (_queue[0]) {
       var module = _queue.shift();
@@ -165,7 +163,7 @@ var App = module.exports = Class(function () {
   }
 
   this.getIcon = function (targetSize) {
-    return this.manifest.icon && ('/projects/' + this.id + '/files/' + this.manifest.icon)
+    return this.manifest.icon
       || getIcon(this.manifest.android && this.manifest.android.icons, targetSize)
       || getIcon(this.manifest.ios && this.manifest.ios.icons, targetSize)
       || '/images/defaultIcon.png';

@@ -81,12 +81,15 @@ exports.addToAPI = function (opts, api) {
     apps.get(appPath, function (err, app) {
       if (err) { return cb(err); }
 
-      var modules = {};
+      var moduleRoutes = {};
       var route = generateRoute(appPath);
       var middleware = express();
       modulesApp.use(route, middleware);
 
-      app.getModules().forEach(function (module) {
+      var modules = app.getModules();
+      var extensionNames = [];
+      Object.keys(modules).forEach(function (moduleName) {
+        var module = modules[moduleName];
         var extension = module.loadExtension('simulator');
         if (extension && extension.getMiddleware) {
           try {
@@ -96,7 +99,8 @@ exports.addToAPI = function (opts, api) {
           }
 
           if (routes) {
-            modules[module.name] = routes;
+            extensionNames.push(module.name);
+            moduleRoutes[module.name] = routes;
 
             // host devkit
             if (routes.devkit) {
@@ -113,10 +117,10 @@ exports.addToAPI = function (opts, api) {
 
       _moduleMap[appPath] = {
         middleware: middleware,
-        modules: modules,
+        routes: moduleRoutes,
         info: {
           route: '/modules' + route,
-          names: Object.keys(modules)
+          names: extensionNames
         }
       };
 
@@ -134,10 +138,10 @@ exports.addToAPI = function (opts, api) {
     var simulatorApp = express();
     simulatorApp.use('/', express.static(outputPath));
 
-    var modules = _moduleMap[appPath].modules;
-    Object.keys(modules).forEach(function (name) {
-      if (modules[name] && modules[name].simulator) {
-        simulatorApp.use('/modules/' + name, modules[name].simulator);
+    var routes = _moduleMap[appPath].routes;
+    Object.keys(routes).forEach(function (name) {
+      if (routes[name] && routes[name].simulator) {
+        simulatorApp.use('/modules/' + name, routes[name].simulator);
       }
     });
 
