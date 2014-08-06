@@ -65,9 +65,16 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         throw new Error('Unable to read "package.json"');
       }
 
-      Object.keys(deps).forEach(function (name) {
-        this.install(directory, name, deps[name]);
-      }, this);
+      // serially install all dependencies
+      var index = 0;
+      var names = Object.keys(deps);
+      var next = bind(this, function () {
+        var name = names[index++];
+        if (name) {
+          this.install(directory, name, deps[name], null, next);
+        }
+      });
+      next();
     }
   }
 
@@ -79,7 +86,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     return out;
   }
 
-  this.install = function (directory, moduleName, url, tag) {
+  this.install = function (directory, moduleName, url, tag, cb) {
     var modulePath = path.join(directory, moduleName);
     var git = gitClient.get(path.join(directory, moduleName));
     if (url) {
@@ -104,10 +111,6 @@ var InstallCommand = Class(BaseCommand, function (supr) {
           git('checkout', tag, f());
         }
       }, function () {
-        git('submodule', 'sync', '--recursive', f());
-      }, function () {
-        git('submodule', 'update', '--init', '--recursive', f());
-      }, function () {
         var npm = spawn('npm', ['install'], {customFds: [0, 1, 2], cwd: modulePath});
         npm.on('close', f());
       }, function () {
@@ -124,7 +127,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         }
       }).error(function (err) {
         logger.error(err);
-      });
+      }).cb(cb);
     }
   }
 });
