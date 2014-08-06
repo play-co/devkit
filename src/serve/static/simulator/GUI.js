@@ -25,7 +25,7 @@ import squill.Widget;
 import squill.Delegate;
 
 import net;
-import devkit.debugging.TargetCuppa as TargetCuppa;
+import .TargetCuppa;
 
 import .util.Device as Device;
 import .util.Simulator as Simulator;

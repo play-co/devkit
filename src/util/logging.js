@@ -10,7 +10,7 @@ var errorToString = require('./toString').errorToString;
 
 var _loggers = {};
 exports.get = function (name) {
-  return _loggers[name] || (_loggers[name] = new exports.Logger(name));
+  return new exports.Logger(name);
 }
 
 exports.Logger = Class(Writable, function () {
@@ -39,7 +39,6 @@ exports.Logger = Class(Writable, function () {
   }
 
   this.format = function (str) {
-
     if (str instanceof Error) {
       return '\n' + errorToString(str);
     }
@@ -116,3 +115,4 @@ exports.Logger = Class(Writable, function () {
 exports.getPrefix = function (tag) {
   return color.cyanBright(printf('%15s   ', '[' + tag + ']'));
 }
+

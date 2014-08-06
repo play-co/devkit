@@ -42,7 +42,7 @@ exports.stop = function (cb) {
 
       // and because we don't really trust that to actually work
       // let's kill all the processes ourselves.
-      _javaProcess.kill("SIGTERM");
+      _javaProcess.kill("SIGKILL");
       _withClient.reset();
       _javaProcess = null;
 

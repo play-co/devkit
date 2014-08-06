@@ -2,7 +2,7 @@ import net;
 import net.interfaces;
 import lib.PubSub;
 import net.protocols.Cuppa;
-import devkit.debugging.TargetCuppa as TargetCuppa;
+import .TargetCuppa;
 
 exports = Class([net.interfaces.Server, lib.PubSub], function () {
   this.listen = function () {

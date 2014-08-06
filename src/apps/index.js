@@ -47,7 +47,7 @@ var AppManager = Class(EventEmitter, function () {
         try {
           var manifest = JSON.parse(contents);
         } catch (e) {
-          return cb && cb(new Error("failed to parse manfiest.json (" + manifestPath + ")"));
+          return cb && cb(new Error('failed to parse "manifest.json" (' + manifestPath + ')'));
         }
 
         if (!this._apps[appPath]) {

@@ -12,7 +12,7 @@ var App = module.exports = Class(function () {
       shared: path.join(root, 'shared'),
       src: path.join(root, 'src'),
       resources: path.join(root, 'resources'),
-      modules: path.join(root, 'node_modules'),
+      modules: path.join(root, 'modules'),
       icons: path.join(root, 'resources', 'icons'),
       lang: path.join(root, 'resources', 'lang'),
       manifest: path.join(root, 'manifest.json')
@@ -84,11 +84,11 @@ var App = module.exports = Class(function () {
           }
         }
 
-        var modulesPath = path.join(modulePath, 'node_modules');
+        var modulesPath = path.join(modulePath, 'modules');
         if (fs.existsSync(modulesPath)) {
           try {
             _queue.push.apply(_queue, fs.readdirSync(modulesPath).map(function (dir) {
-              return path.join(packageContents.name, 'node_modules', dir);
+              return path.join(packageContents.name, 'modules', dir);
             }));
           } catch (e) {}
         }
@@ -132,19 +132,13 @@ var App = module.exports = Class(function () {
       }
     }
 
-    // check if the appID is valid, if not then generate a new one and save the manifest (should never happen)...
-    if (typeof this.manifest.appID !== 'string' || this.manifest.appID.length < 1) {
-      this.manifest.appID = defaults.appID;
-      changed = true;
-    }
-
     if (changed) {
       this.saveManifest(cb);
     }
   };
 
   this.saveManifest = function (cb) {
-    return fs.writeFile(path.join(this.paths.root, 'manifest.json'), stringify(this.manifest), cb);
+    return fs.writeFile(path.join(this.paths.manifest), stringify(this.manifest), cb);
   };
 
   this.getPackageName = function() {

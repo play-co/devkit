@@ -159,10 +159,11 @@ function getAPIRouter(opts) {
       // pathCache: key-value pairs of prefixes that map to folders (eg. prefix
       // 'squill' handles all 'sqill.*' imports)
       pathCache: {
-        "squill": 'node_modules/squill/',
-        "devkit": 'node_modules/devkit-api/src/clientapi'
+        "squill": 'node_modules/squill/'
       }
     });
+
+    console.log(">>>", compiler.opts.path)
 
     compiler.compile([req.params[0], 'preprocessors.import', 'preprocessors.cls'])
       .on('error', function (err) {

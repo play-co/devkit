@@ -40,7 +40,7 @@ serve.serveWeb(9200, function () {
   jsio.__env.global.document = document;
   jsio.__env.global.navigator = navigator;
 
-  jsio.path.cache['squill'] = 'node_modules/squill/';
+  jsio.path.cache['squill'] = 'modules/squill/';
   var merge = jsio("import base").merge;
   var Class = jsio("import base").Class;
   var Widget = jsio("import squill.Widget");
