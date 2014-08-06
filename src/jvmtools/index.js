@@ -1,6 +1,6 @@
 var logger = require('../util/logging').get('jvmtools');
 
-var javaBridge = require('./tealeaf-build/tools/javaBridge');
+var javaBridge = require('./tealeaf-build-tools/javaBridge');
 
 exports.exec = javaBridge.exec;
 exports.stop = javaBridge.stop;
