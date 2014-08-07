@@ -65,6 +65,10 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         throw new Error('Unable to read "package.json"');
       }
 
+      if (!deps) {
+        return logger.error('No devkitDependencies found in "package.json"');
+      }
+
       // serially install all dependencies
       var index = 0;
       var names = Object.keys(deps);

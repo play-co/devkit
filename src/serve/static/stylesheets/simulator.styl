@@ -1,7 +1,12 @@
 @import "nib"
 
 @import "includes/base"
-@import "includes/dark"
+
+if theme is "light"
+  @import "includes/light"
+else
+  @import "includes/dark"
+
 @import "includes/inspector"
 @import "includes/icons"
 
@@ -224,9 +229,9 @@
       outline none
       display inline-block
       border-radius 1px
-      background #2E2E2E
+      background button-bg
       border 1px solid rgba(255, 255, 255, 0.05)
-      color #E5E5E5
+      color button-fg
       padding 6px 8px 4px
       margin 2px 1px 3px 1px
       line-height 16px

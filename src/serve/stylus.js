@@ -23,6 +23,7 @@ module.exports = function (basePath) {
       stylus(str)
         .set('filename', stylusPath)
         .use(nib())
+        .define('theme', req.query.theme ? req.query.theme : 'dark')
         .render(function(err, css) {
           if (err) return next(err);
 

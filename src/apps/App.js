@@ -23,7 +23,7 @@ var App = module.exports = Class(function () {
 
   this.getModules = function () {
     if (!this._modules) {
-      this._loadModules(this.paths.modules);
+      this._loadModules();
     }
 
     return this._modules;
@@ -48,21 +48,27 @@ var App = module.exports = Class(function () {
     return paths;
   }
 
-  this._loadModules = function (basePath) {
+  this._loadModules = function () {
     if (!this._modules) {
       this._modules = {};
     }
 
     var _queue = [];
 
-    try {
-      _queue.push.apply(_queue, fs.readdirSync(basePath));
-    } catch (e) {}
+    function addToQueue(basePath) {
+      try {
+        _queue.push.apply(_queue, fs.readdirSync(path.join(basePath, 'modules')).map(function (item) { return path.join(basePath, 'modules', item); }));
+        _queue.push.apply(_queue, fs.readdirSync(path.join(basePath, 'node_modules')).map(function (item) { return path.join(basePath, 'node_modules', item); }));
+      } catch (e) {}
+    }
+
+    addToQueue(this.paths.root);
 
     while (_queue[0]) {
       var module = _queue.shift();
-      var modulePath = path.join(basePath, module);
+      var modulePath = path.resolve(this.paths.root, module);
       var packageFile = path.join(modulePath, 'package.json');
+
       if (fs.existsSync(packageFile)) {
         var packageContents;
         try {
@@ -82,15 +88,8 @@ var App = module.exports = Class(function () {
           } else {
             this._modules[packageContents.name] = new Module(packageContents.name, modulePath, packageContents);
           }
-        }
 
-        var modulesPath = path.join(modulePath, 'modules');
-        if (fs.existsSync(modulesPath)) {
-          try {
-            _queue.push.apply(_queue, fs.readdirSync(modulesPath).map(function (dir) {
-              return path.join(packageContents.name, 'modules', dir);
-            }));
-          } catch (e) {}
+          addToQueue(modulePath);
         }
       }
     }

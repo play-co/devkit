@@ -1,9 +1,12 @@
 var path = require('path');
 var http = require('http');
+
 var express = require('express');
+var bodyParser = require('body-parser');
 
 var apps = require('../apps/');
 var build = require('../build/');
+var jvmtools = require('../jvmtools');
 var logging = require('../util/logging');
 
 var logger = logging.get('routes');
@@ -137,6 +140,18 @@ exports.addToAPI = function (opts, api) {
 
     var simulatorApp = express();
     simulatorApp.use('/', express.static(outputPath));
+
+    // a better js syntax checker
+    simulatorApp.use('/api/syntax', bodyParser.urlencoded({extended: true}));
+    simulatorApp.post('/api/syntax', function(req, res) {
+      jvmtools.checkSyntax(req.body.javascript, function (err, syntaxErrors) {
+        if (err) {
+          res.send([false, err]);
+        } else {
+          res.send([true, syntaxErrors]);
+        }
+      });
+    });
 
     var routes = _moduleMap[appPath].routes;
     Object.keys(routes).forEach(function (name) {

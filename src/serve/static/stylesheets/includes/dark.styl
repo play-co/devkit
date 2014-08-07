@@ -1,3 +1,8 @@
+button()
+  background #2E2E2E
+  color #E5E5E5
+  border 1px solid #444
+
 body
   background #08080F
   color #AAA
@@ -60,10 +65,11 @@ input[type="checkbox"]:checked + #label:before
   -moz-osx-font-smoothing: grayscale;
 
 input[type="button"], button
-  background #222
-  border 1px solid #444
+  button()
+
   border-radius 3px
   color #AAA
+  font-weight bold
   margin-bottom 2px
 
 input[type="text"]
