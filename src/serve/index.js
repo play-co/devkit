@@ -110,7 +110,7 @@ function getAPIRouter(opts) {
 
   api.get('/icon', function (req, res) {
     var appPath = req.query.app;
-    apps.get(appPath, function (err, app) {
+    apps.get(appPath, true, function (err, app) {
       if (err) { return res.send(404, err); }
       res.sendfile(path.join(app.paths.root, app.getIcon(req.query.targetSize || 512)));
     })

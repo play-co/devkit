@@ -47,16 +47,19 @@ var Config = Class(EventEmitter, function () {
 
 	// called to re-read the config.json file
 	this.reload = function () {
-		logger.log('reloading config');
 		fs.readFile(CONFIG_PATH, 'utf8', function (err, data) {
 			if (data) {
 				try {
-					this._config = JSON.parse(data);
+					data = JSON.parse(data);
 				} catch (e) {
 					logger.error('unable to parse config.json', e);
 				}
 
-				this.emit('change');
+				if (stringify(this._config) != stringify(data)) {
+					logger.log('reloading config');
+					this._config = data;
+					this.emit('change');
+				}
 			}
 		}.bind(this));
 	}

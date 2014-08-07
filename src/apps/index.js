@@ -32,7 +32,7 @@ var AppManager = Class(EventEmitter, function () {
     this.reload();
   };
 
-  this._load = function (appPath, persist, cb) {
+  this._load = function (appPath, lastOpened, persist, cb) {
     var appPath = path.resolve(process.cwd(), appPath);
 
     if (this._apps[appPath]) {
@@ -51,7 +51,7 @@ var AppManager = Class(EventEmitter, function () {
         }
 
         if (!this._apps[appPath] && manifest.appID) {
-          var app = new App(appPath, manifest);
+          var app = new App(appPath, manifest, lastOpened);
           this._apps[appPath] = app;
           this.emit('add', app);
 
@@ -66,7 +66,16 @@ var AppManager = Class(EventEmitter, function () {
   }
 
   this.reload = function () {
-    var appDirs = config.get('apps');
+    var apps = config.get('apps');
+
+    // migrate old format
+    if (Array.isArray(apps)) {
+      var newApps = {};
+      apps.forEach(function (appPath) { newApps[appPath] = 0; });
+      apps = newApps;
+    }
+
+    var appDirs = Object.keys(apps);
     if (!appDirs || !appDirs.length) {
       this._isLoaded = true;
       this.emit('update');
@@ -78,7 +87,7 @@ var AppManager = Class(EventEmitter, function () {
     this._isReloading = true;
     var f = ff(this, function () {
       appDirs.forEach(function (dir) {
-        this._load(dir, false, f.waitPlain());
+        this._load(dir, apps[dir], false, f.waitPlain());
       }, this);
     }, function () {
       this.persist();
@@ -92,7 +101,12 @@ var AppManager = Class(EventEmitter, function () {
   };
 
   this.persist = function () {
-    config.set('apps', Object.keys(this._apps));
+    var apps = {};
+    Object.keys(this._apps).forEach(function (app) {
+      apps[app] = this._apps[app].lastOpened;
+    }, this);
+
+    config.set('apps', apps);
   }
 
   this.getAppDirs = function (cb) {
@@ -105,18 +119,24 @@ var AppManager = Class(EventEmitter, function () {
     });
   };
 
-  this.get = function (appPath, cb) {
-    this.getApps(bind(this, function (err, apps) {
-      if (err) {
-        return cb && cb(err);
-      }
+  this.get = function (appPath, dontUpdate, cb) {
+    if (typeof arguments[1] == 'function') {
+      cb = arguments[1];
+      dontUpdate = false;
+    }
 
-      if (!apps) {
-        return cb && cb(new Error("app not found"));
-      }
+    var f = ff(this, function () {
+      this.getApps(f());
+    }, function () {
+      this._load(appPath, null, true, f());
+    }, function (app) {
+      f(app);
 
-      this._load(appPath, true, cb);
-    }));
+      if (app && !dontUpdate) {
+        app.lastOpened = Date.now();
+        this.persist();
+      }
+    }).cb(cb);
   }
 
   this.getApps = function (cb) {

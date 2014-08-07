@@ -6,7 +6,7 @@ var stringify = require('../util/stringify');
 
 var App = module.exports = Class(function () {
 
-  this.init = function (root, manifest) {
+  this.init = function (root, manifest, lastOpened) {
     this.paths = {
       root: root,
       shared: path.join(root, 'shared'),
@@ -19,6 +19,7 @@ var App = module.exports = Class(function () {
     };
 
     this.manifest = manifest;
+    this.lastOpened = lastOpened || Date.now();
   }
 
   this.getModules = function () {
@@ -204,6 +205,7 @@ var App = module.exports = Class(function () {
 
     return {
         "id": this.paths.root,
+        "lastOpened": this.lastOpened,
         "appId": this.getId(),
         "modules": modules,
         "clientPaths": this.getClientPaths(),

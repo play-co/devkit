@@ -24,6 +24,7 @@ import squill.models.DataSource as DataSource;
 import squill.Delegate as Delegate;
 
 import util.ajax;
+import string.timeAgo;
 
 var encodedChars = {
   '%2F': '/',
@@ -49,7 +50,8 @@ var AppCell = Class(Cell, function() {
     children: [
       {id: 'icon', className: 'appIcon'},
       {id: 'name', type: 'label', className: 'appName'},
-      {id: 'path', type: 'label', className: 'appPath'}
+      {id: 'path', type: 'label', className: 'appPath'},
+      {id: 'lastOpened', type: 'label', className: 'appPath'}
     ]
   };
 
@@ -92,6 +94,8 @@ var AppCell = Class(Cell, function() {
     }
 
     this.path.setLabel(root);
+
+    this.lastOpened.setLabel(string.timeAgo(app.lastOpened));
   };
 });
 
@@ -181,6 +185,11 @@ exports = Class(Widget, function(supr) {
     this.actions.setDataSource(actions);
 
     this.appList.setDataSource(this._apps);
+    this._apps.setSorter(function (app) {
+              var key = '' + (10000000000000 - app.lastOpened);
+              key = '00000000000000'.substring(0, 14 - key.length) + key;
+              return key;
+            });
     window.addEventListener('resize', bind(this.appList, 'needsRender'), false);
 
     this._homeDirectory = this._opts.homeDirectory;
