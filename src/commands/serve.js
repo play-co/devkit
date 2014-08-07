@@ -19,6 +19,11 @@ var ServeCommand = Class(BaseCommand, function (supr) {
 	}
 
 	this.exec = function () {
+
+		if (fs.existsSync('manifest.json')) {
+			require('../apps').get('.');
+		}
+
 		var serve = require('../serve');
 		serve.serveWeb(this.opts.argv.port);
 	}

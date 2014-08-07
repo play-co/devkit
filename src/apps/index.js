@@ -50,7 +50,7 @@ var AppManager = Class(EventEmitter, function () {
           return cb && cb(new Error('failed to parse "manifest.json" (' + manifestPath + ')'));
         }
 
-        if (!this._apps[appPath]) {
+        if (!this._apps[appPath] && manifest.appID) {
           var app = new App(appPath, manifest);
           this._apps[appPath] = app;
           this.emit('add', app);

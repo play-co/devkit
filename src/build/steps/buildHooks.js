@@ -1,17 +1,23 @@
 var ff = require('ff');
 var api = require('../../api');
 
-exports.onBeforeBuild = function(app, config, cb) {
+exports.getDependencies = function (app, config, cb) {
+  // allows modules to disable other modules
+  executeHook('getDependencies', app, config, cb);
+}
+
+exports.onBeforeBuild = function (app, config, cb) {
   executeHook('onBeforeBuild', app, config, cb);
 }
 
-exports.onAfterBuild = function(app, config, cb) {
+exports.onAfterBuild = function (app, config, cb) {
   executeHook('onAfterBuild', app, config, cb);
 }
 
 function executeHook(buildHook, app, config, cb) {
   var f = ff(function () {
     var modules = app.getModules();
+    var group = f.group();
     Object.keys(modules).forEach(function (moduleName) {
       var module = modules[moduleName];
       var buildExtension = module.loadExtension('build');
@@ -20,10 +26,10 @@ function executeHook(buildHook, app, config, cb) {
       }
 
       try {
-        buildExtension[buildHook](api, app.toJSON(), config, f());
+        buildExtension[buildHook](api, app.toJSON(), config, group());
       } catch (e) {
         console.error('Error in module', module.name + ':', ' build hook', buildHook, 'threw an exception');
-        f.fail(e);
+        group.fail(e);
       }
     });
   }).cb(cb);

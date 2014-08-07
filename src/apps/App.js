@@ -29,6 +29,12 @@ var App = module.exports = Class(function () {
     return this._modules;
   }
 
+  this.removeModules = function (toRemove) {
+    toRemove.forEach(function (moduleName) {
+      delete this._modules[moduleName];
+    }, this);
+  }
+
   this.getClientPaths = function () {
     var appPath = this.paths.root;
     var paths = {'*': []};
@@ -86,7 +92,8 @@ var App = module.exports = Class(function () {
                   + packageContents.version + ': ' + modulePath);
             }
           } else {
-            this._modules[packageContents.name] = new Module(packageContents.name, modulePath, packageContents);
+            var name = path.basename(modulePath);
+            this._modules[name] = new Module(name, modulePath, packageContents);
           }
 
           addToQueue(modulePath);

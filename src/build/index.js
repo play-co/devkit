@@ -39,6 +39,13 @@ exports.build = function (appPath, argv, cb) {
   }, function (res) {
     config = res;
   }, function () {
+    require('./steps/buildHooks').getDependencies(app, config, f());
+  }, function (deps) {
+    // deps is an array of objects, merge them into one object and get all keys with false values
+    deps = merge.apply(this, deps);
+    var toRemove = Object.keys(deps).filter(function (name) { return deps[name] === false; });
+    app.removeModules(toRemove);
+  }, function () {
     require('./steps/moduleConfig').getConfig(app, config, f());
   }, function () {
     require('./steps/buildHooks').onBeforeBuild(app, config, f());
