@@ -29,7 +29,7 @@ body
   width 68px
   height 54px
   margin-top 80px
-  background url('/images/logo.png')
+  background url('/icons/logo.png')
   opacity 0.1
 
 .actionCell
@@ -37,15 +37,15 @@ body
   min-height 50px
   white-space nowrap
 
-.actionCell #title
-  margin-top 10px
+  #title
+    margin-top 10px
 
-.actionCell #icon
-  width 40px
-  height 40px
-  background center no-repeat
-  float left
-  margin-right 10px
+  #icon
+    width 40px
+    height 40px
+    background center no-repeat
+    float left
+    margin-right 10px
 
 /*** Panel containing the content of the plugin ***/
 .mainPanel
@@ -82,18 +82,22 @@ div#ip
   border-top 1px solid rgba(0, 0, 0, 0)
   border-bottom 1px solid rgba(0, 0, 0, 0)
 
-.appCell .appIcon
-  position absolute
-  left 10px
-  top 0
+  .appIcon
+    position absolute
+    left 10px
+    top 0
 
-.appCell .appPath
-  color #808080
-  white-space nowrap
-  text-overflow ellipsis
-  overflow hidden
-  font-size 10px
+    &.noIcon
+      background #EEE
+      border 2px solid #CCC
 
-.appCell:hover:not(.selected)
-  cursor pointer
-  text-shadow 0px 1px 5px rgba(255, 255, 255, 0.5)
+  .appPath
+    color #808080
+    white-space nowrap
+    text-overflow ellipsis
+    overflow hidden
+    font-size 10px
+
+  &:hover:not(.selected)
+    cursor pointer
+    text-shadow 0px 1px 5px rgba(255, 255, 255, 0.5)

@@ -55,7 +55,6 @@ var AppCell = Class(Cell, function() {
 
   var _imageCache = {};
 
-  var defaultIconURL = '/images/defaultIcon.png';
   this.setIcon = function (icon) {
     if (icon in _imageCache) {
       this._setIcon(icon);
@@ -63,15 +62,14 @@ var AppCell = Class(Cell, function() {
       var img = new Image();
       img.onload = bind(this, '_setIcon', icon);
       img.src = icon;
-      this._setIcon(defaultIconURL);
+
+      $.addClass(this.icon, 'noIcon');
     }
   };
 
   this._setIcon = function (icon) {
-    if (icon != defaultIconURL) {
-      _imageCache[icon] = true;
-    }
-
+    _imageCache[icon] = true;
+    $.removeClass(this.icon, 'noIcon');
     this.icon.style.backgroundImage = 'url(' + icon + ')';
   };
 
@@ -173,6 +171,12 @@ exports = Class(Widget, function(supr) {
         {id: 'open', title: 'open existing game...', icon: 'icon_open.png'},
         {id: 'help', title: 'view documentation', icon: 'icon_help.png'},
       ]);
+
+    if (navigator.isNodeWebkit) {
+      this.actions.show();
+    } else {
+      this.actions.hide();
+    }
 
     this.actions.setDataSource(actions);
 

@@ -163,8 +163,6 @@ function getAPIRouter(opts) {
       }
     });
 
-    console.log(">>>", compiler.opts.path)
-
     compiler.compile([req.params[0], 'preprocessors.import', 'preprocessors.cls'])
       .on('error', function (err) {
         res.send(err);
