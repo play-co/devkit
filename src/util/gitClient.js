@@ -5,6 +5,10 @@ function spawnWithLogger(args, opts, cb) {
   var name = 'git-' + args[0];
   var logger = logging.get(name);
   // logger.log('git', args.join(' '));
+  if (!opts.stdio) {
+    opts.stdio = [process.stdin, 'pipe', process.stderr];
+  }
+
   var child = spawn('git', args, opts);
   child.stdout && child.stdout.pipe(logger, {end: false});
   child.stderr && child.stderr.pipe(logger, {end: false});

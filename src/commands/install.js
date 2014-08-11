@@ -105,17 +105,17 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       this.logger.log('"' + moduleName + '" installing into', modulePath);
       var f = ff(this, function () {
         if (!fs.existsSync(modulePath)) {
-          var modulesGit = gitClient.get(directory, {customFds: [0, 1, 2]});
+          var modulesGit = gitClient.get(directory, {stdio: 'inherit'});
           modulesGit('clone', url, moduleName, f());
         } else {
-          git('fetch', f());
+          git('fetch', '-v', f());
         }
       }, function () {
         if (tag) {
           git('checkout', tag, f());
         }
       }, function () {
-        var npm = spawn('npm', ['install'], {customFds: [0, 1, 2], cwd: modulePath});
+        var npm = spawn('npm', ['install'], {stdio: 'inherit', cwd: modulePath});
         npm.on('close', f());
       }, function () {
         try {

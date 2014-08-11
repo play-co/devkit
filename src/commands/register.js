@@ -12,13 +12,13 @@ var RegisterCommand = Class(BaseCommand, function (supr) {
 
   this.exec = function (commands, args) {
     var appPath = process.cwd();
-    apps.get(appPath, function (err, res) {
+    apps.get(appPath, bind(this, function (err, res) {
       if (err) {
         this.logger.error(err);
       } else {
         this.logger.log('registered', appPath);
       }
-    });
+    }));
   }
 
 });
