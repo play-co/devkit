@@ -31,7 +31,8 @@ exports = Class(function () {
           this._port = res.port;
         }
 
-        simulator.loadURL('http://' + location.hostname + ':' + res.port + '/');
+        var hostname = location.hostname;
+        simulator.loadURL('http://' + hostname + ':' + res.port + '/');
 
         cb && cb(null, res);
       }

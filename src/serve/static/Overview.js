@@ -50,12 +50,20 @@ var AppCell = Class(Cell, function() {
     children: [
       {id: 'icon', className: 'appIcon'},
       {id: 'name', type: 'label', className: 'appName'},
-      {id: 'path', type: 'label', className: 'appPath'},
+      {id: 'path', type: 'label', className: 'appPath', children: [
+        {id: 'open', type: 'button', className: 'openAppBtn'}
+      ]},
       {id: 'lastOpened', type: 'label', className: 'appPath'}
     ]
   };
 
   var _imageCache = {};
+
+  this.delegate = new Delegate(function (on) {
+    on.open = function () {
+      util.ajax.get('/api/openAppExternal/?app=' + this._data.paths.root);
+    }
+  });
 
   this.setIcon = function (icon) {
     if (icon in _imageCache) {

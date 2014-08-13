@@ -3,6 +3,8 @@ var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser');
 var printf = require('printf');
+var os = require('os');
+var exec = require('child_process').exec;
 
 var apps = require('../apps');
 
@@ -106,6 +108,21 @@ function getAPIRouter(opts) {
         res.json(userApps);
       }
     });
+  });
+
+  api.get('/openAppExternal', function (req, res) {
+    var platform = os.platform();
+    if (platform == 'darwin') {
+      apps.get(req.query.app, true, function (err, app) {
+        if (app) {
+          exec('open ' + app.paths.root);
+        }
+
+        res.send(200);
+      });
+    } else {
+      res.send(500);
+    }
   });
 
   api.get('/icon', function (req, res) {

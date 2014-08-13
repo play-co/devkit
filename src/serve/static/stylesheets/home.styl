@@ -95,8 +95,42 @@ div#ip
     color #808080
     white-space nowrap
     text-overflow ellipsis
-    overflow hidden
     font-size 10px
+
+    #open
+      border none
+      background none
+      outline none
+      cursor pointer
+
+      position relative
+      margin-left 5px
+
+      &:after
+        glyphicon(arrow-right)
+
+        position absolute
+        opacity 0
+        transition all 0.3s
+        font-size: 10px;
+        top: -13px;
+        left: -3px;
+        background: #DDD;
+        width: 15px;
+        height: 13px;
+        border-radius: 13px;
+        border: 5px solid white;
+        padding-top: 2px;
+        color: #FFF
+
+      &:hover:after
+        background #AAA
+
+      &:active:after
+        background #888
+
+    &:hover #open:after
+      opacity 1
 
   &:hover:not(.selected)
     cursor pointer
