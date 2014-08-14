@@ -25,8 +25,6 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     var protocol = argv.ssh ? 'ssh' : 'https';
     var module = args.shift();
 
-    var directory = path.resolve(process.cwd(), 'modules');
-
     // no module provided, read and install all modules from manifest.json
     apps.get('.', {create: true, protocol: protocol}, bind(this, function (err, app) {
       if (err) { throw err; }
@@ -43,7 +41,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       var deps = app.manifest.dependencies;
       if (module) {
         // single module provided, install it
-        install.installModule(app, module, cb);
+        install.installModule(app, module, {protocol: protocol}, cb);
       } else {
         if (!deps) {
           return logger.error('No dependencies found in "manifest.json"');

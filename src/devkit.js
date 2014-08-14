@@ -15,7 +15,10 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-var commandNames = ['debug', 'new', 'open', 'serve', 'help', 'version', 'install', 'register', 'init'];
+var commandNames = [
+	'debug', 'new', 'open', 'serve', 'help',
+	'version', 'install', 'register', 'init',
+	'update'];
 
 process.title = "devkit";
 process.opts = require("optimist").argv;

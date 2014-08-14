@@ -83,8 +83,9 @@ Module.setVersion = function (modulePath, version, cb) {
   var moduleName = path.basename(modulePath);
 
   var f = ff(function () {
+    git.getVersions(f());
     git('describe', '--tags', f());
-  }, function (currentVersion) {
+  }, function (versions, currentVersion) {
     currentVersion = currentVersion.replace(/^\s+|\s+$/g, '');
 
     // are we already on that version?
