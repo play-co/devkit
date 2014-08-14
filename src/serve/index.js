@@ -113,7 +113,7 @@ function getAPIRouter(opts) {
   api.get('/openAppExternal', function (req, res) {
     var platform = os.platform();
     if (platform == 'darwin') {
-      apps.get(req.query.app, true, function (err, app) {
+      apps.get(req.query.app, {updateLastOpened: false}, function (err, app) {
         if (app) {
           exec('open ' + app.paths.root);
         }
@@ -127,7 +127,7 @@ function getAPIRouter(opts) {
 
   api.get('/icon', function (req, res) {
     var appPath = req.query.app;
-    apps.get(appPath, true, function (err, app) {
+    apps.get(appPath, {updateLastOpened: false}, function (err, app) {
       if (err) { return res.send(404, err); }
       res.sendfile(path.join(app.paths.root, app.getIcon(req.query.targetSize || 512)));
     })

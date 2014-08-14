@@ -9,26 +9,29 @@ var errorToString = require('./toString').errorToString;
  */
 
 var _loggers = {};
-exports.get = function (name) {
-  return new exports.Logger(name);
+exports.get = function (name, isSilent, buffers) {
+  return new exports.Logger(name, isSilent, buffers);
 }
 
 exports.Logger = Class(Writable, function () {
   this._outHadNewLine = true;
   this._errHadNewLine = true;
 
-  this.init = function (tag, isSilent, outBuffer, errBuffer) {
+  this.init = function (tag, isSilent, buffers) {
     Writable.call(this);
 
     this._tag = tag;
     this._prefix = exports.getPrefix(tag);
     this._isSilent = isSilent || false;
 
-    this._outBuffer = outBuffer;
-    this._errBuffer = errBuffer;
+    this._buffers = buffers || {};
+    this._hadNewLine = {};
 
-    this.out = this.out.bind(this);
-    this.err = this.err.bind(this);
+    this.stdout = new Writable();
+    this.stdout._write = bind(this, '_buffer', 'stdout');
+
+    this.stderr = new Writable();
+    this.stderr._write = bind(this, '_buffer', 'stderr');
   }
 
   this.constructor.indent = function (indent, str) {
@@ -72,40 +75,30 @@ exports.Logger = Class(Writable, function () {
     console.error.apply(console, [this._prefix, color.redBright('[error] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
   }
 
-  // hook these up to streaming logs (stdout and stderr)
-  this.out = function (data) {
-    if (this._outBuffer) { this._outBuffer.push(data); }
+  this._write = function (chunk, encoding, cb) {
+    this._buffer('log', chunk, encoding, cb);
+  }
+
+  this._buffer = function (buffer, chunk, encoding, cb) {
+    var data = String(chunk);
+    if (this._buffers[buffer]) {
+      this._buffers[buffer].push(data);
+    }
+
     if (!this._isSilent) {
-      if (this._outHadNewLine) {
+      if (this._hadNewLine[buffer]) {
         process.stderr.write(this._prefix);
       }
 
       process.stderr.write(this.format(data));
-      this._outHadNewLine = /\n$/.test(data);
+      this._hadNewLine[buffer] = /\n$/.test(data);
     }
-  }
 
-  this._write = function (chunk, encoding, cb) {
-    this.out(chunk);
     cb();
   }
 
   this.toString = function() {
     return this._buffer.join("\n");
-  }
-
-  this.err = function (data) {
-    if (this._errBuffer) { this._errBuffer.push(data); }
-    if (!this._isSilent) {
-      if (this._errHadNewLine) {
-        process.stderr.write(this._prefix);
-      }
-
-      data = String(data);
-
-      process.stderr.write(this.format(data));
-      this._errHadNewLine = /\n$/.test(data);
-    }
   }
 
   this.setLevel = function () {}

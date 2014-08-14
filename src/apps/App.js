@@ -18,7 +18,8 @@ var App = module.exports = Class(function () {
       manifest: path.join(root, 'manifest.json')
     };
 
-    this.manifest = manifest;
+    this.manifest = manifest || {};
+    this.dependencies = this._parseDeps();
     this.lastOpened = lastOpened || Date.now();
   }
 
@@ -53,6 +54,11 @@ var App = module.exports = Class(function () {
     }, this);
 
     return paths;
+  }
+
+  this.reloadModules = function () {
+    this._modules = {};
+    this._loadModules();
   }
 
   this._loadModules = function () {
@@ -103,12 +109,48 @@ var App = module.exports = Class(function () {
     }
   }
 
+  this._parseDeps = function () {
+    var deps = {};
+    var src = this.manifest.dependencies;
+    for (var name in src) {
+      var url = src[name];
+      var pieces = url.split('#', 2);
+      if (/\//.test(url))
+      deps[name] = {
+        url: pieces[0],
+        version: pieces[1]
+      };
+    }
+
+    return deps;
+  }
+
   /* Manifest */
 
   function createUUID (a) {
     return a
       ? (a ^ Math.random() * 16 >> a / 4).toString(16)
       : ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, createUUID);
+  }
+
+  var DEFAULT_PROTOCOL = "https";
+  var DEFAULT_DEPS = [
+    {
+      name: "devkit",
+      ssh: "git@github.com:",
+      https: "https://github.com/",
+      repo: "gameclosure/gcapi-priv",
+      tag: ""
+    }
+  ];
+
+  function getDefaultDeps(protocol) {
+    var out = {};
+    DEFAULT_DEPS.forEach(function (dep) {
+      var protocol = protocol == 'ssh' ? 'ssh' : 'https';
+      out[dep.name] = dep[protocol] + dep.repo + (dep.tag ? '#' + dep.tag : '');
+    });
+    return out;
   }
 
   this.validate = function (opts, cb) {
@@ -127,7 +169,9 @@ var App = module.exports = Class(function () {
       "supportedOrientations": [
         "portrait",
         "landscape"
-      ]
+      ],
+
+      "dependencies": getDefaultDeps(opts.protocol || 'https')
     };
 
     var changed = false;
@@ -140,12 +184,52 @@ var App = module.exports = Class(function () {
     }
 
     if (changed) {
+      this.dependencies = this._parseDeps();
       this.saveManifest(cb);
     }
   };
 
+  this.setModuleVersion = function (moduleName, version, cb) {
+    this.validate(null, bind(this, function (err) {
+      if (!err) {
+        var dep = this.dependencies[moduleName];
+        if (dep && dep.version != version) {
+          dep.version = version;
+        }
+      }
+    }));
+  }
+
+  this.addDependency = function (name, opts) {
+    var dep = this.dependencies[name];
+    var changed = false;
+    if (!dep) {
+      this.dependencies[name] = dep = {};
+      changed = true;
+    }
+
+    if (opts.url) {
+      dep.url = opts.url;
+      changed = true;
+    }
+
+    if (opts.version) {
+      dep.version = opts.version;
+      changed = true;
+    }
+
+    this.saveManifest();
+  }
+
   this.saveManifest = function (cb) {
-    return fs.writeFile(path.join(this.paths.manifest), stringify(this.manifest), cb);
+    var deps = this.manifest.dependencies = {};
+    Object.keys(this.dependencies).forEach(function (name) {
+      var dep = this.dependencies[name];
+      deps[name] = (dep.url || '') + '#' + (dep.version || '');
+    }, this);
+
+    var data = stringify(this.manifest);
+    return fs.writeFile(path.join(this.paths.manifest), data, cb);
   };
 
   this.getPackageName = function() {

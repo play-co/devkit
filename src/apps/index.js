@@ -23,6 +23,8 @@ var logger = require('../util/logging').get('apps');
 var config = require('../config');
 var App = require('./App');
 
+var MANIFEST = 'manifest.json';
+
 var AppManager = Class(EventEmitter, function () {
   this.init = function () {
     this._apps = {};
@@ -38,7 +40,7 @@ var AppManager = Class(EventEmitter, function () {
     if (this._apps[appPath]) {
       cb && cb(null, this._apps[appPath]);
     } else {
-      var manifestPath = path.join(appPath, 'manifest.json');
+      var manifestPath = path.join(appPath, MANIFEST);
       fs.readFile(manifestPath, bind(this, function (err, contents) {
         if (err) {
           return cb && cb(err);
@@ -119,20 +121,31 @@ var AppManager = Class(EventEmitter, function () {
     });
   };
 
-  this.get = function (appPath, dontUpdate, cb) {
-    if (typeof arguments[1] == 'function') {
-      cb = arguments[1];
-      dontUpdate = false;
+  this.get = function (appPath, opts, cb) {
+    if (typeof opts == 'function') {
+      cb = opts;
+      opts = {};
     }
 
     var f = ff(this, function () {
       this.getApps(f());
     }, function () {
+      fs.exists(path.join(appPath, MANIFEST), f.slotPlain());
+    }, function (exists) {
+      if (!exists) {
+        if (opts.create) {
+          var app = new App(appPath);
+          app.validate(opts, f());
+        } else {
+          f.fail('App not found');
+        }
+      }
+    }, function () {
       this._load(appPath, null, true, f());
     }, function (app) {
       f(app);
 
-      if (app && !dontUpdate) {
+      if (app && opts.updateLastOpened !== false) {
         app.lastOpened = Date.now();
         this.persist();
       }

@@ -1,4 +1,5 @@
 import squill.Widget as Widget;
+from util.browser import $;
 
 exports = Class(Widget, function (supr) {
   this._def = {

@@ -1,5 +1,10 @@
 var path = require('path');
-var logger = require('../util/logging').get('apps');
+var ff = require('ff');
+var color = require('cli-color');
+var spawn = require('child_process').spawn;
+
+var gitClient = require('../util/gitClient');
+var logger = require('../util/logging').get('module');
 
 /**
  * A module for a game has several properties:
@@ -71,5 +76,47 @@ var Module = module.exports = Class(function () {
       extensions: this.getExtensions()
     };
   }
-
 });
+
+Module.setVersion = function (modulePath, version, cb) {
+  var git = gitClient.get(modulePath);
+  var moduleName = path.basename(modulePath);
+
+  var f = ff(function () {
+    git('describe', '--tags', f());
+  }, function (currentVersion) {
+    currentVersion = currentVersion.replace(/^\s+|\s+$/g, '');
+
+    // are we already on that version?
+    if (currentVersion && version == currentVersion) {
+      logger.log(color.cyanBright("set version"), color.yellowBright(moduleName + "@" + currentVersion));
+      return f.succeed(version);
+    }
+
+    // default to latest version
+    if (!version || versions.indexOf(version == -1)) {
+      // can't be silent in case it prompts for credentials
+      git('fetch', '--tags', {silent: false, buffer: false, stdio: 'inherit'}, f());
+    }
+  }, function () {
+    git.getVersions(f());
+  }, function (versions) {
+    if (!version) {
+      version = versions[0];
+    }
+
+    if (version) {
+      logger.log(color.cyanBright("installing"), color.yellowBright(moduleName + "@" + version));
+      git('checkout', version, f());
+    } else {
+      f.fail("no valid versions found");
+    }
+  }, function () {
+    logger.log("running install scripts...");
+    var npm = spawn('npm', ['install'], {stdio: 'inherit', cwd: modulePath});
+    npm.on('close', f.wait());
+  }, function () {
+    logger.log(color.cyanBright("set version"), color.yellowBright(moduleName + "@" + version));
+    f(version);
+  }).cb(cb);
+};
