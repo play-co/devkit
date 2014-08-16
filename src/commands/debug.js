@@ -19,14 +19,14 @@ var DebugCommand = Class(BaseCommand, function (supr) {
       .describe('version', 'override the version provided in the manifest')
   }
 
-  this.showHelp = function (commands, args) {
+  this.showHelp = function (args) {
     supr(this, 'showHelp', arguments);
 
     process.argv.push('--help');
-    this.exec(commands, args);
+    this.exec(args);
   }
 
-  this.exec = function (commands, args) {
+  this.exec = function (args, cb) {
     var argv = this.opts.argv;
     var allArgs = argv._;
     if (allArgs[0] == 'node') { allArgs.shift(); }
@@ -57,10 +57,12 @@ var DebugCommand = Class(BaseCommand, function (supr) {
       apps.get(appPath, function (err, app) {
         if (err) { return console.log(err); }
         console.log(getHelp(app, argv.target));
+        cb && cb();
       });
     } else {
       build.build(appPath, argv, function (err, res) {
         require('../jvmtools').stop();
+        cb && cb();
       });
     }
   }

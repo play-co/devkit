@@ -1,4 +1,4 @@
-
+var commands = require('./index');
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var HelpCommand = Class(BaseCommand, function (supr) {
@@ -6,13 +6,16 @@ var HelpCommand = Class(BaseCommand, function (supr) {
   this.name = 'help';
   this.description = 'prints this help message';
 
-  this.exec = function (commands, args) {
+  this.exec = function (args, cb) {
     var cmd = args.shift();
-    if (cmd in commands) {
-      commands[cmd].showHelp(commands, args);
+
+    if (commands.has(cmd)) {
+      commands.get(cmd).showHelp(args);
     } else {
       require('optimist').showHelp();
     }
+
+    cb && cb();
   }
 });
 

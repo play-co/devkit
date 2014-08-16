@@ -21,7 +21,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       .describe('ssh', 'switches git protocol to ssh, default: false (https)');
   }
 
-  this.exec = function (commands, args, cb) {
+  this.exec = function (args, cb) {
 
     var argv = this.opts.argv;
     var protocol = argv.ssh ? 'ssh' : 'https';
@@ -56,14 +56,12 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         }
       }
     }, function (app) {
-      if (module) {
-        // installed a single module, we're done
-        return f.succeed();
-      } else {
-        // need to install all modules
-        install.installDependencies(app, cb);
+      // if we installed a single module, we're done
+      if (!module) {
+        // otherwise, need to install all dependencies
+        install.installDependencies(app, f());
       }
-    });
+    }).cb(cb);
   }
 });
 

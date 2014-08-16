@@ -32,42 +32,7 @@ exports.BaseCommand = Class(function () {
     this.opts.showHelp();
   }
 
-  this.onCommand = function (commands) {
-    var next = this.exec.bind(this, commands);
-    if (this.autoRegister) {
-      this.util.autoRegister(next);
-    } else {
-      next();
-    }
-  }
-
-  this.exec = function (commands) {
+  this.exec = function (args, cb) {
     // to implement
   }
-
-  // useful util functions shared between commands
-  this.util = {
-    autoRegister: function (cb) {
-      cb();
-    },
-    ensureLocalProject: function () {
-      if (!fs.existsSync('./manifest.json')) {
-        console.error(clc.red('ERROR: '), 'Basil started in non-GC project folder, aborting.');
-        process.exit(2);
-      }
-    },
-    ensureJava: function (cb) {
-      // Try to run Java. In OS X, you'll be prompted to install Java on first
-      // run if you haven't installed it yet.
-      exec('java -version', function (error, stdout, stderr) {
-        if (error) {
-          console.log(clc.red('ERROR:'), 'Java is required in order to run DevKit.');
-          process.exit(2);
-        } else {
-          cb();
-        }
-      });
-    }
-  };
-
 });

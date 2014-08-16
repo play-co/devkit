@@ -7,7 +7,7 @@ var UpdateCommand = Class(BaseCommand, function (supr) {
   this.name = 'update';
   this.description = "update the specified module (or the game's devkit module if none is provided) to the latest version";
 
-  this.exec = function (commands, args, cb) {
+  this.exec = function (args, cb) {
     var moduleName = args.shift() || 'devkit';
 
     // no module provided, read and install all modules from manifest.json

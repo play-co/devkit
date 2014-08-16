@@ -36,6 +36,9 @@
     "uglify-js": "1.3.x"
   },
   "main": "src/devkit.js",
+  "scripts": {
+    "postinstall": "java -version"
+  },
   "private": true,
   "devDependencies": {
     "express-debug": "^1.1.0"

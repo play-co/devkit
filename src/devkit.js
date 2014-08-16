@@ -15,13 +15,7 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-var commandNames = [
-	'debug', 'new', 'open', 'serve', 'help',
-	'version', 'install', 'register', 'init',
-	'update', 'which'];
-
 process.title = "devkit";
-process.opts = require("optimist").argv;
 
 /**
  * Command line interface.
@@ -30,12 +24,7 @@ process.opts = require("optimist").argv;
 require = require('jsio');
 require('./globals');
 
-var path = require('path');
-var clc = require('cli-color');
-var printf = require('printf');
-
 var logging = require('./util/logging');
-
 var logger = logging.get('devkit');
 
 process.on('uncaughtException', function (e) {
@@ -53,45 +42,12 @@ if (require.main === module) {
 }
 
 function main () {
-	var optimist = require('optimist');
-	var commands = {};
-	var usage = [];
-
-	// get all commands and their descriptions
-	commandNames.forEach(function (name) {
-		var Command = require('./commands/' + name);
-		if (typeof Command == 'function') {
-			var cmd = commands[name] = new Command();
-
-			// setup a single or array of aliases (e.g. "--version" and "-v" for the "version" command)
-			if (cmd.alias) {
-				var isArray = Array.isArray(cmd.alias);
-				var first = isArray ? cmd.alias[0] : cmd.alias;
-				optimist.boolean(first, cmd.description);
-				if (isArray) {
-					cmd.alias.slice(1).forEach(function (alias) {
-						optimist.alias(alias, first);
-					});
-				}
-
-				if (!commands[first]) {
-					commands[first] = cmd;
-				}
-			}
-
-			usage.push(printf('  %-10s %s', cmd.name, cmd.description));
-		}
-	});
-
-	var usageStr = "usage: devkit [--version] [--help] <command> [<args>]\n\n"
-		+ "available commands:\n" + usage.join('\n') + "\n\n"
-		+ "See 'devkit help <command> to read about a specific command";
-
-	var argv = optimist.usage(usageStr).argv;
+	var commands = require('./commands');
+	var argv = commands.argv;
 	var args = argv._;
 
 	var name;
-	if (args[0] && (args[0] in commands)) {
+	if (commands.has(args[0])) {
 		name = args.shift();
 	} else if (argv.version) {
 		name = 'version';
@@ -99,11 +55,12 @@ function main () {
 		name = 'help';
 	}
 
+	var command = commands.get(name);
 	try {
-		commands[name].exec(commands, args);
+		command.exec(args);
 	} catch (e) {
-		if (commands[name].logger) {
-			commands[name].logger.error(e);
+		if (command.logger) {
+			command.logger.error(e);
 		} else {
 			console.log(e);
 		}
