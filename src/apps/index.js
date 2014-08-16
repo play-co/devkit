@@ -127,6 +127,8 @@ var AppManager = Class(EventEmitter, function () {
       opts = {};
     }
 
+    if (!opts) { opts = {}; }
+
     var f = ff(this, function () {
       this.getApps(f());
     }, function () {

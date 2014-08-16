@@ -18,7 +18,7 @@
 var commandNames = [
 	'debug', 'new', 'open', 'serve', 'help',
 	'version', 'install', 'register', 'init',
-	'update'];
+	'update', 'which'];
 
 process.title = "devkit";
 process.opts = require("optimist").argv;
@@ -72,6 +72,10 @@ function main () {
 					cmd.alias.slice(1).forEach(function (alias) {
 						optimist.alias(alias, first);
 					});
+				}
+
+				if (!commands[first]) {
+					commands[first] = cmd;
 				}
 			}
 

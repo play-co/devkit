@@ -11,6 +11,7 @@ exports = Class(function () {
 
   this.rebuild = function (params, cb) {
     var simulator = this._device.getSimulator();
+    simulator.setBuilding(true);
 
     // get or update a simulator port with the following options
     util.ajax.get({
@@ -23,6 +24,7 @@ exports = Class(function () {
         target: this._device.getBuildTarget()
       }
     }, bind(this, function (err, res) {
+      simulator.setBuilding(false);
 
       if (err) {
         cb && cb(err);

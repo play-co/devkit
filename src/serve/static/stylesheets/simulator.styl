@@ -116,6 +116,7 @@ else
     width 100%
     height 100%
     border none
+    pointer-events auto !important
 
   #toolbar
     position absolute
@@ -312,6 +313,17 @@ else
     width 100%
     height 100%
 
+  #build-spinner
+    position absolute
+    width 100%
+    height 100%
+    opacity 0
+    transition all 0.5s
+    pointer-events none
+    background url(/icons/spinner.png)
+    background-size 50px 50px
+    background-repeat no-repeat
+    background-position center
 
   .closeButton
     background-color red
@@ -319,9 +331,18 @@ else
     border-radius 5px-moz-border-radius 5px
     float right
 
-.simulator:hover
-  #toolbar
-    opacity 1
+  &:hover
+    #toolbar
+      opacity 1
+
+  &.building
+    #build-spinner
+      opacity 1
+      animation spin 4s linear infinite
+
+@keyframes spin
+  100%
+    transform rotate(360deg)
 
 .no-transitions
   transition none

@@ -32,6 +32,9 @@ exports.Logger = Class(Writable, function () {
 
     this.stderr = new Writable();
     this.stderr._write = bind(this, '_buffer', 'stderr');
+
+    this.out = bind(this, function (data) { this._buffer('out', data); });
+    this.err = bind(this, function (data) { this._buffer('err', data); });
   }
 
   this.constructor.indent = function (indent, str) {
@@ -94,7 +97,7 @@ exports.Logger = Class(Writable, function () {
       this._hadNewLine[buffer] = /\n$/.test(data);
     }
 
-    cb();
+    cb && cb();
   }
 
   this.toString = function() {

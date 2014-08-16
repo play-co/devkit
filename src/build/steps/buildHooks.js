@@ -2,6 +2,8 @@ var ff = require('ff');
 var api = require('../../api');
 
 exports.getDependencies = function (app, config, cb) {
+  app.reloadModules();
+
   // allows modules to disable other modules
   executeHook('getDependencies', app, config, cb);
 }

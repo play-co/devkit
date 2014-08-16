@@ -154,7 +154,13 @@ var App = module.exports = Class(function () {
   }
 
   this.validate = function (opts, cb) {
-    var opts = opts || {};
+    if (typeof opts == 'function') {
+      cb = opts;
+      opts = {};
+    }
+
+    if (!opts) { opts = {}; }
+
     var defaults = {
       "appID": createUUID(),
       "shortName": opts.shortName || "",

@@ -79,12 +79,8 @@ exports.serveTestApp = function (basePort) {
       args: [
         '-rs', hostname, 'devkit._tcp', 'local', basePort
       ]
-    }, function (err, jmdns) {
-        var formatter = new logging.Logger('jmdns');
-        jmdns.on('out', formatter.out);
-        jmdns.on('err', formatter.err);
-        jmdns.on('end', function (data) {})
-      });
+    }, function (err, stdout, stderr) {
+    });
   }
 }
 
@@ -123,6 +119,16 @@ function getAPIRouter(opts) {
     } else {
       res.send(500);
     }
+  });
+
+  api.get('/title', function (req, res) {
+    var appPath = req.query.app;
+    apps.get(appPath, {updateLastOpened: false}, function (err, app) {
+      if (err) { return res.send(404, err); }
+
+      // TODO: localized titles?
+      res.send(200, app.manifest.title);
+    })
   });
 
   api.get('/icon', function (req, res) {

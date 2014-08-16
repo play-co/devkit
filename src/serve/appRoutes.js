@@ -96,7 +96,7 @@ exports.addToAPI = function (opts, api) {
         var extension = module.loadExtension('simulator');
         if (extension && extension.getMiddleware) {
           try {
-            var routes = extension.getMiddleware(require('../api'));
+            var routes = extension.getMiddleware(require('../api'), app);
           } catch (e) {
             logger.error(e);
           }

@@ -1,4 +1,6 @@
 var fs = require('fs');
+var ff = require('ff');
+
 var path = require('path');
 
 var apps = require('../apps');
@@ -25,9 +27,11 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     var protocol = argv.ssh ? 'ssh' : 'https';
     var module = args.shift();
 
-    // no module provided, read and install all modules from manifest.json
-    apps.get('.', {create: true, protocol: protocol}, bind(this, function (err, app) {
-      if (err) { throw err; }
+    var f = ff(function () {
+      apps.get('.', {create: true, protocol: protocol}, f());
+    }, function (app) {
+      // forward along the app
+      f(app);
 
       // ensure modules directory exists
       if (!fs.existsSync(app.paths.modules)) {
@@ -38,18 +42,28 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         throw new Error('"your-app/modules" must be a directory');
       }
 
-      var deps = app.manifest.dependencies;
       if (module) {
         // single module provided, install it
-        install.installModule(app, module, {protocol: protocol}, cb);
+        install.installModule(app, module, {protocol: protocol}, f());
       } else {
+        // no module provided, install all dependencies after we ensure we
+        // have dependencies
+        var deps = app.manifest.dependencies;
         if (!deps) {
-          return logger.error('No dependencies found in "manifest.json"');
+          // ensure devkit is a dependency
+          logger.log('Adding default dependencies to "manifest.json"...');
+          app.validate(f());
         }
-
+      }
+    }, function (app) {
+      if (module) {
+        // installed a single module, we're done
+        return f.succeed();
+      } else {
+        // need to install all modules
         install.installDependencies(app, cb);
       }
-    }));
+    });
   }
 });
 

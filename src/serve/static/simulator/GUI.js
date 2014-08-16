@@ -400,6 +400,17 @@ exports.start = function () {
     return;
   }
 
+  util.ajax.get({
+      url: '/api/title',
+      query: {
+        app: app
+      }
+    }, function (err, title) {
+      if (title) {
+        document.title = title;
+      }
+    });
+
   var f = new ff(function () {
     squill.cssLoad.get('/stylesheets/simulator.styl', f.wait());
     util.ajax.get({

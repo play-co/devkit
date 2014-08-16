@@ -28,6 +28,16 @@ var DebugCommand = Class(BaseCommand, function (supr) {
 
   this.exec = function (commands, args) {
     var argv = this.opts.argv;
+    var allArgs = argv._;
+    if (allArgs[0] == 'node') { allArgs.shift(); }
+    if (allArgs[1] == 'release') {
+      argv.scheme = 'release';
+
+      // unless overriden with --debug, debug is false for release builds
+      if (!('debug' in argv)) {
+        argv.debug = false;
+      }
+    }
 
     var build = require('../build');
     var apps = require('../apps');

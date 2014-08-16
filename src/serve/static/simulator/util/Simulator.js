@@ -111,7 +111,8 @@ exports = Class(squill.Widget, function (supr) {
             id: 'frameWrapper',
             children: [
               {id: 'splashImage'},
-              {id: 'resizeHandle'}
+              {id: 'resizeHandle'},
+              {id: 'build-spinner'}
             ]
           }
         ]}
@@ -181,6 +182,10 @@ exports = Class(squill.Widget, function (supr) {
       this._isMuted = true;
     }
   };
+
+  this.setBuilding = function (isBuilding) {
+    this.toggleClass('building', isBuilding);
+  }
 
   this._onMenuClose = function (menu) {
     $.removeClass(this.toolbar, 'menu-open');
