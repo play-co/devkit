@@ -15,6 +15,8 @@
 
 var exec = require('child_process').exec;
 var logging = require('./logging');
+var fs = require('fs');
+var path = require('path');
 
 exports.BaseCommand = Class(function () {
 
@@ -24,15 +26,15 @@ exports.BaseCommand = Class(function () {
   this.init = function () {
     this.opts = require('optimist')(process.argv);
     this.logger = logging.get(this.name);
-  }
+  };
 
   this.showHelp = function () {
-    console.log("devkit", this.name + ":", this.description);
+    console.log('devkit', this.name + ':', this.description);
     console.log();
     this.opts.showHelp();
-  }
+  };
 
   this.exec = function (args, cb) {
     // to implement
-  }
+  };
 });

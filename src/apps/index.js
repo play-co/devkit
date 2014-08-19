@@ -1,16 +1,16 @@
-/** @license
- * This file is part of the Game Closure SDK.
+/** @license This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
- * it under the terms of the Mozilla Public License v. 2.0 as published by Mozilla.
+ * it under the terms of the Mozilla Public License v. 2.0 as published by
+ * Mozilla.
 
- * The Game Closure SDK is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * Mozilla Public License v. 2.0 for more details.
+ * The Game Closure SDK is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License v. 2.0
+ * for more details.
 
- * You should have received a copy of the Mozilla Public License v. 2.0
- * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
+ * You should have received a copy of the Mozilla Public License v. 2.0 along
+ * with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
 var EventEmitter = require('events').EventEmitter;
@@ -25,6 +25,37 @@ var App = require('./App');
 
 var MANIFEST = 'manifest.json';
 
+function isDevkitApp (cwd) {
+  var manifestPath = path.join(cwd, 'manifest.json');
+  var manifest;
+  if (fs.existsSync(manifestPath)) {
+    try {
+      manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    } catch (e) {
+      manifest = {};
+    }
+
+    if (manifest.appID) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function findNearestApp (dir) {
+  if (!dir) {
+    dir = process.cwd();
+  }
+
+  if (isDevkitApp(dir)) {
+    return dir;
+  } else if (fs.existsSync(path.join(dir, '..'))) {
+    return findNearestApp(path.normalize(path.join(dir, '..')));
+  } else {
+    return null;
+  }
+}
+
 var AppManager = Class(EventEmitter, function () {
   this.init = function () {
     this._apps = {};
@@ -35,7 +66,7 @@ var AppManager = Class(EventEmitter, function () {
   };
 
   this._load = function (appPath, lastOpened, persist, cb) {
-    var appPath = path.resolve(process.cwd(), appPath);
+    appPath = path.resolve(process.cwd(), appPath);
 
     if (this._apps[appPath]) {
       cb && cb(null, this._apps[appPath]);
@@ -49,7 +80,8 @@ var AppManager = Class(EventEmitter, function () {
         try {
           var manifest = JSON.parse(contents);
         } catch (e) {
-          return cb && cb(new Error('failed to parse "manifest.json" (' + manifestPath + ')'));
+          return cb && cb(new Error('failed to parse "manifest.json" (' +
+                                    manifestPath + ')'));
         }
 
         if (!this._apps[appPath] && manifest.appID) {
@@ -65,7 +97,7 @@ var AppManager = Class(EventEmitter, function () {
         cb && cb(null, this._apps[appPath]);
       }));
     }
-  }
+  };
 
   this.reload = function () {
     var apps = config.get('apps');
@@ -113,7 +145,7 @@ var AppManager = Class(EventEmitter, function () {
     }, this);
 
     config.set('apps', apps);
-  }
+  };
 
   this.getAppDirs = function (cb) {
     this.getApps(function (err, apps) {
@@ -126,12 +158,16 @@ var AppManager = Class(EventEmitter, function () {
   };
 
   this.get = function (appPath, opts, cb) {
-    if (typeof opts == 'function') {
+    if (typeof opts === 'function') {
       cb = opts;
       opts = {};
     }
 
     if (!opts) { opts = {}; }
+
+    if (!appPath) {
+      appPath = findNearestApp();
+    }
 
     var f = ff(this, function () {
       this.getApps(f());
@@ -156,14 +192,18 @@ var AppManager = Class(EventEmitter, function () {
         this.persist();
       }
     }).cb(cb);
-  }
+  };
 
   this.getApps = function (cb) {
     if (!this._isLoaded) {
       return this.once('update', bind(this, 'getApps', cb));
     }
 
-    cb && cb(null, this._apps);
+    if (cb) {
+      // Calling this function should always be async based on the
+      // this._isLoaded case.
+      process.nextTick(function () { cb(null, this._apps); }.bind(this));
+    }
   };
 });
 

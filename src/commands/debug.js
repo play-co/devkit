@@ -41,7 +41,7 @@ var DebugCommand = Class(BaseCommand, function (supr) {
 
     var build = require('../build');
     var apps = require('../apps');
-    var appPath = argv.app || '.';
+    var appPath = argv.app || null;
 
     if (!argv.target) {
       if (args[0]) {
