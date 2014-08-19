@@ -37,7 +37,7 @@
   },
   "main": "src/devkit.js",
   "scripts": {
-    "postinstall": "java -version"
+    "postinstall": "java -version && git submodule update --init"
   },
   "private": true,
   "devDependencies": {
