@@ -77,6 +77,10 @@ var AppManager = Class(EventEmitter, function () {
       apps = newApps;
     }
 
+    if (!apps) {
+      apps = {};
+    }
+
     var appDirs = Object.keys(apps);
     if (!appDirs || !appDirs.length) {
       this._isLoaded = true;
