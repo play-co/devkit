@@ -86,7 +86,7 @@ exports.get = function (dir, opts) {
 function getLatestVersion (cb) {
   var git = this;
   var f = ff(function () {
-    git('tag', '-l', f());
+    git('tag', '-l', {extraSilent: true}, f());
   }, function (tags) {
     if (tags) {
       tags = tags.split('\n').filter(semver.valid);
@@ -99,7 +99,7 @@ function getLatestVersion (cb) {
 function getVersions (cb) {
   var git = this;
   var f = ff(function () {
-    git('tag', '-l', f());
+    git('tag', '-l', {extraSilent: true}, f());
   }, function (tags) {
     if (tags) {
       tags = tags.split('\n').filter(semver.valid);

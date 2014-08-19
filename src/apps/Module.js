@@ -78,13 +78,28 @@ var Module = module.exports = Class(function () {
   }
 });
 
+Module.getVersions = function (modulePath, cb) {
+  var git = gitClient.get(modulePath);
+  var moduleName = path.basename(modulePath);
+
+  var f = ff(function () {
+    git.getVersions(f());
+    git('describe', '--tags', {extraSilent: true}, f());
+  }, function (versions, currentVersion) {
+    f({
+      current: currentVersion.replace(/^\s+|\s+$/g, ''),
+      versions: versions
+    });
+  }).cb(cb);
+}
+
 Module.setVersion = function (modulePath, version, cb) {
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
 
   var f = ff(function () {
     git.getVersions(f());
-    git('describe', '--tags', f());
+    git('describe', '--tags', {extraSilent: true}, f());
   }, function (versions, currentVersion) {
     currentVersion = currentVersion.replace(/^\s+|\s+$/g, '');
 
