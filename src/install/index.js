@@ -63,8 +63,9 @@ exports.installModule = function (app, moduleName, opts, cb) {
     moduleName = cacheEntry && cacheEntry.name || moduleName;
     var modulePath = path.join(app.paths.modules, moduleName);
     f(modulePath);
+
     if (!fs.existsSync(modulePath) && cacheEntry) {
-      cache.copy(cacheEntry, app.paths.modules, f());
+      cache.copy(cacheEntry, app.paths.modules, f.wait());
     }
 
     // install the version from the app manifest unless we're explicitly asked

@@ -116,15 +116,11 @@ var ModuleCache = Class(EventEmitter, function () {
       var git = gitClient.get(MODULE_CACHE);
       git('clone', url, tempName, {silent: false, buffer: false, stdio: 'inherit'}, f());
     }, function () {
-      // get and install latest version
-      Module.setVersion(tempName, null, f());
-    }, function () {
-      // reload cache for proper module name
+      // reload cache for proper module name (moves module)
       this._loadCachePath(tempName, f());
     }, function (entry) {
-      // move the temp checkout to a properly named cache entry
-      var entryPath = path.join(MODULE_CACHE, entry.name);
-      fs.renameSync(tempName, entryPath);
+      // get and install latest version
+      Module.setVersion(path.join(MODULE_CACHE, entry.name), null, f.wait());
       f(entry);
     }).error(function () {
       rimraf(tempName, function () {});
