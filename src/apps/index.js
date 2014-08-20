@@ -66,6 +66,11 @@ var AppManager = Class(EventEmitter, function () {
   };
 
   this._load = function (appPath, lastOpened, persist, cb) {
+
+    if (!appPath) {
+      return cb && cb('App not found');
+    }
+
     appPath = path.resolve(process.cwd(), appPath);
 
     if (this._apps[appPath]) {
@@ -157,6 +162,19 @@ var AppManager = Class(EventEmitter, function () {
     });
   };
 
+  this.create = function (appPath, cb) {
+    this.get(appPath, function (err, app) {
+      if (err) {
+        app = new App(appPath);
+        app.validate({shortName: path.basename(appPath)}, function (err) {
+          cb && cb(err, !err && app);
+        });
+      } else {
+        cb && cb(null, app);
+      }
+    });
+  };
+
   this.get = function (appPath, opts, cb) {
     if (typeof opts === 'function') {
       cb = opts;
@@ -165,24 +183,12 @@ var AppManager = Class(EventEmitter, function () {
 
     if (!opts) { opts = {}; }
 
-    if (!appPath) {
-      appPath = findNearestApp();
-    }
-
     var f = ff(this, function () {
       this.getApps(f());
     }, function () {
-      fs.exists(path.join(appPath, MANIFEST), f.slotPlain());
-    }, function (exists) {
-      if (!exists) {
-        if (opts.create) {
-          var app = new App(appPath);
-          app.validate(opts, f());
-        } else {
-          f.fail('App not found');
-        }
+      if (!appPath) {
+        appPath = findNearestApp();
       }
-    }, function () {
       this._load(appPath, null, true, f());
     }, function (app) {
       f(app);
