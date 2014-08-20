@@ -164,7 +164,7 @@ var App = module.exports = Class(function () {
     var defaults = {
       "appID": createUUID(),
       "shortName": opts.shortName || "",
-      "title": opts.title || "",
+      "title": opts.title || opts.shortName || "",
 
       "studio": {
         "name": "Your Studio Name",

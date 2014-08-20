@@ -32,7 +32,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
     }
 
     var f = ff(this, function () {
-      apps.get(appName, {create: true}, f());
+      apps.create(appName, f());
     }, function (app) {
       process.chdir(app.paths.root);
       commands.get('install').exec([], f());
@@ -41,7 +41,8 @@ var InitCommand = Class(BaseCommand, function (supr) {
     })).success(bind(this, function () {
       this.logger.log(color.cyanBright('created new app'), color.yellowBright(appName));
     })).cb(cb);
-  }
+  };
 });
+
 
 module.exports = InitCommand;
