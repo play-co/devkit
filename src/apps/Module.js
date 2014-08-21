@@ -78,12 +78,26 @@ var Module = module.exports = Class(function () {
   }
 });
 
+Module.getURL = function (modulePath, cb) {
+  var git = gitClient.get(modulePath);
+  var f = ff(function () {
+    git('remote', '-v', {extraSilent: true}, f());
+  }, function (remotes) {
+    var url = remotes.split('\n').map(function (line) {
+        return line.match(/^origin\s+(.*?)\s+\(fetch\)/);
+      }).filter(function (match) { return match; })
+        .map(function (match) { return match[1]; })[0];
+    f(url);
+    console.log(">>>",url);
+  }).cb(cb);
+}
+
 Module.getVersions = function (modulePath, cb) {
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
 
   var f = ff(function () {
-    git.getVersions(f());
+    git.getLocalVersions(f());
     git('describe', '--tags', {extraSilent: true}, f());
   }, function (versions, currentVersion) {
     f({
@@ -98,7 +112,7 @@ Module.setVersion = function (modulePath, version, cb) {
   var moduleName = path.basename(modulePath);
 
   var f = ff(function () {
-    git.getVersions(f());
+    git.getLocalVersions(f());
     git('describe', '--tags', {extraSilent: true}, f());
   }, function (versions, currentVersion) {
     currentVersion = currentVersion.replace(/^\s+|\s+$/g, '');
@@ -115,7 +129,7 @@ Module.setVersion = function (modulePath, version, cb) {
       git('fetch', '--tags', {silent: false, buffer: false, stdio: 'inherit'}, f());
     }
   }, function () {
-    git.getVersions(f());
+    git.getLocalVersions(f());
   }, function (versions) {
     if (!version) {
       version = versions[0];

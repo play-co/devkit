@@ -115,7 +115,6 @@ var App = module.exports = Class(function () {
     for (var name in src) {
       var url = src[name];
       var pieces = url.split('#', 2);
-      if (/\//.test(url))
       deps[name] = {
         url: pieces[0],
         version: pieces[1]
@@ -145,9 +144,10 @@ var App = module.exports = Class(function () {
   ];
 
   function getDefaultDeps(protocol) {
+    protocol = protocol == 'ssh' ? 'ssh' : 'https';
+
     var out = {};
     DEFAULT_DEPS.forEach(function (dep) {
-      var protocol = protocol == 'ssh' ? 'ssh' : 'https';
       out[dep.name] = dep[protocol] + dep.repo + (dep.tag ? '#' + dep.tag : '');
     });
     return out;
@@ -177,7 +177,7 @@ var App = module.exports = Class(function () {
         "landscape"
       ],
 
-      "dependencies": getDefaultDeps(opts.protocol || 'https')
+      "dependencies": {}
     };
 
     var changed = false;
@@ -189,9 +189,19 @@ var App = module.exports = Class(function () {
       }
     }
 
+    var defaultDeps = getDefaultDeps(opts.protocol || 'https');
+    for (var key in defaultDeps) {
+      if (!(key in this.manifest.dependencies)) {
+        this.manifest.dependencies[key] = defaultDeps[key];
+        changed = true;
+      }
+    }
+
     if (changed) {
       this.dependencies = this._parseDeps();
       this.saveManifest(cb);
+    } else {
+      cb && process.nextTick(cb);
     }
   };
 
@@ -206,7 +216,7 @@ var App = module.exports = Class(function () {
     }));
   }
 
-  this.addDependency = function (name, opts) {
+  this.addDependency = function (name, opts, cb) {
     var dep = this.dependencies[name];
     var changed = false;
     if (!dep) {
@@ -224,7 +234,17 @@ var App = module.exports = Class(function () {
       changed = true;
     }
 
-    this.saveManifest();
+    var write = bind(this, 'saveManifest', cb);
+    if (!dep.url) {
+      Module.getURL(path.join(this.paths.modules, name), function (err, url) {
+        if (!err) { dep.url = url; }
+        write();
+      });
+    } else if (changed) {
+      write();
+    } else {
+      cb && process.nextTick(cb);
+    }
   }
 
   this.saveManifest = function (cb) {

@@ -44,6 +44,13 @@ exports.installModule = function (app, moduleName, opts, cb) {
       }
       url = url.substring(0, i);
     }
+
+    if (opts.protocol == 'ssh') {
+      var match = /^https:\/\/(.*?)\/(.*)$/;
+      if (match) {
+        url = 'git@' + match[1] + ':' + match[2];
+      }
+    }
   }
 
   var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/
@@ -84,7 +91,7 @@ exports.installModule = function (app, moduleName, opts, cb) {
     app.addDependency(moduleName, {
       url: cacheEntry && cacheEntry.url,
       version: installedVersion
-    });
+    }, f.wait());
 
     f(installedVersion);
     // try {

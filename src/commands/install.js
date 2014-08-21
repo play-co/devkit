@@ -28,7 +28,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     var module = args.shift();
 
     var f = ff(function () {
-      apps.get('.', {create: true, protocol: protocol}, f());
+      apps.get('.', f());
     }, function (app) {
       // forward along the app
       f(app);
@@ -49,10 +49,10 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         // no module provided, install all dependencies after we ensure we
         // have dependencies
         var deps = app.manifest.dependencies;
-        if (!deps) {
+        if (!deps || !deps.devkit) {
           // ensure devkit is a dependency
           logger.log('Adding default dependencies to "manifest.json"...');
-          app.validate(f());
+          app.validate({protocol: protocol}, f());
         }
       }
     }, function (app) {

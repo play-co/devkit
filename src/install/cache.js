@@ -48,21 +48,14 @@ var ModuleCache = Class(EventEmitter, function () {
   this._loadCachePath = function (cachePath, cb) {
     var git = gitClient.get(cachePath, {extraSilent: true});
     var f = ff(this, function () {
-      git.getLatestVersion(f());
+      git.getLatestLocalVersion(f());
     }, function (version) {
       f(version);
       git('show', version + ':package.json', f());
-      git('remote', '-v', f());
-    }, function (version, pkg, remotes) {
-
+      Module.getURL(cachePath, f());
+    }, function (version, pkg, url) {
       var data = JSON.parse(pkg);
       var name = data.name;
-
-      var url = remotes.split('\n').map(function (line) {
-        return line.match(/^origin\s+(.*?)\s+\(fetch\)/);
-      }).filter(function (match) { return match; })
-        .map(function (match) { return match[1]; })[0];
-
       var entry = {
         url: url,
         version: version,
@@ -81,12 +74,13 @@ var ModuleCache = Class(EventEmitter, function () {
   }
 
   var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/
+  var SSH_URL = /.+?\@.+?:.+/;
 
   // if version is not provided, gets the latest version
   this.add = function (nameOrURL, /* optional */ version, cb) {
 
     var url = nameOrURL;
-    if (!PROTOCOL.test(nameOrURL)) {
+    if (!PROTOCOL.test(nameOrURL) && !SSH_URL.test(nameOrURL)) {
       // try the default URL + name scheme
       url = DEFAULT_URL + nameOrURL;
     }
