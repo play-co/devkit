@@ -78,12 +78,12 @@ exports.get = function (dir, opts) {
     spawnWithLogger(args, singleOpts, cb);
   };
 
-  client.getLatestVersion = getLatestVersion;
-  client.getVersions = getVersions;
+  client.getLatestLocalVersion = getLatestLocalVersion;
+  client.getLocalVersions = getLocalVersions;
   return client;
 }
 
-function getLatestVersion (cb) {
+function getLatestLocalVersion (cb) {
   var git = this;
   var f = ff(function () {
     git('tag', '-l', {extraSilent: true}, f());
@@ -96,7 +96,7 @@ function getLatestVersion (cb) {
   }).cb(cb);
 }
 
-function getVersions (cb) {
+function getLocalVersions (cb) {
   var git = this;
   var f = ff(function () {
     git('tag', '-l', {extraSilent: true}, f());
