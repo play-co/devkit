@@ -88,7 +88,6 @@ Module.getURL = function (modulePath, cb) {
       }).filter(function (match) { return match; })
         .map(function (match) { return match[1]; })[0];
     f(url);
-    console.log(">>>",url);
   }).cb(cb);
 }
 
