@@ -59,7 +59,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       // if we installed a single module, we're done
       if (!module) {
         // otherwise, need to install all dependencies
-        install.installDependencies(app, f());
+        install.installDependencies(app, {protocol: protocol}, f());
       }
     }).cb(cb);
   }

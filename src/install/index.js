@@ -8,7 +8,7 @@ var Module = require('../apps/Module');
 
 var cache = require('./cache');
 
-exports.installDependencies = function (app, cb) {
+exports.installDependencies = function (app, opts, cb) {
   // serially install all dependencies in the manifest
   var deps = app.manifest.dependencies;
   var index = 0;
@@ -20,7 +20,7 @@ exports.installDependencies = function (app, cb) {
 
     var name = names[index++];
     if (name) {
-      exports.installModule(app, name, {url: deps[name]}, installNext);
+      exports.installModule(app, name, merge({url: deps[name]}, opts), installNext);
     }
   });
 
