@@ -2,7 +2,7 @@ import net;
 import net.interfaces;
 import lib.PubSub;
 import net.protocols.Cuppa;
-import .TargetCuppa;
+import ..util.TargetCuppa;
 
 exports = Class([net.interfaces.Server, lib.PubSub], function () {
   this.listen = function () {
@@ -10,7 +10,7 @@ exports = Class([net.interfaces.Server, lib.PubSub], function () {
   }
 
   this.buildProtocol = function () {
-    var conn = new TargetCuppa();
+    var conn = new util.TargetCuppa();
     conn.onEvent('HANDSHAKE', null, bind(this, function (evt) {
       this.emit('connection', conn, evt.args);
     }));

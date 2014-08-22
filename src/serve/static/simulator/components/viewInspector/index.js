@@ -4,7 +4,7 @@ import squill.Widget as Widget;
 import .DetailsWidget;
 import .ViewNode;
 
-exports = Class(Widget, function(supr) {
+exports.ViewInspector = Class(Widget, function(supr) {
   this._def = {
     style: {
       width: '650px'

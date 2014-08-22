@@ -31,7 +31,7 @@ import squill.Delegate;
 
 import lib.PubSub;
 
-import .resolutions;
+import ..util.resolutions;
 /*
 
 

@@ -21,9 +21,8 @@
  */
 
 import lib.PubSub;
-import .resolutions;
-import .Simulator;
-import .resolutions;
+import ..components.Simulator as Simulator;
+import ..util.resolutions;
 import .LocalController;
 
 var DeviceAPI = Class(function () {
@@ -114,7 +113,7 @@ var Device = exports = Class(lib.PubSub, function (supr) {
 
   this.getType = function () { return this._type; }
   this.setType = function (type) {
-    var opts = resolutions.get(type, {screen: this._screen, userAgent: this._userAgent});
+    var opts = util.resolutions.get(type, {screen: this._screen, userAgent: this._userAgent});
     if (opts && opts.target) {
       this._buildTarget = opts.target;
     }

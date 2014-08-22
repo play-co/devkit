@@ -13,25 +13,27 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-import .debugging;
+import .util.debugging;
 
-from util.browser import $;
+import net;
 import std.uri as URI;
 import lib.PubSub;
 import util.Animation;
 import util.ajax;
+from util.browser import $;
+
 import squill.Window;
 import squill.Widget;
 import squill.Delegate;
 
-import net;
-import .TargetCuppa;
+import .controllers.Device as Device;
+import .controllers.SimulatorServer as SimulatorServer;
 
-import .util.Device as Device;
-import .util.Simulator as Simulator;
-import .util.resolutions as resolutions;
-import .util.viewInspector.ViewInspector as ViewInspector;
-import .SimulatorServer;
+import .components.Logger as Logger;
+import .components.Simulator as Simulator;
+from .components.viewInspector import ViewInspector;
+
+import .util.TargetCuppa;
 
 var MainView = Class(squill.Widget, function (supr) {
 
@@ -45,7 +47,9 @@ var MainView = Class(squill.Widget, function (supr) {
           {id: 'myIP', type: 'label'},
         ]}
       ]},
-      {id: 'bottom'}
+      {id: 'bottom', children: [
+        {id: 'log', type: Logger}
+      ]}
     ]
   };
 
@@ -207,7 +211,7 @@ var MainController = exports = Class(lib.PubSub, function() {
     this.api = new PluginAPI(this);
   };
 
-  var DevKitConn = Class(TargetCuppa, function (supr) {
+  var DevKitConn = Class(util.TargetCuppa, function (supr) {
 
     var DEVKIT_CUPPA_TARGET = 'devkit';
 
@@ -440,11 +444,13 @@ exports.start = function () {
     });
 
   }).error(function (err) {
+    if (err.stack) { throw err; }
+
     if (err.response) {
       document.body.appendChild(document.createElement('div')).innerHTML = err.response + '<br><br>';
     }
 
-    var e = typeof err == 'string' ? err : JSON.stringify(err, null, '  ');
+    var e = typeof err == 'string' ? err : (err.stack || JSON.stringify(err, null, '  '));
     document.body.appendChild(document.createElement('div')).innerText = e;
     document.body.style.cssText = 'white-space: pre-wrap; word-break: break-all; padding: 40px; font: bold 16px "Monaco", "Andale Mono", Consolas, monospace;';
   });

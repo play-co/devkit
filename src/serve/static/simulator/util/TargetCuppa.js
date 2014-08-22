@@ -29,8 +29,6 @@ var RPCRequest = Class(function() {
     this._onSuccess.forward([l, l.succed].concat(args));
     return l;
   }
-
-
 });
 
 var ReceivedRequest = Class(function() {
