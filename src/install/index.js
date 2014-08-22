@@ -46,7 +46,7 @@ exports.installModule = function (app, moduleName, opts, cb) {
     }
 
     if (opts.protocol == 'ssh') {
-      var match = /^https:\/\/(.*?)\/(.*)$/;
+      var match = url.match(/^https:\/\/(.*?)\/(.*)$/);
       if (match) {
         url = 'git@' + match[1] + ':' + match[2];
       }
