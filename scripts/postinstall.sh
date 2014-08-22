@@ -8,4 +8,4 @@ git submodule update --init
 git checkout .gitmodules
 
 # ensure java is installed
-command -v java2 >/dev/null 2>&1 || { echo >&2 "java is required. please install java and try again."; exit 1; }
+command -v java >/dev/null 2>&1 || { echo >&2 "java is required. please install java and try again."; exit 1; }
