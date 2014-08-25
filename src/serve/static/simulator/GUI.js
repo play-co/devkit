@@ -29,7 +29,6 @@ import squill.Delegate;
 import .controllers.Device as Device;
 import .controllers.SimulatorServer as SimulatorServer;
 
-import .components.Logger as Logger;
 import .components.Simulator as Simulator;
 from .components.viewInspector import ViewInspector;
 
@@ -47,9 +46,7 @@ var MainView = Class(squill.Widget, function (supr) {
           {id: 'myIP', type: 'label'},
         ]}
       ]},
-      {id: 'bottom', children: [
-        {id: 'log', type: Logger}
-      ]}
+      {id: 'bottom'}
     ]
   };
 
