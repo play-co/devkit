@@ -112,12 +112,13 @@ Module.getVersions = function (modulePath, cb) {
 Module.setVersion = function (modulePath, version, cb) {
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
+  var currentVersion;
 
   var f = ff(function () {
     git.getLocalVersions(f());
     git('describe', '--tags', {extraSilent: true}, f());
-  }, function (versions, currentVersion) {
-    currentVersion = currentVersion.replace(/^\s+|\s+$/g, '');
+  }, function (versions, _currentVersion) {
+    currentVersion = _currentVersion.replace(/^\s+|\s+$/g, '');
 
     // are we already on that version?
     if (currentVersion && version == currentVersion) {
@@ -135,6 +136,10 @@ Module.setVersion = function (modulePath, version, cb) {
   }, function (versions) {
     if (!version) {
       version = versions[0];
+    }
+
+    if (currentVersion == version) {
+      return f.succeed(version);
     }
 
     if (version) {
