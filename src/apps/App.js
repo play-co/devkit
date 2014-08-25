@@ -68,18 +68,28 @@ var App = module.exports = Class(function () {
 
     var _queue = [];
 
-    function addToQueue(basePath) {
-      try {
-        _queue.push.apply(_queue, fs.readdirSync(path.join(basePath, 'modules')).map(function (item) { return path.join(basePath, 'modules', item); }));
-        _queue.push.apply(_queue, fs.readdirSync(path.join(basePath, 'node_modules')).map(function (item) { return path.join(basePath, 'node_modules', item); }));
-      } catch (e) {}
+    function addToQueue(parentPath) {
+      function scanDir(basePath) {
+        try {
+          return fs.readdirSync(basePath)
+            .map(function (item) { return {
+                path: path.join(basePath, item),
+                parent: parentPath};
+              });
+
+        } catch (e) {}
+      }
+
+      _queue.push.apply(_queue, scanDir(path.join(parentPath, 'modules')));
+      _queue.push.apply(_queue, scanDir(path.join(parentPath, 'node_modules')));
     }
 
     addToQueue(this.paths.root);
 
     while (_queue[0]) {
-      var module = _queue.shift();
-      var modulePath = path.resolve(this.paths.root, module);
+      var item = _queue.shift();
+      var modulePath = path.resolve(this.paths.root, item.path);
+      var parentPath = path.resolve(this.paths.root, item.parent);
       var packageFile = path.join(modulePath, 'package.json');
 
       if (fs.existsSync(packageFile)) {
@@ -87,7 +97,7 @@ var App = module.exports = Class(function () {
         try {
           packageContents = require(packageFile);
         } catch (e) {
-          return logger.warn("Module", module, "failed to load");
+          return logger.warn("Module", item.path, "failed to load");
         }
 
         if (packageContents.devkit) {
@@ -100,7 +110,18 @@ var App = module.exports = Class(function () {
             }
           } else {
             var name = path.basename(modulePath);
-            this._modules[name] = new Module(name, modulePath, packageContents);
+            var version = null;
+            if (this.paths.root == parentPath && this.dependencies[name]) {
+              version = this.dependencies[name].version;
+            }
+
+            this._modules[name] = new Module({
+              name: name,
+              path: modulePath,
+              parent: parentPath,
+              version: version,
+              packageContents: packageContents
+            });
           }
 
           addToQueue(modulePath);
@@ -135,10 +156,10 @@ var App = module.exports = Class(function () {
   var DEFAULT_PROTOCOL = "https";
   var DEFAULT_DEPS = [
     {
-      name: "devkit",
+      name: "devkit-core",
       ssh: "git@github.com:",
       https: "https://github.com/",
-      repo: "gameclosure/gcapi-priv",
+      repo: "gameclosure/devkit-core",
       tag: ""
     }
   ];

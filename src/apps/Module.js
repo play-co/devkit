@@ -15,32 +15,33 @@ var logger = require('../util/logging').get('module');
  */
 
 var Module = module.exports = Class(function () {
-  this.init = function (name, modulePath, packageContents) {
-    this.name = name;
-    this.path = modulePath;
-    this.version = packageContents.version;
+  this.init = function (info) {
+    this.name = info.name;
+    this.path = info.path;
+    this.version = info.version || info.packageContents.version;
+    this.parent = info.parent;
 
     // game-side js.io path for importing client code from this module
     this._clientPaths = {};
 
-    var opts = packageContents.devkit;
-    if (opts.clientPaths) {
-      for (var key in opts.clientPaths) {
-        this._clientPaths[key] = opts.clientPaths[key];
+    var devkit = info.packageContents.devkit;
+    if (devkit.clientPaths) {
+      for (var key in devkit.clientPaths) {
+        this._clientPaths[key] = devkit.clientPaths[key];
       }
     }
 
     this._buildTargets = {};
-    if (opts.buildTargets) {
-      for (var target in opts.buildTargets) {
-        this._buildTargets[target] = path.join(modulePath, opts.buildTargets[target]);
+    if (devkit.buildTargets) {
+      for (var target in devkit.buildTargets) {
+        this._buildTargets[target] = path.join(this.path, devkit.buildTargets[target]);
       }
     }
 
     this._extensions = {};
-    if (opts.extensions) {
-      for (var name in opts.extensions) {
-        this._extensions[name] = path.join(modulePath, opts.extensions[name]);
+    if (devkit.extensions) {
+      for (var name in devkit.extensions) {
+        this._extensions[name] = path.join(this.path, devkit.extensions[name]);
       }
     }
   }
@@ -72,6 +73,8 @@ var Module = module.exports = Class(function () {
     return {
       name: this.name,
       path: this.path,
+      version: this.version,
+      parent: this.parent,
       clientPaths: this.getClientPaths(),
       extensions: this.getExtensions()
     };
