@@ -19,7 +19,7 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
   }
 
   this.exec = function (args, cb) {
-    var moduleName = args.shift() || 'devkit';
+    var moduleName = args.shift() || 'devkit-core';
 
     // no module provided, read and install all modules from manifest.json
     apps.get('.', bind(this, function (err, app) {
