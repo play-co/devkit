@@ -1,5 +1,8 @@
 var fs = require('fs');
+var ff = require('ff');
 var path = require('path');
+var rimraf = require('rimraf');
+
 var Module = require('./Module');
 var logger = require('../util/logging').get('apps');
 var stringify = require('../util/stringify');
@@ -266,6 +269,24 @@ var App = module.exports = Class(function () {
     } else {
       cb && process.nextTick(cb);
     }
+  }
+
+  this.removeDependency = function (name, cb) {
+    var f = ff(this, function () {
+      // remove from manifest dependencies
+      if (this.dependencies[name]) {
+        logger.log('removing dependency from manifest...');
+        delete this.dependencies[name];
+        this.saveManifest(f.wait());
+      }
+
+      // remove from file system
+      var modulePath = path.join(this.paths.modules, name);
+      if (fs.existsSync(modulePath)) {
+        logger.log('removing module directory...');
+        rimraf(modulePath, f.wait());
+      }
+    }).cb(cb);
   }
 
   this.saveManifest = function (cb) {

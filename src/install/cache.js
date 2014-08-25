@@ -122,6 +122,11 @@ var ModuleCache = Class(EventEmitter, function () {
       .cb(cb);
   }
 
+  this.remove = function (name, cb) {
+    var modulePath = path.join(MODULE_CACHE, name);
+    rimraf(modulePath, cb);
+  }
+
   this.copy = function (cacheEntry, destPath, cb) {
     var srcPath = path.join(MODULE_CACHE, cacheEntry.name);
     logger.log('installing', cacheEntry.name, 'at', destPath);
