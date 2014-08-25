@@ -5,7 +5,7 @@ var Module = require('../apps/Module');
 var install = require('../install');
 var path = require('path');
 
-var UpdateCommand = Class(BaseCommand, function (supr) {
+var UpgradeCommand = Class(BaseCommand, function (supr) {
 
   this.name = 'update';
   this.description = "update the specified module (or the game's devkit module if none is provided) to the latest version";
@@ -51,4 +51,4 @@ var UpdateCommand = Class(BaseCommand, function (supr) {
 
 });
 
-module.exports = UpdateCommand;
+module.exports = UpgradeCommand;

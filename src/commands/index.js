@@ -4,7 +4,7 @@ var printf = require('printf');
 var commandNames = [
   'debug', 'serve', 'help',
   'version', 'install', 'register', 'init',
-  'update', 'which'];
+  'upgrade', 'which'];
 
 var _usage = [];
 var _commands = {};
