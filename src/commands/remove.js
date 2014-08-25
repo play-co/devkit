@@ -12,6 +12,7 @@ var BaseCommand = require('../util/BaseCommand').BaseCommand;
 var RemoveCommand = Class(BaseCommand, function (supr) {
 
   this.name = 'remove';
+  this.alias = 'rm';
   this.description = 'removes a dependency from your app';
 
   this.init = function () {
