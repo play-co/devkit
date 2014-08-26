@@ -49,7 +49,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         // no module provided, install all dependencies after we ensure we
         // have dependencies
         var deps = app.manifest.dependencies;
-        if (!deps || !deps.devkit) {
+        if (!deps || !deps['devkit-core']) {
           // ensure devkit is a dependency
           logger.log('Adding default dependencies to "manifest.json"...');
           app.validate({protocol: protocol}, f());
