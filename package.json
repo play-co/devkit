@@ -18,7 +18,7 @@
     "ff": "0.2.0",
     "filesize": "*",
     "graceful-fs": "2.0.3",
-    "jsio": "git+https://github.com/gameclosure/js.io/#fd15c6e",
+    "jsio": "2.0.0-beta.1",
     "mime": "1.2.11",
     "mixpanel": "0.0.18",
     "mkdirp": "0.5.0",
