@@ -135,7 +135,7 @@ function getAPIRouter(opts) {
     var appPath = req.query.app;
     apps.get(appPath, {updateLastOpened: false}, function (err, app) {
       if (err) { return res.send(404, err); }
-      res.sendfile(path.join(app.paths.root, app.getIcon(req.query.targetSize || 512)));
+      res.sendFile(path.join(app.paths.root, app.getIcon(req.query.targetSize || 512)));
     })
   });
 
