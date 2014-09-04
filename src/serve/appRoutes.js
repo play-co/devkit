@@ -31,7 +31,7 @@ exports.addToAPI = function (opts, api) {
   api.get('/hostModules', function (req, res) {
       var appPath = req.query.app;
       mountExtensions(appPath, function (err, mount) {
-        if (err) { return res.send(500, err); }
+        if (err) { return res.status(500).send(err); }
 
         res.json(mount.info);
       });
@@ -57,10 +57,10 @@ exports.addToAPI = function (opts, api) {
         simulateDeviceType: req.query.deviceType
       }, function (err, build) {
         if (err) {
-          res.send(500, err);
+          res.status(500).send(err);
         } else {
           mountApp(appPath, build.config.outputPath, function (err) {
-            if (err) { return res.send(500, err); }
+            if (err) { return res.status(500).send(err); }
 
             res.json({port: portMap[appPath].port});
           });

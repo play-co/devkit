@@ -92,7 +92,7 @@ function getAPIRouter(opts) {
   api.get('/apps', function (req, res) {
     apps.getApps(function (err, apps) {
       if (err) {
-        res.send(404, err);
+        res.status(404).send(err);
       } else {
         var userApps = [];
         for (var id in apps) {
@@ -114,27 +114,27 @@ function getAPIRouter(opts) {
           exec('open ' + app.paths.root);
         }
 
-        res.send(200);
+        res.status(200).send();
       });
     } else {
-      res.send(500);
+      res.status(500).send();
     }
   });
 
   api.get('/title', function (req, res) {
     var appPath = req.query.app;
     apps.get(appPath, {updateLastOpened: false}, function (err, app) {
-      if (err) { return res.send(404, err); }
+      if (err) { return res.status(404).send(err); }
 
       // TODO: localized titles?
-      res.send(200, app.manifest.title);
+      res.status(200).send(app.manifest.title);
     })
   });
 
   api.get('/icon', function (req, res) {
     var appPath = req.query.app;
     apps.get(appPath, {updateLastOpened: false}, function (err, app) {
-      if (err) { return res.send(404, err); }
+      if (err) { return res.status(404).send(err); }
       res.sendFile(path.join(app.paths.root, app.getIcon(req.query.targetSize || 512)));
     })
   });
