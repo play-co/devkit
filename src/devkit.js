@@ -27,11 +27,6 @@ require('./globals');
 var logging = require('./util/logging');
 var logger = logging.get('devkit');
 
-process.on('uncaughtException', function (e) {
-	console.error(e, e.stack);
-	process.exit(1);
-});
-
 /**
  * Module API.
  */
@@ -56,16 +51,5 @@ function main () {
 	}
 
 	var command = commands.get(name);
-	try {
-		command.exec(args);
-	} catch (e) {
-		if (command.logger) {
-			command.logger.error(e);
-		} else {
-			console.log(e);
-		}
-
-		// exit immediately so that this error isn't hidden by future errors
-		process.exit(1);
-	}
+	command.exec(args);
 }

@@ -71,8 +71,19 @@ exports.installModule = function (app, moduleName, opts, cb) {
     var modulePath = path.join(app.paths.modules, moduleName);
     f(modulePath);
 
+
+    if (opts.link) {
+
+      logger.warn('linking', app.paths.root, 'directly to the devkit cache directory...');
+
+    }
+
     if (!fs.existsSync(modulePath) && cacheEntry) {
-      cache.copy(cacheEntry, app.paths.modules, f.wait());
+      if (opts.link) {
+        cache.link(cacheEntry, app.paths.modules, f.wait());
+      } else {
+        cache.copy(cacheEntry, app.paths.modules, f.wait());
+      }
     }
 
     // install the version from the app manifest unless we're explicitly asked

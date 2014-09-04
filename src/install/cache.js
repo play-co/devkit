@@ -142,6 +142,12 @@ var ModuleCache = Class(EventEmitter, function () {
     });
   }
 
+  this.link = function (cacheEntry, destPath, cb) {
+    var src = path.join(MODULE_CACHE, cacheEntry.name);
+    var dest = path.join(destPath, cacheEntry.name);
+    createLink(src, dest, cb);
+  }
+
   this.has = function (nameOrURL) {
     return !!this._get(nameOrURL);
   }
@@ -160,5 +166,27 @@ var ModuleCache = Class(EventEmitter, function () {
     }
   }
 });
+
+function createLink(src, dest, cb) {
+  var f = ff(function () {
+    try {
+      var stat = fs.lstatSync(dest);
+    } catch (e) {
+      if (e.code != 'ENOENT') {
+        throw e;
+      }
+    }
+
+    if (stat) {
+      if (stat.isSymbolicLink()) {
+        fs.unlink(dest, f());
+      } else {
+        throw new Error('Please remove the existing module before using --link');
+      }
+    }
+  }, function () {
+    fs.symlink(src, dest, 'junction', f());
+  }).cb(cb);
+}
 
 module.exports = new ModuleCache();
