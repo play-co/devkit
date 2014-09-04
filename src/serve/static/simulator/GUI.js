@@ -29,6 +29,7 @@ import squill.Delegate;
 import .controllers.Device as Device;
 import .controllers.SimulatorServer as SimulatorServer;
 
+import .components.Logger as Logger;
 import .components.Simulator as Simulator;
 from .components.viewInspector import ViewInspector;
 
@@ -44,6 +45,7 @@ var MainView = Class(squill.Widget, function (supr) {
         {id: 'inspector', type: ViewInspector},
         {id: 'mainContainer', children: [
           {id: 'myIP', type: 'label'},
+          {id: 'logger', type: Logger}
         ]}
       ]},
       {id: 'bottom'}
@@ -98,6 +100,7 @@ var MainView = Class(squill.Widget, function (supr) {
 
   this._onActiveDevice = function (device) {
     this.inspector.setDevice(device);
+    this.logger.setDevice(device);
   }
 
   this.onViewportChange = function () {
@@ -355,19 +358,6 @@ var MainController = exports = Class(lib.PubSub, function() {
     }, this);
   }
 
-  this.setActiveSimulator = function (simulator) {
-    if (this._activeSimulator != simulator) {
-      if (this._activeSimulator) {
-        this._activeSimulator.setActive(false);
-      }
-
-      this._activeSimulator = simulator;
-      simulator.setActive(true);
-
-      this.inspector.setSimulator(simulator);
-    }
-  };
-
   this.updateURI = function () {
     var deviceOpts;
     for (var id in this._devices) {
@@ -447,7 +437,11 @@ exports.start = function () {
       document.body.appendChild(document.createElement('div')).innerHTML = err.response + '<br><br>';
     }
 
-    var e = typeof err == 'string' ? err : (err.stack || JSON.stringify(err, null, '  '));
+    try {
+      var e = typeof err == 'string' ? err : (err.stack || JSON.stringify(err, null, '  '));
+    } catch (e2) {
+      throw err;
+    }
     document.body.appendChild(document.createElement('div')).innerText = e;
     document.body.style.cssText = 'white-space: pre-wrap; word-break: break-all; padding: 40px; font: bold 16px "Monaco", "Andale Mono", Consolas, monospace;';
   });

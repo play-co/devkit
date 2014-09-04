@@ -25,6 +25,10 @@ var App = require('./App');
 
 var MANIFEST = 'manifest.json';
 
+var HOME = process.env.HOME
+      || process.env.HOMEPATH
+      || process.env.USERPROFILE;
+
 function isDevkitApp (cwd) {
   var manifestPath = path.join(cwd, 'manifest.json');
   var manifest;
@@ -180,6 +184,8 @@ var AppManager = Class(EventEmitter, function () {
       cb = opts;
       opts = {};
     }
+
+    appPath = appPath.replace(/^~[\/\\]/, HOME + path.sep);
 
     if (!opts) { opts = {}; }
 

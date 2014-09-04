@@ -6,15 +6,28 @@
 body
   font-size 14px
 
+title()
+  font-size 18px
+
+subtitle()
+  font-size 10px
+  color #808080
+
 #leftPane
-  absoluteBox(,55%)
+#rightPane
+  absoluteBox(,50%)
   display flex
   flex-direction column
-  align-items center
   justify-content center
+  background #FFF
+
+#leftPane
+  align-items center
 
 #rightPane
-  absoluteBox(,,,55%)
+  absoluteBox(,,,50%)
+  padding-left 5%
+  padding-right 40px
 
 #separator
   absoluteBox(40px, 50%, 40px, auto)
@@ -28,7 +41,7 @@ body
 #logo
   width 68px
   height 54px
-  margin-top 80px
+  margin-top 40px
   background url('/icons/logo.png')
   opacity 0.1
 
@@ -47,6 +60,7 @@ body
     float left
     margin-right 10px
 
+
 /*** Panel containing the content of the plugin ***/
 .mainPanel
   absoluteBox()
@@ -54,30 +68,125 @@ body
   border-top 1px solid rgba(255, 255, 255, 0.3)
 
 div#ip
-  position absolute
-  bottom 15px
-  left 0
-  right 0
   z-index 5
   overflow hidden
   text-align center
   padding 7px 7px 2px 7px
+  margin-bottom 20px
+  cursor pointer
 
   color #808080
   padding 5px 7px 2px 7px
 
+  &:before
+    glyphicon('refresh')
+
+    margin-right 10px
+    top 3px
+    opacity 0
+    transition opacity 0.3s
+
+  &:hover:before
+    opacity 1
+
+#appInspector
+  margin-top 50px
+  flex 1
+  overflow auto
+
+  > #title
+    title()
+    margin 10px 0px 20px
+
+  > button
+    float right
+    padding 5px 10px
+    cursor pointer
+
+    border none
+
+    &:after
+      glyphicon(arrow-right)
+
+      transition all 0.1s
+      font-size 10px
+      background #DDD
+      width 15px
+      height 13px
+      border-radius 13px
+      border 5px solid white
+      padding-top 2px
+      color #FFF
+
+    &:hover
+      color #444
+      &:after
+        background #CCC
+
+    &:active
+      color #000
+      &:after
+        background #808080
+
+  #dependenciesTitle
+    border-bottom 1px solid rgba(0, 0, 26, 0.15)
+    margin-bottom 10px
+    width 100%
+
+  #dependenciesList
+    flex 1
+    width 100%
+    padding-bottom 50px
+
+    .moduleCell
+      position absolute
+      padding-bottom 10px
+      #title
+        color #808080
+
+        #_labelSpan
+          padding-left 10px
+
+        &:before
+          glyphicon('folder-open')
+          color #808080
+
+      &.primary #title
+        color #444
+
+      #edit
+        opacity 0
+        transition all 0.2s
+        margin-left 15px
+
+        &:before
+          glyphicon('cog')
+
+      &:hover #edit
+        opacity 1
+
+      #version
+        subtitle()
+        margin-left 5px
+
+      #subtitle
+        subtitle()
+        margin-top -2px
+        margin-left 22px
 
 #appList
-  absoluteBox()
+  position relative
   overflow auto
-  padding 80px 0px
+  padding 40px 0px 0px 120px
+  width 100%
+  flex 1
 
 .appCell
   position absolute
   height 80px
   left 0
   right 0
-  padding 15px 10px 20px 90px
+  padding 10px 10px 20px 90px
   border-radius 10px
   border-top 1px solid rgba(0, 0, 0, 0)
   border-bottom 1px solid rgba(0, 0, 0, 0)
@@ -92,10 +201,9 @@ div#ip
       border 2px solid #CCC
 
   .appPath
-    color #808080
+    subtitle()
     white-space nowrap
     text-overflow ellipsis
-    font-size 10px
 
     #open
       border none

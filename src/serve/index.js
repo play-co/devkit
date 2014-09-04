@@ -89,19 +89,19 @@ function getAPIRouter(opts) {
   var api = express();
   var send = require('send');
 
+  api.get('/app', function (req, res) {
+    var appPath = req.query.app;
+    apps.get(appPath, {updateLastOpened: false}, function (err, app) {
+      res.json(app);
+    });
+  });
+
   api.get('/apps', function (req, res) {
     apps.getApps(function (err, apps) {
       if (err) {
         res.status(404).send(err);
       } else {
-        var userApps = [];
-        for (var id in apps) {
-          if (!apps[id].manifest.group) {
-            userApps.push(apps[id]);
-          }
-        }
-
-        res.json(userApps);
+        res.json(apps);
       }
     });
   });

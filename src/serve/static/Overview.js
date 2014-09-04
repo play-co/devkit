@@ -50,20 +50,12 @@ var AppCell = Class(Cell, function() {
     children: [
       {id: 'icon', className: 'appIcon'},
       {id: 'name', type: 'label', className: 'appName'},
-      {id: 'path', type: 'label', className: 'appPath', children: [
-        {id: 'open', type: 'button', className: 'openAppBtn'}
-      ]},
+      {id: 'path', type: 'label', className: 'appPath'},
       {id: 'lastOpened', type: 'label', className: 'appPath'}
     ]
   };
 
   var _imageCache = {};
-
-  this.delegate = new Delegate(function (on) {
-    on.open = function () {
-      util.ajax.get('/api/openAppExternal/?app=' + this._data.paths.root);
-    }
-  });
 
   this.setIcon = function (icon) {
     if (icon in _imageCache) {
@@ -84,7 +76,7 @@ var AppCell = Class(Cell, function() {
   };
 
   this.render = function () {
-    var app = this._data;
+    var app = this._item.data;
 
     var iconURL = '/api/icon?app=' + app.paths.root;
     this.setIcon(iconURL);
@@ -140,40 +132,135 @@ var ActionCell = Class(Cell, function () {
   };
 
   this.render = function () {
-    var action = this._data;
+    var action = this._item;
     this.title.setLabel(action.title || '');
     this.subtitle.setLabel(action.subtitle || '');
     this.icon.style.backgroundImage = 'url(/icons/' + action.icon + ')';
   }
 });
 
+var ModuleCell = Class(Cell, function () {
+  this._def = {
+    className: 'moduleCell',
+    children: [
+      {id: 'title', type: 'label', children: [
+        {type: 'label', tag: 'span', id: 'version'},
+        {id: 'edit', type: 'button'}
+      ]},
+      {id: 'subtitle', type: 'label'},
+    ]
+  };
+
+  this.render = function () {
+    var module = this._item.data;
+
+    var allModules = this.controller.getDataSource().toArray();
+    var appRoot = this.controller.getWidgetParent().getModel().get('paths.root');
+    var relPath = module.path;
+    if (relPath.indexOf(appRoot) == 0) {
+      relPath = relPath.substring(appRoot.length + 1);
+    }
+
+    var depth = 0;
+    var m = module;
+    while (m && m.parent) {
+      m = allModules.filter(function (item) { return item.data.path == m.parent; })[0];
+      if (!m) { break; }
+      ++depth;
+    }
+
+    this.getElement().style.marginLeft = depth * 30 + 'px';
+    if (!depth) {
+      this.addClass('primary');
+    } else {
+      this.removeClass('primary');
+    }
+
+    this.title.setLabel(module.name);
+    this.subtitle.setLabel(relPath);
+
+    var version = module.version;
+    if (/^\d+\.\d+\.\d+$/.test(version)) {
+      version = 'v' + version;
+    }
+
+    this.version.setLabel(version);
+  }
+});
+
+var AppInspector = Class(Widget, function () {
+
+  this._def = {
+    children: [
+      {id: 'simulateBtn', text: 'simulate', type: 'button'},
+      {id: 'openBtn', text: 'open', type: 'button'},
+      {id: 'title', type: 'label', data: 'title'},
+      {id: 'dependenciesTitle', type: 'label', text: 'dependencies'},
+      {id: 'dependenciesList', type: 'list', data: 'modules', cellCtor: ModuleCell, sorter: function (item) {
+        return item.data.path;
+      }}
+    ]
+  };
+
+  this.delegate = new Delegate(function(on) {
+    on.simulateBtn = function () {
+      var appPath = this.getModel().get('paths.root');
+      var url = new std.uri(window.location)
+        .setPath('/simulator/')
+        .addQuery({app: appPath})
+        .addHash({device: '{"type":"iphone5"}'})
+        .toString();
+
+      url = friendlyUnescape(url);
+
+      if (navigator.isNodeWebkit && window.gui) {
+        gui.Shell.openExternal(url);
+      } else {
+        window.open(url);
+      }
+    };
+
+    on.openBtn = function () {
+      var appPath = this.getModel().get('paths.root');
+      util.ajax.get('/api/openAppExternal/?app=' + appPath);
+    };
+  });
+});
+
 exports = Class(Widget, function(supr) {
 
   this._def = {
-    className: "overviewPanel",
-    contentsWrapperClassName: "overviewPanes",
-    tabContainerClassName: "overviewTabs",
+    className: 'overviewPanel',
+    contentsWrapperClassName: 'overviewPanes',
+    tabContainerClassName: 'overviewTabs',
     children: [
-      {id: "leftPane", children: [
+      {id: 'leftPane', children: [
         {id: 'actions', type: 'list', cellCtor: ActionCell},
-        {id: "logo"},
+        {id: 'logo'},
+        {id: 'appList', margin: 10, type: 'list',
+            selectable: 'single', cellCtor: AppCell, margin: 3,
+            data: 'apps',
+            sorter: function (item) {
+              var key = '' + (10000000000000 - item.data.lastOpened);
+              key = '00000000000000'.substring(0, 14 - key.length) + key;
+              return key;
+            }},
         {
-          id: "ip",
+          id: 'ip',
           children: [
-            {id: "ipValue", tag: "span", text: ""}
+            {id: 'ipValue', tag: 'span', text: ''}
           ]
         }
       ]},
-      {id: "separator"},
-      {id: "rightPane", children: [
-        {id: 'appList', margin: 10, type: 'list',
-            selectable: 'single', cellCtor: AppCell, margin: 3}
-      ]}
+      {id: 'separator'},
+      {id: 'rightPane', children: [{id: 'appInspector', type: AppInspector}]}
     ]
   };
 
   this.buildWidget = function() {
-    supr(this, "buildWidget", arguments);
+    supr(this, 'buildWidget', arguments);
+
+    this.appInspector.hide();
 
     this._apps = new DataSource();
 
@@ -193,11 +280,7 @@ exports = Class(Widget, function(supr) {
     this.actions.setDataSource(actions);
 
     this.appList.setDataSource(this._apps);
-    this._apps.setSorter(function (app) {
-              var key = '' + (10000000000000 - app.lastOpened);
-              key = '00000000000000'.substring(0, 14 - key.length) + key;
-              return key;
-            });
+
     window.addEventListener('resize', bind(this.appList, 'needsRender'), false);
 
     this._homeDirectory = this._opts.homeDirectory;
@@ -208,34 +291,33 @@ exports = Class(Widget, function(supr) {
 
   this.loadApps = function () {
     util.ajax.get('/api/apps', bind(this, function (err, res) {
-      res && this._apps.add(res);
+      res && this.getModel().set('apps', res);
     }));
   }
 
   this.getHomeDirectory = function () { return this._homeDirectory; }
 
   this.refreshIP = function() {
-    util.ajax.get({url: "/api/ip", type: "json"}, bind(this, "onRefreshIP"));
+    util.ajax.get({url: '/api/ip', type: 'json'}, bind(this, 'onRefreshIP'));
   };
+
+  this.showApp = function (appPath) {
+    this._appPath = appPath;
+    var app = this._apps.get(appPath).data;
+    this.appInspector.show();
+    this.appInspector.setModel(app);
+
+    // util.ajax.get({url: '/api/app', query: {app: appPath}}, function (err, app) {
+
+    // });
+  }
 
   this.delegate = new Delegate(function(on) {
     on.appList = function (target, appPath) {
       if (appPath) {
         this.appList.selection.deselectAll();
 
-        var url = new std.uri(window.location)
-          .setPath('/simulator/')
-          .addQuery({app: appPath})
-          .addHash({device: '{"type":"iphone5"}'})
-          .toString();
-
-        url = friendlyUnescape(url);
-
-        if (navigator.isNodeWebkit && window.gui) {
-          gui.Shell.openExternal(url);
-        } else {
-          window.open(url);
-        }
+        this.showApp(appPath);
       }
     };
 
@@ -246,7 +328,7 @@ exports = Class(Widget, function(supr) {
 
   this.onRefreshIP = function(err, response) {
     if (!err) {
-      $.setText(this.ipValue, response.ip.join(","));
+      $.setText(this.ipValue, response.ip.join(', '));
     }
   };
 });

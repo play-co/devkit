@@ -38,6 +38,9 @@ function spawnWithLogger(args, opts, cb) {
     var stderr = buffers && buffers.stderr.join('');
 
     if (!opts.extraSilent) {
+      if (err) {
+        logger.log(color.redBright(' <- done ' + err.code));
+      }
       logger.log(color.yellow(' <- done'));
     }
 

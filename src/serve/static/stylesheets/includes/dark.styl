@@ -3,6 +3,13 @@ button()
   color #E5E5E5
   border 1px solid #444
 
+title()
+  color #FFF
+  font-weight bold
+
+color-border = #555
+color-panel = #000
+
 body
   background #08080F
   color #AAA
@@ -39,7 +46,7 @@ input[type='checkbox']
   display none
 
 input[type="checkbox"] + #label:before
-  border 1px solid #555
+  border 1px solid color-border
   border-radius 7px
   display inline-block
   width 14px
@@ -74,7 +81,7 @@ input[type="button"], button
 
 input[type="text"]
   background #001
-  border 1px solid #555
+  border 1px solid color-border
   border-radius 3px
   color #AAA
 

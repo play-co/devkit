@@ -37,11 +37,11 @@ else
   width 100%
   overflow hidden
 
-  #header
+  > #header
     position relative
     z-index 999000
 
-  #middle
+  > #middle
     position relative
     flex 1
     display flex
@@ -71,15 +71,48 @@ else
             z-index 400
             transition all 1s
 
-  #autoHideArea
-    position fixed
-    top 0px
-    left 0px
-    right 0px
-    height 100px
-    z-index 2
+      #logger
+        position absolute
+        background rgba(color-panel, 0.87)
+        bottom 0px
+        width 100%
+        height 25px
+        overflow hidden
+
+        transition height 0.5s
+        z-index 500
+        display flex
+        flex-direction column
+
+        border-top 1px solid color-border
+
+        &.expanded
+          height 40%
+
+        #header
+          padding 5px 10px
+          display flex
+          cursor pointer
+
+          #title
+            title()
+            flex 1
+
+        #contents
+          overflow auto
+          flex 1
+
+          > div
+            padding 1px 5px
+
+            &:nth-child(odd)
+              background #222
+
+          .time
+            float right
 
 
+          // .squill-label
 
 #devkit
   #myIP

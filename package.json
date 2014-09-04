@@ -31,7 +31,7 @@
     "semver": "^3.0.1",
     "send": "^0.8.1",
     "socket.io": "^1.0.6",
-    "squill": "git+https://github.com/gameclosure/squill/#7563b0",
+    "squill": "git+https://github.com/gameclosure/squill/#bindings",
     "stylus": "0.47.x",
     "uglify-js": "1.3.x"
   },
