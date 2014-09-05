@@ -185,7 +185,9 @@ var AppManager = Class(EventEmitter, function () {
       opts = {};
     }
 
-    appPath = appPath.replace(/^~[\/\\]/, HOME + path.sep);
+    if (appPath) {
+      appPath = appPath.replace(/^~[\/\\]/, HOME + path.sep);
+    }
 
     if (!opts) { opts = {}; }
 
