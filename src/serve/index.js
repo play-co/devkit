@@ -23,7 +23,10 @@ var logger = logging.get('serve');
 var BASE_PATH = path.join(__dirname, '..', '..');
 
 // launches the web server
-exports.serveWeb = function (basePort, cb) {
+exports.serveWeb = function (opts, cb) {
+  var basePort = opts.port;
+  var incrementPorts = !opts.singlePort;
+
   // common.track("BasilServe");
   var app = express();
   var server = http.Server(app);
@@ -36,10 +39,10 @@ exports.serveWeb = function (basePort, cb) {
     next();
   });
 
-  app.use('/api/', getAPIRouter({
+  app.use('/api/', getAPIRouter(merge({
     simulatorPort: basePort + 1,
     app: app
-  }));
+  }, opts)));
 
   // serve compiled CSS
   app.use('/', stylus(getPath('static')));

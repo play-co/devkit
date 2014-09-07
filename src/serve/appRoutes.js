@@ -49,20 +49,22 @@ exports.addToAPI = function (opts, api) {
   api.get('/simulate', function (req, res) {
       var appPath = req.query.app;
 
-      build.build(req.query.app, {
+      var buildOpts = {
         target: req.query.target,
         scheme: req.query.scheme,
         simulated: true,
         simulateDeviceId: req.query.deviceId,
         simulateDeviceType: req.query.deviceType
-      }, function (err, build) {
+      };
+
+      build.build(req.query.app, buildOpts, function (err, build) {
         if (err) {
           res.status(500).send(err);
         } else {
           mountApp(appPath, build.config.outputPath, function (err) {
             if (err) { return res.status(500).send(err); }
 
-            res.json({port: portMap[appPath].port});
+            res.json(portMap[appPath].res);
           });
         }
       });
@@ -122,6 +124,7 @@ exports.addToAPI = function (opts, api) {
         middleware: middleware,
         routes: moduleRoutes,
         info: {
+          key: route,
           route: '/modules' + route,
           names: extensionNames
         }
@@ -135,7 +138,7 @@ exports.addToAPI = function (opts, api) {
     if (appPath in portMap) {
       // TODO When output path changes, update app
       // portMap[appPath].app.
-      return cb(null, portMap[appPath]);
+      return cb(null, portMap[appPath].res);
     }
 
     var simulatorApp = express();
@@ -160,26 +163,37 @@ exports.addToAPI = function (opts, api) {
       }
     });
 
-    var simulatorServer = http.createServer(simulatorApp);
-    baseApp.io.listen(simulatorServer);
-    listen();
+    if (opts.singlePort) {
+      var route = '/apps' + _moduleMap[appPath].info.key;
+      baseApp.use(route, simulatorApp);
+      portMap[appPath] = {
+        res: {url: route},
+        middleware: simulatorApp
+      };
+      cb && cb(null, portMap[appPath].res);
+    } else {
+      var simulatorServer = http.createServer(simulatorApp);
+      baseApp.io.listen(simulatorServer);
+      listen();
 
-    function listen() {
-      var port = basePort++;
-      simulatorServer.listen(port, function () {
-        logger.log("binding port", port, "to", outputPath);
+      function listen() {
+        var port = basePort++;
+        simulatorServer.listen(port, function () {
+          logger.log("binding port", port, "to", outputPath);
 
-        portMap[appPath] = {
-            port: port,
-            middleware: simulatorApp
-          };
+          portMap[appPath] = {
+              port: port,
+              res: {port: port},
+              middleware: simulatorApp
+            };
 
-        cb && cb(null, {port: port});
-      }).on('error', function (e) {
-        if (e.code == 'EADDRINUSE') {
-          listen();
-        }
-      });
+          cb && cb(null, portMap[appPath].res);
+        }).on('error', function (e) {
+          if (e.code == 'EADDRINUSE') {
+            listen();
+          }
+        });
+      }
     }
   }
 
@@ -188,9 +202,13 @@ exports.addToAPI = function (opts, api) {
 
   // tracks used route uuids
   var _routes = {};
+  var _routeMap = {};
 
   // create a unique route hash from the app path
   function generateRoute(appPath) {
+    if (appPath in _routeMap) {
+      return _routeMap[appPath];
+    }
 
     // compute a hash
     var hash = 5381;
@@ -204,6 +222,7 @@ exports.addToAPI = function (opts, api) {
     var route;
     do { route = '/' + hash.toString(36) + '/'; } while ((route in _routes) && ++hash);
     _routes[route] = true;
+    _routeMap[appPath] = route;
     return route;
   }
 }

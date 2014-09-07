@@ -29,12 +29,13 @@ exports = Class(function () {
       if (err) {
         cb && cb(err);
       } else {
-        if (res.port) {
-          this._port = res.port;
+        var url = res.url;
+        if (!url && res.port) {
+          var hostname = location.hostname;
+          url = 'http://' + hostname + ':' + res.port + '/';
         }
 
-        var hostname = location.hostname;
-        simulator.loadURL('http://' + hostname + ':' + res.port + '/');
+        simulator.loadURL(url);
 
         cb && cb(null, res);
       }

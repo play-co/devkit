@@ -14,8 +14,9 @@ var ServeCommand = Class(BaseCommand, function (supr) {
 
 		this.opts
 			.describe('port', 'port on which to run the DevKit server')
-			.default('port', 9200)
-			.alias('port', 'p');
+			.alias('port', 'p').default('port', 9200)
+			.describe('single-port', 'host apps on same port as primary web server')
+			.default('single-port', false);
 	}
 
 	this.exec = function () {
@@ -25,7 +26,12 @@ var ServeCommand = Class(BaseCommand, function (supr) {
 		}
 
 		var serve = require('../serve');
-		serve.serveWeb(this.opts.argv.port);
+		var argv = this.opts.argv;
+
+		serve.serveWeb({
+			port: argv.port,
+			singlePort: !!argv['single-port']
+		});
 	}
 });
 
