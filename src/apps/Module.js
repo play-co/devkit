@@ -150,7 +150,13 @@ Module.setVersion = function (modulePath, version, cb) {
     }
   }, function () {
     logger.log("running install scripts...");
-    var npm = spawn('npm', ['install'], {stdio: 'inherit', cwd: modulePath});
+
+    var npmArgs = ['install'];
+    if (process.getuid() == 0) {
+      npmArgs.push('--unsafe-perm');
+    }
+
+    var npm = spawn('npm', npmArgs, {stdio: 'inherit', cwd: modulePath});
     npm.on('close', f.wait());
   }, function () {
     logger.log(color.cyanBright("set version"), color.yellowBright(moduleName + "@" + version));
