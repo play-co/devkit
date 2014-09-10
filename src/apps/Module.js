@@ -20,6 +20,7 @@ var Module = module.exports = Class(function () {
     this.path = info.path;
     this.version = info.version || info.packageContents.version;
     this.parent = info.parent;
+    this.isDependency = info.isDependency;
 
     // game-side js.io path for importing client code from this module
     this._clientPaths = {};
@@ -75,11 +76,16 @@ var Module = module.exports = Class(function () {
       path: this.path,
       version: this.version,
       parent: this.parent,
+      isDependency: this.isDependency,
       clientPaths: this.getClientPaths(),
       extensions: this.getExtensions()
     };
   }
 });
+
+function strip(str) {
+  return str.replace(/^\s+|\s+$/g, '');
+}
 
 Module.getURL = function (modulePath, cb) {
   var git = gitClient.get(modulePath);
@@ -94,16 +100,28 @@ Module.getURL = function (modulePath, cb) {
   }).cb(cb);
 }
 
-Module.getVersions = function (modulePath, cb) {
+Module.describeVersion = function (modulePath, cb) {
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
+  git('describe', '--tags', '--exact-match', {extraSilent: true}, function (err, stdout, stderr) {
+    if (err) {
+      git('rev-parse', 'HEAD', {extraSilent: true}, function (err, stdout, stderr) {
+        cb && cb(err, !err && strip(stdout));
+      });
+    } else {
+      cb && cb(null, strip(stdout));
+    }
+  });
+}
 
+Module.getVersions = function (modulePath, cb) {
+  var git = gitClient.get(modulePath);
   var f = ff(function () {
     git.getLocalVersions(f());
     git('describe', '--tags', {extraSilent: true}, f());
   }, function (versions, currentVersion) {
     f({
-      current: currentVersion.replace(/^\s+|\s+$/g, ''),
+      current: strip(currentVersion),
       versions: versions
     });
   }).cb(cb);

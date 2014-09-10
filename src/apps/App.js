@@ -114,7 +114,8 @@ var App = module.exports = Class(function () {
           } else {
             var name = path.basename(modulePath);
             var version = null;
-            if (this.paths.root == parentPath && this.dependencies[name]) {
+            var isDependency = (this.paths.root == parentPath);
+            if (isDependency && this.dependencies[name]) {
               version = this.dependencies[name].version;
             }
 
@@ -122,6 +123,7 @@ var App = module.exports = Class(function () {
               name: name,
               path: modulePath,
               parent: parentPath,
+              isDependency: isDependency,
               version: version,
               packageContents: packageContents
             });

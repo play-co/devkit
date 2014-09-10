@@ -47,29 +47,39 @@ var AppsCommand = Class(BaseCommand, function (supr) {
         console.log(stringify(appList));
       } else {
         var keyMap = {
+          title: 'title',
+          lastOpened: 'last opened',
           appId: 'app id',
           clientPaths: 'client paths',
-          title: 'title'
+          modules: 'modules'
+        };
+
+        var shortKeyMap = {
+          title: 'title',
+          appId: 'app id'
         };
 
         for (var appPath in apps) {
           console.log(color.yellowBright(printf('%17s', appPath)));
           var app = apps[appPath].toJSON();
-          for (var key in keyMap) {
-            strValue = typeof app[key] == 'object' ? JSON.stringify(app[key]) : '' + app[key];
-            console.log(color.yellow(printf('%21s', keyMap[key] + ':')), truncate(strValue));
-          }
-
-          console.log(color.yellow(printf('%21s', 'modules:')));
-          var modules = app.modules;
-          for (var name in modules) {
-            if (modules[name].parent == app.paths.root) {
-              console.log(color.green(printf('%28s', name + ':')), modules[name].version);
+          var map = (argv.short ? shortKeyMap : keyMap);
+          for (var key in map) {
+            if (key == 'modules') {
+              console.log(color.yellow(printf('%21s', map[key] + ':')));
+              var modules = app.modules;
+              for (var name in modules) {
+                if (modules[name].isDependency) {
+                  console.log(color.green(printf('%28s', name + ':')), modules[name].version);
+                }
+              }
+            } else if (key == 'lastOpened') {
+              console.log(color.yellow(printf('%21s', map[key] + ':')), d.toLocaleDateString() + ',', d.toLocaleTimeString());
+            } else {
+              var d = new Date(app.lastOpened);
+              strValue = typeof app[key] == 'object' ? JSON.stringify(app[key]) : '' + app[key];
+              console.log(color.yellow(printf('%21s', map[key] + ':')), truncate(strValue));
             }
           }
-
-          var d = new Date(app.lastOpened);
-          console.log(color.yellow(printf('%21s', 'last opened:')), d.toLocaleDateString() + ',', d.toLocaleTimeString());
         }
       }
     });

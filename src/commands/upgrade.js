@@ -14,14 +14,11 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
     supr(this, 'init', arguments);
 
     this.opts
-      .describe('version', 'set a specific version')
-      .describe('show-versions', 'prints all available versions (does not update anything)').boolean('show-versions', false);
+      .describe('version', 'set a specific version');
   }
 
   this.exec = function (args, cb) {
     var moduleName = args.shift() || 'devkit-core';
-
-    // no module provided, read and install all modules from manifest.json
     apps.get('.', bind(this, function (err, app) {
       if (err) { throw err; }
 
@@ -33,19 +30,7 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
         opts.latest = true;
       }
 
-      if (argv['show-versions']) {
-        Module.getVersions(path.join(app.paths.modules, moduleName), function (err, res) {
-          if (err) {
-            cb && cb(err);
-          } else {
-            console.log(res.versions.map(function (version) {
-              return version == res.current ? color.yellowBright(version) : version;
-            }).join('\t'));
-          }
-        });
-      } else {
-        install.installModule(app, moduleName, opts, cb);
-      }
+      install.installModule(app, moduleName, opts, cb);
     }));
   }
 
