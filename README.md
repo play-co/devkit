@@ -66,3 +66,24 @@ For 3rd-party modules, you should provide the full git URL for your module, for 
 
   `devkit install https://github.com/gameclosure/accelerometer`
 
+To upgrade a module:
+ * Open a terminal and navigate to your game's directory
+ * Run `devkit upgrade [module-name]`
+
+Example commands:
+ * `devkit install billing`: installs the billing module at the latest released version
+ * `devkit install billing --version 1.0.0`: installs the billing module at `v1.0.0`
+ * `devkit upgrade billing`: if the app is currently using `v1.0.0` and the latest released version is `v1.0.4`, downloads and installs `v1.0.4` and stores the the new version in the app's manifest
+
+### Inspecting your apps from the command line
+
+The devkit command can be used to query information about your apps.  The commands `apps` and `modules` describe the apps and their modules, respectively, that devkit knows about on your system.  Both commands take an optional flag `--json` (or `-j`) for logging the result to stdout in JSON format.
+
+Example commands:
+ * `devkit apps`: logs a list of all registered apps and basic information about each one
+ * `devkit apps -s`: logs a short list of all registered apps with just their titles, paths, and ids
+ * `devkit apps --json`: logs a long list of apps and all details about them in JSON format
+ * `devkit modules`: shows the version of each module in the current app from the manifest as well as the current version of the module (if it differs)
+ * `dekvit modules --save-current`: updates an app's dependencies in the app manifest to reflect the current git version for each module on the file system
+ * `dekvit modules devkit-core --save-current`: same as above, but only for the devkit-core module
+ 
