@@ -12,7 +12,7 @@ var BaseCommand = require('../util/BaseCommand').BaseCommand;
 var ModulesCommand = Class(BaseCommand, function (supr) {
 
   this.name = 'modules';
-  this.currentVersion = "prints information about the current app's modules";
+  this.description = "prints information about the current app's modules";
 
   this.init = function () {
     supr(this, 'init', arguments);

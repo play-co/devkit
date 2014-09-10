@@ -18,7 +18,7 @@ function truncate(str) {
 
 var AppsCommand = Class(BaseCommand, function (supr) {
 
-  this.name = 'which';
+  this.name = 'apps';
   this.description = 'prints devkit apps on this system';
 
   this.init = function () {
