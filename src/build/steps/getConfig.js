@@ -16,7 +16,8 @@ exports.getConfig = function(app, argv, cb) {
   config.debug = 'debug' in argv ? !!argv.debug : true;
   config.scheme = argv.scheme || (config.debug ? 'debug' : 'release');
   config.target = argv.target || 'browser-mobile';
-  config.outputPath = argv.output || path.resolve(config.appPath, path.join('build/', config.debug ? 'debug' : 'release', config.target));
+  config.schemePath = path.join('build/', config.scheme);
+  config.outputPath = argv.output || path.resolve(config.appPath, path.join('build/', config.scheme, config.target));
   config.jsioPath = Array.isArray(argv.jsioPath) ? argv.jsioPath.slice(0) : [];
   config.sdkVersion = sdkVersion;
   config.isTestApp = argv.isTestApp;
@@ -67,6 +68,17 @@ exports.getConfig = function(app, argv, cb) {
   // enable JavaScript compression
   config.compress = !!argv.compress;
 
+  // enable JavaScript compression
+  if ('compress' in argv) {
+    config.compress = !!argv.compress;
+  } else {
+    config.compress = config.scheme == 'release';
+  }
+
+  // useful for simulated builds with --single-port
+  if (argv.baseURL) {
+    config.baseURL = argv.baseURL;
+  }
 
   cb(null, config);
 }
