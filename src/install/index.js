@@ -81,8 +81,10 @@ exports.installModule = function (app, moduleName, opts, cb) {
       logger.log("already installed");
       return f.succeed();
     }
+
     // we can't silence a clone/fetch in case the user has to enter
     // credentials
+    var modulePath = path.join(app.paths.modules, moduleName);
     if (isURL || !fs.existsSync(modulePath)) {
       cache.add(url || moduleName, version, f());
     }

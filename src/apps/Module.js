@@ -1,5 +1,6 @@
 var path = require('path');
 var ff = require('ff');
+var fs = require('fs');
 var color = require('cli-color');
 var spawn = require('child_process').spawn;
 
@@ -103,9 +104,9 @@ Module.getURL = function (modulePath, cb) {
 Module.describeVersion = function (modulePath, cb) {
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
-  fs.exists(moduleName, function (exists) {
+  fs.exists(modulePath, function (exists) {
     if (!exists) {
-      return cb && cb({code: 'ENOENT'});
+      return cb && cb({code: 'ENOENT', filename: moduleName});
     }
 
     git('describe', '--tags', '--exact-match', {extraSilent: true}, function (err, stdout, stderr) {
