@@ -19,6 +19,7 @@ exports.build = function (appPath, argv, cb) {
   }
 
   var app;
+  var _hasLock = false;
   var f = ff(function () {
     var next = f.wait();
     apps.get(appPath, function (err, res) {
@@ -35,6 +36,9 @@ exports.build = function (appPath, argv, cb) {
       }
     });
   }, function () {
+    app.acquireLock(f());
+  }, function () {
+    _hasLock = true;
     require('./steps/getConfig').getConfig(app, argv, f());
   }, function (res) {
     config = res;
@@ -59,6 +63,10 @@ exports.build = function (appPath, argv, cb) {
     require('./steps/buildHooks').onAfterBuild(app, config, f());
   })
     .error(function (err) {
+      if (err.code == 'EEXIST' && !_hasLock) {
+        return logger.error('another build is already in progress');
+      }
+
       logger.error("build failed");
       if (err.stack) {
         logger.error(err.stack);
@@ -70,6 +78,14 @@ exports.build = function (appPath, argv, cb) {
       logger.log("build succeeded");
     })
     .cb(function () {
+      if (_hasLock) {
+        app.releaseLock(function (err) {
+          if (err) {
+            logger.error(err);
+          }
+        });
+      }
+
       elapsed = (Date.now() - startTime) / 1000;
       var minutes = Math.floor(elapsed / 60);
       var seconds = (elapsed % 60).toFixed(2);

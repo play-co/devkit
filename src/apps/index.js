@@ -60,6 +60,9 @@ function findNearestApp (dir) {
   }
 }
 
+// error message when failing to load an app
+var APP_NOT_FOUND = 'App not found';
+
 var AppManager = Class(EventEmitter, function () {
   this.init = function () {
     this._apps = {};
@@ -72,7 +75,7 @@ var AppManager = Class(EventEmitter, function () {
   this._load = function (appPath, lastOpened, persist, cb) {
 
     if (!appPath) {
-      return cb && cb('App not found');
+      return cb && cb(APP_NOT_FOUND);
     }
 
     appPath = path.resolve(process.cwd(), appPath);
@@ -83,6 +86,9 @@ var AppManager = Class(EventEmitter, function () {
       var manifestPath = path.join(appPath, MANIFEST);
       fs.readFile(manifestPath, bind(this, function (err, contents) {
         if (err) {
+          if (err.code == 'ENOENT') {
+            return cb && cb(APP_NOT_FOUND);
+          }
           return cb && cb(err);
         }
 
@@ -103,7 +109,12 @@ var AppManager = Class(EventEmitter, function () {
           }
         }
 
-        cb && cb(null, this._apps[appPath]);
+        if (this._apps[appPath]) {
+          cb && cb(null, this._apps[appPath]);
+        } else {
+          cb && cb(APP_NOT_FOUND);
+        }
+
       }));
     }
   };

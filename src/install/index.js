@@ -2,7 +2,7 @@ var fs = require('fs');
 var ff = require('ff');
 var color = require('cli-color');
 var path = require('path');
-var logger = require('../util/logging').get('devkit');
+var logger = require('../util/logging').get('install');
 var gitClient = require('../util/gitClient');
 var Module = require('../apps/Module');
 
@@ -54,28 +54,45 @@ exports.installModule = function (app, moduleName, opts, cb) {
   }
 
   var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/
-  var isURL = PROTOCOL.test(moduleName);
+  var isURL = moduleName && PROTOCOL.test(moduleName);
   var cacheEntry;
 
   logger.log(color.cyanBright('Installing'), color.yellowBright(moduleName + (version ? '@' + version : '')) + color.cyanBright('...'));
+
+  var _hasLock = false;
   var f = ff(this, function () {
+    app.acquireLock(f());
+  }, function () {
+    _hasLock = true;
+  }, function () {
+    if (moduleName && version) {
+      var next = f();
+      var modulePath = path.join(app.paths.modules, moduleName);
+      Module.describeVersion(modulePath, function (err, currentVersion) {
+        if (err) { return next(err); }
+        if (currentVersion == version) { return next(null, true); }
+        return next();
+      });
+    }
+  }, function (isUpdated) {
+    if (isUpdated) {
+      logger.log("already installed");
+      return f.succeed();
+    }
     // we can't silence a clone/fetch in case the user has to enter
     // credentials
-    if (isURL || !fs.existsSync(path.join(app.paths.modules, moduleName))) {
+    if (isURL || !fs.existsSync(modulePath)) {
       cache.add(url || moduleName, version, f());
     }
   }, function (_cacheEntry) {
     cacheEntry = _cacheEntry;
 
     moduleName = cacheEntry && cacheEntry.name || moduleName;
-    var modulePath = path.join(app.paths.modules, moduleName);
+    modulePath = path.join(app.paths.modules, moduleName);
     f(modulePath);
 
-
     if (opts.link) {
-
       logger.warn('linking', app.paths.root, 'directly to the devkit cache directory...');
-
     }
 
     if (!fs.existsSync(modulePath) && cacheEntry) {
@@ -117,9 +134,20 @@ exports.installModule = function (app, moduleName, opts, cb) {
     //     moduleName + '" to "' + name + '". Please update your dependency.');
     // }
   }).error(function (err) {
+    if (err.code == 'EEXIST' && !_hasLock) {
+      return logger.error('app is locked (is a build running?)');
+    }
+
     logger.error(err);
   }).success(function (version) {
-    logger.log(color.yellowBright(moduleName + '@' + version), color.cyanBright('install completed'));
-  })
-  .cb(cb);
+    if (version) {
+      logger.log(color.yellowBright(moduleName + '@' + version), color.cyanBright('install completed'));
+    }
+  }).cb(function (err) {
+    if (_hasLock) {
+      app.releaseLock(function (err) {
+        if (err) { logger.error(err); }
+      });
+    }
+  }).cb(cb);
 }

@@ -2,10 +2,18 @@ var fs = require('fs');
 var ff = require('ff');
 var path = require('path');
 var rimraf = require('rimraf');
+var lockFile = require('lockfile');
 
 var Module = require('./Module');
 var logger = require('../util/logging').get('apps');
 var stringify = require('../util/stringify');
+
+var LOCK_FILE = 'devkit.lock';
+var UNCAUGHT_CB = function (err) {
+  if (err) {
+    throw err;
+  }
+};
 
 var App = module.exports = Class(function () {
 
@@ -302,6 +310,8 @@ var App = module.exports = Class(function () {
     return fs.writeFile(path.join(this.paths.manifest), data, cb);
   };
 
+
+
   this.getPackageName = function() {
     var studio = this.manifest.studio;
     if (studio && studio.domain && this.manifest.shortName) {
@@ -348,6 +358,14 @@ var App = module.exports = Class(function () {
 
       return null;
     }
+  }
+
+  this.acquireLock = function (cb) {
+    lockFile.lock(path.join(this.paths.root, LOCK_FILE), cb || UNCAUGHT_CB);
+  }
+
+  this.releaseLock = function (cb) {
+    lockFile.unlock(path.join(this.paths.root, LOCK_FILE), cb || UNCAUGHT_CB);
   }
 
   // defines the public JSON API for DevKit extensions
