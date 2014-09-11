@@ -113,17 +113,29 @@ var Config = Class(EventEmitter, function () {
 
 	// async-safe write using a callback queue
 	// callbacks will not fire until all pending writes complete
+	this._failCount = 0;
 	this._write = function () {
 		this._isScheduled = false;
 
-		// schedule the callback
-		fs.writeFileSync(CONFIG_PATH, stringify(this._config), 'utf8');
-		if (this._writeCbs.length) {
-			var cbs = this._writeCbs;
-			this._writeCbs = [];
-			cbs.forEach(function (cb) {
-				cb && cb();
-			});
+		try {
+			fs.writeFileSync(CONFIG_PATH, stringify(this._config), 'utf8');
+
+			// reset fail count
+			this._failCount = 0;
+			if (this._writeCbs.length) {
+				var cbs = this._writeCbs;
+				this._writeCbs = [];
+				cbs.forEach(function (cb) {
+					cb && cb();
+				});
+			}
+		} catch (e) {
+			if (e.code == 'EACCES') {
+				++this._failCount;
+				if (this._failCount < 10) {
+					setTimeout(this._scheduleWrite.bind(this), 100);
+				}
+			}
 		}
 	};
 
