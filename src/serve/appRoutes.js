@@ -1,5 +1,6 @@
 var path = require('path');
 var http = require('http');
+var ff = require('ff');
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -57,16 +58,17 @@ exports.addToAPI = function (opts, api) {
         simulateDeviceType: req.query.deviceType
       };
 
-      build.build(req.query.app, buildOpts, function (err, build) {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          mountApp(appPath, build.config.outputPath, function (err) {
-            if (err) { return res.status(500).send(err); }
-
-            res.json(portMap[appPath].res);
-          });
+      var f = ff(this, function () {
+        build.build(req.query.app, buildOpts, f());
+        if (!_moduleMap[appPath]) {
+          mountExtensions(appPath, f());
         }
+      }, function (build) {
+        mountApp(appPath, build.config.outputPath, f());
+      }).error(function (err) {
+        return res.status(500).send(err);
+      }).success(function () {
+        res.json(portMap[appPath].res);
       });
     });
 
