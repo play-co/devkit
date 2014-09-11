@@ -103,14 +103,20 @@ Module.getURL = function (modulePath, cb) {
 Module.describeVersion = function (modulePath, cb) {
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
-  git('describe', '--tags', '--exact-match', {extraSilent: true}, function (err, stdout, stderr) {
-    if (err) {
-      git('rev-parse', 'HEAD', {extraSilent: true}, function (err, stdout, stderr) {
-        cb && cb(err, !err && strip(stdout));
-      });
-    } else {
-      cb && cb(null, strip(stdout));
+  fs.exists(moduleName, function (exists) {
+    if (!exists) {
+      return cb && cb({code: 'ENOENT'});
     }
+
+    git('describe', '--tags', '--exact-match', {extraSilent: true}, function (err, stdout, stderr) {
+      if (err) {
+        git('rev-parse', 'HEAD', {extraSilent: true}, function (err, stdout, stderr) {
+          cb && cb(err, !err && strip(stdout));
+        });
+      } else {
+        cb && cb(null, strip(stdout));
+      }
+    });
   });
 }
 

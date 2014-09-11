@@ -68,11 +68,13 @@ exports.installModule = function (app, moduleName, opts, cb) {
     if (moduleName && version) {
       var next = f();
       var modulePath = path.join(app.paths.modules, moduleName);
-      Module.describeVersion(modulePath, function (err, currentVersion) {
-        if (err) { return next(err); }
-        if (currentVersion == version) { return next(null, true); }
-        return next();
-      });
+      if (fs.existsSync(modulePath)) {
+        Module.describeVersion(modulePath, function (err, currentVersion) {
+          if (err) { return next(err); }
+          if (currentVersion == version) { return next(null, true); }
+          return next();
+        });
+      }
     }
   }, function (isUpdated) {
     if (isUpdated) {
