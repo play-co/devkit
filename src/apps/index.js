@@ -180,10 +180,25 @@ var AppManager = Class(EventEmitter, function () {
   this.create = function (appPath, cb) {
     this.get(appPath, function (err, app) {
       if (err) {
-        app = new App(appPath);
-        app.validate({shortName: path.basename(appPath)}, function (err) {
-          cb && cb(err, !err && app);
-        });
+        // app not found, create a new one
+
+        // first see if there's a parsable manifest
+        var manifestPath = path.join(appPath, MANIFEST);
+        var f = ff(this, function () {
+          fs.readFile(manifestPath, 'utf8', f.slotPlain(2));
+        }, function (readErr, rawManifest) {
+          if (rawManifest) {
+            var manifest;
+            try {
+              manifest = JSON.parse(rawManifest);
+            } catch (e) {}
+          }
+
+          app = new App(appPath, manifest);
+
+          f(app);
+          app.validate({shortName: path.basename(appPath)}, f.wait());
+        }).cb(cb);
       } else {
         cb && cb(null, app);
       }
