@@ -134,7 +134,10 @@ Module.getVersions = function (modulePath, cb) {
   }).cb(cb);
 }
 
-Module.setVersion = function (modulePath, version, cb) {
+Module.setVersion = function (modulePath, versionOrOpts, cb) {
+  var opts = typeof versionOrOpts == 'object' ? versionOrOpts : {};
+  var version = typeof versionOrOpts == 'string' ? versionOrOpts : opts.version;
+
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
   var currentVersion;
@@ -152,8 +155,9 @@ Module.setVersion = function (modulePath, version, cb) {
       return f.succeed(version);
     }
 
-    // default to latest version
-    if (!version || versions.indexOf(version == -1)) {
+    // fetch to get the latest version or if we don't have the requested
+    // version yet
+    if (!opts.skipFetch && !version || versions.indexOf(version == -1)) {
       // can't be silent in case it prompts for credentials
       git('fetch', '--tags', {silent: false, buffer: false, stdio: 'inherit'}, f());
     }

@@ -21,6 +21,8 @@ exports.build = function (appPath, argv, cb) {
   var app;
   var _hasLock = false;
   var f = ff(function () {
+    apps.has(appPath, f());
+  }, function (appLoaded) {
     var next = f.wait();
     apps.get(appPath, function (err, res) {
       if (err && !argv.help) {
@@ -32,6 +34,14 @@ exports.build = function (appPath, argv, cb) {
         next(err);
       } else {
         app = res;
+
+        // ensure the manifest is up-to-date
+        try {
+          if (appLoaded) { app.reloadSync(); }
+        } catch (e) {
+          return next(e);
+        }
+
         next();
       }
     });

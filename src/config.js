@@ -118,7 +118,7 @@ var Config = Class(EventEmitter, function () {
 		this._isScheduled = false;
 
 		try {
-			fs.writeFileSync(CONFIG_PATH, stringify(this._config), 'utf8');
+			fs.writeFileSync(CONFIG_PATH, stringify(this._config));
 
 			// reset fail count
 			this._failCount = 0;

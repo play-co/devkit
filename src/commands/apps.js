@@ -6,6 +6,7 @@ var color = require('cli-color');
 var apps = require('../apps');
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 var stringify = require('../util/stringify');
+var obj = require('../util/obj');
 
 var MAX_LENGTH = 120;
 function truncate(str) {
@@ -19,18 +20,59 @@ function truncate(str) {
 var AppsCommand = Class(BaseCommand, function (supr) {
 
   this.name = 'apps';
-  this.description = 'prints devkit apps on this system';
+  this.description = 'prints devkit apps on this system. Set or get a value from an app manifest with the command "devkit apps [set|get]-config key [value]" ';
 
   this.init = function () {
     supr(this, 'init', arguments);
 
     this.opts
       .alias('s', 'short').describe('short', 'skip details')
-      .alias('j', 'json').describe('json', 'prints details with json to stdout');
+      .alias('j', 'json').describe('json', 'prints details with json to stdout')
+      .describe('set-config')
   }
 
-  this.exec = function () {
+  this.exec = function (args) {
     var argv = this.opts.argv;
+
+
+    // sub-commands are for scripting, so set an exit code and exit on
+    // completion
+    function handleCmdError(err) {
+      if (err) {
+        console.error(err);
+        process.exit(1);
+      }
+    };
+
+    function handleSaveManifest(app) {
+      app.saveManifest(function (err) {
+          handleCmdError(err);
+          process.exit(0);
+      });
+    }
+
+    var subcmd = args.shift();
+    if (subcmd == 'set-config') {
+      var key = args.shift();
+      var value = args.shift();
+      apps.get('.', function (err, app) {
+        handleCmdError(err);
+
+        console.log(app.paths.root);
+        console.log(key, '<--', value);
+        obj.setVal(app.manifest, key, value);
+        handleSaveManifest(app);
+      });
+      return;
+    } else if (subcmd == 'get-config') {
+      var key = args.shift();
+      apps.get('.', function (err, app) {
+        handleCmdError(err);
+        console.log(obj.getVal(app.manifest, key));
+        process.exit(0);
+      });
+      return;
+    }
 
     apps.getApps(function (err, apps) {
       if (err) { throw err; }

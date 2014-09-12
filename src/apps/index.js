@@ -60,6 +60,11 @@ function findNearestApp (dir) {
   }
 }
 
+function resolveAppPath(appPath) {
+  return appPath && path.resolve(process.cwd(), appPath.replace(/^~[\/\\]/, HOME + path.sep))
+    || findNearestApp();
+}
+
 // error message when failing to load an app
 var APP_NOT_FOUND = 'App not found';
 
@@ -78,8 +83,7 @@ var AppManager = Class(EventEmitter, function () {
       return cb && cb(APP_NOT_FOUND);
     }
 
-    appPath = path.resolve(process.cwd(), appPath);
-
+    appPath = resolveAppPath(appPath);
     if (this._apps[appPath]) {
       cb && cb(null, this._apps[appPath]);
     } else {
@@ -121,14 +125,6 @@ var AppManager = Class(EventEmitter, function () {
 
   this.reload = function () {
     var apps = config.get('apps');
-
-    // migrate old format
-    if (Array.isArray(apps)) {
-      var newApps = {};
-      apps.forEach(function (appPath) { newApps[appPath] = 0; });
-      apps = newApps;
-    }
-
     if (!apps) {
       apps = {};
     }
@@ -205,24 +201,28 @@ var AppManager = Class(EventEmitter, function () {
     });
   };
 
+  this.has = function (appPath, cb) {
+    appPath = resolveAppPath(appPath);
+     var f = ff(this, function () {
+      this.getApps(f());
+    }, function () {
+      f(appPath in this._apps);
+    }).cb(cb);
+  }
+
   this.get = function (appPath, opts, cb) {
     if (typeof opts === 'function') {
       cb = opts;
       opts = {};
     }
 
-    if (appPath) {
-      appPath = appPath.replace(/^~[\/\\]/, HOME + path.sep);
-    }
-
     if (!opts) { opts = {}; }
+
+    appPath = resolveAppPath(appPath);
 
     var f = ff(this, function () {
       this.getApps(f());
     }, function () {
-      if (!appPath) {
-        appPath = findNearestApp();
-      }
       this._load(appPath, null, true, f());
     }, function (app) {
       f(app);

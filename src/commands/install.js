@@ -19,13 +19,15 @@ var InstallCommand = Class(BaseCommand, function (supr) {
 
     this.opts
       .describe('ssh', 'switches git protocol to ssh, default: false (https)')
-      .describe('link', 'uses symlinks to the module cache (development only)');
+      .describe('link', 'uses symlinks to the module cache (development only)')
+      .describe('skip-fetch', "if no version is specified, don't query servers for the latest version")
   }
 
   this.exec = function (args, cb) {
 
     var argv = this.opts.argv;
     var protocol = argv.ssh ? 'ssh' : 'https';
+    var skipFetch = argv['skip-fetch'];
     var module = args.shift();
 
     var f = ff(function () {
@@ -45,7 +47,10 @@ var InstallCommand = Class(BaseCommand, function (supr) {
 
       if (module) {
         // single module provided, install it
-        install.installModule(app, module, {protocol: protocol}, f());
+        install.installModule(app, module, {
+            protocol: protocol,
+            skipFetch: skipFetch
+          }, f());
       } else {
         // no module provided, install all dependencies after we ensure we
         // have dependencies

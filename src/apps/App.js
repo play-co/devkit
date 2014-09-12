@@ -67,6 +67,12 @@ var App = module.exports = Class(function () {
     return paths;
   }
 
+  // assuming app is loaded, reload the manifest and modules synchronously
+  this.reloadSync = function () {
+    this.manifest = JSON.parse(fs.readFileSync(this.paths.manifest, 'utf8'));
+    this.reloadModules();
+  }
+
   this.reloadModules = function () {
     this._modules = {};
     this._loadModules();

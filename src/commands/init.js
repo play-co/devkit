@@ -18,7 +18,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
 
     // check the app name
     var appPath = args.shift();
-    var appName = path.basename(appPath)
+    var appName = path.basename(appPath);
     appPath = path.resolve(process.cwd(), appPath);
     if (!appName) {
       throw new Error('No app name provided');
