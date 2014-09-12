@@ -46,9 +46,9 @@ exports.build = function (appPath, argv, cb) {
       }
     });
   }, function () {
-    app.acquireLock(f());
+    // app.acquireLock(f());
   }, function () {
-    _hasLock = true;
+    // _hasLock = true;
     require('./steps/getConfig').getConfig(app, argv, f());
   }, function (res) {
     config = res;
