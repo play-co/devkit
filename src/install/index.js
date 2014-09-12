@@ -66,9 +66,9 @@ exports.installModule = function (app, moduleName, opts, cb) {
     _hasLock = true;
   }, function () {
     if (moduleName && version) {
-      var next = f();
       var modulePath = path.join(app.paths.modules, moduleName);
       if (fs.existsSync(modulePath)) {
+        var next = f();
         Module.describeVersion(modulePath, function (err, currentVersion) {
           if (err) { return next(err); }
           if (currentVersion == version) { return next(null, true); }
