@@ -17,22 +17,24 @@ var InitCommand = Class(BaseCommand, function (supr) {
   this.exec = function (args, cb) {
 
     // check the app name
-    var appName = args.shift();
+    var appPath = args.shift();
+    var appName = path.basename(appPath)
+    appPath = path.resolve(process.cwd(), appPath);
     if (!appName) {
       throw new Error('No app name provided');
     }
 
-    if (!/[a-z][a-z0-9]+/i.test(appName)) {
+    if (!/^[a-z][a-z0-9]+$/i.test(appName)) {
       throw new Error('App name must start with a letter and consist only of letters and numbers');
     }
 
     // create the directory
-    if (!fs.existsSync(appName)) {
-      fs.mkdirSync(appName);
+    if (!fs.existsSync(appPath)) {
+      fs.mkdirSync(appPath);
     }
 
     var f = ff(this, function () {
-      apps.create(appName, f());
+      apps.create(appPath, f());
     }, function (app) {
       process.chdir(app.paths.root);
       commands.get('install').exec([], f());
