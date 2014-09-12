@@ -135,8 +135,8 @@ Module.getVersions = function (modulePath, cb) {
 }
 
 Module.setVersion = function (modulePath, versionOrOpts, cb) {
-  var opts = typeof versionOrOpts == 'object' ? versionOrOpts : {};
-  var version = typeof versionOrOpts == 'string' ? versionOrOpts : opts.version;
+  var opts = typeof versionOrOpts == 'object' && versionOrOpts || {};
+  var version = typeof versionOrOpts == 'string' && versionOrOpts || opts.version;
 
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
