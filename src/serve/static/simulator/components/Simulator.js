@@ -539,8 +539,8 @@ exports = Class(squill.Widget, function (supr) {
       height = h;
     }
 
-    this._width = width * scale;
-    this._height = height * scale;
+    this._width = width * scale || 0;
+    this._height = height * scale || 0;
 
     // override the default full-screen with a custom screen size
     var screenSize = params.screenSize;
@@ -646,19 +646,19 @@ exports = Class(squill.Widget, function (supr) {
       bgProps.isRotated = false;
     }
 
-    if (rotation % 2) {
-      bgProps.width = props.height;
-      bgProps.height = props.width;
-      bgProps.offsetX = props.height - params.height - props.offsetY;
-      bgProps.offsetY = props.offsetX;
-    } else {
-      bgProps.width = props.width;
-      bgProps.height = props.height;
-      bgProps.offsetX = props.offsetX;
-      bgProps.offsetY = props.offsetY;
-    }
-
     if (props) {
+      if (rotation % 2) {
+        bgProps.width = props.height;
+        bgProps.height = props.width;
+        bgProps.offsetX = props.height - params.height - props.offsetY;
+        bgProps.offsetY = props.offsetX;
+      } else {
+        bgProps.width = props.width;
+        bgProps.height = props.height;
+        bgProps.offsetX = props.offsetX;
+        bgProps.offsetY = props.offsetY;
+      }
+
       var bgWidth = bgProps.width * scale;
       var bgHeight = bgProps.height * scale;
       this.contents.style.cssText = '';
@@ -679,6 +679,13 @@ exports = Class(squill.Widget, function (supr) {
       }
 
       if (props.style) { $.style(this.contents, props.style); }
+    } else {
+      bgProps.offsetX = 0;
+      bgProps.offsetY = 0;
+      bgProps.height = 0;
+      bgProps.width = 0;
+      // $.style(this.contents, {width: '100%', height: '100%'});
+      this.updateBackground();
     }
 
     this.onViewportChange();
@@ -891,6 +898,17 @@ exports = Class(squill.Widget, function (supr) {
     var boundH = this._el.offsetHeight / 2 - this.frameWrapper.offsetHeight / 2;
     this._offsetX = bound(this._offsetX, -boundW, boundW);
     this._offsetY = bound(this._offsetY, -boundH, boundH);
+
+    if (!this._backgroundProps.width) {
+      this._width = this._el.offsetWidth;
+      this.contents.style.width = this._width + 'px';
+    }
+
+    if (!this._backgroundProps.height) {
+      this._height = this._el.offsetHeight;
+      this.contents.style.height = this._height + 'px';
+      // this._backgroundProps.offsetY = -this._el.offsetHeight / 2;
+    }
 
     /* position the frame in the center, not the chrome -- this ensures that we
      * always try to ensure the canvas is entirely on the screen, letting the chrome
