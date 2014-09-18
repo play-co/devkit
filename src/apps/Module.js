@@ -157,7 +157,7 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
 
     // fetch to get the latest version or if we don't have the requested
     // version yet
-    if (!opts.skipFetch && !version || versions.indexOf(version == -1)) {
+    if (!opts.skipFetch && !version || versions.indexOf(version) == -1) {
       // can't be silent in case it prompts for credentials
       git('fetch', '--tags', {silent: false, buffer: false, stdio: 'inherit'}, f());
     }
