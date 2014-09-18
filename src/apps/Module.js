@@ -145,8 +145,14 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
   var f = ff(function () {
     git.getLocalVersions(f());
     Module.describeVersion(modulePath, f());
+    if (version) {
+      // exits with code == 0 if the requested revision/tag/branch is present;
+      // otherwise, returns a non-zero error code which means we should
+      // probably run fetch first
+      git('branch', '--contains', version, {extraSilent: true}, f.slotPlain(2));
+    }
     // git('describe', '--tags', {extraSilent: true}, f());
-  }, function (versions, _currentVersion) {
+  }, function (versions, _currentVersion, notPresentErr, containingBranch) {
     currentVersion = _currentVersion;
 
     // are we already on that version?
@@ -155,9 +161,16 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
       return f.succeed(version);
     }
 
+    // if the version is a branch, we should always fetch
+    isBranch = containingBranch && containingBranch.split('\n').map(function (line) {
+      return line.replace(/^\s+|\s+$|^\*\s*/g, '');
+    }).filter(function (line) {
+      return line == version;
+    })[0];
+
     // fetch to get the latest version or if we don't have the requested
     // version yet
-    if (!opts.skipFetch && !version || versions.indexOf(version) == -1) {
+    if (!opts.skipFetch && !version || notPresentErr || isBranch) {
       // can't be silent in case it prompts for credentials
       git('fetch', '--tags', {silent: false, buffer: false, stdio: 'inherit'}, f());
     }
