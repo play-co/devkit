@@ -12,6 +12,10 @@ var logging = require('../util/logging');
 
 var logger = logging.get('routes');
 
+var HOME = process.env.HOME
+      || process.env.HOMEPATH
+      || process.env.USERPROFILE;
+
 // A mapping between app paths and http ports that we're listening on.
 // Each app gets a unique port.  We try to keep each app on a separate
 // port.
@@ -48,10 +52,8 @@ exports.addToAPI = function (opts, api) {
   // (debug/release). Reuses the port assigned to the app or allocates a new
   // port if none exists. Returns the port where the app is hosted.
   api.get('/simulate', function (req, res) {
-      var appPath = req.query.app;
-
       var args = {
-        appPath: req.query.app,
+        appPath: req.query.app.replace(/^~[\/\\]/, HOME + path.sep),
         buildOpts: {
           target: req.query.target,
           scheme: req.query.scheme,
@@ -72,15 +74,15 @@ exports.addToAPI = function (opts, api) {
           build.build(args.appPath, args.buildOpts, f());
         }
 
-        if (!_moduleMap[appPath]) {
-          mountExtensions(appPath, f.wait());
+        if (!_moduleMap[args.appPath]) {
+          mountExtensions(args.appPath, f.wait());
         }
       }, function (build) {
-        mountApp(appPath, build.config.outputPath, f());
+        mountApp(args.appPath, build.config.outputPath, f());
       }).error(function (err) {
         return res.status(500).send(err);
       }).success(function () {
-        res.json(portMap[appPath].res);
+        res.json(portMap[args.appPath].res);
       });
     });
 
