@@ -2,11 +2,11 @@ var path = require('path');
 var http = require('http');
 var ff = require('ff');
 
+var childProcess = require('child_process');
 var express = require('express');
 var bodyParser = require('body-parser');
 
 var apps = require('../apps/');
-var build = require('../build/');
 var jvmtools = require('../jvmtools');
 var logging = require('../util/logging');
 
@@ -50,18 +50,30 @@ exports.addToAPI = function (opts, api) {
   api.get('/simulate', function (req, res) {
       var appPath = req.query.app;
 
-      var buildOpts = {
-        target: req.query.target,
-        scheme: req.query.scheme,
-        simulated: true,
-        simulateDeviceId: req.query.deviceId,
-        simulateDeviceType: req.query.deviceType
+      var args = {
+        appPath: req.query.app,
+        buildOpts: {
+          target: req.query.target,
+          scheme: req.query.scheme,
+          simulated: true,
+          simulateDeviceId: req.query.deviceId,
+          simulateDeviceType: req.query.deviceType
+        }
       };
 
       var f = ff(this, function () {
-        build.build(req.query.app, buildOpts, f());
+        if (opts.separateBuildProcess) {
+          logger.log('running build in separate process');
+          var build = childProcess.fork(path.resolve(__dirname, '../build/fork'), [JSON.stringify(args)]);
+          var onBuild = f();
+          build.on('message', function (msg) { onBuild(msg.err, msg.res); });
+        } else {
+          var build = require('../build/');
+          build.build(args.appPath, args.buildOpts, f());
+        }
+
         if (!_moduleMap[appPath]) {
-          mountExtensions(appPath, f());
+          mountExtensions(appPath, f.wait());
         }
       }, function (build) {
         mountApp(appPath, build.config.outputPath, f());
