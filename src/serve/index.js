@@ -100,7 +100,14 @@ function getAPIRouter(opts) {
   });
 
   api.get('/apps', function (req, res) {
+    var reload = req.query.reload;
     apps.getApps(function (err, apps) {
+      if (reload) {
+        for (var appPath in apps) {
+          apps[appPath].reloadSync();
+        }
+      }
+
       if (err) {
         res.status(404).send(err);
       } else {
