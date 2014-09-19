@@ -113,8 +113,9 @@ var ModuleCache = Class(EventEmitter, function () {
       // reload cache for proper module name (moves module)
       this._loadCachePath(tempName, f());
     }, function (entry) {
-      // get and install latest version
-      Module.setVersion(path.join(MODULE_CACHE, entry.name), null, f.wait());
+      // get and install the requested version (or the latest version, if none
+      // is provided)
+      Module.setVersion(path.join(MODULE_CACHE, entry.name), version, f.wait());
       f(entry);
     }).error(function () {
       rimraf(tempName, function () {});
