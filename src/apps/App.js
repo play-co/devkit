@@ -30,7 +30,7 @@ var App = module.exports = Class(function () {
     };
 
     this.manifest = manifest || {};
-    this.dependencies = this._parseDeps();
+    this._dependencies = this._parseDeps();
     this.lastOpened = lastOpened || Date.now();
   }
 
@@ -131,8 +131,8 @@ var App = module.exports = Class(function () {
             var name = path.basename(modulePath);
             var version = null;
             var isDependency = (this.paths.root == parentPath);
-            if (isDependency && this.dependencies[name]) {
-              version = this.dependencies[name].version;
+            if (isDependency && this._dependencies[name]) {
+              version = this._dependencies[name].version;
             }
 
             this._modules[name] = new Module({
@@ -151,6 +151,10 @@ var App = module.exports = Class(function () {
     }
   }
 
+  this.getDependency = function (name) {
+    return this._dependencies[name];
+  }
+
   this._parseDeps = function () {
     var deps = {};
     var src = this.manifest.dependencies;
@@ -164,6 +168,14 @@ var App = module.exports = Class(function () {
     }
 
     return deps;
+  }
+
+  this._stringifyDeps = function () {
+    var deps = this.manifest.dependencies = {};
+    Object.keys(this._dependencies).forEach(function (name) {
+      var dep = this._dependencies[name];
+      deps[name] = (dep.url || '') + '#' + (dep.version || '');
+    }, this);
   }
 
   /* Manifest */
@@ -240,7 +252,8 @@ var App = module.exports = Class(function () {
     }
 
     if (changed) {
-      this.dependencies = this._parseDeps();
+      this._dependencies = this._parseDeps();
+      this._stringifyDeps();
       this.saveManifest(cb);
     } else {
       cb && process.nextTick(cb);
@@ -250,7 +263,7 @@ var App = module.exports = Class(function () {
   this.setModuleVersion = function (moduleName, version, cb) {
     this.validate(null, bind(this, function (err) {
       if (!err) {
-        var dep = this.dependencies[moduleName];
+        var dep = this._dependencies[moduleName];
         if (dep && dep.version != version) {
           dep.version = version;
         }
@@ -259,10 +272,10 @@ var App = module.exports = Class(function () {
   }
 
   this.addDependency = function (name, opts, cb) {
-    var dep = this.dependencies[name];
+    var dep = this._dependencies[name];
     var changed = false;
     if (!dep) {
-      this.dependencies[name] = dep = {};
+      this._dependencies[name] = dep = {};
       changed = true;
     }
 
@@ -276,7 +289,11 @@ var App = module.exports = Class(function () {
       changed = true;
     }
 
-    var write = bind(this, 'saveManifest', cb);
+    var write = bind(this, function () {
+      this._stringifyDeps();
+      this.saveManifest(cb);
+    });
+
     if (!dep.url) {
       Module.getURL(path.join(this.paths.modules, name), function (err, url) {
         if (!err) { dep.url = url; }
@@ -292,9 +309,10 @@ var App = module.exports = Class(function () {
   this.removeDependency = function (name, cb) {
     var f = ff(this, function () {
       // remove from manifest dependencies
-      if (this.dependencies[name]) {
+      if (this._dependencies[name]) {
         logger.log('removing dependency from manifest...');
-        delete this.dependencies[name];
+        delete this._dependencies[name];
+        this._stringifyDeps();
         this.saveManifest(f.wait());
       }
 
@@ -308,17 +326,9 @@ var App = module.exports = Class(function () {
   }
 
   this.saveManifest = function (cb) {
-    var deps = this.manifest.dependencies = {};
-    Object.keys(this.dependencies).forEach(function (name) {
-      var dep = this.dependencies[name];
-      deps[name] = (dep.url || '') + '#' + (dep.version || '');
-    }, this);
-
     var data = stringify(this.manifest);
     return fs.writeFile(path.join(this.paths.manifest), data, cb);
   };
-
-
 
   this.getPackageName = function() {
     var studio = this.manifest.studio;

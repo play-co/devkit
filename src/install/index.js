@@ -110,7 +110,7 @@ exports.installModule = function (app, moduleName, opts, cb) {
     // install the version from the app manifest unless we're explicitly asked
     // to upgrade it to the latest version
     if (!version && !opts.latest) {
-      var dep = app.dependencies[moduleName];
+      var dep = app.getDependency(moduleName);
       if (dep) {
         version = dep.version;
       }
