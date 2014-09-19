@@ -19,7 +19,6 @@ var InitCommand = Class(BaseCommand, function (supr) {
     // check the app name
     var appPath = args.shift();
     var appName = path.basename(appPath);
-    appPath = path.resolve(process.cwd(), appPath);
     if (!appName) {
       throw new Error('No app name provided');
     }
@@ -27,6 +26,9 @@ var InitCommand = Class(BaseCommand, function (supr) {
     if (!/^[a-z][a-z0-9]+$/i.test(appName)) {
       throw new Error('App name must start with a letter and consist only of letters and numbers');
     }
+
+
+    appPath = path.resolve(process.cwd(), appPath);
 
     // create the directory
     if (!fs.existsSync(appPath)) {
