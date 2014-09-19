@@ -164,7 +164,7 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
     // console.log("currentVersion:", currentVersion, "requestedVersion:", version || "(latest)", "local:", !notPresentErr, "isBranch:", isBranch, "isHash:", isHash, "fullHash:", fullHash, "skipFetch:", opts.skipFetch);
 
     // are we already on that version?
-    if (info.isHash && info.currentVersion == info.fullHash || info.isTag && info.currentVersion == version) {
+    if (!opts.install && info.isHash && info.currentVersion == info.fullHash || info.isTag && info.currentVersion == version) {
       logger.log(color.cyanBright("set version"), color.yellowBright(moduleName + "@" + info.currentVersion));
       return f.succeed(version);
     }
@@ -185,7 +185,7 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
     }
 
     // if the tags match
-    if (info.isTag && info.currentVersion == version) {
+    if (!opts.install && info.isTag && info.currentVersion == version) {
       return f.succeed(version);
     }
 

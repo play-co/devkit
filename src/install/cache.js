@@ -115,7 +115,10 @@ var ModuleCache = Class(EventEmitter, function () {
     }, function (entry) {
       // get and install the requested version (or the latest version, if none
       // is provided)
-      Module.setVersion(path.join(MODULE_CACHE, entry.name), version, f.wait());
+      Module.setVersion(path.join(MODULE_CACHE, entry.name), {
+          version: version,
+          install: true // force run the install scripts when first downloading a module
+        }, f.wait());
       f(entry);
     }).error(function () {
       rimraf(tempName, function () {});
