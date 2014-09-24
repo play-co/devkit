@@ -18,7 +18,11 @@ var Config = Class(EventEmitter, function () {
 
 		// initial reading of config.json can happen synchronously using require
 		try {
-			this._config = require(CONFIG_PATH);
+			if (fs.existsSync(CONFIG_PATH)) {
+				this._config = require(CONFIG_PATH);
+			} else {
+				this._config = {};
+			}
 		} catch (e) {
 			if (e.code != 'MODULE_NOT_FOUND') {
 				logger.error("Error loading", CONFIG_PATH);
