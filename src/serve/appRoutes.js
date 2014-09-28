@@ -116,6 +116,7 @@ exports.addToAPI = function (opts, api) {
           try {
             var routes = extension.getMiddleware(require('../api'), app);
           } catch (e) {
+            logger.error("Unable to mount simulator middleware for", moduleName);
             logger.error(e);
           }
 
