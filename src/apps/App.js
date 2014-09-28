@@ -69,9 +69,14 @@ var App = module.exports = Class(function () {
 
   // assuming app is loaded, reload the manifest and modules synchronously
   this.reloadSync = function () {
-    this.manifest = JSON.parse(fs.readFileSync(this.paths.manifest, 'utf8'));
-    if (this._modules) {
-      this.reloadModules();
+    if (!fs.existsSync(this.paths.manifest)) {
+      // app does not exist anymore?
+      require('./index').unload(this.paths.root);
+    } else {
+      this.manifest = JSON.parse(fs.readFileSync(this.paths.manifest, 'utf8'));
+      if (this._modules) {
+        this.reloadModules();
+      }
     }
   }
 

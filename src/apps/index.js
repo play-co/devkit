@@ -201,6 +201,12 @@ var AppManager = Class(EventEmitter, function () {
     });
   };
 
+  this.unload = function (appPath) {
+    if (this._apps[appPath]) {
+      delete this._apps[appPath];
+    }
+  }
+
   this.has = function (appPath, cb) {
     appPath = resolveAppPath(appPath);
      var f = ff(this, function () {
