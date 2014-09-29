@@ -71,7 +71,7 @@ exports.installModule = function (app, moduleName, opts, cb) {
         var next = f();
         Module.describeVersion(modulePath, function (err, currentVersion) {
           if (err) { return next(err); }
-          if (currentVersion == version) { return next(null, true); }
+          if (currentVersion.hash == version || currentVersion.tag == version) { return next(null, true); }
           return next();
         });
       }
@@ -95,10 +95,6 @@ exports.installModule = function (app, moduleName, opts, cb) {
     modulePath = path.join(app.paths.modules, moduleName);
     f(modulePath);
 
-    if (opts.link) {
-      logger.warn('linking', app.paths.root, 'directly to the devkit cache directory...');
-    }
-
     if (!fs.existsSync(modulePath) && cacheEntry) {
       if (opts.link) {
         cache.link(cacheEntry, app.paths.modules, f.wait());
@@ -116,6 +112,15 @@ exports.installModule = function (app, moduleName, opts, cb) {
       }
     }
   }, function (modulePath) {
+    if (opts.link) {
+      try {
+        logger.warn(app.paths.root, '-->', fs.readlinkSync(modulePath));
+      } catch (e) {
+        logger.error('Unexpected error reading link', modulePath);
+        logger.error(e);
+      }
+    }
+
     // checkout proper version and run install scripts
     Module.setVersion(modulePath, version, f());
   }, function (installedVersion) {

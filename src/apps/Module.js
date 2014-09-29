@@ -104,21 +104,21 @@ Module.getURL = function (modulePath, cb) {
 Module.describeVersion = function (modulePath, cb) {
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
-  fs.exists(modulePath, function (exists) {
+  var f = ff(function () {
+    fs.exists(modulePath, f.slotPlain());
+  }, function (exists) {
     if (!exists) {
-      return cb && cb({code: 'ENOENT', filename: moduleName});
+      return f.fail({code: 'ENOENT', filename: moduleName});
     }
 
-    git('describe', '--tags', '--exact-match', {extraSilent: true}, function (err, stdout, stderr) {
-      if (err) {
-        git('rev-parse', 'HEAD', {extraSilent: true}, function (err, stdout, stderr) {
-          cb && cb(err, !err && strip(stdout));
-        });
-      } else {
-        cb && cb(null, strip(stdout));
-      }
+    git('describe', '--tags', '--exact-match', {extraSilent: true}, f.slotPlain(2));
+    git('rev-parse', 'HEAD', {extraSilent: true}, f());
+  }, function (noTag, tag, hash) {
+    f({
+      tag: !noTag && strip(tag),
+      hash: strip(hash)
     });
-  });
+  }).cb(cb);
 }
 
 Module.getVersions = function (modulePath, cb) {
@@ -141,6 +141,7 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
   var info = {};
+  var forceInstall = !!opts.install;
 
   var f = ff(function () {
     git.getLocalVersions(f());
@@ -153,20 +154,19 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
       git('log', '--pretty=format:%H', '-n', '1', version, {extraSilent: true}, f.slotPlain(2));
     }
     // git('describe', '--tags', {extraSilent: true}, f());
-  }, function (versions, currentVersion, isBranch, notPresentErr, fullHash) {
+  }, function (versions, currentVersion, isBranch, notPresentErr, hash) {
     // if the version is a branch, we should always fetch
-    info.currentVersion = currentVersion;
+    info.currentTag = currentVersion.tag;
+    info.currentHash = currentVersion.hash;
     info.isBranch = !!(isBranch && isBranch.replace(/^\s+|\s+$/g, ''));
-    info.fullHash = fullHash && fullHash.replace(/^\s+|\s+$/g, '');
-    info.isTag = versions.indexOf(version) != -1;
-    info.isHash = !info.isTag && !info.isBranch && !!info.fullHash;
-
-    // console.log("currentVersion:", currentVersion, "requestedVersion:", version || "(latest)", "local:", !notPresentErr, "isBranch:", isBranch, "isHash:", isHash, "fullHash:", fullHash, "skipFetch:", opts.skipFetch);
+    info.hash = hash && hash.replace(/^\s+|\s+$/g, '');
+    info.tag = versions.indexOf(version) != -1 && version;
+    info.name = info.tag || info.hash;
 
     // are we already on that version?
-    if (!opts.install && info.isHash && info.currentVersion == info.fullHash || info.isTag && info.currentVersion == version) {
-      logger.log(color.cyanBright("set version"), color.yellowBright(moduleName + "@" + info.currentVersion));
-      return f.succeed(version);
+    if (!forceInstall && info.currentHash == info.hash) {
+      logger.log(color.cyanBright("set version"), color.yellowBright(moduleName + "@" + info.name));
+      return f.succeed(info.name);
     }
 
     // if no version was specified and skipFetch wasn't provided, fetch the
@@ -181,11 +181,11 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
   }, function (versions) {
     if (!version) {
       // default to the latest tagged version
-      version = versions[0];
+      info.tag = versions[0];
     }
 
     // if the tags match
-    if (!opts.install && info.isTag && info.currentVersion == version) {
+    if (!forceInstall && info.currentTag == info.tag) {
       return f.succeed(version);
     }
 

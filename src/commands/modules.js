@@ -81,10 +81,12 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
             if (err) { return cb && cb(err); }
 
             if (argv['save-current']) {
-              if (version != currentVersion) {
-                console.log(color.yellowBright(moduleName) + ':', color.redBright(version), "-->", color.cyanBright(currentVersion));
+              if (version != currentVersion.tag && version != currentVersion.hash) {
+                // prefer tag names over hashes
+                var name = currentVersion.tag || currentVersion.hash;
+                console.log(color.yellowBright(moduleName) + ':', color.redBright(version), "-->", color.cyanBright(name));
                 app.addDependency(moduleName, {
-                  version: currentVersion
+                  version: name
                 });
               }
             } else {
@@ -94,9 +96,13 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
                   currentVersion: currentVersion
                 };
               } else {
+                var name = currentVersion.tag
+                  ? currentVersion.tag + ' (' + currentVersion.hash + ')'
+                  : currentVersion.hash
+
                 console.log(moduleName + ':');
                 console.log('\tmanifest version:', version);
-                console.log('\tcurrent version:', currentVersion);
+                console.log('\tcurrent version:', name);
               }
             }
 
