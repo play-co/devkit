@@ -96,10 +96,12 @@ var App = module.exports = Class(function () {
       function scanDir(basePath) {
         try {
           return fs.readdirSync(basePath)
-            .map(function (item) { return {
+            .map(function (item) {
+              return {
                 path: path.join(basePath, item),
-                parent: parentPath};
-              });
+                parent: parentPath
+              };
+            });
 
         } catch (e) {}
       }
