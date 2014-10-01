@@ -165,14 +165,14 @@ exports.ViewInspector = Class(Widget, function(supr) {
     if (!this._timer) { return; }
 
     this._trace.hash = {};
-    this._trace.list = evt.trace;
+    this._trace.list = evt.parents;
     this._trace.autoExpand = {};
-    for (var i = 0, uid; uid = evt.trace[i]; ++i) {
+    for (var i = 0, uid; uid = evt.parents[i]; ++i) {
       this._trace.hash[uid] = true;
       this._trace.autoExpand[uid] = true;
     }
 
-    var targetUID = evt.trace[i - 1];
+    var targetUID = evt.parents[i - 1];
     this.highlightView(targetUID);
     this._mouseHoverView = targetUID;
 
@@ -183,12 +183,12 @@ exports.ViewInspector = Class(Widget, function(supr) {
     if (!this._timer) { return; }
 
     this._trace.hash = {};
-    this._trace.list = evt.trace;
-    for (var i = 0, uid; uid = evt.trace[i]; ++i) {
+    this._trace.list = evt.parents;
+    for (var i = 0, uid; uid = evt.parents[i]; ++i) {
       this._trace.hash[uid] = true;
     }
 
-    var targetUID = evt.trace[i - 1];
+    var targetUID = evt.parents[i - 1];
 
     this.selectView(targetUID);
     //this.highlightView(targetUID);
@@ -219,34 +219,37 @@ exports.ViewInspector = Class(Widget, function(supr) {
   var indent = 15; //indentation in pixel
 
   this.updateDeepTrace = function (evt) {
-    var offset = this._device.getSimulator().getFrame().getBoundingClientRect();
+    var simulator = this._device.getSimulator();
+    var offset = simulator.getFrame().getBoundingClientRect();
+    var ratio = simulator.getDevicePixelRatio();
     this._deepTrace.style.display = "block";
-    this._deepTrace.style.left = offset.left + evt.pt.x + 5 + "px";
-    this._deepTrace.style.top = offset.top + evt.pt.y + "px";
+    this._deepTrace.style.left = offset.left + evt.x / ratio + 5 + "px";
+    this._deepTrace.style.top = offset.top + evt.y / ratio + "px";
 
-    //document fragments perform much better for large amount of nodes
+    // document fragments perform much better for large amount of nodes
     var frag = document.createDocumentFragment();
-    for (var i = 0; i < evt.trace.length; ++i) {
-      //create the element
+    var i = evt.trace.length;
+    while (i--) {
+      // create the element
       el = document.createElement("div");
       el.innerText = evt.trace[i].tag;
 
       el.setAttribute("data-id", evt.trace[i].uid);
-      if (evt.trace[i].uid === evt.active) {
+      if (evt.trace[i].uid == evt.target) {
         el.setAttribute("class", "active");
       }
 
       el.style.paddingLeft = indent * evt.trace[i].depth + 8 + "px";
 
-      //bind events
+      // bind events
       el.onmouseover = bind(this, onOver);
       el.onclick = bind(this, onSelect);
 
-      //add to the fragment
+      // add to the fragment
       frag.appendChild(el);
     }
 
-    //cheap way to remove all children
+    // cheap way to remove all children
     this._deepTrace.innerHTML = "";
     this._deepTrace.appendChild(frag);
   }
