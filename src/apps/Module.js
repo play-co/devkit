@@ -185,7 +185,7 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
     }
 
     // if the tags match
-    if (!forceInstall && info.currentTag == info.tag) {
+    if (!forceInstall && info.currentTag && info.currentTag == info.tag) {
       return f.succeed(version);
     }
 
