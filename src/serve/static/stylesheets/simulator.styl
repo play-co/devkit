@@ -171,6 +171,40 @@ else
       border-radius 3px
       padding 0px 1px
 
+      > button
+          position relative
+          outline none
+          display inline-block
+          border-radius 0px
+          border none
+          background none
+          color button-fg
+          padding 6px 10px 4px
+          margin 2px 0px 3px
+          line-height 16px
+          cursor default
+
+        > button i
+          margin-top -1px
+
+        > button:hover
+          color #FFF
+          background linear-gradient(bottom, rgba(80, 80, 80, 0.3), rgba(110, 110, 110, 0.3))
+
+        > button:active
+          top 1px
+          background rgba(80, 80, 80, 0.2);
+
+        > button.disabled i:after
+          position absolute
+          top -6px
+          left 5px
+          width 1px
+          height 24px
+          content ""
+          transform rotate(38deg)
+          background #FFF
+
     button.withTooltip:hover:before
       position absolute
       top 30px
@@ -261,64 +295,9 @@ else
     .list .device #resolution
       font 9px Helvetica
 
-    button
-      position relative
-      outline none
-      display inline-block
-      border-radius 0px
-      border none
-      background none
-      color button-fg
-      padding 6px 10px 4px
-      margin 2px 0px 3px
-      line-height 16px
-      cursor default
-
-    button i
-      margin-top -1px
-
-    button:hover
-      color #FFF
-      background linear-gradient(bottom, rgba(80, 80, 80, 0.3), rgba(110, 110, 110, 0.3))
-
-    button:active
-      top 1px
-      background rgba(80, 80, 80, 0.2);
-
-    button.disabled i:after
-      position absolute
-      top -6px
-      left 5px
-      width 1px
-      height 24px
-      content ""
-      -webkit-transform rotate(38deg)
-      background #FFF
-
     #overflowMenu
-      position absolute
-      display none
-      transition all 0.3s
-      top 30px
+
       right 0
-      background #111
-      border 1px solid #222
-
-      button
-        background none
-        display block
-        width 100%
-        text-align left
-        padding 6px 10px 6px
-
-      button:hover,
-      .squill-checkbox:hover
-        background #222
-
-      .squill-checkbox
-        font-weight bold
-        color button-fg
-        padding 6px 10px 6px
 
   #toolbar.menu-open
     opacity 1 !important
