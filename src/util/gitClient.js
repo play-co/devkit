@@ -39,7 +39,8 @@ function spawnWithLogger(args, opts, cb) {
 
     if (!opts.extraSilent) {
       if (err) {
-        logger.log(color.redBright(' <- done ' + err.code));
+        var errorText = err.code ? err.code : '('+err+')';
+        logger.log(color.redBright(' <- failed ' + errorText));
       }
       logger.log(color.yellow(' <- done'));
     }
