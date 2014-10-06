@@ -27,8 +27,8 @@ var App = module.exports = Class(function () {
       root: root,
       shared: path.join(root, 'shared'),
       src: path.join(root, 'src'),
-      resources: path.join(root, 'resources'),
       modules: path.join(root, 'modules'),
+      resources: path.join(root, 'resources'),
       icons: path.join(root, 'resources', 'icons'),
       lang: path.join(root, 'resources', 'lang'),
       manifest: path.join(root, 'manifest.json')
@@ -199,7 +199,7 @@ var App = module.exports = Class(function () {
   }
 
   var DEFAULT_PROTOCOL = "https";
-  var DEFAULT_DEPS = [
+  var REQUIRED_DEPS = [
     {
       name: "devkit-core",
       ssh: "git@github.com:",
@@ -209,11 +209,11 @@ var App = module.exports = Class(function () {
     }
   ];
 
-  function getDefaultDeps(protocol) {
+  function getRequiredDeps(protocol) {
     protocol = protocol == 'ssh' ? 'ssh' : 'https';
 
     var out = {};
-    DEFAULT_DEPS.forEach(function (dep) {
+    REQUIRED_DEPS.forEach(function (dep) {
       out[dep.name] = dep[protocol] + dep.repo + (dep.tag ? '#' + dep.tag : '');
     });
     return out;
@@ -248,6 +248,7 @@ var App = module.exports = Class(function () {
 
     var changed = false;
 
+    // create defaults for anything missing
     for (var key in defaults) {
       if (!(key in this.manifest)) {
         this.manifest[key] = defaults[key];
@@ -255,14 +256,16 @@ var App = module.exports = Class(function () {
       }
     }
 
-    var defaultDeps = getDefaultDeps(opts.protocol || 'https');
-    for (var key in defaultDeps) {
+    // ensure required dependencies are set
+    var requiredDeps = getRequiredDeps(opts.protocol || 'https');
+    for (var key in requiredDeps) {
       if (!(key in this.manifest.dependencies)) {
-        this.manifest.dependencies[key] = defaultDeps[key];
+        this.manifest.dependencies[key] = requiredDeps[key];
         changed = true;
       }
     }
 
+    // if manifest has been changed, save it and update dependencies
     if (changed) {
       this._dependencies = this._parseDeps();
       this._stringifyDeps();
