@@ -14,6 +14,12 @@ var InitCommand = Class(BaseCommand, function (supr) {
   this.name = 'init';
   this.description = 'creates a new devkit app';
 
+  this.init = function () {
+    supr(this, 'init', arguments);
+    this.opts
+      .describe('template', 'path to template (local folder or git repository)');
+  }
+
   this.exec = function (args, cb) {
 
     // check the app name
@@ -27,17 +33,13 @@ var InitCommand = Class(BaseCommand, function (supr) {
       throw new Error('App name must start with a letter and consist only of letters and numbers');
     }
 
-
     appPath = path.resolve(process.cwd(), appPath);
 
-    // create the directory
-    if (!fs.existsSync(appPath)) {
-      fs.mkdirSync(appPath);
-    }
-
     var f = ff(this, function () {
-      apps.create(appPath, f());
+      // create the app
+      apps.create(appPath, this.opts.argv.template, f());
     }, function (app) {
+      // change to app root and run install command
       process.chdir(app.paths.root);
       commands.get('install').exec([], f());
     }).error(bind(this, function (err) {

@@ -2,6 +2,7 @@ var fs = require('fs');
 var ff = require('ff');
 var path = require('path');
 var rimraf = require('rimraf');
+var Rsync = require('rsync');
 var lockFile = require('lockfile');
 
 var Module = require('./Module');
@@ -14,6 +15,9 @@ var UNCAUGHT_CB = function (err) {
     throw err;
   }
 };
+
+var APP_TEMPLATE_ROOT = path.join(__dirname, 'templates');
+var DEFAULT_TEMPLATE = 'default';
 
 var App = module.exports = Class(function () {
 
@@ -384,6 +388,43 @@ var App = module.exports = Class(function () {
       return null;
     }
   }
+
+  this.createFromTemplate = function (templatePath) {
+
+    if (!templatePath) {
+      return this.createFromDefaultTemplate();
+    }
+
+    // if template is local file, copy it
+    if (templatePath[0] === '/') {
+      if (fs.existsSync(templatePath) &&
+          fs.lstatSync(templatePath).isDirectory()) {
+        logger.log("Creating app using local template " + templatePath);
+        return this._copyLocalTemplate(templatePath);
+      } else {
+        logger.warn("Failed to find template " + templatePath);
+        return this.createFromDefaultTemplate();
+      }
+    }
+
+  this.createFromDefaultTemplate = function (cb) {
+    logger.log("Creating app using default application template");
+    var templatePath = path.join(APP_TEMPLATE_ROOT, DEFAULT_TEMPLATE);
+    this._copyLocalTemplate(templatePath);
+  };
+
+  this._copyLocalTemplate = function (templatePath) {
+    // read every file/folder in the template
+    var projectRoot = this.paths.root;
+    var rsync = new Rsync();
+    fs.readdirSync(templatePath).forEach(function(child) {
+      rsync
+        .flags('r')
+        .source(path.join(templatePath,child))
+        .destination(projectRoot)
+        .execute();
+    });
+  };
 
   this.acquireLock = function (cb) {
     lockFile.lock(path.join(this.paths.root, LOCK_FILE), cb || UNCAUGHT_CB);
