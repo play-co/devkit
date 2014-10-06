@@ -6,6 +6,7 @@ var Rsync = require('rsync');
 var lockFile = require('lockfile');
 
 var Module = require('./Module');
+var gitClient = require('../util/gitClient');
 var logger = require('../util/logging').get('apps');
 var stringify = require('../util/stringify');
 
@@ -407,23 +408,61 @@ var App = module.exports = Class(function () {
       }
     }
 
+    // if template is not a local path, attempt to clone it
+    var tempPath = path.join(APP_TEMPLATE_ROOT, '_template');
+    var f = ff(this, function () {
+      // ensure temporary path is empty
+      if (fs.existsSync(tempPath)) {
+        rimraf(tempPath, f.wait());
+      }
+    }, function () {
+      // shallow clone the repository
+      logger.log('Creating app using remote template ' + templatePath);
+      var git = gitClient.get(APP_TEMPLATE_ROOT);
+      git('clone', '--depth', '1', templatePath, tempPath, f.wait());
+    }, function () {
+      logger.log('Copying ' + tempPath + ' to ' + this.paths.root);
+      this._copyLocalTemplate(tempPath, f.wait());
+    })
+    .onError(bind(this, function (err) {
+      logger.error("Failed to clone repository " + templatePath);
+      logger.error(err);
+
+      // failed - fall back to local default
+      // TODO: bail from entire creation process?
+      this.createFromDefaultTemplate(f.wait());
+    }))
+    .onSuccess(bind(this, function () {
+    }))
+    .onComplete(bind(this, function () {
+      // make sure temp folder is gone
+      if (fs.existsSync(tempPath)) {
+        rimraf(tempPath, function () {});
+      }
+    }));
+  };
+
   this.createFromDefaultTemplate = function (cb) {
     logger.log("Creating app using default application template");
     var templatePath = path.join(APP_TEMPLATE_ROOT, DEFAULT_TEMPLATE);
     this._copyLocalTemplate(templatePath);
+    cb && cb();
   };
 
-  this._copyLocalTemplate = function (templatePath) {
+  this._copyLocalTemplate = function (templatePath, cb) {
     // read every file/folder in the template
     var projectRoot = this.paths.root;
     var rsync = new Rsync();
-    fs.readdirSync(templatePath).forEach(function(child) {
-      rsync
-        .flags('r')
-        .source(path.join(templatePath,child))
-        .destination(projectRoot)
-        .execute();
-    });
+    var f = ff(function() {
+      var group = f.group();
+      fs.readdirSync(templatePath).forEach(function(child) {
+        rsync
+          .flags('r')
+          .source(path.join(templatePath,child))
+          .destination(projectRoot)
+          .execute(group());
+      });
+    }).onComplete(cb);
   };
 
   this.acquireLock = function (cb) {
