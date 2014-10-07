@@ -19,7 +19,8 @@ var Config = Class(EventEmitter, function () {
 		// initial reading of config.json can happen synchronously using require
 		try {
 			if (fs.existsSync(CONFIG_PATH)) {
-				this._config = require(CONFIG_PATH);
+				var contents = fs.readFileSync(CONFIG_PATH, 'utf8');
+				this._config = JSON.parse(contents);
 			} else {
 				this._config = {};
 			}
@@ -38,6 +39,10 @@ var Config = Class(EventEmitter, function () {
 				}
 			}
 
+			this._config = {};
+		}
+
+		if (typeof this._config != 'object') {
 			this._config = {};
 		}
 
