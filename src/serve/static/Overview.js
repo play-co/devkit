@@ -313,7 +313,7 @@ exports = Class(Widget, function(supr) {
   }
 
   this.delegate = new Delegate(function(on) {
-    on.appList = function (target, appPath) {
+    on.appList = function (appPath) {
       if (appPath) {
         this.appList.selection.deselectAll();
 
