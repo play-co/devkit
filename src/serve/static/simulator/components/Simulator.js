@@ -184,7 +184,16 @@ exports = Class(squill.Widget, function (supr) {
   };
 
   this.setBuilding = function (isBuilding) {
-    this.toggleClass('building', isBuilding);
+    if (!isBuilding) {
+      $.hide(this['build-spinner']);
+      this.removeClass('building');
+    } else {
+      this.showLoadingImage();
+      $.show(this['build-spinner']);
+      setTimeout(bind(this, function () {
+        this.addClass('building');
+      }));
+    }
   }
 
   this._onMenuClose = function (menu) {
@@ -263,6 +272,14 @@ exports = Class(squill.Widget, function (supr) {
   }
 
   this.canRotate = function () { return this._canRotate; }
+
+  this.showLoadingImage = function () {
+    if (/^native/.test(this._params.target)) {
+      this.splashImage.style.display = 'block';
+      this.splashImage.style.opacity = 1;
+      this.splashImage.style.backgroundImage = 'url(' + this.getLoadingImageURL() + ')';
+    }
+  }
 
   this.hideLoadingImage = function () {
     this.splashImage.style.opacity = 0;
@@ -470,11 +487,7 @@ exports = Class(squill.Widget, function (supr) {
   }
 
   this.loadURL = function (url) {
-    if (/^native/.test(this._params.target)) {
-      this.splashImage.style.display = 'block';
-      this.splashImage.style.opacity = 1;
-      this.splashImage.style.backgroundImage = 'url(' + this.getLoadingImageURL() + ')';
-    }
+    this.showLoadingImage();
 
     if (this._frame) {
       $.remove(this._frame);
