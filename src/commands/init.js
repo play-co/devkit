@@ -17,7 +17,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
   this.init = function () {
     supr(this, 'init', arguments);
     this.opts
-      .describe('template', 'path to template (local folder or git repository)');
+      .describe('template', 'path to template (absolute path to local folder or url to git repository)');
   }
 
   this.exec = function (args, cb) {
