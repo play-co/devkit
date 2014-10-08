@@ -179,13 +179,14 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
   }, function (isBranch) {
     git.getLocalVersions(f());
   }, function (versions) {
+
     if (!version) {
       // default to the latest tagged version
-      info.tag = versions[0];
+      version = versions[0];
     }
 
     // if the tags match
-    if (!forceInstall && info.currentTag && info.currentTag == info.tag) {
+    if (!forceInstall && info.currentTag && info.currentTag == version) {
       return f.succeed(version);
     }
 
@@ -193,7 +194,7 @@ Module.setVersion = function (modulePath, versionOrOpts, cb) {
       logger.log(color.cyanBright("installing"), color.yellowBright(moduleName + "@" + version));
       git('checkout', version, f());
     } else {
-      f.fail("no valid versions found");
+      f.fail("no valid versions found for " + moduleName);
     }
   }, function () {
     if (info.isBranch) {
