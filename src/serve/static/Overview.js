@@ -144,8 +144,7 @@ var ModuleCell = Class(Cell, function () {
     className: 'moduleCell',
     children: [
       {id: 'title', type: 'label', children: [
-        {type: 'label', tag: 'span', id: 'version'},
-        {id: 'edit', type: 'button'}
+        {type: 'label', tag: 'span', id: 'version'}
       ]},
       {id: 'subtitle', type: 'label'},
     ]
