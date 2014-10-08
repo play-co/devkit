@@ -459,6 +459,12 @@ var App = module.exports = Class(function () {
     var f = ff(function() {
       var group = f.group();
       fs.readdirSync(templatePath).forEach(function(child) {
+        // don't copy .git files
+        if (child === '.git') {
+          return;
+        }
+
+        // copy the file/folder recursively to the new app
         rsync
           .flags('r')
           .source(path.join(templatePath,child))
