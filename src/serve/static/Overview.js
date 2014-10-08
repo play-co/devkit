@@ -312,10 +312,20 @@ exports = Class(Widget, function(supr) {
   }
 
   this.delegate = new Delegate(function(on) {
-    on.appList = function (appPath) {
+    on.appList = function () {
+      // the target argument was removed from delegate event calls
+      // in commit b7c120e65253e902dd7dcc585cf33c9fb77300a1
+      // support both old and new parameter (target, appPath) or just (appPath)
+      var appPath = void 0;
+      var target = void 0;
+      if (arguments[0] == 'appList') {
+        appPath = arguments[1];
+      } else {
+        appPath = arguments[0];
+      }
+
       if (appPath) {
         this.appList.selection.deselectAll();
-
         this.showApp(appPath);
       }
     };
