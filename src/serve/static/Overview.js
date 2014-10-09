@@ -240,7 +240,7 @@ exports = Class(Widget, function(supr) {
       {id: 'leftPane', children: [
         {id: 'actions', type: 'list', cellCtor: ActionCell},
         {id: 'logo'},
-        {id: 'appList', margin: 10, type: 'list',
+        {id: 'appList', type: 'list',
             selectable: 'single', cellCtor: AppCell, margin: 3,
             data: 'apps',
             sorter: function (item) {
@@ -317,10 +317,6 @@ exports = Class(Widget, function(supr) {
     var app = this._apps.get(appPath).data;
     this.appInspector.show();
     this.appInspector.setModel(app);
-
-    // util.ajax.get({url: '/api/app', query: {app: appPath}}, function (err, app) {
-
-    // });
   }
 
   this.delegate = new Delegate(function(on) {
