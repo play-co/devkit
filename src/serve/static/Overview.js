@@ -40,6 +40,10 @@ function friendlyUnescape(url) {
   return url.replace(unescapeRe, function (key) { return encodedChars[key]; });
 }
 
+// applied to the ip spinner while reloading
+// should match the style
+var RELOADING_CLASS = 'reloading';
+
 /**
  * Overview widget.
  */
@@ -246,6 +250,8 @@ exports = Class(Widget, function(supr) {
             }},
         {
           id: 'ip',
+          type: 'button',
+          tag: 'div',
           children: [
             {id: 'ipValue', tag: 'span', text: ''}
           ]
@@ -297,6 +303,12 @@ exports = Class(Widget, function(supr) {
   this.getHomeDirectory = function () { return this._homeDirectory; }
 
   this.refreshIP = function() {
+    // prevent repeat clicking
+    if ($.hasClass(this.ip._el, RELOADING_CLASS)) {
+      return;
+    }
+    // add reloading class to ip
+    $.addClass(this.ip._el, RELOADING_CLASS);
     util.ajax.get({url: '/api/ip', type: 'json'}, bind(this, 'onRefreshIP'));
   };
 
@@ -330,12 +342,18 @@ exports = Class(Widget, function(supr) {
       }
     };
 
-    on.ipValue = function()  {
+    on.ip = function()  {
       this.refreshIP();
     };
   });
 
   this.onRefreshIP = function(err, response) {
+    // remove the reloading class after 1 second so the user
+    // sees feedback when the ip is clicked
+    setTimeout(bind(this, function () {
+      $.removeClass(this.ip._el, RELOADING_CLASS);
+    }), 500);
+
     if (!err) {
       $.setText(this.ipValue, response.ip.join(', '));
     }
