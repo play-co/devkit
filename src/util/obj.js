@@ -190,7 +190,7 @@ function _setVal(pieces, value, index, obj) {
         obj[piece] = [];
       }
     } else {
-      if (typeof obj[piece] != 'object') {
+      if (typeof obj[piece] != 'object' || obj[piece] == null) {
         obj[piece] = {};
       }
     }
