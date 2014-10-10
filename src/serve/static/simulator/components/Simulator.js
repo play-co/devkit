@@ -479,7 +479,7 @@ exports = Class(squill.Widget, function (supr) {
     return this._rotation;
   };
 
-  this._zoom = 1;
+  this._zoom = 0;
 
   this.setZoom = function (zoom) {
     this._zoom = zoom || 1;
@@ -533,24 +533,64 @@ exports = Class(squill.Widget, function (supr) {
       this._rotation = 0;
     }
 
-    var scale = this._scale = 1 / this.getDevicePixelRatio() * this._zoom;
-    var cssScale = 'scale(' + scale + ')';
-
-    var frame = {};
-    if (params.target == 'browser-desktop') {
-      //var browserOpts = this._manifest.browser;
-      //if (browserOpts && browserOpts.frame) {
-      //  frame = browserOpts.frame;
-      //}
+    // copy background properties from params to our local background properties
+    var bgProps = this._backgroundProps;
+    var props = params.background;
+    var rotation = this._rotation;
+    if (props && params.canRotate && isArray(props)) {
+      props = props[this._rotation % params.background.length];
+      bgProps.isRotated = true;
+      rotation = 0;
+    } else {
+      bgProps.isRotated = false;
     }
 
-    var width = this._customSize.width || frame.width || params.width;
-    var height = this._customSize.height || frame.height || params.height;
+    if (props) {
+      if (rotation % 2) {
+        bgProps.width = props.height;
+        bgProps.height = props.width;
+        bgProps.offsetX = props.height - params.height - props.offsetY;
+        bgProps.offsetY = props.offsetX;
+      } else {
+        bgProps.width = props.width;
+        bgProps.height = props.height;
+        bgProps.offsetX = props.offsetX;
+        bgProps.offsetY = props.offsetY;
+      }
+    } else {
+      bgProps.offsetX = 0;
+      bgProps.offsetY = 0;
+      bgProps.height = 0;
+      bgProps.width = 0;
+      // $.style(this.contents, {width: '100%', height: '100%'});
+    }
+
+    var width = this._customSize.width || params.width;
+    var height = this._customSize.height || params.height;
     if (params.canRotate && this._rotation % 2 == 1) {
       var h = width;
       width = height;
       height = h;
     }
+
+    var zoom = this._zoom;
+    if (!zoom) {
+      var winWidth = window.innerWidth;
+      var winHeight = window.innerHeight;
+      var targetWidth = bgProps.width || width;
+      var targetHeight = bgProps.height || height;
+      var ratio = winWidth / winHeight;
+      var targetRatio = targetWidth / targetHeight;
+      if (ratio < targetRatio) {
+        zoom = winWidth / targetWidth;
+      } else {
+        zoom = winHeight / targetHeight;
+      }
+      zoom = Math.min(1, zoom * this.getDevicePixelRatio());
+    }
+
+    var scale = this._scale = 1 / this.getDevicePixelRatio() * zoom;
+    var cssScale = 'scale(' + scale + ')';
 
     this._width = width * scale || 0;
     this._height = height * scale || 0;
@@ -647,31 +687,7 @@ exports = Class(squill.Widget, function (supr) {
         break;
     }
 
-    // copy background properties from params to our local background properties
-    var bgProps = this._backgroundProps;
-    var props = params.background;
-    var rotation = this._rotation;
-    if (props && params.canRotate && isArray(props)) {
-      props = props[this._rotation % params.background.length];
-      bgProps.isRotated = true;
-      rotation = 0;
-    } else {
-      bgProps.isRotated = false;
-    }
-
     if (props) {
-      if (rotation % 2) {
-        bgProps.width = props.height;
-        bgProps.height = props.width;
-        bgProps.offsetX = props.height - params.height - props.offsetY;
-        bgProps.offsetY = props.offsetX;
-      } else {
-        bgProps.width = props.width;
-        bgProps.height = props.height;
-        bgProps.offsetX = props.offsetX;
-        bgProps.offsetY = props.offsetY;
-      }
-
       var bgWidth = bgProps.width * scale;
       var bgHeight = bgProps.height * scale;
       this.contents.style.cssText = '';
@@ -693,11 +709,6 @@ exports = Class(squill.Widget, function (supr) {
 
       if (props.style) { $.style(this.contents, props.style); }
     } else {
-      bgProps.offsetX = 0;
-      bgProps.offsetY = 0;
-      bgProps.height = 0;
-      bgProps.width = 0;
-      // $.style(this.contents, {width: '100%', height: '100%'});
       this.updateBackground();
     }
 
@@ -942,7 +953,7 @@ exports = Class(squill.Widget, function (supr) {
     this.setTransitionsEnabled(false);
     $.style(this.contents, {
       top: (this._params.dontCenterY ? -this._height / 2 : y) + 'px',
-      left: x + 'px'
+      left: x + 'px',
     });
 
     var toolbarRect = this.toolbar.getBoundingClientRect();

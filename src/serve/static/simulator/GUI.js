@@ -109,7 +109,7 @@ var MainView = Class(squill.Widget, function (supr) {
 
   this.positionSimulators = function () {
     this.controller.getSimulators().forEach(function (simulator) {
-      simulator.onViewportChange();
+      simulator.update();
     }, this);
   }
 
