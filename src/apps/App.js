@@ -393,14 +393,17 @@ var App = module.exports = Class(function () {
     }
   }
 
-  this.createFromTemplate = function (templatePath) {
+  this.createFromTemplate = function (template) {
 
-    if (!templatePath) {
+    if (!template.type) {
+      logger.log("Creating app using default template");
       return this.createFromDefaultTemplate();
     }
 
     // if template is local file, copy it
-    if (templatePath[0] === '/') {
+    if (template.type === 'local') {
+      // TODO: support expanding user home dir and other shortcuts
+      templatePath = path.normalize(template.path);
       if (fs.existsSync(templatePath) &&
           fs.lstatSync(templatePath).isDirectory()) {
         logger.log("Creating app using local template " + templatePath);
@@ -409,40 +412,42 @@ var App = module.exports = Class(function () {
         logger.warn("Failed to find template " + templatePath);
         return this.createFromDefaultTemplate();
       }
-    }
+    } else if (template.type === 'git') {
+      // if template is not a local path, attempt to clone it
+      var tempPath = path.join(APP_TEMPLATE_ROOT, '_template');
+      var f = ff(this, function () {
+        // ensure temporary path is empty
+        if (fs.existsSync(tempPath)) {
+          rimraf(tempPath, f.wait());
+        }
+      }, function () {
+        // shallow clone the repository
+        logger.log('Creating app using remote template ' + template.path);
+        var git = gitClient.get(APP_TEMPLATE_ROOT);
+        git('clone', '--depth', '1', template.path, tempPath, f.wait());
+      }, function () {
+        logger.log('Copying ' + tempPath + ' to ' + this.paths.root);
+        this._copyLocalTemplate(tempPath, f.wait());
+      })
+      .onError(bind(this, function (err) {
+        logger.error("Failed to clone repository " + template.path);
+        logger.error(err);
 
-    // if template is not a local path, attempt to clone it
-    var tempPath = path.join(APP_TEMPLATE_ROOT, '_template');
-    var f = ff(this, function () {
-      // ensure temporary path is empty
-      if (fs.existsSync(tempPath)) {
-        rimraf(tempPath, f.wait());
-      }
-    }, function () {
-      // shallow clone the repository
-      logger.log('Creating app using remote template ' + templatePath);
-      var git = gitClient.get(APP_TEMPLATE_ROOT);
-      git('clone', '--depth', '1', templatePath, tempPath, f.wait());
-    }, function () {
-      logger.log('Copying ' + tempPath + ' to ' + this.paths.root);
-      this._copyLocalTemplate(tempPath, f.wait());
-    })
-    .onError(bind(this, function (err) {
-      logger.error("Failed to clone repository " + templatePath);
-      logger.error(err);
-
-      // failed - fall back to local default
-      // TODO: bail from entire creation process?
+        // failed - fall back to local default
+        // TODO: bail from entire creation process?
+        this.createFromDefaultTemplate(f.wait());
+      }))
+      .onComplete(bind(this, function () {
+        // make sure temp folder is gone
+        if (fs.existsSync(tempPath)) {
+          rimraf(tempPath, function () {});
+        }
+      }));
+    } else {
+      // create local
+      logger.error("Invalid template - using default");
       this.createFromDefaultTemplate(f.wait());
-    }))
-    .onSuccess(bind(this, function () {
-    }))
-    .onComplete(bind(this, function () {
-      // make sure temp folder is gone
-      if (fs.existsSync(tempPath)) {
-        rimraf(tempPath, function () {});
-      }
-    }));
+    }
   };
 
   this.createFromDefaultTemplate = function (cb) {

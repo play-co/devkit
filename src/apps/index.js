@@ -173,7 +173,7 @@ var AppManager = Class(EventEmitter, function () {
     });
   };
 
-  this.create = function (appPath, templatePath, cb) {
+  this.create = function (appPath, template, cb) {
     // create the app directory
     if (!fs.existsSync(appPath)) {
       fs.mkdirSync(appPath);
@@ -200,7 +200,7 @@ var AppManager = Class(EventEmitter, function () {
           app = new App(appPath, manifest);
 
           // create layout from template
-          app.createFromTemplate(templatePath);
+          app.createFromTemplate(template);
 
           f(app);
           app.validate({shortName: path.basename(appPath)}, f.wait());
