@@ -344,7 +344,7 @@ exports = Class(Widget, function(supr) {
   });
 
   this.onRefreshIP = function(err, response) {
-    // remove the reloading class after 1 second so the user
+    // remove the reloading class after a short delay so the user
     // sees feedback when the ip is clicked
     setTimeout(bind(this, function () {
       $.removeClass(this.ip._el, RELOADING_CLASS);
