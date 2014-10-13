@@ -41,7 +41,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
       throw new Error(errorMessage);
     }
 
-    if (!/^[a-z][a-z0-9]+$/i.test(appName)) {
+    if (!/^[a-z][a-z0-9]*$/i.test(appName)) {
       var errorMessage = 'App name must start with a letter and consist only of letters and numbers';
       this.logger.error(errorMessage);
       throw new Error(errorMessage);
