@@ -41,8 +41,9 @@ function spawnWithLogger(args, opts, cb) {
       if (err) {
         var errorText = err.code ? err.code : '('+err+')';
         logger.log(color.redBright(' <- failed ' + errorText));
+      } else {
+        logger.log(color.yellow(' <- done'));
       }
-      logger.log(color.yellow(' <- done'));
     }
 
     // normally hide output if silent, but if there was an exit code, print everything
