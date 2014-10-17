@@ -89,6 +89,11 @@ div#ip
   &:hover:before
     opacity 1
 
+  &.reloading:before
+    opacity 1
+    transition all 1s linear
+    transform rotate(360deg)
+
 #appInspector
   margin-top 50px
   flex 1

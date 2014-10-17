@@ -40,6 +40,10 @@ function friendlyUnescape(url) {
   return url.replace(unescapeRe, function (key) { return encodedChars[key]; });
 }
 
+// applied to the ip spinner while reloading
+// should match the style
+var RELOADING_CLASS = 'reloading';
+
 /**
  * Overview widget.
  */
@@ -236,7 +240,7 @@ exports = Class(Widget, function(supr) {
       {id: 'leftPane', children: [
         {id: 'actions', type: 'list', cellCtor: ActionCell},
         {id: 'logo'},
-        {id: 'appList', margin: 10, type: 'list',
+        {id: 'appList', type: 'list',
             selectable: 'single', cellCtor: AppCell, margin: 3,
             data: 'apps',
             sorter: function (item) {
@@ -246,6 +250,8 @@ exports = Class(Widget, function(supr) {
             }},
         {
           id: 'ip',
+          type: 'button',
+          tag: 'div',
           children: [
             {id: 'ipValue', tag: 'span', text: ''}
           ]
@@ -297,6 +303,12 @@ exports = Class(Widget, function(supr) {
   this.getHomeDirectory = function () { return this._homeDirectory; }
 
   this.refreshIP = function() {
+    // prevent repeat clicking
+    if ($.hasClass(this.ip._el, RELOADING_CLASS)) {
+      return;
+    }
+    // add reloading class to ip
+    $.addClass(this.ip._el, RELOADING_CLASS);
     util.ajax.get({url: '/api/ip', type: 'json'}, bind(this, 'onRefreshIP'));
   };
 
@@ -305,27 +317,39 @@ exports = Class(Widget, function(supr) {
     var app = this._apps.get(appPath).data;
     this.appInspector.show();
     this.appInspector.setModel(app);
-
-    // util.ajax.get({url: '/api/app', query: {app: appPath}}, function (err, app) {
-
-    // });
   }
 
   this.delegate = new Delegate(function(on) {
-    on.appList = function (appPath) {
+    on.appList = function () {
+      // the target argument was removed from delegate event calls
+      // in commit b7c120e65253e902dd7dcc585cf33c9fb77300a1
+      // support both old and new parameter (target, appPath) or just (appPath)
+      var appPath = void 0;
+      var target = void 0;
+      if (arguments[0] == 'appList') {
+        appPath = arguments[1];
+      } else {
+        appPath = arguments[0];
+      }
+
       if (appPath) {
         this.appList.selection.deselectAll();
-
         this.showApp(appPath);
       }
     };
 
-    on.ipValue = function()  {
+    on.ip = function()  {
       this.refreshIP();
     };
   });
 
   this.onRefreshIP = function(err, response) {
+    // remove the reloading class after a short delay so the user
+    // sees feedback when the ip is clicked
+    setTimeout(bind(this, function () {
+      $.removeClass(this.ip._el, RELOADING_CLASS);
+    }), 500);
+
     if (!err) {
       $.setText(this.ipValue, response.ip.join(', '));
     }
