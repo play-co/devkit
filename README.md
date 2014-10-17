@@ -44,6 +44,13 @@ You need a `shortname` for your game.  The `shortname` should start with a lette
 2. Navigate to `http://localhost:9200` and select your game. You should now see your game running in the web simulator!
 3. Open `mygame/src/Application.js` and start coding!
 
+Pro-tip: You can specify a custom application template by adding the
+--local-template <path-to-local-app-template> or
+--git-template <path-to-git-repository> parameters to the `devkit init`
+command. This will create your new application starting with the given
+template file layout. You may want to fork the existing default template from
+https://github.com/gameclosure/devkit-application-template and create your own.
+
 ### Updating the DevKit
 
 DevKit consists of two parts: the command-line interface (the CLI, `devkit`) and the API running in your game.
