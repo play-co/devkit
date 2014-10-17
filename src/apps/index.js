@@ -173,7 +173,12 @@ var AppManager = Class(EventEmitter, function () {
     });
   };
 
-  this.create = function (appPath, cb) {
+  this.create = function (appPath, template, cb) {
+    // create the app directory
+    if (!fs.existsSync(appPath)) {
+      fs.mkdirSync(appPath);
+    }
+
     this.get(appPath, function (err, app) {
       if (err) {
         // app not found, create a new one
@@ -183,6 +188,7 @@ var AppManager = Class(EventEmitter, function () {
         var f = ff(this, function () {
           fs.readFile(manifestPath, 'utf8', f.slotPlain(2));
         }, function (readErr, rawManifest) {
+          // found manifest - json parse it
           if (rawManifest) {
             var manifest;
             try {
@@ -190,7 +196,11 @@ var AppManager = Class(EventEmitter, function () {
             } catch (e) {}
           }
 
+          // create new app using path and manifest content
           app = new App(appPath, manifest);
+
+          // create layout from template
+          app.createFromTemplate(template);
 
           f(app);
           app.validate({shortName: path.basename(appPath)}, f.wait());

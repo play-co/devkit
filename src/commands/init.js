@@ -14,30 +14,55 @@ var InitCommand = Class(BaseCommand, function (supr) {
   this.name = 'init';
   this.description = 'creates a new devkit app';
 
+  this.init = function () {
+    supr(this, 'init', arguments);
+    this.opts
+      .describe('local-template', 'path to local application template')
+      .describe('git-template', 'path to git repository')
+  }
+
   this.exec = function (args, cb) {
 
     // check the app name
     var appPath = args.shift();
+
+    if (!appPath) {
+      // TODO: print usage
+      var errorMessage = 'No app name provided';
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
     var appName = path.basename(appPath);
     if (!appName) {
-      throw new Error('No app name provided');
+      // TODO: refactor and print usage
+      var errorMessage = 'No app name provided';
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
-    if (!/^[a-z][a-z0-9]+$/i.test(appName)) {
-      throw new Error('App name must start with a letter and consist only of letters and numbers');
+    if (!/^[a-z][a-z0-9]*$/i.test(appName)) {
+      var errorMessage = 'App name must start with a letter and consist only of letters and numbers';
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
     }
-
 
     appPath = path.resolve(process.cwd(), appPath);
 
-    // create the directory
-    if (!fs.existsSync(appPath)) {
-      fs.mkdirSync(appPath);
-    }
-
     var f = ff(this, function () {
-      apps.create(appPath, f());
+      var template = {type: void 0};
+      if (this.opts.argv['local-template']) {
+        template.type = 'local';
+        template.path = this.opts.argv['local-template'];
+      } else if (this.opts.argv['git-template']) {
+        template.type = 'git';
+        template.path = this.opts.argv['git-template'];
+      }
+
+      // create the app
+      apps.create(appPath, template, f());
     }, function (app) {
+      // change to app root and run install command
       process.chdir(app.paths.root);
       commands.get('install').exec([], f());
     }).error(bind(this, function (err) {
