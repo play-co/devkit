@@ -25,6 +25,7 @@ var App = module.exports = Class(function () {
   this.init = function (root, manifest, lastOpened) {
     this.paths = {
       root: root,
+      build: path.join(root, 'build'),
       shared: path.join(root, 'shared'),
       src: path.join(root, 'src'),
       modules: path.join(root, 'modules'),
