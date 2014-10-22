@@ -264,3 +264,4 @@ var AppManager = Class(EventEmitter, function () {
 });
 
 module.exports = new AppManager();
+module.exports.APP_NOT_FOUND = APP_NOT_FOUND;
