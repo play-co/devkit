@@ -17,6 +17,8 @@ var InitCommand = Class(BaseCommand, function (supr) {
   this.init = function () {
     supr(this, 'init', arguments);
     this.opts
+      .boolean('no-template')
+      .describe('no-template', 'copy no files other than manifest.json')
       .describe('local-template', 'path to local application template')
       .describe('git-template', 'path to git repository')
   }
@@ -51,7 +53,11 @@ var InitCommand = Class(BaseCommand, function (supr) {
 
     var f = ff(this, function () {
       var template = {type: void 0};
-      if (this.opts.argv['local-template']) {
+
+      if (this.opts.argv.template !== void 0) {
+        template.type = 'none';
+        template.path = '';
+      } else if (this.opts.argv['local-template']) {
         template.type = 'local';
         template.path = this.opts.argv['local-template'];
       } else if (this.opts.argv['git-template']) {

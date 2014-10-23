@@ -397,7 +397,6 @@ var App = module.exports = Class(function () {
   this.createFromTemplate = function (template) {
 
     if (!template.type) {
-      logger.log("Creating app using default template");
       return this.createFromDefaultTemplate();
     }
 
@@ -444,6 +443,8 @@ var App = module.exports = Class(function () {
           rimraf(tempPath, function () {});
         }
       }));
+    } else if (template.type === 'none') {
+      logger.log('Creating application with no template');
     } else {
       // create local
       logger.error("Invalid template - using default");
