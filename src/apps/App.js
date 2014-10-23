@@ -444,6 +444,8 @@ var App = module.exports = Class(function () {
           rimraf(tempPath, function () {});
         }
       }));
+    } else if (template.type === 'none') {
+      logger.log('Creating application with no template');
     } else {
       // create local
       logger.error("Invalid template - using default");
