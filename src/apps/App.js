@@ -397,7 +397,6 @@ var App = module.exports = Class(function () {
   this.createFromTemplate = function (template) {
 
     if (!template.type) {
-      logger.log("Creating app using default template");
       return this.createFromDefaultTemplate();
     }
 
