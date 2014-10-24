@@ -86,8 +86,14 @@ exports.installModule = function (app, moduleName, opts, cb) {
     // credentials
     var modulePath = path.join(app.paths.modules, moduleName);
     if (isURL || !fs.existsSync(modulePath)) {
+      logger.log(
+        color.cyanBright(
+          "Adding " + moduleName + (version ? '@' + version : '')
+        )
+      );
       cache.add(url || moduleName, version, f());
     }
+
   }, function (_cacheEntry) {
     cacheEntry = _cacheEntry;
 
@@ -97,8 +103,10 @@ exports.installModule = function (app, moduleName, opts, cb) {
 
     if (!fs.existsSync(modulePath) && cacheEntry) {
       if (opts.link) {
+        logger.log(color.cyanBright('Linking ' + app.paths.modules))
         cache.link(cacheEntry, app.paths.modules, f.wait());
       } else {
+        logger.log(color.cyanBright('Copying ' + app.paths.modules))
         cache.copy(cacheEntry, app.paths.modules, f.wait());
       }
     }
