@@ -71,6 +71,40 @@ command. This will create your new application starting with the given
 template file layout. You may want to fork the existing default template from
 https://github.com/gameclosure/devkit-application-template and create your own.
 
+
+## Building on Device
+First, ensure you have the proper pre-requisites installed and on your path for
+the target device. See above for more details.
+
+DevKit can create builds by specifying a build type (debug or release) and a
+build target (default options:
+native-android, native-ios, browser-desktop, browser-mobile). Debug builds
+include all the logs, do not strictly verify everything, and allow debugging on
+device via the native inspector. Release builds strip logs and try to verify as
+much as possible.
+
+All your builds will be available in your <game-folder>/build/<build-type>
+folder.
+
+### Android
+Building for native-android will create an apk directly.
+```
+devkit debug native-android
+devkit release native-android
+```
+
+Pro-Tip: You can add the --install flag to automatically install the apk on the
+connected device, or the --open flag to install and open it.
+
+### iOS
+Building for native-ios will create an xcode project and open it with xcode.
+Attach your device and click build.
+```
+devkit debug native-ios
+devkit release native-ios
+```
+
+
 ## Debugging on Device
 As of DevKit2, the Native Inspector is no longer packaged with DevKit itself. To
 debug on device, you need to clone and run the
