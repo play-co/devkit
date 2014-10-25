@@ -71,6 +71,23 @@ command. This will create your new application starting with the given
 template file layout. You may want to fork the existing default template from
 https://github.com/gameclosure/devkit-application-template and create your own.
 
+## Debugging on Device
+As of DevKit2, the Native Inspector is no longer packaged with DevKit itself. To
+debug on device, you need to clone and run the
+NativeInspector(https://github.com/gameclosure/nativeinspector).
+
+```
+git clone git@github.com:gameclosure/nativeinspector
+cd nativeinspector
+node NativeInspector.js
+```
+
+Ensure your device is plugged in, then point your browser to localhost:9220 (or
+whatever the NativeInspector console suggests). Now, when you run a debug build
+on a connected device you will be able to use the in browser debugger just like
+when running the simulator.
+
+
 ## Migrating a DevKit1 Game to DevKit2
 
 Please check docs.gameclosure.com for the latest migration instructions from
