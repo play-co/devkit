@@ -86,6 +86,8 @@ var InitCommand = Class(BaseCommand, function (supr) {
         color.cyanBright('created new app'), color.yellowBright(this.appName)
       );
 
+      commands.get('instructions').exec(['new_application'], f());
+
     }).catch(DestinationExistsError, function (err) {
       this.logger.error(
         'The path you specified (' + err.message + ') already exists.',

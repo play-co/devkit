@@ -2,7 +2,7 @@ var optimist = require('optimist');
 var printf = require('printf');
 
 var commandNames = [
-  'debug', 'serve', 'help',
+  'debug', 'serve', 'help', 'instructions',
   'version', 'install', 'register', 'init',
   'upgrade', 'remove', 'which',
   'apps', 'modules'];
