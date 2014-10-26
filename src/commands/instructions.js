@@ -10,6 +10,7 @@ var InstructionsCommand = Class(BaseCommand, function (supr) {
   this.exec = function (args, cb) {
     var target = args.shift();
 
+    // TODO: make context based coloring and remove all of this cruft
     console.log('-----------------------------------------------');
     console.log("Use " + color.yellowBright("devkit help") +
                  " to see the full command list.\n");

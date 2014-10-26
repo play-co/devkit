@@ -38,7 +38,7 @@ commandNames.forEach(function (name) {
 
 var usageStr = "usage: devkit [--version] [--help] <command> [<args>]\n\n"
   + "available commands:\n" + _usage.join('\n') + "\n\n"
-  + "See 'devkit help <command> to read about a specific command";
+  + "See 'devkit help <command>' to read about a specific command";
 
 exports.argv = optimist.usage(usageStr).argv;
 
