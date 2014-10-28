@@ -69,7 +69,7 @@ else
           #contents
             position absolute
             z-index 400
-            transition all 1s
+            transition all 0.5s ease-out
 
       #logger
         position absolute
@@ -153,57 +153,59 @@ else
 
   #toolbar
     position absolute
-    top -30px
+    top 0
     left 0
     right 0
     opacity 0
-    transition all 0.3s
     backface-visibility hidden
     text-align center
     z-index 1000
+
+    &.transition
+      transition-property opacity
 
     #buttonContainer
       position relative
       display inline-block
       white-space nowrap
       margin -10px auto 0px
-      background button-bg
       border-radius 3px
       padding 0px 1px
 
       > button
-          position relative
-          outline none
-          display inline-block
-          border-radius 0px
-          border none
-          background none
-          color button-fg
-          padding 6px 10px 4px
-          margin 2px 0px 3px
-          line-height 16px
-          cursor default
+        position relative
+        outline none
+        display inline-block
+        border-radius 0px
+        border none
+        background color-background
+        color simulator-button-fg
+        padding 6px 10px 4px
+        margin 2px 0px 3px
+        line-height 16px
+        cursor pointer
+        transition all 0.3s
 
-        > button i
-          margin-top -1px
+      > button i
+        margin-top -1px
 
-        > button:hover
-          color #FFF
-          background linear-gradient(bottom, rgba(80, 80, 80, 0.3), rgba(110, 110, 110, 0.3))
+      > button:hover
+        color #FFF
+        // background linear-gradient(bottom, rgba(80, 80, 80, 0.3), rgba(110, 110, 110, 0.3))
 
-        > button:active
-          top 1px
-          background rgba(80, 80, 80, 0.2);
+      > button:active
+        top 1px
+        // background rgba(80, 80, 80, 0.2);
 
-        > button.disabled i:after
-          position absolute
-          top -6px
-          left 5px
-          width 1px
-          height 24px
-          content ""
-          transform rotate(38deg)
-          background #FFF
+      > button.disabled i:after
+        position absolute
+        top -6px
+        left 5px
+        width 1px
+        height 24px
+        content ""
+        transform rotate(38deg)
+        background #FFF
 
     button.withTooltip:hover:before
       position absolute
@@ -211,7 +213,7 @@ else
       left 0px
       padding 6px 8px 5px
       content attr(tooltip)
-      background #2A2A2A
+      background #000
       border-radius 5px
       white-space nowrap
       animation tooltipAnimateIn
@@ -228,7 +230,7 @@ else
 
       border-width 7px
       border-style solid
-      border-color transparent transparent #2A2A2A transparent
+      border-color transparent transparent #000 transparent
 
       animation tooltipAnimateIn
       animation-duration 0.6s
@@ -307,10 +309,7 @@ else
     z-index -1
     width 100%
     height 100%
-
-  #frameWrapper,
-  #frame
-    transition all 1s
+    -webkit-filter drop-shadow(20px 20px 25px rgba(0,0,0,0.5))
 
   #resizeHandle
     position absolute
@@ -349,11 +348,21 @@ else
     height 100%
     opacity 0
     transition all 0.5s
-    pointer-events none
-    background url(/icons/spinner.png)
-    background-size 50px 50px
-    background-repeat no-repeat
-    background-position center
+    background rgba(0, 0, 0, 0.8)
+
+    display flex
+    align-items center
+    justify-content center
+
+    #spinner
+      transition all 0.5s
+      width 50px
+      height 50px
+      opacity 0
+      pointer-events none
+      background url(/icons/spinner.png)
+      background-size 50px 50px
+      background-repeat no-repeat
 
   .closeButton
     background-color red
@@ -361,17 +370,13 @@ else
     border-radius 5px-moz-border-radius 5px
     float right
 
-  #contents:hover
-    #toolbar
-      opacity 0.2
-
-      &:hover
-        opacity 1
-
   &.building
     #build-spinner
       opacity 1
-      animation spin 4s linear infinite
+
+      #spinner
+        opacity 1
+        animation spin 2s linear infinite
 
 @keyframes spin
   100%
@@ -379,6 +384,9 @@ else
 
 .no-transitions
   transition none
+
+.transition
+  transition all 0.3s
 
 .simulator.no-transitions
   #frame,
