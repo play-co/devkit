@@ -302,6 +302,8 @@ var MainController = exports = Class(lib.PubSub, function() {
     if (!this._activeDevice) {
       this.setActiveDevice(device);
     }
+
+    device.on('change', bind(this, 'updateURL'));
   }
 
   this.removeDevice = function (device) {
@@ -358,19 +360,42 @@ var MainController = exports = Class(lib.PubSub, function() {
     }, this);
   }
 
-  this.updateURI = function () {
+  this.updateURL = function () {
     var deviceOpts;
     for (var id in this._devices) {
       var device = this._devices[id];
       if (device.isLocal()) {
-        deviceOpts = device.toJSON();
+        var sim = device.getSimulator();
+        if (!sim) { continue; }
+        var json = sim.toJSON();
+
+        if (deviceOpts) {
+          if (!isArray(deviceOpts)) {
+            deviceOpts = [deviceOpts];
+          }
+
+          deviceOpts.push(json);
+        } else {
+          deviceOpts = json;
+        }
         break;
       }
     }
 
     if (deviceOpts) {
-      window.location.hash = 'device=' + JSON.stringify(deviceOpts);
+      var kvp = URI.parseQuery(location.hash.replace(/^\#/, ''));
+      kvp.device = JSON.stringify(deviceOpts);
+      window.location.hash = safeHash(URI.buildQuery(kvp));
     }
+  }
+
+  function safeHash(url) {
+    return url
+      .replace(/\%7B/g, '{')
+      .replace(/\%7D/g, '}')
+      .replace(/\%3A/g, ':')
+      .replace(/\%22/g, '"')
+      .replace(/\%2C/g, ',');
   }
 });
 

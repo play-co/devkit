@@ -445,6 +445,8 @@ exports = Class(squill.Widget, function (supr) {
             this._device.setType(type);
           }
           this.simulatorMenu.hide();
+
+          this.emit('change');
         }, type)));
     }
   }
@@ -796,7 +798,10 @@ exports = Class(squill.Widget, function (supr) {
     }
 
     on.btnInspect = function () { this.inspect(); };
-    on.btnRotate = function () { this.rotate(); };
+    on.btnRotate = function () {
+      this.rotate();
+      this.emit('change');
+    };
 
     on.btnScreenShot = function () {
       if (this._device.isLocal()) {
@@ -853,6 +858,8 @@ exports = Class(squill.Widget, function (supr) {
         $.addClass(icon, 'glyphicon-volume-up');
         $.removeClass(icon, 'glyphicon-volume-off');
       }
+
+      this.emit('change');
     };
 
     on.btnDrag = function () {
@@ -962,4 +969,42 @@ exports = Class(squill.Widget, function (supr) {
 
     setTimeout(bind(this, 'setTransitionsEnabled', true));
   };
+
+  this.toJSON = function () {
+    var data = {
+      type: this._deviceName
+    };
+
+    if (this._isMuted) {
+      data.muted = true;
+    }
+
+    if (this._rotation % 2) {
+      data.rotated = true;
+    }
+
+    if (!this._isDragEnabled) {
+      data.draggable = false;
+    }
+
+    return data;
+  }
+
+  this.fromJSON = function (data) {
+    if (data.type) {
+      this.setType(data.type);
+    }
+
+    if (data.rotation) {
+      this._rotation = 1;
+    }
+
+    if (data.muted) {
+      this.setMuted(true);
+    }
+
+    if (data.draggable === false) {
+      this.setDragEnabled(false);
+    }
+  }
 });
