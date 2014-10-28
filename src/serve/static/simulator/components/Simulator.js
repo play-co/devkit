@@ -32,6 +32,31 @@ import squill.Delegate;
 import lib.PubSub;
 
 import ..util.resolutions as resolutions;
+
+// runs a (ctx, cb) or just a plain (cb) on the next frame.  Use instead of
+// setTimeout(0) to guarantee that the layouting in the browser is complete
+// and css changes are applied (setTimeout(0) does not make this gaurantee)
+var onNextFrame = (function () {
+  var reqAnim = window.requestAnimationFrame;
+  var cancelAnim = window.cancelAnimationFrame;
+  var prefixes = ['', 'webkit', 'moz', 'o', 'ms'];
+  for (var i = 0; i < prefixes.length && !reqAnim; ++i) {
+    reqAnim = window[prefixes[i] + 'RequestAnimationFrame'];
+    cancelAnim = window[prefixes[i] + 'CancelAnimationFrame'] || window[prefixes[i] + 'CancelRequestAnimationFrame'];
+  }
+
+  return function (ctx, cb) {
+    if (arguments.length == 1) {
+      cb = arguments[0];
+    } else {
+      cb = bind.apply(GLOBAL, arguments);
+    }
+
+    reqAnim(cb);
+  };
+})();
+
+
 /*
 
 
@@ -84,35 +109,35 @@ exports = Class(squill.Widget, function (supr) {
     className: 'simulator no-transitions',
     children: [
       {id: 'center', children: [
+        {id: 'toolbar', children: [
+          {id: 'buttonContainer', children: [
+            createButton({id: 'btnSimulators', tooltip: 'change the device type', icon: 'phone'}),
+            createButton({id: 'btnReload', tooltip: 'reload the game', icon: 'refresh'}),
+            createButton({id: 'btnInspect', tooltip: 'inspect the view hierarchy', icon: 'search'}),
+            createButton({id: 'btnDrag', tooltip: 'lock simulator position', icon: 'move'}),
+            createButton({id: 'btnRotate', tooltip: 'rotate the device', icon: 'repeat'}),
+            createButton({id: 'btnNativeBack', tooltip: 'back button (hardware)', icon: 'chevron-left'}),
+            createButton({id: 'btnNativeHome', tooltip: 'home button (hardware)', icon: 'home'}),
+            createButton({id: 'btnScreenShot', tooltip: 'take a screenshot', icon: 'picture'}),
+            createButton({id: 'btnMute', tooltip: 'mute all sounds', icon: 'volume-up'}),
+            createButton({id: 'btnPause', tooltip: 'pause game timer', icon: 'pause'}),
+            createButton({id: 'btnStep', tooltip: 'step forward 1 frame', icon: 'step-forward'}),
+            createButton({id: 'btnOverflow', tooltip: 'more options', icon: 'chevron-down'}),
+            {id: 'simulatorMenu', type: 'menu', className: 'list', children: []},
+            {id: 'overflowMenu', type: 'menu', children: [
+                {id: 'btnDebug', text: 'switch to release build', type: 'button'},
+                {id: 'btnAddSimulator', text: 'add simulator', type: 'button'},
+              ]}
+          ]}
+        ]},
         {id: 'contents', children: [
-          {id: 'toolbar', children: [
-            {id: 'buttonContainer', children: [
-              createButton({id: 'btnSimulators', tooltip: 'change the device type', icon: 'phone'}),
-              createButton({id: 'btnReload', tooltip: 'reload the game', icon: 'refresh'}),
-              createButton({id: 'btnInspect', tooltip: 'inspect the view hierarchy', icon: 'search'}),
-              createButton({id: 'btnDrag', tooltip: 'lock simulator position', icon: 'move'}),
-              createButton({id: 'btnRotate', tooltip: 'rotate the device', icon: 'repeat'}),
-              createButton({id: 'btnNativeBack', tooltip: 'back button (hardware)', icon: 'chevron-left'}),
-              createButton({id: 'btnNativeHome', tooltip: 'home button (hardware)', icon: 'home'}),
-              createButton({id: 'btnScreenShot', tooltip: 'take a screenshot', icon: 'picture'}),
-              createButton({id: 'btnMute', tooltip: 'mute all sounds', icon: 'volume-up'}),
-              createButton({id: 'btnPause', tooltip: 'pause game timer', icon: 'pause'}),
-              createButton({id: 'btnStep', tooltip: 'step forward 1 frame', icon: 'step-forward'}),
-              createButton({id: 'btnOverflow', tooltip: 'more options', icon: 'chevron-down'}),
-              {id: 'simulatorMenu', type: 'menu', className: 'list', children: []},
-              {id: 'overflowMenu', type: 'menu', children: [
-                  {id: 'btnDebug', text: 'switch to release build', type: 'button'},
-                  {id: 'btnAddSimulator', text: 'add simulator', type: 'button'},
-                ]}
-            ]}
-          ]},
           {id: 'background', tag: 'canvas'},
           {
             id: 'frameWrapper',
             children: [
               {id: 'splashImage'},
               {id: 'resizeHandle'},
-              {id: 'build-spinner'}
+              {id: 'build-spinner', children: [{id: 'spinner'}]}
             ]
           }
         ]}
@@ -181,18 +206,29 @@ exports = Class(squill.Widget, function (supr) {
     if (localStorage.getItem('settingMuted') === '1') {
       this._isMuted = true;
     }
+
+    this.toolbar.addEventListener("webkitTransitionEnd", bind(this, function () {
+      $.removeClass(this.toolbar, 'transition');
+    }));
   };
 
   this.setBuilding = function (isBuilding) {
+    var spinner = this['build-spinner'];
+
     if (!isBuilding) {
-      $.hide(this['build-spinner']);
-      this.removeClass('building');
+      setTimeout(bind(this, function () {
+        $.hide(this['build-spinner']);
+        this.removeClass('building');
+      }), 1000);
+      spinner.style.opacity = 0;
     } else {
       this.showLoadingImage();
-      $.show(this['build-spinner']);
+      spinner.style.display = 'flex';
+
       setTimeout(bind(this, function () {
+        spinner.style.opacity = 1;
         this.addClass('building');
-      }));
+      }), 100);
     }
   }
 
@@ -295,6 +331,7 @@ exports = Class(squill.Widget, function (supr) {
   this.isMuted = function () { return this._isMuted; };
 
   this.setMuted = function (isMuted) {
+    var wasMuted = this._isMuted;
     this._isMuted = isMuted;
     if (isMuted) {
       localStorage.setItem('settingMuted', '1');
@@ -335,6 +372,8 @@ exports = Class(squill.Widget, function (supr) {
   }
 
   this.setType = function (deviceName, opts) {
+    this.setTransitionsEnabled(false);
+
     this._deviceName = deviceName;
 
     this._params = merge({}, opts, {
@@ -360,6 +399,7 @@ exports = Class(squill.Widget, function (supr) {
     logInfo('pixel-ratio', this._params.devicePixelRatio);
 
     this.update();
+    this.toolbar.style.opacity = 1;
     setTimeout(bind(this, 'setTransitionsEnabled', true), 1000);
   };
 
@@ -465,14 +505,18 @@ exports = Class(squill.Widget, function (supr) {
       ++this._rotation;
 
       this.setTransitionsEnabled(true);
+      this.hideToolbar();
       this.contents.style.WebkitTransform = 'rotate(' + (this._rotation % 2 ? 90 : -90) + 'deg)';
 
       var onRotate = bind(this, function () {
         this.contents.removeEventListener("webkitTransitionEnd", onRotate);
         this.setTransitionsEnabled(false);
+
         this.contents.style.WebkitTransform = '';
+        this.showToolbar();
         this.update();
-        setTimeout(bind(this, 'setTransitionsEnabled', true), 0);
+
+        setTimeout(bind(this, 'setTransitionsEnabled', true), 100);
       });
 
       this.contents.addEventListener("webkitTransitionEnd", onRotate);
@@ -480,6 +524,20 @@ exports = Class(squill.Widget, function (supr) {
 
     return this._rotation;
   };
+
+  this.hideToolbar = function () {
+    $.addClass(this.toolbar, 'transition');
+    onNextFrame(this, function () {
+      this.toolbar.style.opacity = 0;
+    });
+  }
+
+  this.showToolbar = function () {
+    $.addClass(this.toolbar, 'transition');
+    onNextFrame(this, function () {
+      this.toolbar.style.opacity = 1;
+    });
+  }
 
   this._zoom = 0;
 
@@ -925,8 +983,10 @@ exports = Class(squill.Widget, function (supr) {
       return;
     }
 
-    var boundW = this._el.offsetWidth / 2 - this.frameWrapper.offsetWidth / 2;
-    var boundH = this._el.offsetHeight / 2 - this.frameWrapper.offsetHeight / 2;
+    var minW = this._el.offsetWidth / 2;
+    var minH = this._el.offsetHeight / 2
+    var boundW = minW - this.frameWrapper.offsetWidth / 2;
+    var boundH = minH - this.frameWrapper.offsetHeight / 2;
     this._offsetX = bound(this._offsetX, -boundW, boundW);
     this._offsetY = bound(this._offsetY, -boundH, boundH);
 
@@ -958,16 +1018,27 @@ exports = Class(squill.Widget, function (supr) {
     }
 
     this.setTransitionsEnabled(false);
+
+    var top = (this._params.dontCenterY ? -this._height / 2 : y);
+    var left = x;
     $.style(this.contents, {
-      top: (this._params.dontCenterY ? -this._height / 2 : y) + 'px',
-      left: x + 'px',
+      top: top + 'px',
+      left: left + 'px',
     });
 
-    var toolbarRect = this.toolbar.getBoundingClientRect();
-    this.toolbar.style.paddingTop = Math.max(0, -toolbarRect.top) + 'px';
-    this.toolbar.style.paddingLeft = Math.max(0, -toolbarRect.left) + 'px';
+    // position toolbar
+    top -= 30;
+    $.style(this.toolbar, {
+      top: top + 'px',
+      left: left + 'px',
+      width: this.contents.offsetWidth + 'px',
+      paddingTop: -Math.min(0, top + minH) + 'px',
+      paddingLeft: -Math.min(0, left + minW) + 'px'
+    });
 
-    setTimeout(bind(this, 'setTransitionsEnabled', true));
+    if (!this._mover.isDragging()) {
+      onNextFrame(this, 'setTransitionsEnabled', true);
+    }
   };
 
   this.toJSON = function () {
