@@ -1,22 +1,20 @@
 var fs = require('fs');
 var ff = require('ff');
 var path = require('path');
-var _rimraf = Promise.promisify(require('rimraf'));
-var rimraf = function rimraf (f, cb) {
-  return _rimraf(f).nodeify(cb);
-};
-
 var Rsync = require('rsync');
+
+var Module = require('./Module');
+
 var lockFile = require('../util/lockfile');
+var rimraf = require('../util/rimraf');
+var gitClient = require('../util/gitClient');
+var logger = require('../util/logging').get('apps');
+var stringify = require('../util/stringify');
 
 var _exists = require('../util/exists');
 var exists = _exists.exists;
 var IOError = exists.IOError;
 
-var Module = require('./Module');
-var gitClient = require('../util/gitClient');
-var logger = require('../util/logging').get('apps');
-var stringify = require('../util/stringify');
 
 var LOCK_FILE = 'devkit.lock';
 
