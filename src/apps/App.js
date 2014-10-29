@@ -1,9 +1,17 @@
 var fs = require('fs');
 var ff = require('ff');
 var path = require('path');
-var rimraf = require('rimraf');
+var _rimraf = Promise.promisify(require('rimraf'));
+var rimraf = function rimraf (f, cb) {
+  return _rimraf(f).nodeify(cb);
+};
+
 var Rsync = require('rsync');
 var lockFile = require('../util/lockfile');
+
+var _exists = require('../util/exists');
+var exists = _exists.exists;
+var IOError = exists.IOError;
 
 var Module = require('./Module');
 var gitClient = require('../util/gitClient');
@@ -202,9 +210,9 @@ var App = module.exports = Class(function () {
   /* Manifest */
 
   function createUUID (a) {
-    return a
-      ? (a ^ Math.random() * 16 >> a / 4).toString(16)
-      : ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, createUUID);
+    return a ?
+      (a ^ Math.random() * 16 >> a / 4).toString(16) :
+      ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, createUUID);
   }
 
   var DEFAULT_PROTOCOL = 'https';
@@ -279,21 +287,19 @@ var App = module.exports = Class(function () {
     if (changed) {
       this._dependencies = this._parseDeps();
       this._stringifyDeps();
-      this.saveManifest(cb);
+      return this.saveManifest(cb);
     } else {
-      cb && process.nextTick(cb);
+      return Promise.delay(0).nodeify(cb);
     }
   };
 
   this.setModuleVersion = function (moduleName, version, cb) {
-    this.validate(null, bind(this, function (err) {
-      if (!err) {
-        var dep = this._dependencies[moduleName];
-        if (dep && dep.version !== version) {
-          dep.version = version;
-        }
+    return this.validate(null).bind(this).then(function () {
+      var dep = this._dependencies[moduleName];
+      if (dep && dep.version !== version) {
+        dep.version = version;
       }
-    }));
+    }).nodeify(cb);
   };
 
   this.addDependency = function (name, opts, cb) {
@@ -332,27 +338,30 @@ var App = module.exports = Class(function () {
   };
 
   this.removeDependency = function (name, cb) {
-    var f = ff(this, function () {
-      // remove from manifest dependencies
-      if (this._dependencies[name]) {
-        logger.log('removing dependency from manifest...');
-        delete this._dependencies[name];
-        this._stringifyDeps();
-        this.saveManifest(f.wait());
-      }
+    var promises = [];
+    // remove from manifest dependencies
+    if (this._dependencies[name]) {
+      logger.log('removing dependency from manifest...');
+      delete this._dependencies[name];
+      this._stringifyDeps();
+      promises.push(this.saveManifest());
+    }
 
-      // remove from file system
-      var modulePath = path.join(this.paths.modules, name);
-      if (fs.existsSync(modulePath)) {
-        logger.log('removing module directory...');
-        rimraf(modulePath, f.wait());
-      }
-    }).cb(cb);
+    // remove from file system
+    var modulePath = path.join(this.paths.modules, name);
+    if (fs.existsSync(modulePath)) {
+      logger.log('removing module directory...');
+      promises.push(rimraf(modulePath));
+    }
+
+    return Promise.all(promises).nodeify(cb);
   };
 
   this.saveManifest = function (cb) {
+    trace('App#saveManifest');
+    var writeFile = Promise.promisify(fs.writeFile);
     var data = stringify(this.manifest);
-    return fs.writeFile(path.join(this.paths.manifest), data, cb);
+    return writeFile(path.join(this.paths.manifest), data).nodeify(cb);
   };
 
   this.getPackageName = function() {
@@ -407,11 +416,11 @@ var App = module.exports = Class(function () {
     }
   };
 
-  this.createFromTemplate = function (template) {
+  this.createFromTemplate = function (template, cb) {
 
     if (!template.type) {
       logger.log('Creating app using default template');
-      return this.createFromDefaultTemplate();
+      return this.createFromDefaultTemplate().nodeify(cb);
     }
 
     // if template is local file, copy it
@@ -421,86 +430,84 @@ var App = module.exports = Class(function () {
       if (fs.existsSync(templatePath) &&
           fs.lstatSync(templatePath).isDirectory()) {
         logger.log('Creating app using local template ' + templatePath);
-        return this._copyLocalTemplate(templatePath);
+        return this._copyLocalTemplate(templatePath, cb);
       } else {
         logger.warn('Failed to find template ' + templatePath);
-        return this.createFromDefaultTemplate();
+        return this.createFromDefaultTemplate(cb);
       }
     } else if (template.type === 'git') {
       // if template is not a local path, attempt to clone it
       var tempPath = path.join(APP_TEMPLATE_ROOT, '_template');
-      var f = ff(this, function () {
-        // ensure temporary path is empty
-        if (fs.existsSync(tempPath)) {
-          rimraf(tempPath, f.wait());
-        }
-      }, function () {
+
+      return exists(tempPath).then(function () {
+        trace('tempPath exists - removing');
+        return rimraf(tempPath);
+      }).catch(IOError, function (err) {
+        trace('tempPath does not exist - OK');
+      }).then(function () {
         // shallow clone the repository
         logger.log('Creating app using remote template ' + template.path);
         var git = gitClient.get(APP_TEMPLATE_ROOT);
-        git('clone', '--depth', '1', template.path, tempPath, f.wait());
-      }, function () {
+        return git('clone', '--depth', '1', template.path, tempPath);
+      }).then(function () {
         logger.log('Copying ' + tempPath + ' to ' + this.paths.root);
-        this._copyLocalTemplate(tempPath, f.wait());
-      })
-      .onError(bind(this, function (err) {
-        logger.error('Failed to clone repository ' + template.path);
-        logger.error(err);
-
-        // failed - fall back to local default
-        // TODO: bail from entire creation process?
-        this.createFromDefaultTemplate(f.wait());
-      }))
-      .onComplete(bind(this, function () {
-        // make sure temp folder is gone
+        return this._copyLocalTemplate(tempPath, f.wait());
+      }).catch(FatalGitError, function (err) {
+        logger.error(err.message);
+        logger.log('Falling back to default template creation');
+        return this.createFromDefaultTemplate();
+      }).finally(function () {
         if (fs.existsSync(tempPath)) {
-          rimraf(tempPath, function () {});
+          return rimraf(tempPath);
         }
-      }));
+      }).nodeify(cb);
+
     } else if (template.type === 'none') {
       logger.log('Creating application with no template');
+      return Promise.resolve().nodeify(cb);
     } else {
       // create local
       logger.error('Invalid template - using default');
-      this.createFromDefaultTemplate(f.wait());
+      return this.createFromDefaultTemplate().nodeify(cb);
     }
   };
 
   this.createFromDefaultTemplate = function (cb) {
     logger.log('Creating app using default application template');
     var templatePath = path.join(APP_TEMPLATE_ROOT, DEFAULT_TEMPLATE);
-    this._copyLocalTemplate(templatePath);
-    cb && cb();
+    return this._copyLocalTemplate(templatePath, cb);
   };
 
   this._copyLocalTemplate = function (templatePath, cb) {
     // read every file/folder in the template
     var projectRoot = this.paths.root;
-    var rsync = new Rsync();
-    var f = ff(function() {
-      var group = f.group();
-      fs.readdirSync(templatePath).forEach(function(child) {
-        // don't copy .git files
-        if (child === '.git') {
-          return;
-        }
+    var templateFileList = fs.readdirSync(templatePath);
+    return Promise.each(templateFileList, function () {
+      // don't copy .git files
+      if (child === '.git') {
+        return;
+      }
 
-        // copy the file/folder recursively to the new app
-        rsync
-          .flags('r')
-          .source(path.join(templatePath,child))
-          .destination(projectRoot)
-          .execute(group());
+      // copy the file/folder recursively to the new app
+      return new Promise(function (resolve, reject) {
+        new Rsync()
+        .flags('r')
+        .source(path.join(templatePath,child))
+        .destination(projectRoot)
+        .execute(function (err, code, cmd) {
+          if (!err) { return resolve(); }
+          reject(new Error('Error during ' + cmd));
+        });
       });
-    }).onComplete(cb);
+    }).nodeify(cb);
   };
 
   this.acquireLock = function (cb) {
-    lockFile.lock(path.join(this.paths.root, LOCK_FILE), cb);
+    return lockFile.lock(path.join(this.paths.root, LOCK_FILE), cb);
   };
 
   this.releaseLock = function (cb) {
-    lockFile.unlock(path.join(this.paths.root, LOCK_FILE), cb);
+    return lockFile.unlock(path.join(this.paths.root, LOCK_FILE), cb);
   };
 
   // defines the public JSON API for DevKit extensions
