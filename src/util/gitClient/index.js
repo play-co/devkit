@@ -1,7 +1,4 @@
-var ff = require('ff');
-var semver = require('semver');
 var color = require('cli-color');
-var os = require('os');
 
 var spawn = require('child_process').spawn;
 var logging = require('../logging');

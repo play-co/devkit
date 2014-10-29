@@ -1,5 +1,6 @@
 var os = require('os');
 var errors = require('./errors');
+var semver = require('semver');
 
 // Can't wait for destructuring assingments...
 var UnknownGitRevision = errors.UnknownGitRevision;
