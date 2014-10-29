@@ -25,6 +25,7 @@ var App = module.exports = Class(function () {
   this.init = function (root, manifest, lastOpened) {
     this.paths = {
       root: root,
+      build: path.join(root, 'build'),
       shared: path.join(root, 'shared'),
       src: path.join(root, 'src'),
       modules: path.join(root, 'modules'),
@@ -461,6 +462,8 @@ var App = module.exports = Class(function () {
           rimraf(tempPath, function () {});
         }
       }));
+    } else if (template.type === 'none') {
+      logger.log('Creating application with no template');
     } else {
       // create local
       logger.error('Invalid template - using default');

@@ -44,24 +44,38 @@ var AppsCommand = Class(BaseCommand, function (supr) {
       }
     };
 
-    function handleSaveManifest(app) {
-      app.saveManifest(function (err) {
-          handleCmdError(err);
-          process.exit(0);
-      });
-    }
-
     var subcmd = args.shift();
     if (subcmd == 'set-config') {
       var key = args.shift();
       var value = args.shift();
       apps.get('.', function (err, app) {
+        var manifest;
+        var manifestPath;
+
+        if (!err && app) {
+          manifest = app.manifest;
+          manifestPath = app.paths.manifest;
+        }
+
+        if (err == apps.APP_NOT_FOUND && fs.existsSync('manifest.json')) {
+          try {
+            manifestPath = 'manifest.json';
+            manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+            err = null;
+          } catch (e) {
+            err = e;
+          }
+        }
+
         handleCmdError(err);
 
-        console.log(app.paths.root);
         console.log(key, '<--', value);
-        obj.setVal(app.manifest, key, value);
-        handleSaveManifest(app);
+        obj.setVal(manifest, key, value);
+
+        fs.writeFile(manifestPath, stringify(manifest), function (err) {
+          handleCmdError(err);
+          process.exit(0);
+        });
       });
       return;
     } else if (subcmd == 'get-config') {

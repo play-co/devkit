@@ -71,13 +71,12 @@ exports.defaults = {
 		width: 640,
 		height: 1136,
 		background: {
-			width: 680,
-			height: 1176,
-			offsetX: 20,
-			offsetY: 20,
+			width: 640,
+			height: 1136,
+			offsetX: 0,
+			offsetY: 0,
 			style: {
-				background: '#333',
-				WebkitBoxShadow: '0px 0px 5px #222',
+				WebkitBoxShadow: '12px 12px 35px rgba(0, 0, 0, 0.5)',
 				borderRadius: '10px'
 			}
 		}

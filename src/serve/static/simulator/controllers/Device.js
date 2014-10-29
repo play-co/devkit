@@ -90,6 +90,8 @@ var Device = exports = Class(lib.PubSub, function (supr) {
       parent: this.rootView
     }, opts.simulator));
 
+    this._simulator.on('change', bind(this, 'emit', 'change'));
+
     if (opts.conn) {
       this.setConn(opts.conn, opts);
     }
