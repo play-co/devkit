@@ -3,7 +3,7 @@ var ff = require('ff');
 var path = require('path');
 var rimraf = require('rimraf');
 var Rsync = require('rsync');
-var lockFile = require('lockfile');
+var lockFile = require('../util/lockfile');
 
 var Module = require('./Module');
 var gitClient = require('../util/gitClient');
@@ -11,11 +11,6 @@ var logger = require('../util/logging').get('apps');
 var stringify = require('../util/stringify');
 
 var LOCK_FILE = 'devkit.lock';
-var UNCAUGHT_CB = function (err) {
-  if (err) {
-    throw err;
-  }
-};
 
 var APP_TEMPLATE_ROOT = path.join(__dirname, 'templates');
 var DEFAULT_TEMPLATE = 'default';
@@ -501,11 +496,11 @@ var App = module.exports = Class(function () {
   };
 
   this.acquireLock = function (cb) {
-    lockFile.lock(path.join(this.paths.root, LOCK_FILE), cb || UNCAUGHT_CB);
+    lockFile.lock(path.join(this.paths.root, LOCK_FILE), cb);
   };
 
   this.releaseLock = function (cb) {
-    lockFile.unlock(path.join(this.paths.root, LOCK_FILE), cb || UNCAUGHT_CB);
+    lockFile.unlock(path.join(this.paths.root, LOCK_FILE), cb);
   };
 
   // defines the public JSON API for DevKit extensions
