@@ -1032,7 +1032,7 @@ exports = Class(squill.Widget, function (supr) {
       top: top + 'px',
       left: left + 'px',
       width: this.contents.offsetWidth + 'px',
-      paddingTop: -Math.min(0, top + minH) + 'px',
+      paddingTop: -Math.min(0, top + minH - 7) + 'px',
       paddingLeft: -Math.min(0, left + minW) + 'px'
     });
 
