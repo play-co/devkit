@@ -100,7 +100,7 @@ exports.installModule = function (app, moduleName, opts, cb) {
       var next = f();
       logger.log(
         color.cyanBright(
-          "Adding " + moduleName + (version ? '@' + version : '')
+          'Adding ' + moduleName + (version ? '@' + version : '')
         )
       );
       cache.add(url || moduleName, version, function (err, res) {
@@ -123,10 +123,10 @@ exports.installModule = function (app, moduleName, opts, cb) {
 
     if (!fs.existsSync(modulePath) && cacheEntry) {
       if (opts.link) {
-        logger.log(color.cyanBright('Linking ' + app.paths.modules))
+        logger.log(color.cyanBright('Linking ' + app.paths.modules));
         cache.link(cacheEntry, app.paths.modules, f.wait());
       } else {
-        logger.log(color.cyanBright('Copying ' + app.paths.modules))
+        logger.log(color.cyanBright('Copying ' + app.paths.modules));
         cache.copy(cacheEntry, app.paths.modules, f.wait());
       }
     }
