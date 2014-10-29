@@ -56,11 +56,11 @@ exports.Logger = Class(Writable, function () {
     return ('' + str)
 
       // add colour to our build logs so that it's easier to see if and where things went wrong.
-      .replace(/\d*(^|\s|[^a-zA-Z0-9-])error(s|\(s\))?/gi, function (res) { return color.redBright(res); })
-      .replace(/\d*(^|\s|[^a-zA-Z0-9-])warn(ing)?(s|\(s\))?/gi, function (res) { return color.redBright(res); })
+      //.replace(/\d*(^|\s|[^a-zA-Z0-9-])error(s|\(s\))?/gi, function (res) { return color.redBright(res); })
+      //.replace(/\d*(^|\s|[^a-zA-Z0-9-])warn(ing)?(s|\(s\))?/gi, function (res) { return color.redBright(res); })
 
       // fix new lines
-      .replace(/\r?\n(?!$)/g, '\n' + this._prefix);
+      //.replace(/\r?\n(?!$)/g, '\n' + this._prefix);
   }
 
   // call these for formatted logging from code

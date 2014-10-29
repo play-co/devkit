@@ -12,6 +12,7 @@
     "devkit": "./src/devkit.js"
   },
   "dependencies": {
+    "bluebird": "^2.3.6",
     "body-parser": "1.x",
     "cli-color": "0.2.3",
     "express": "4.x",

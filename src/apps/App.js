@@ -37,7 +37,7 @@ var App = module.exports = Class(function () {
     this.manifest = manifest || {};
     this._dependencies = this._parseDeps();
     this.lastOpened = lastOpened || Date.now();
-  }
+  };
 
   this.getModules = function () {
     if (!this._modules) {
@@ -45,13 +45,13 @@ var App = module.exports = Class(function () {
     }
 
     return this._modules;
-  }
+  };
 
   this.removeModules = function (toRemove) {
     toRemove.forEach(function (moduleName) {
       delete this._modules[moduleName];
     }, this);
-  }
+  };
 
   this.getClientPaths = function () {
     var appPath = this.paths.root;
@@ -60,9 +60,11 @@ var App = module.exports = Class(function () {
       var module = this._modules[moduleName];
       var clientPaths = module.getClientPaths();
       for (var key in clientPaths) {
-        var p = path.relative(appPath, path.resolve(module.path, clientPaths[key]));
-        if (key == '*') {
-          paths[key] = paths[key].concat(p)
+        var p = path.relative(
+          appPath, path.resolve(module.path, clientPaths[key])
+        );
+        if (key === '*') {
+          paths[key] = paths[key].concat(p);
         } else {
           paths[key] = p;
         }
@@ -70,7 +72,7 @@ var App = module.exports = Class(function () {
     }, this);
 
     return paths;
-  }
+  };
 
   // assuming app is loaded, reload the manifest and modules synchronously
   this.reloadSync = function () {
@@ -78,17 +80,26 @@ var App = module.exports = Class(function () {
       // app does not exist anymore?
       require('./index').unload(this.paths.root);
     } else {
-      this.manifest = JSON.parse(fs.readFileSync(this.paths.manifest, 'utf8'));
+      logger.log(this.paths.manifest);
+      try {
+        this.manifest = JSON.parse(
+          fs.readFileSync(this.paths.manifest, 'utf8')
+        );
+      } catch (e) {
+        logger.error('Error loading and parsing manifest at',
+                     this.paths.manifest);
+        throw e;
+      }
       if (this._modules) {
         this.reloadModules();
       }
     }
-  }
+  };
 
   this.reloadModules = function () {
     this._modules = {};
     this._loadModules();
-  }
+  };
 
   this._loadModules = function () {
     if (!this._modules) {
@@ -123,49 +134,51 @@ var App = module.exports = Class(function () {
       var parentPath = path.resolve(this.paths.root, item.parent);
       var packageFile = path.join(modulePath, 'package.json');
 
-      if (fs.existsSync(packageFile)) {
-        var packageContents;
-        try {
-          packageContents = require(packageFile);
-        } catch (e) {
-          return logger.warn("Module", item.path, "failed to load");
-        }
+      if (!fs.existsSync(packageFile)) { continue; }
 
-        if (packageContents.devkit) {
-          var existingModule = this._modules[packageContents.name];
-          if (existingModule) {
-            if (existingModule.version != packageContents.version) {
-              throw new Error(packageContents.name + ' included twice with different versions:\n'
-                  + existingModule.version + ': ' + existingModule.path + '\n'
-                  + packageContents.version + ': ' + modulePath);
-            }
-          } else {
-            var name = path.basename(modulePath);
-            var version = null;
-            var isDependency = (this.paths.root == parentPath);
-            if (isDependency && this._dependencies[name]) {
-              version = this._dependencies[name].version;
-            }
-
-            this._modules[name] = new Module({
-              name: name,
-              path: modulePath,
-              parent: parentPath,
-              isDependency: isDependency,
-              version: version,
-              packageContents: packageContents
-            });
-          }
-
-          addToQueue(modulePath);
-        }
+      var packageContents;
+      try {
+        packageContents = require(packageFile);
+      } catch (e) {
+        return logger.warn('Module', item.path, 'failed to load');
       }
+
+      if (!packageContents.devkit) { continue; }
+
+      var existingModule = this._modules[packageContents.name];
+      if (existingModule) {
+        if (existingModule.version !== packageContents.version) {
+          throw new Error(
+            packageContents.name +
+            ' included twice with different versions:\n' +
+            existingModule.version + ': ' + existingModule.path + '\n' +
+            packageContents.version + ': ' + modulePath);
+        }
+      } else {
+        var name = path.basename(modulePath);
+        var version = null;
+        var isDependency = (this.paths.root === parentPath);
+        if (isDependency && this._dependencies[name]) {
+          version = this._dependencies[name].version;
+        }
+
+        this._modules[name] = new Module({
+          name: name,
+          path: modulePath,
+          parent: parentPath,
+          isDependency: isDependency,
+          version: version,
+          packageContents: packageContents
+        });
+      }
+
+      addToQueue(modulePath);
     }
-  }
+  };
 
   this.getDependency = function (name) {
     return this._dependencies[name];
-  }
+  };
 
   this._parseDeps = function () {
     var deps = {};
@@ -180,7 +193,7 @@ var App = module.exports = Class(function () {
     }
 
     return deps;
-  }
+  };
 
   this._stringifyDeps = function () {
     var deps = this.manifest.dependencies = {};
@@ -188,7 +201,7 @@ var App = module.exports = Class(function () {
       var dep = this._dependencies[name];
       deps[name] = (dep.url || '') + '#' + (dep.version || '');
     }, this);
-  }
+  };
 
   /* Manifest */
 
@@ -198,19 +211,19 @@ var App = module.exports = Class(function () {
       : ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, createUUID);
   }
 
-  var DEFAULT_PROTOCOL = "https";
+  var DEFAULT_PROTOCOL = 'https';
   var REQUIRED_DEPS = [
     {
-      name: "devkit-core",
-      ssh: "git@github.com:",
-      https: "https://github.com/",
-      repo: "gameclosure/devkit-core",
-      tag: ""
+      name: 'devkit-core',
+      ssh: 'git@github.com:',
+      https: 'https://github.com/',
+      repo: 'gameclosure/devkit-core',
+      tag: ''
     }
   ];
 
   function getRequiredDeps(protocol) {
-    protocol = protocol == 'ssh' ? 'ssh' : 'https';
+    protocol = protocol === 'ssh' ? 'ssh' : 'https';
 
     var out = {};
     REQUIRED_DEPS.forEach(function (dep) {
@@ -220,7 +233,7 @@ var App = module.exports = Class(function () {
   }
 
   this.validate = function (opts, cb) {
-    if (typeof opts == 'function') {
+    if (typeof opts === 'function') {
       cb = opts;
       opts = {};
     }
@@ -228,28 +241,29 @@ var App = module.exports = Class(function () {
     if (!opts) { opts = {}; }
 
     var defaults = {
-      "appID": createUUID(),
-      "shortName": opts.shortName || "",
-      "title": opts.title || opts.shortName || "",
+      appID: createUUID(),
+      shortName: opts.shortName || '',
+      title: opts.title || opts.shortName || '',
 
-      "studio": {
-        "name": "Your Studio Name",
-        "domain": "studio.example.com",
-        "stagingDomain": "staging.example.com"
+      studio: {
+        name: 'Your Studio Name',
+        domain: 'studio.example.com',
+        stagingDomain: 'staging.example.com'
       },
 
-      "supportedOrientations": [
-        "portrait",
-        "landscape"
+      supportedOrientations: [
+        'portrait',
+        'landscape'
       ],
 
-      "dependencies": {}
+      dependencies: {}
     };
 
     var changed = false;
+    var key;
 
     // create defaults for anything missing
-    for (var key in defaults) {
+    for (key in defaults) {
       if (!(key in this.manifest)) {
         this.manifest[key] = defaults[key];
         changed = true;
@@ -258,7 +272,7 @@ var App = module.exports = Class(function () {
 
     // ensure required dependencies are set
     var requiredDeps = getRequiredDeps(opts.protocol || 'https');
-    for (var key in requiredDeps) {
+    for (key in requiredDeps) {
       if (!(key in this.manifest.dependencies)) {
         this.manifest.dependencies[key] = requiredDeps[key];
         changed = true;
@@ -279,12 +293,12 @@ var App = module.exports = Class(function () {
     this.validate(null, bind(this, function (err) {
       if (!err) {
         var dep = this._dependencies[moduleName];
-        if (dep && dep.version != version) {
+        if (dep && dep.version !== version) {
           dep.version = version;
         }
       }
     }));
-  }
+  };
 
   this.addDependency = function (name, opts, cb) {
     var dep = this._dependencies[name];
@@ -319,7 +333,7 @@ var App = module.exports = Class(function () {
     } else {
       cb && process.nextTick(cb);
     }
-  }
+  };
 
   this.removeDependency = function (name, cb) {
     var f = ff(this, function () {
@@ -338,7 +352,7 @@ var App = module.exports = Class(function () {
         rimraf(modulePath, f.wait());
       }
     }).cb(cb);
-  }
+  };
 
   this.saveManifest = function (cb) {
     var data = stringify(this.manifest);
@@ -348,21 +362,22 @@ var App = module.exports = Class(function () {
   this.getPackageName = function() {
     var studio = this.manifest.studio;
     if (studio && studio.domain && this.manifest.shortName) {
-      return printf("%(reversedDomain)s.%(shortName)s", {
+      return printf('%(reversedDomain)s.%(shortName)s', {
         reversedDomain: studio.domain.split(/\./g).reverse().join('.'),
         shortName: this.manifest.shortName
       });
     }
     return '';
-  }
+  };
 
   this.getId = function () {
     return this.manifest.appID.toLowerCase();
-  }
+  };
 
   this.getIcon = function (targetSize) {
     return this.manifest.icon
-      || getIcon(this.manifest.android && this.manifest.android.icons, targetSize)
+      || getIcon(this.manifest.android && this.manifest.android.icons,
+                 targetSize)
       || getIcon(this.manifest.ios && this.manifest.ios.icons, targetSize)
       || '/images/defaultIcon.png';
 
@@ -371,8 +386,11 @@ var App = module.exports = Class(function () {
 
       if (iconList) {
         for (var size in iconList) {
-          if (parseInt(size, 10) == size) {
-            sizes.push(parseInt(size, 10));
+          var numSize = parseInt(size);
+          if (!Number.isNaN(numSize) && numSize.toString() === size) {
+            sizes.push(numSize);
+          } else {
+            logger.warn('Non integer icon size encountered:', size);
           }
         }
 
@@ -391,12 +409,12 @@ var App = module.exports = Class(function () {
 
       return null;
     }
-  }
+  };
 
   this.createFromTemplate = function (template) {
 
     if (!template.type) {
-      logger.log("Creating app using default template");
+      logger.log('Creating app using default template');
       return this.createFromDefaultTemplate();
     }
 
@@ -406,10 +424,10 @@ var App = module.exports = Class(function () {
       templatePath = path.normalize(template.path);
       if (fs.existsSync(templatePath) &&
           fs.lstatSync(templatePath).isDirectory()) {
-        logger.log("Creating app using local template " + templatePath);
+        logger.log('Creating app using local template ' + templatePath);
         return this._copyLocalTemplate(templatePath);
       } else {
-        logger.warn("Failed to find template " + templatePath);
+        logger.warn('Failed to find template ' + templatePath);
         return this.createFromDefaultTemplate();
       }
     } else if (template.type === 'git') {
@@ -430,7 +448,7 @@ var App = module.exports = Class(function () {
         this._copyLocalTemplate(tempPath, f.wait());
       })
       .onError(bind(this, function (err) {
-        logger.error("Failed to clone repository " + template.path);
+        logger.error('Failed to clone repository ' + template.path);
         logger.error(err);
 
         // failed - fall back to local default
@@ -445,13 +463,13 @@ var App = module.exports = Class(function () {
       }));
     } else {
       // create local
-      logger.error("Invalid template - using default");
+      logger.error('Invalid template - using default');
       this.createFromDefaultTemplate(f.wait());
     }
   };
 
   this.createFromDefaultTemplate = function (cb) {
-    logger.log("Creating app using default application template");
+    logger.log('Creating app using default application template');
     var templatePath = path.join(APP_TEMPLATE_ROOT, DEFAULT_TEMPLATE);
     this._copyLocalTemplate(templatePath);
     cb && cb();
@@ -481,11 +499,11 @@ var App = module.exports = Class(function () {
 
   this.acquireLock = function (cb) {
     lockFile.lock(path.join(this.paths.root, LOCK_FILE), cb || UNCAUGHT_CB);
-  }
+  };
 
   this.releaseLock = function (cb) {
     lockFile.unlock(path.join(this.paths.root, LOCK_FILE), cb || UNCAUGHT_CB);
-  }
+  };
 
   // defines the public JSON API for DevKit extensions
   this.toJSON = function () {
@@ -495,14 +513,14 @@ var App = module.exports = Class(function () {
     }, this);
 
     return {
-        "id": this.paths.root,
-        "lastOpened": this.lastOpened,
-        "appId": this.getId(),
-        "modules": modules,
-        "clientPaths": this.getClientPaths(),
-        "paths": merge({}, this.paths),
-        "manifest": this.manifest,
-        "title": this.manifest.title
+        'id': this.paths.root,
+        'lastOpened': this.lastOpened,
+        'appId': this.getId(),
+        'modules': modules,
+        'clientPaths': this.getClientPaths(),
+        'paths': merge({}, this.paths),
+        'manifest': this.manifest,
+        'title': this.manifest.title
       };
-  }
+  };
 });

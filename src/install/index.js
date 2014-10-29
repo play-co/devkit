@@ -14,18 +14,20 @@ exports.installDependencies = function (app, opts, cb) {
   var index = 0;
   var names = Object.keys(deps);
   var installNext = bind(this, function (err) {
-    if (err || index == names.length) {
+    if (err || index === names.length) {
       return cb && cb(err);
     }
 
     var name = names[index++];
     if (name) {
-      exports.installModule(app, name, merge({url: deps[name]}, opts), installNext);
+      exports.installModule(
+        app, name, merge({url: deps[name]}, opts), installNext
+      );
     }
   });
 
   installNext();
-}
+};
 
 exports.installModule = function (app, moduleName, opts, cb) {
   var appPath = app.paths.root;
@@ -37,7 +39,7 @@ exports.installModule = function (app, moduleName, opts, cb) {
   if (url) {
     // find version in url
     var i = url.indexOf('#');
-    var version;
+    version;
     if (i >= 0) {
       if (!version) {
         version = url.substring(i + 1);
@@ -45,7 +47,7 @@ exports.installModule = function (app, moduleName, opts, cb) {
       url = url.substring(0, i);
     }
 
-    if (opts.protocol == 'ssh') {
+    if (opts.protocol === 'ssh') {
       var match = url.match(/^https:\/\/(.*?)\/(.*)$/);
       if (match) {
         url = 'git@' + match[1] + ':' + match[2];
@@ -53,11 +55,16 @@ exports.installModule = function (app, moduleName, opts, cb) {
     }
   }
 
-  var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/
+  var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/;
   var isURL = moduleName && PROTOCOL.test(moduleName);
   var cacheEntry;
 
-  logger.log(color.cyanBright('Installing'), color.yellowBright(moduleName + (version ? '@' + version : '')) + color.cyanBright('...'));
+  logger.log(
+    color.cyanBright('Installing'),
+    color.yellowBright(
+      moduleName + (version ? '@' + version : '')
+    ) + color.cyanBright('...')
+  );
 
   var _hasLock = false;
   var f = ff(this, function () {
@@ -70,15 +77,19 @@ exports.installModule = function (app, moduleName, opts, cb) {
       if (fs.existsSync(modulePath)) {
         var next = f();
         Module.describeVersion(modulePath, function (err, currentVersion) {
-          if (err) { return next(err); }
-          if (currentVersion.hash == version || currentVersion.tag == version) { return next(null, true); }
+          if (err) {
+            logger.error('Error in Module.describeVersion');
+            return next(err);
+          }
+          var onRequestedVersion = currentVersion.hash === version ||
+              currentVersion.tag === version;
+          if (onRequestedVersion) { return next(null, true); }
           return next();
         });
       }
     }
   }, function (isUpdated) {
     if (isUpdated) {
-      logger.log("already installed");
       return f.succeed();
     }
 
@@ -86,9 +97,18 @@ exports.installModule = function (app, moduleName, opts, cb) {
     // credentials
     var modulePath = path.join(app.paths.modules, moduleName);
     if (isURL || !fs.existsSync(modulePath)) {
-      cache.add(url || moduleName, version, f());
+      var next = f();
+      cache.add(url || moduleName, version, function (err, res) {
+        if (err) {
+          logger.error('cache.add for', moduleName + '#' + version);
+          return next(err);
+        }
+
+        return next(null, res);
+      });
     }
   }, function (_cacheEntry) {
+    logger.log('_cacheEntry', _cacheEntry);
     cacheEntry = _cacheEntry;
 
     moduleName = cacheEntry && cacheEntry.name || moduleName;
@@ -122,8 +142,17 @@ exports.installModule = function (app, moduleName, opts, cb) {
     }
 
     // checkout proper version and run install scripts
+    // var next = f();
+    // Module.setVersion(modulePath, version).catch(function (err) {
+    //   console.error('\n\n\n\n\n\n');
+    //   console.error(err);
+    //   return next(err);
+    // }).then(next);
+    //
     Module.setVersion(modulePath, version, f());
+
   }, function (installedVersion) {
+    logger.log('installedVersion', installedVersion);
     app.reloadModules();
     app.addDependency(moduleName, {
       url: cacheEntry && cacheEntry.url,
@@ -143,20 +172,21 @@ exports.installModule = function (app, moduleName, opts, cb) {
     //     moduleName + '" to "' + name + '". Please update your dependency.');
     // }
   }).error(function (err) {
-    if (err.code == 'EEXIST' && !_hasLock) {
+    if (err.code === 'EEXIST' && !_hasLock) {
       return logger.error('app is locked (is a build running?)');
     }
 
-    logger.error(err);
+    // console.error(err);
   }).success(function (version) {
     if (version) {
-      logger.log(color.yellowBright(moduleName + '@' + version), color.cyanBright('install completed'));
+      logger.log(
+        color.yellowBright(moduleName + '@' + version),
+        color.cyanBright('install completed')
+      );
     }
   }).cb(function (err) {
     if (_hasLock) {
-      app.releaseLock(function (err) {
-        if (err) { logger.error(err); }
-      });
+      app.releaseLock(f());
     }
   }).cb(cb);
-}
+};

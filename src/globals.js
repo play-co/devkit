@@ -13,3 +13,13 @@ process.on('SIGTERM', function () {
 process.on('SIGINT', function () {
   process.exit(2);
 });
+
+if (process.env.DEVKIT_TRACE) {
+  trace = function devkitTrace () {
+    console.log.apply(console, arguments);
+  };
+} else {
+  trace = function () {};
+}
+
+Promise = require('bluebird');

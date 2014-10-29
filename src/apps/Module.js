@@ -1,5 +1,4 @@
 var path = require('path');
-var ff = require('ff');
 var fs = require('fs');
 var color = require('cli-color');
 var spawn = require('child_process').spawn;
@@ -7,12 +6,27 @@ var spawn = require('child_process').spawn;
 var gitClient = require('../util/gitClient');
 var logger = require('../util/logging').get('module');
 
+var exists = function (filePath) {
+  return new Promise(function (resolve, reject) {
+    fs.exists(filePath, function (pathExists) {
+      if (pathExists) {
+        return resolve(pathExists);
+      }
+
+      return reject({
+        code: 'ENOENT',
+        filename: filePath
+      });
+    });
+  });
+};
+
 /**
  * A module for a game has several properties:
  *  - app paths: defines a list of paths into a module's file structure for
  *    files that a game can import
  *  - build targets: defines a list of build targets this module can generate
- *  - extensions: defines devkit extension modules (e.g. "simulator")
+ *  - extensions: defines devkit extension modules (e.g. 'simulator')
  */
 
 var Module = module.exports = Class(function () {
@@ -36,7 +50,10 @@ var Module = module.exports = Class(function () {
     this._buildTargets = {};
     if (devkit.buildTargets) {
       for (var target in devkit.buildTargets) {
-        this._buildTargets[target] = path.join(this.path, devkit.buildTargets[target]);
+        this._buildTargets[target] =
+          path.resolve(this.path, devkit.buildTargets[target]);
+        logger.log(target);
+        logger.log(this._buildTargets[target]);
       }
     }
 
@@ -46,29 +63,29 @@ var Module = module.exports = Class(function () {
         this._extensions[name] = path.join(this.path, devkit.extensions[name]);
       }
     }
-  }
+  };
 
   this.getClientPaths = function (relativeTo) {
     return this._clientPaths;
-  }
+  };
 
   this.getBuildTargets = function () {
     return this._buildTargets;
-  }
+  };
 
   this.getExtensions = function () {
     return this._extensions;
-  }
+  };
 
   this.loadExtension = function (name) {
     var extension = this._extensions[name];
     return extension && require(extension) || null;
-  }
+  };
 
   this.loadBuildTarget = function (name) {
     var buildTarget = this._buildTargets[name];
     return buildTarget && require(buildTarget) || null;
-  }
+  };
 
   // defines the public JSON API for DevKit extensions
   this.toJSON = function () {
@@ -81,7 +98,7 @@ var Module = module.exports = Class(function () {
       clientPaths: this.getClientPaths(),
       extensions: this.getExtensions()
     };
-  }
+  };
 });
 
 function strip(str) {
@@ -90,128 +107,106 @@ function strip(str) {
 
 Module.getURL = function (modulePath, cb) {
   var git = gitClient.get(modulePath);
-  var f = ff(function () {
-    git('remote', '-v', {extraSilent: true}, f());
-  }, function (remotes) {
-    var url = remotes.split('\n').map(function (line) {
-        return line.match(/^origin\s+(.*?)\s+\(fetch\)/);
-      }).filter(function (match) { return match; })
-        .map(function (match) { return match[1]; })[0];
-    f(url);
-  }).cb(cb);
-}
+  return git('remote', '-v', {extraSilent: true}).then(function (remotes) {
+    return remotes.split('\n').map(function (line) {
+      return line.match(/^origin\s+(.*?)\s+\(fetch\)/);
+    }).filter(function (match) {
+      return match;
+    }).map(function (match) {
+      return match[1];
+    })[0];
+  }).nodeify(cb);
+};
 
 Module.describeVersion = function (modulePath, cb) {
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
-  var f = ff(function () {
-    fs.exists(modulePath, f.slotPlain());
-  }, function (exists) {
-    if (!exists) {
-      return f.fail({code: 'ENOENT', filename: moduleName});
-    }
 
-    git('describe', '--tags', '--exact-match', {extraSilent: true}, f.slotPlain(2));
-    git('rev-parse', 'HEAD', {extraSilent: true}, f());
-  }, function (noTag, tag, hash) {
-    f({
-      tag: !noTag && strip(tag),
-      hash: strip(hash)
-    });
-  }).cb(cb);
-}
+  return exists(modulePath).then(function () {
+    return [
+      git.getCurrentTag(),
+      git.getCurrentHead()
+    ];
+  }).all().spread(function (tag, head) {
+    return {
+      tag: tag,
+      hash: head
+    };
+  }).nodeify(cb);
+};
 
 Module.getVersions = function (modulePath, cb) {
   var git = gitClient.get(modulePath);
-  var f = ff(function () {
-    git.getLocalVersions(f());
-    git('describe', '--tags', {extraSilent: true}, f());
-  }, function (versions, currentVersion) {
-    f({
+  return Promise.all([
+    git.getLocalTags(),
+    git('describe', '--tags', {extraSilent: true})
+  ]).then(function (versions, currentVersion) {
+    return {
       current: strip(currentVersion),
       versions: versions
-    });
-  }).cb(cb);
-}
+    };
+  }).nodeify(cb);
+};
 
-Module.setVersion = function (modulePath, versionOrOpts, cb) {
-  var opts = typeof versionOrOpts == 'object' && versionOrOpts || {};
-  var version = typeof versionOrOpts == 'string' && versionOrOpts || opts.version;
+Module.setVersion = function (modulePath, version, opts, cb) {
+  // Handle optional `opts` argument
+  if (!cb) { cb = opts; opts = {}; }
 
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
-  var info = {};
-  var forceInstall = !!opts.install;
+  var forceInstall = opts.forceInstall;
 
-  var f = ff(function () {
-    git.getLocalVersions(f());
-    Module.describeVersion(modulePath, f());
-    if (version) {
-      // exits with code == 0 if the requested revision/tag/branch is present;
-      // otherwise, returns a non-zero error code which means we should
-      // probably run fetch first
-      git('branch', '--list', version, {extraSilent: true}, f());
-      git('log', '--pretty=format:%H', '-n', '1', version, {extraSilent: true}, f.slotPlain(2));
-    }
-    // git('describe', '--tags', {extraSilent: true}, f());
-  }, function (versions, currentVersion, isBranch, notPresentErr, hash) {
-    // if the version is a branch, we should always fetch
-    info.currentTag = currentVersion.tag;
-    info.currentHash = currentVersion.hash;
-    info.isBranch = !!(isBranch && isBranch.replace(/^\s+|\s+$/g, ''));
-    info.hash = hash && hash.replace(/^\s+|\s+$/g, '');
-    info.tag = versions.indexOf(version) != -1 && version;
-    info.name = info.tag || info.hash;
+  return exists(modulePath).bind({}).then(function () {
+    return git.fetch();
+  }).then(function () {
+    return git.ensureVersion(version);
+  }).then(function (requestedVersion) {
+    this.requestedVersion = requestedVersion;
 
-    // are we already on that version?
-    if (!forceInstall && info.currentHash == info.hash) {
-      logger.log(color.cyanBright("set version"), color.yellowBright(moduleName + "@" + info.name));
-      return f.succeed(info.name);
-    }
+    // Get information about current head and the requested version
+    return [
+      git.getHashForRef(requestedVersion),
+      Module.describeVersion(modulePath)
+    ];
+  }).all().spread(function (requestedVersionHash, currentVersion) {
+    this.currentTag = currentVersion.tag;
+    this.currentHash = currentVersion.hash;
+    this.requestedHash = requestedVersionHash;
+    this.name = this.currentTag || this.currentHash;
 
-    // if no version was specified and skipFetch wasn't provided, fetch the
-    // latest. Always fetch if the requested version isn't present in the tree
-    // or if the requested version is a branch.
-    if (!opts.skipFetch && !version || notPresentErr || isBranch) {
-      // can't be silent in case it prompts for credentials
-      git('fetch', '--tags', {silent: false, buffer: false, stdio: 'inherit'}, f());
-    }
-  }, function (isBranch) {
-    git.getLocalVersions(f());
-  }, function (versions) {
-
-    if (!version) {
-      // default to the latest tagged version
-      version = versions[0];
-    }
-
-    // if the tags match
-    if (!forceInstall && info.currentTag && info.currentTag == version) {
-      return f.succeed(version);
-    }
-
-    if (version) {
-      logger.log(color.cyanBright("installing"), color.yellowBright(moduleName + "@" + version));
-      git('checkout', version, f());
+    var onRequestedVersion = this.currentHash === this.requestedHash;
+    if (!forceInstall && onRequestedVersion) {
+      logger.log(
+        color.cyanBright('set version'),
+        color.yellowBright(moduleName + '@' + this.name)
+      );
+      trace('already on requested version', this.name);
+      return this.requestedVersion;
     } else {
-      f.fail("no valid versions found for " + moduleName);
+      trace('installing requested version', this.requestedVersion);
+      return git.checkoutRef(this.requestedVersion).then(function () {
+        return Module.runInstallScripts(modulePath);
+      }).then(function () {
+        logger.log(
+          color.cyanBright('set version'),
+          color.yellowBright(moduleName + '@' + this.requestedVersion)
+        );
+        return this.requestedVersion;
+      });
     }
-  }, function () {
-    if (info.isBranch) {
-      git('pull', f());
-    }
-  }, function () {
-    logger.log("running install scripts...");
+  }).nodeify(cb);
+};
 
-    var npmArgs = ['install'];
-    if (process.getuid() == 0) {
-      npmArgs.push('--unsafe-perm');
-    }
+Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
+  logger.log('running install scripts...');
 
-    var npm = spawn('npm', npmArgs, {stdio: 'inherit', cwd: modulePath});
-    npm.on('close', f.wait());
-  }, function () {
-    logger.log(color.cyanBright("set version"), color.yellowBright(moduleName + "@" + version));
-    f(version);
-  }).cb(cb);
+  var npmArgs = ['install'];
+  if (process.getuid() === 0) {
+    npmArgs.push('--unsafe-perm');
+  }
+
+  var npm = spawn('npm', npmArgs, {stdio: 'inherit', cwd: modulePath});
+  return new Promise(function (resolve, reject) {
+    npm.on('close', resolve);
+  }).nodeify(cb);
 };

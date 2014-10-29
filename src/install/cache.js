@@ -43,16 +43,46 @@ var ModuleCache = Class(EventEmitter, function () {
       this._isLoaded = true;
       this.emit('loaded');
     });
-  }
+  };
 
   this._loadCachePath = function (cachePath, cb) {
     var git = gitClient.get(cachePath, {extraSilent: true});
     var f = ff(this, function () {
-      git.getLatestLocalVersion(f());
+      var next = f();
+      git.getLatestLocalTag(function (err, tag) {
+        if (err) { return next(err); }
+
+        // Got a tag
+        if (tag) {
+          return next(null, tag);
+        }
+
+        // No tags at all, try the current head.
+        git('rev-parse', 'HEAD', {silent: true}, function (err, res) {
+          if (err) { return next(err); }
+          return next(null, res.replace(/\n/, ''));
+        });
+      });
     }, function (version) {
+      // trim newlines
       f(version);
-      git('show', version + ':package.json', f());
-      Module.getURL(cachePath, f());
+      var pkg = f();
+      git('show', version + ':package.json', function (err, res) {
+        if (err) {
+          logger.error('Error reading module package.json');
+          return pkg('devkit requires module to have valid package.json');
+        }
+        pkg(null, res);
+      });
+      var url = f();
+      Module.getURL(cachePath, function (err, res) {
+        if (err) {
+          logger.error('Error getting module URL');
+          logger.error(err);
+          return url(err);
+        }
+        url(null, res);
+      });
     }, function (version, pkg, url) {
       var data = JSON.parse(pkg);
       var name = data.name;
@@ -63,7 +93,7 @@ var ModuleCache = Class(EventEmitter, function () {
       };
 
       var targetPath = path.join(MODULE_CACHE, name);
-      if (targetPath != cachePath && !fs.existsSync(targetPath)) {
+      if (targetPath !== cachePath && !fs.existsSync(targetPath)) {
         fs.renameSync(cachePath, targetPath);
       }
 
@@ -71,27 +101,37 @@ var ModuleCache = Class(EventEmitter, function () {
 
       f(entry);
     }).cb(cb);
-  }
+  };
 
-  var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/
+  var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/;
   var SSH_URL = /.+?\@.+?:.+/;
 
-  // if version is not provided, gets the latest version
-  this.add = function (nameOrURL, /* optional */ version, cb) {
+  /**
+   * add module to cache. If version omitted, fetch latest version
+   *
+   * @param {string} nameOrUrl
+   * @param {string} [version]
+   * @param {function} cb
+   */
+  this.add = function (nameOrURL, version, cb) {
 
+    var git;
     var url = nameOrURL;
     if (!PROTOCOL.test(nameOrURL) && !SSH_URL.test(nameOrURL)) {
       // try the default URL + name scheme
       url = DEFAULT_URL + nameOrURL;
     }
 
+    var once = Promise.promisify(this.once, this);
+
     // assume we have a valid URL now
     var tempName = path.join(MODULE_CACHE, randomName());
+
+    // return once('loaded').then(function () {
+
+    // });
+
     var f = ff(this, function () {
-      if (!this._isLoaded) {
-        this.once('loaded', f.wait());
-      }
-    }, function () {
       var entry = this._get(nameOrURL);
       if (entry) {
         // if we already have the repo cloned, just set the requested version
@@ -107,29 +147,74 @@ var ModuleCache = Class(EventEmitter, function () {
       }
     }, function () {
       // otherwise, we need to clone the repo and add it to the cache
-      var git = gitClient.get(MODULE_CACHE);
-      git('clone', url, tempName, {silent: false, buffer: false, stdio: 'inherit'}, f());
+      git = gitClient.get(MODULE_CACHE);
+      var next = f();
+
+      git('clone', url, tempName, {
+        silent: false,
+        buffer: false,
+        stdio: 'inherit'
+      }, function (err, res) {
+        if (err) {
+          logger.error('Failed to clone', url);
+          logger.error(err);
+          return next(err);
+        }
+
+        next(null, res);
+      });
+
+    // }, function () {
+    //   var next = f();
+    //   git = gitClient.get(path.resolve(MODULE_CACHE, tempName));
+    //   git('fetch', 'origin', {silent: true}, next);
+    // }, function () {
+    //   // check out requested version
+    //   var next = f();
+    //   git('checkout', '-b', version, {
+    //     silent: false
+    //   }, function (err, res) {
+    //     if (err) {
+    //       logger.error('requested version not found', url + '#' + version);
+    //       return next(err);
+    //     }
+
+    //     return next();
+    //   });
+    // }, function () {
+    //   var next = f();
+    //   git('reset', '--hard', 'origin/' + version, {
+    //     silent: false
+    //   }, function (err, res) {
+    //     if (err) {
+    //       logger.error('could not reset to origin/' + version);
+    //       return next(err);
+    //     }
+
+    //     return next();
+    //   });
+
     }, function () {
       // reload cache for proper module name (moves module)
       this._loadCachePath(tempName, f());
     }, function (entry) {
       // get and install the requested version (or the latest version, if none
-      // is provided)
-      Module.setVersion(path.join(MODULE_CACHE, entry.name), {
-          version: version,
-          install: true // force run the install scripts when first downloading a module
-        }, f.wait());
+      // is provided). `install: true` to force run the install scripts when
+      // first downloading a module.
+      Module.setVersion(path.join(MODULE_CACHE, entry.name), version, {
+        forceInstall: true
+      }, f.wait());
+
       f(entry);
     }).error(function () {
-      rimraf(tempName, function () {});
-    })
-      .cb(cb);
-  }
+      // rimraf(tempName, function () {});
+    }).cb(cb);
+  };
 
   this.remove = function (name, cb) {
     var modulePath = path.join(MODULE_CACHE, name);
     rimraf(modulePath, cb);
-  }
+  };
 
   this.copy = function (cacheEntry, destPath, cb) {
     var srcPath = path.join(MODULE_CACHE, cacheEntry.name);
@@ -144,17 +229,17 @@ var ModuleCache = Class(EventEmitter, function () {
         .destination(destPath)
         .execute(cb);
     });
-  }
+  };
 
   this.link = function (cacheEntry, destPath, cb) {
     var src = path.join(MODULE_CACHE, cacheEntry.name);
     var dest = path.join(destPath, cacheEntry.name);
     createLink(src, dest, cb);
-  }
+  };
 
   this.has = function (nameOrURL) {
     return !!this._get(nameOrURL);
-  }
+  };
 
   function cleanURL(url) {
     return url.split('#', 1)[0].replace(/(?:\.git)?\/?$/, '');
@@ -164,11 +249,11 @@ var ModuleCache = Class(EventEmitter, function () {
     // ignore versions and trailing slashes for matching against URLs
     var testURL = cleanURL(nameOrURL);
     for (var name in this._entries) {
-      if (name == nameOrURL || cleanURL(this._entries[name].url) == testURL) {
+      if (name === nameOrURL || cleanURL(this._entries[name].url) === testURL) {
         return this._entries[name];
       }
     }
-  }
+  };
 });
 
 function createLink(src, dest, cb) {
@@ -176,7 +261,7 @@ function createLink(src, dest, cb) {
     try {
       var stat = fs.lstatSync(dest);
     } catch (e) {
-      if (e.code != 'ENOENT') {
+      if (e.code !== 'ENOENT') {
         throw e;
       }
     }
@@ -185,7 +270,7 @@ function createLink(src, dest, cb) {
       if (stat.isSymbolicLink()) {
         fs.unlink(dest, f());
       } else {
-        throw new Error('Please remove the existing module before using --link');
+        throw new Error('Please remove existing module before using --link');
       }
     }
   }, function () {
