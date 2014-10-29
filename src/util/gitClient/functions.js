@@ -276,7 +276,7 @@ exports.validateVersion = function validateVersion (version, cb) {
 
 function parseShowRefOutput (refs) {
   // TODO handle tags
-  return refs.split(os.EOL).filter(function (str) {
+  return (refs || '').split(os.EOL).filter(function (str) {
     return !!str;
   }).map(function (ref) {
     var parts = ref.split(' ');
