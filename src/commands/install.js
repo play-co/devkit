@@ -12,7 +12,8 @@ var BaseCommand = require('../util/BaseCommand').BaseCommand;
 var InstallCommand = Class(BaseCommand, function (supr) {
 
   this.name = 'install';
-  this.description = 'installs (or updates) devkit dependencies for an app or a specific dependency if one is provided';
+  this.description = 'installs (or updates) devkit dependencies' +
+    'for an app or a specific dependency if one is provided';
 
   this.init = function () {
     supr(this, 'init', arguments);
@@ -20,8 +21,11 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     this.opts
       .describe('ssh', 'switches git protocol to ssh, default: false (https)')
       .describe('link', 'uses symlinks to the module cache (development only)')
-      .describe('skip-fetch', "if no version is specified, don't query servers for the latest version")
-  }
+      .describe(
+        'skip-fetch',
+        'if version is not specified, server query for the latest version'
+      );
+  };
 
   this.exec = function (args, cb) {
 
@@ -30,7 +34,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     var skipFetch = argv['skip-fetch'];
     var module = args.shift();
 
-    var f = ff(function () {
+    var f = ff(function getApplication () {
       apps.get('.', f());
     }, function (app) {
       // forward along the app
@@ -61,14 +65,18 @@ var InstallCommand = Class(BaseCommand, function (supr) {
           app.validate({protocol: protocol}, f());
         }
       }
-    }, function (app) {
+    }, function installDependenciesIfNeeded (app) {
       // if we installed a single module, we're done
       if (!module) {
         // otherwise, need to install all dependencies
-        install.installDependencies(app, {protocol: protocol, link: argv.link}, f());
+        install.installDependencies(app, {
+          protocol: protocol, link: argv.link
+        }, f());
       }
+    }).onError(function installErrorHandler (err) {
+      console.error(err && err.stack || err);
     }).cb(cb);
-  }
+  };
 });
 
 module.exports = InstallCommand;
