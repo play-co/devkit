@@ -226,7 +226,7 @@ exports = Class(squill.Widget, function (supr) {
       spinner.style.display = 'flex';
 
       setTimeout(bind(this, function () {
-        spinner.style.opacity = 1;
+        spinner.style.opacity = 0.5;
         this.addClass('building');
       }), 100);
     }

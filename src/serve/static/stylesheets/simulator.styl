@@ -356,19 +356,13 @@ else
 
     #spinner
       transition all 0.5s
-      width 50px
-      height 50px
+      width 40px
+      height 40px
       opacity 0
       pointer-events none
       background url(/icons/spinner.png)
-      background-size 50px 50px
+      background-size 40px 40px
       background-repeat no-repeat
-
-  .closeButton
-    background-color red
-    background -moz-linear-gradient(90deg, #555, #777)background -webkit-gradient(linear, left bottom, left top, from(#555), to(#777))
-    border-radius 5px-moz-border-radius 5px
-    float right
 
   &.building
     #build-spinner
@@ -376,7 +370,7 @@ else
 
       #spinner
         opacity 1
-        animation spin 2s linear infinite
+        animation spin 0.5s linear infinite
 
 @keyframes spin
   100%
