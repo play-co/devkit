@@ -114,7 +114,7 @@ exports.installModule = function (app, moduleName, opts, cb) {
     }
 
   }, function (_cacheEntry) {
-    logger.log('_cacheEntry', _cacheEntry);
+    trace('_cacheEntry', _cacheEntry);
     cacheEntry = _cacheEntry;
 
     moduleName = cacheEntry && cacheEntry.name || moduleName;
