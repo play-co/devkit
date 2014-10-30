@@ -501,11 +501,11 @@ var App = module.exports = Class(function () {
   };
 
   this.acquireLock = function (cb) {
-    return lockFile.lock(path.join(this.paths.root, LOCK_FILE), cb);
+    return lockFile.lock(path.join(this.paths.root, LOCK_FILE)).nodeify(cb);
   };
 
   this.releaseLock = function (cb) {
-    return lockFile.unlock(path.join(this.paths.root, LOCK_FILE), cb);
+    return lockFile.unlock(path.join(this.paths.root, LOCK_FILE)).nodeify(cb);
   };
 
   // defines the public JSON API for DevKit extensions

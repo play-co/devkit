@@ -21,11 +21,8 @@ exports.FileLockerError = FileLockerError;
  * @return {Promise<void 0, FileLockerError>}
  */
 
-exports.lock = function (file, opts, cb) {
-  if (typeof opts === 'function') {
-    cb = opts;
-    opts = {};
-  }
+exports.lock = function (file, opts) {
+  opts = opts || {};
 
   return new Promise(function (resolve, reject) {
     lockfile.lock(file, opts, function (err) {
@@ -35,7 +32,7 @@ exports.lock = function (file, opts, cb) {
         resolve();
       }
     });
-  }).nodeify(cb);
+  });
 };
 
 /**
