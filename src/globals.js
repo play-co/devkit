@@ -18,6 +18,8 @@ if (process.env.DEVKIT_TRACE) {
   trace = function devkitTrace () {
     console.log.apply(console, arguments);
   };
+
+  process.env.BLUEBIRD_DEBUG = 1;
 } else {
   trace = function () {};
 }
