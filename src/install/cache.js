@@ -36,7 +36,7 @@ var ModuleCache = Class(EventEmitter, function () {
       var cachePath = path.join(MODULE_CACHE, entry);
       return getCachedModuleInfo(cachePath);
     }).reduce(function (entries, entry) {
-      entries && entries.name && (entries[entry.name] = entry);
+      entry && entry.name && (entries[entry.name] = entry);
       return entries;
     }, {}).then(function (entries) {
       this._entries = entries;
