@@ -13,7 +13,7 @@ var stringify = require('../util/stringify');
 
 var _exists = require('../util/exists');
 var exists = _exists.exists;
-var IOError = exists.IOError;
+var IOError = _exists.IOError;
 
 
 var LOCK_FILE = 'devkit.lock';
