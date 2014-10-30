@@ -14,20 +14,14 @@ exports.installDependencies = function (app, opts, cb) {
   var deps = app.manifest.dependencies;
   var index = 0;
   var names = Object.keys(deps);
-  var installNext = bind(this, function (err) {
-    if (err || index === names.length) {
-      return cb && cb(err);
-    }
-
-    var name = names[index++];
+  return Promise.map(names, function (name) {
     if (name) {
-      exports.installModule(
-        app, name, merge({url: deps[name]}, opts), installNext
-      );
+      var installOpts = merge({url: deps[name]}, opts);
+      return exports.installModule(app, name, installOpts);
+    } else {
+      return Promise.resolve();
     }
-  });
-
-  installNext();
+  }, {concurrency: 1});
 };
 
 function parseURL (url, protocol) {
@@ -140,9 +134,6 @@ exports.installModule = function (app, moduleName, opts, cb) {
       color.yellowBright(moduleName + '@' + installedVersion),
       color.cyanBright('install completed')
     );
-  }).catch(FileLockerError, function (err) {
-    logger.error('cannot lock app (is a build running?)');
-    return reject(err);
   }).finally(function () {
     // Unlock the app for future use
     if (this.hasLock) {
@@ -238,7 +229,7 @@ function copyModuleIntoApp (app, cacheEntry) {
 
 function addModuleToApp (app, cacheEntry, moduleName, opts) {
   trace('addModuleToApp cacheEntry:', cacheEntry);
-  var moduleName = cacheEntry && cacheEntry.name || moduleName;
+  moduleName = cacheEntry && cacheEntry.name || moduleName;
   var modulePath = path.join(app.paths.modules, moduleName);
 
   if (opts.link) {
