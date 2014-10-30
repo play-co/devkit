@@ -191,7 +191,8 @@ exports.getCurrentTag = function getCurrentTag (cb) {
   return this('describe', '--tags', '--exact-match').then(function (tag) {
     return strip(tag);
   }).catch(FatalGitError, function (err) {
-    if (/cannot describe/.test(err.message)) {
+    var msg = err.message;
+    if (/cannot describe/.test(msg) || /no tag/.test(msg)) {
       return Promise.resolve('');
     }
 
@@ -307,7 +308,7 @@ function parseShowRefOutput (refs) {
 exports.getHashForRef = function getHashForRef (ref, cb) {
   return this('show-ref', ref).bind(this)
   .catch(handleShowRefVerifyError)
-  .then(function (refs) {
+  .then(function findMostCurrentRef(refs) {
     refs = parseShowRefOutput(refs);
     var remote = refs.filter(function (refInfo) {
       return refInfo.remote && refInfo.ref === ref;
