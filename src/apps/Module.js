@@ -188,7 +188,7 @@ Module.setVersion = function (modulePath, version, opts, cb) {
       trace('installing requested version', this.requestedVersion);
       return git.checkoutRef(this.requestedVersion).then(function () {
         return Module.runInstallScripts(modulePath);
-      }).then(function () {
+      }).bind(this).then(function () {
         logger.log(
           color.cyanBright('set version'),
           color.yellowBright(moduleName + '@' + this.requestedVersion)
