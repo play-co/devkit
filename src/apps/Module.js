@@ -161,6 +161,8 @@ Module.setVersion = function (modulePath, version, opts, cb) {
   }).then(function () {
     return git.ensureVersion(version);
   }).then(function (requestedVersion) {
+    trace('input version', version);
+    trace('requestedVersion', requestedVersion);
     this.requestedVersion = requestedVersion;
 
     // Get information about current head and the requested version
