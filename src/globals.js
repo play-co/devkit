@@ -25,3 +25,13 @@ if (process.env.DEVKIT_TRACE) {
 }
 
 Promise = require('bluebird');
+
+/**
+ * Show devkit trace information
+ */
+var version = require(__dirname + '/../package.json').version;
+trace('--------------------------------------------------------------------------------');
+trace('------------------------- GAME CLOSURE DEVKIT TRACE ----------------------------');
+trace('--------------------------------------------------------------------------------');
+trace('  VERSION =>', version, '\n\n');
+
