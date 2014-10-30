@@ -306,6 +306,7 @@ function parseShowRefOutput (refs) {
  */
 
 exports.getHashForRef = function getHashForRef (ref, cb) {
+  trace('gitClient#getHashForRef');
   return this('show-ref', ref).bind(this)
   .catch(handleShowRefVerifyError)
   .then(function findMostCurrentRef(refs) {
@@ -314,16 +315,22 @@ exports.getHashForRef = function getHashForRef (ref, cb) {
       return refInfo.remote && refInfo.ref === ref;
     })[0];
 
+    trace('remote', remote);
+
     if (remote) { return remote.hash; }
 
     var local = refs.filter(function (refInfo) {
       return refInfo.ref === ref;
     })[0];
 
+    trace('local', local);
+
     if (!local) {
       return Promise.reject(new UnknownGitRevision(ref));
     }
 
+
+    trace('returning local hash');
     return local.hash;
   }).nodeify(cb);
 };

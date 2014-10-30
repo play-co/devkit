@@ -119,6 +119,7 @@ Module.getURL = function (modulePath, cb) {
 };
 
 Module.describeVersion = function (modulePath, cb) {
+  trace('Module.describeVersion');
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
 
@@ -149,6 +150,7 @@ Module.getVersions = function (modulePath, cb) {
 };
 
 Module.setVersion = function (modulePath, version, opts, cb) {
+  trace('setVersion');
   // Handle optional `opts` argument
   if (!cb) { cb = opts; opts = {}; }
 
@@ -171,6 +173,8 @@ Module.setVersion = function (modulePath, version, opts, cb) {
       Module.describeVersion(modulePath)
     ];
   }).all().spread(function (requestedVersionHash, currentVersion) {
+    trace('requestedVersionHash', requestedVersionHash);
+    trace('currentVersion', currentVersion);
     this.currentTag = currentVersion.tag;
     this.currentHash = currentVersion.hash;
     this.requestedHash = requestedVersionHash;
