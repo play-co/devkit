@@ -509,7 +509,7 @@ var App = module.exports = Class(function () {
     // read every file/folder in the template
     var projectRoot = this.paths.root;
     var templateFileList = fs.readdirSync(templatePath);
-    return Promise.each(templateFileList, function () {
+    return Promise.each(templateFileList, function (child) {
       // don't copy .git files
       if (child === '.git') {
         return;
