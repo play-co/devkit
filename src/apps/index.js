@@ -26,7 +26,10 @@ var App = require('./App');
 var appFunctions = require('./functions');
 var resolveAppPath = appFunctions.resolveAppPath;
 
-var ApplicationNotFoundError = App.ApplicationNotFoundError;
+var errorTypes = require('./errors');
+
+var ApplicationNotFoundError = errorTypes.ApplicationNotFoundError;
+var DestinationExistsError = errorTypes.DestinationExistsError;
 
 var MANIFEST = 'manifest.json';
 
@@ -60,11 +63,6 @@ function findNearestApp (dir) {
     return null;
   }
 }
-
-// error message when failing to load an app
-var APP_NOT_FOUND = 'App not found';
-
-var ApplicationNotFoundError = require('./errors').ApplicationNotFoundError;
 
 var AppManager = Class(EventEmitter, function () {
   this.init = function () {
@@ -148,9 +146,15 @@ var AppManager = Class(EventEmitter, function () {
     // create the app directory
     if (!fs.existsSync(appPath)) {
       fs.mkdirSync(appPath);
+    } else {
+      return Promise.reject(new DestinationExistsError(appPath)).nodeify(cb);
     }
 
-    return this.get(appPath).catch(ApplicationNotFoundError, function (err) {
+    return this.get(appPath).then(function (app) {
+      // Don't create apps if folder is already a valid app
+      var err = new DestinationExistsError(appPath);
+      return Promise.reject(err);
+    }).catch(ApplicationNotFoundError, function (err) {
       trace('creating application');
 
       // app not found, create a new one
@@ -252,9 +256,18 @@ var AppManager = Class(EventEmitter, function () {
 });
 
 module.exports = new AppManager();
-module.exports.APP_NOT_FOUND = APP_NOT_FOUND;
+
+// error message when failing to load an app
+module.exports.APP_NOT_FOUND = 'App not found';
 
 /**
  * @reexport ApplicationNotFoundError
  */
+
 module.exports.ApplicationNotFoundError = ApplicationNotFoundError;
+
+/**
+ * @reexport DestinationExistsError
+ */
+
+module.exports.DestinationExistsError = DestinationExistsError;
