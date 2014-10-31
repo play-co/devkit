@@ -1,6 +1,0 @@
-[submodule "src/jvmtools/tealeaf-build-tools"]
-	path = src/jvmtools/tealeaf-build-tools
-	url = https://github.com/gameclosure/tealeaf-build-tools-dist
-[submodule "src/apps/templates/default"]
-	path = src/apps/templates/default
-	url = https://github.com/gameclosure/devkit-application-template
