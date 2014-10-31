@@ -186,7 +186,9 @@ function installModuleFromURL (app, name, url, version, opts) {
     }
   }).bind({}).then(function () {
     if (opts.link) { displayLinkWarning(app, modulePath); }
-    return Module.setVersion(modulePath, version);
+    return Module.setVersion(modulePath, version, {
+      forceInstall: true
+    });
   }).then(function (installedVersion) {
     this.installedVersion = installedVersion;
 

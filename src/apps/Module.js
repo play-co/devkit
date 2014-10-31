@@ -149,10 +149,9 @@ Module.getVersions = function (modulePath, cb) {
   }).nodeify(cb);
 };
 
-Module.setVersion = function (modulePath, version, opts, cb) {
-  trace('setVersion');
-  // Handle optional `opts` argument
-  if (!cb) { cb = opts; opts = {}; }
+Module.setVersion = function (modulePath, version, opts) {
+  trace('setVersion - opts:', opts);
+  opts = opts || {};
 
   trace('modulePath', modulePath);
 
@@ -202,7 +201,7 @@ Module.setVersion = function (modulePath, version, opts, cb) {
         return this.requestedVersion;
       });
     }
-  }).nodeify(cb);
+  });
 };
 
 Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
