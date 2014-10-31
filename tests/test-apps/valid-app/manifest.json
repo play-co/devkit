@@ -1,0 +1,7 @@
+{
+  "appID": "a7fb97bfae514c9697efab195e8ac2f7",
+  "dependencies": {
+    "devkit-core": "https://github.com/gameclosure/devkit-core#v2.0.8"
+  },
+  "version": "0.1.0"
+}

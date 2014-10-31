@@ -23,11 +23,12 @@ var logger = require('../util/logging').get('apps');
 var config = require('../config');
 var App = require('./App');
 
-var MANIFEST = 'manifest.json';
+var appFunctions = require('./functions');
+var resolveAppPath = appFunctions.resolveAppPath;
 
-var HOME = process.env.HOME
-      || process.env.HOMEPATH
-      || process.env.USERPROFILE;
+var ApplicationNotFoundError = App.ApplicationNotFoundError;
+
+var MANIFEST = 'manifest.json';
 
 function isDevkitApp (cwd) {
   var manifestPath = path.join(cwd, 'manifest.json');
@@ -60,12 +61,6 @@ function findNearestApp (dir) {
   }
 }
 
-function resolveAppPath(appPath) {
-  return appPath && path.resolve(
-    process.cwd(), appPath.replace(/^~[\/\\]/, HOME + path.sep)
-  ) || findNearestApp();
-}
-
 // error message when failing to load an app
 var APP_NOT_FOUND = 'App not found';
 
@@ -77,81 +72,55 @@ var AppManager = Class(EventEmitter, function () {
     this._isLoaded = false;
 
     config.on('change', bind(this, 'reload'));
+
     this.reload();
   };
 
-  this._load = function (appPath, lastOpened, persist, cb) {
-
-    if (!appPath) {
-      return Promise.reject(new ApplicationNotFoundError()).nodeify(cb);
-    }
-
-    appPath = resolveAppPath(appPath);
-
-    if (this._apps[appPath]) {
-      return Promise.resolve(this._apps[appPath]).nodeify(cb);
-    }
-
-    var manifestPath = path.join(appPath, MANIFEST);
-    var readFile = Promise.promisify(fs.readFile, fs);
-    return readFile(manifestPath).bind(this).catch(function (err) {
-      if (err.code === 'ENOENT') {
-        err = new ApplicationNotFoundError('manifest not found');
-        return Promise.reject(err);
-      } else {
-        return Promise.reject(err);
-      }
-    }).then(function (contents) {
-      var manifest = JSON.parse(contents);
-      return manifest;
-    }).catch(function (err) {
-      return Promise.reject(
-        new ApplicationNotFoundError('failed to parse manifest.json')
-      );
-    }).then(function (manifest) {
-      if (!this._apps[appPath] && manifest.appID) {
-        var app = new App(appPath, manifest, lastOpened);
-        this._apps[appPath] = app;
-        this.emit('add', app);
-
-        if (persist) {
-          this.persist();
-        }
-      }
-
-      if (this._apps[appPath]) {
-        return this._apps[appPath];
-      } else {
-        return Promise.reject(new ApplicationNotFoundError(appPath));
-      }
-
-    }).nodeify(cb);
-  };
-
   this.reload = function (cb) {
-    var apps = config.get('apps');
-    if (!apps) {
-      apps = {};
+    trace('reload');
+    var persistedApps = config.get('apps');
+    if (!persistedApps) {
+      persistedApps = {};
     }
 
-    var appDirs = Object.keys(apps);
+    var appDirs = Object.keys(persistedApps);
     if (!appDirs || !appDirs.length) {
       this._isLoaded = true;
       this.emit('update');
       return Promise.resolve().nodeify(cb);
     }
 
-    if (this._isReloading) { return; }
+    if (this._isReloading) {
+      return Promise.resolve().nodeify(cb);
+    }
 
     this._isReloading = true;
-    return Promise.bind(this).return(appDirs).each(function (dir) {
-      return this._load(dir, apps[dir], false);
-    }).all().then(function () {
-      this.persist();
+
+    var appCache = this._apps;
+
+    Promise.map(appDirs, function (dir) {
+      trace('loading dir', dir);
+      var lastLoadTime = persistedApps[dir];
+      return App.loadFromPath(
+        dir, lastLoadTime
+      ).catch(ApplicationNotFoundError, function (err) {
+        // Remove missing apps from cache
+        trace(err);
+        delete appCache[err.message];
+        return Promise.resolve(false);
+      });
+    }).filter(function (app) {
+      trace('!!app', !!app);
+      return Promise.resolve(!!app);
+    }).bind(this).each(function (app) {
+      trace('adding app to runtime cache');
+      this._apps[app.paths.root] = app;
+      this.emit('add', app);
+      return Promise.resolve();
     }).then(function () {
+      this.persist();
       this._isLoaded = true;
-    }).catch(function (err) {
-      logger.log(err);
+      return Promise.resolve();
     }).finally(function () {
       this._isReloading = false;
       this.emit('update');
@@ -174,30 +143,30 @@ var AppManager = Class(EventEmitter, function () {
   };
 
   this.create = function (appPath, template, cb) {
+    trace('AppManager#create');
+
     // create the app directory
     if (!fs.existsSync(appPath)) {
       fs.mkdirSync(appPath);
     }
 
-    var readFile = Promise.promisify(fs.readFile, fs);
+    return this.get(appPath).catch(ApplicationNotFoundError, function (err) {
+      trace('creating application');
 
-    return this.get(appPath).bind(this).then(function (app) {
-      return app;
-    }).catch(function (err) {
       // app not found, create a new one
       var manifestPath = path.join(appPath, MANIFEST);
+      var app = new App(appPath, manifestPath);
 
-      return readFile(manifestPath, 'utf8').catch(function (err) {
-        return '{}';
-      }).then(function (rawManifest) {
-        var manifest = JSON.parse(rawManifest);
-        this.app = new App(appPath, manifestPath);
-        return this.app.createFromTemplate(template);
+      return app.createFromTemplate(template).then(function () {
+        trace('validating application');
+        return app.validate({shortName: path.basename(appPath)});
       }).then(function () {
-        return this.app.validate({shortName: path.basename(appPath)});
-      }).then(function () {
-        return this.app;
+        return app;
       });
+
+    }).then(function (app) {
+      trace('app exists');
+      return app;
     }).nodeify(cb);
   };
 
@@ -208,6 +177,7 @@ var AppManager = Class(EventEmitter, function () {
   };
 
   this.has = function (appPath, cb) {
+    trace('AppManager#has');
     appPath = resolveAppPath(appPath);
 
     return this.getApps().bind(this).then(function () {
@@ -216,6 +186,7 @@ var AppManager = Class(EventEmitter, function () {
   };
 
   this.get = function (appPath, opts, cb) {
+    trace('AppManager#get');
     if (typeof opts === 'function') {
       cb = opts;
       opts = {};
@@ -226,28 +197,58 @@ var AppManager = Class(EventEmitter, function () {
     appPath = resolveAppPath(appPath);
 
     return this.getApps().bind(this).then(function () {
-      return this._load(appPath, null, true);
-    }).then(function (app) {
-      if (app && opts.updateLastOpened !== false) {
-        app.lastOpened = Date.now();
+      trace('Getting', appPath);
+      return App.loadFromPath(appPath, null);
+    }).catch(ApplicationNotFoundError, function (err) {
+      trace('got app not found error');
+      if (err.message) {
+        delete this._apps[appPath];
         this.persist();
       }
+      return Promise.reject(err);
+    }).then(function (app) {
+      trace('updating app cache');
+      this._apps[app.paths.root] = app;
+      if (app && opts.updateLastOpened !== false) {
+        app.lastOpened = Date.now();
+        trace('persisting app cache');
+        this.persist();
+      }
+
+      trace('forwarding app');
       return app;
     }).nodeify(cb);
   };
 
   this.getApps = function (cb) {
+    trace('AppManager#getApps');
+
     if (this._isLoaded) {
-      return Promise.delay(0).return(this._apps).nodeify(cb);
+      trace('already loaded');
+      return Promise.resolve(this._apps).nodeify(cb);
+    }
+
+    return this.waitForUpdateEvent().bind(this).then(function () {
+      trace('resolving with this._apps');
+      return this._apps;
+    }).nodeify(cb);
+  };
+
+  this.waitForUpdateEvent = function () {
+    if (this._isLoaded) {
+      return Promise.resolve();
     }
 
     var self = this;
-    return new Promise(function (resolve) {
-      self.once('update', resolve);
-    }).then(function () {
-      return self.getApps();
-    }).nodeify(cb);
+    return new Promise(function (resolve, reject) {
+      trace('waiting for `update` event');
+      self.once('update', function () {
+        trace('got update event');
+        resolve(void 0);
+      });
+    });
   };
+
 });
 
 module.exports = new AppManager();

@@ -1,5 +1,4 @@
 var fs = require('fs');
-var ff = require('ff');
 var path = require('path');
 var Rsync = require('rsync');
 
@@ -15,15 +14,36 @@ var _exists = require('../util/exists');
 var exists = _exists.exists;
 var IOError = _exists.IOError;
 
+var ApplicationNotFoundError = require('./errors').ApplicationNotFoundError;
 
 var LOCK_FILE = 'devkit.lock';
 
 var APP_TEMPLATE_ROOT = path.join(__dirname, 'templates');
 var DEFAULT_TEMPLATE = 'default';
 
+var appFunctions = require('./functions');
+var resolveAppPath = appFunctions.resolveAppPath;
+
+var readFile = function readFile (path, opts) {
+  return new Promise(function (resolve, reject) {
+    var cb = function readFileHandler (err, res) {
+      if (err) { return reject(err); }
+      return resolve(res);
+    };
+
+    if (!opts) {
+      fs.readFile(path, cb);
+    } else {
+      fs.readFile(path, opts, cb);
+    }
+  });
+};
+
+var MANIFEST = 'manifest.json';
 var App = module.exports = Class(function () {
 
   this.init = function (root, manifest, lastOpened) {
+    trace('Instantiating app from', root);
     this.paths = {
       root: root,
       build: path.join(root, 'build'),
@@ -36,7 +56,12 @@ var App = module.exports = Class(function () {
       manifest: path.join(root, 'manifest.json')
     };
 
-    this.manifest = manifest || {};
+    if (manifest && manifest.toString() === '[object Object]') {
+      this.manifest = manifest;
+    } else {
+      this.manifest = {};
+    }
+
     this._dependencies = this._parseDeps();
     this.lastOpened = lastOpened || Date.now();
   };
@@ -266,7 +291,7 @@ var App = module.exports = Class(function () {
 
     // create defaults for anything missing
     for (key in defaults) {
-      if (!(key in this.manifest)) {
+      if (!this.manifest.hasOwnProperty(key)) {
         this.manifest[key] = defaults[key];
         changed = true;
       }
@@ -274,11 +299,15 @@ var App = module.exports = Class(function () {
 
     // ensure required dependencies are set
     var requiredDeps = getRequiredDeps(opts.protocol || 'https');
-    for (key in requiredDeps) {
-      if (!(key in this.manifest.dependencies)) {
-        this.manifest.dependencies[key] = requiredDeps[key];
-        changed = true;
+    if (this.manifest.dependencies) {
+      for (key in requiredDeps) {
+        if (!this.manifest.dependencies.hasOwnProperty(key)) {
+          this.manifest.dependencies[key] = requiredDeps[key];
+          changed = true;
+        }
       }
+    } else {
+      this.manifest.dependencies = requiredDeps;
     }
 
     // if manifest has been changed, save it and update dependencies
@@ -527,3 +556,50 @@ var App = module.exports = Class(function () {
       };
   };
 });
+
+App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
+  trace('loadAppFromPath');
+  trace('\tappPath', appPath);
+
+  if (!appPath) {
+    trace('returning early');
+    return Promise.reject(new ApplicationNotFoundError());
+  }
+
+  appPath = resolveAppPath(appPath);
+  var manifestPath = path.join(appPath, MANIFEST);
+
+  return Promise.bind(this).then(function () {
+    trace('trying to read manifest from', manifestPath);
+
+    return new Promise(function (resolve, reject) {
+      fs.readFile(manifestPath, 'utf8', function (err, res) {
+        if (err) { return reject(err); }
+        return resolve(res);
+      });
+    });
+
+  }).catch(function (err) {
+    if (err.code === 'ENOENT') {
+      trace('returning ApplicationNotFoundError');
+      return Promise.reject(new ApplicationNotFoundError(appPath));
+    }
+
+    trace('forwarding unexpected error');
+    return Promise.reject(err);
+  }).then(function (contents) {
+    trace('opened manifest');
+    var manifest = JSON.parse(contents);
+    return manifest;
+  }).catch(SyntaxError, function (err) {
+    trace('Error parsing manifest in appPath', appPath);
+    return Promise.reject(new ApplicationNotFoundError(appPath));
+  }).then(function (manifest) {
+    if (manifest.appID) {
+      trace('returning App for appPath', appPath);
+      return Promise.resolve(new App(appPath, manifest, lastOpened));
+    } else {
+      return Promise.reject(new ApplicationNotFoundError(appPath));
+    }
+  });
+};
