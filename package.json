@@ -2,7 +2,7 @@
   "author": "Game Closure",
   "name": "DevKit",
   "description": "an HTML5-based development environment for mobile games",
-  "version": "2.0.0-alpha",
+  "version": "2.0.0-beta",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
     "type": "git",
@@ -44,7 +44,6 @@
     "postinstall": "scripts/postinstall.sh",
     "test": "./node_modules/.bin/mocha --reporter spec --recursive -C ./tests"
   },
-  "private": true,
   "devDependencies": {
     "express-debug": "^1.1.0"
   }
