@@ -4,7 +4,7 @@
   },
   "name": "devkit",
   "description": "an HTML5-based development environment for mobile games",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
     "url": "https://github.com/gameclosure/devkit2.git"
