@@ -52,7 +52,7 @@ function parseURL (url, protocol) {
  * Figure out which version the user wishes to be installed.
  */
 
-function resolveRequestedModuleVersion (app, version, opts) {
+function resolveRequestedModuleVersion (app, moduleName, version, opts) {
   if (opts.latest) {
     // Undefined version results in latest version getting pulled
     return void 0;
@@ -82,7 +82,7 @@ exports.installModule = function (app, moduleName, opts, cb) {
     version = urlInfo.version;
   }
 
-  version = resolveRequestedModuleVersion(app, version, opts);
+  version = resolveRequestedModuleVersion(app, moduleName, version, opts);
 
   var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/;
   var isURL = !!url || moduleName && PROTOCOL.test(moduleName);
