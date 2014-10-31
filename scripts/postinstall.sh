@@ -1,11 +1,5 @@
-# use ssh submodules if necessary
-node scripts/submodules.js
-
 git submodule sync
 git submodule update --init
-
-# reset .gitmodules
-git checkout .gitmodules
 
 # create a cache directory
 mkdir -p cache

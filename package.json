@@ -1,8 +1,10 @@
 {
-  "author": "Game Closure",
+  "author": {
+    "name": "Game Closure"
+  },
   "name": "devkit",
   "description": "an HTML5-based development environment for mobile games",
-  "version": "2.0.0-beta",
+  "version": "2.0.0-beta.2",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
     "url": "https://github.com/gameclosure/devkit2.git"
@@ -38,7 +40,7 @@
   "main": "src/devkit.js",
   "scripts": {
     "postinstall": "scripts/postinstall.sh",
-    "test": "./node_modules/.bin/mocha --reporter spec --recursive -C ./tests"
+    "test": "mocha --reporter spec --recursive -C ./tests"
   },
   "devDependencies": {
     "express-debug": "^1.1.0",
