@@ -1,12 +1,11 @@
 {
   "author": "Game Closure",
-  "name": "DevKit",
+  "name": "devkit",
   "description": "an HTML5-based development environment for mobile games",
   "version": "2.0.0-beta",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
-    "type": "git",
-    "url": "git://github.com/gameclosure/devkit.git"
+    "url": "https://github.com/gameclosure/devkit2.git"
   },
   "bin": {
     "devkit": "./src/devkit.js"
@@ -36,15 +35,13 @@
     "stylus": "0.47.x",
     "uglify-js": "1.3.x"
   },
-  "devDependencies": {
-    "mocha": "^2.0.1"
-  },
   "main": "src/devkit.js",
   "scripts": {
     "postinstall": "scripts/postinstall.sh",
     "test": "./node_modules/.bin/mocha --reporter spec --recursive -C ./tests"
   },
   "devDependencies": {
-    "express-debug": "^1.1.0"
+    "express-debug": "^1.1.0",
+    "mocha": "^2.0.1"
   }
 }
