@@ -1,5 +1,4 @@
 var fs = require('fs');
-var ff = require('ff');
 var color = require('cli-color');
 var path = require('path');
 var logger = require('../util/logging').get('install');
@@ -77,10 +76,11 @@ exports.installModule = function (app, moduleName, opts, cb) {
   var version = opts.version;
 
   if (opts.url) {
-    var urlInfo = parseURL(url, opts.protocol);
+    urlInfo = parseURL(url, opts.protocol);
     url = urlInfo.url;
     version = urlInfo.version;
   }
+
 
   version = resolveRequestedModuleVersion(app, moduleName, version, opts);
 
@@ -114,6 +114,7 @@ exports.installModule = function (app, moduleName, opts, cb) {
 
     return Promise.resolve(void 0);
   }).then(function passOrInstallModule (currentVersion) {
+    trace('currentVersion', currentVersion);
     var onRequestedVersion;
     if (!currentVersion) {
       onRequestedVersion = false;
@@ -175,6 +176,8 @@ function installModuleFromURL (app, name, url, version, opts) {
     return cache.add(url, version);
   }).then(function ensureModuleInApp (cacheEntry) {
     this.cacheEntry = cacheEntry;
+    name = cacheEntry.name;
+    modulePath = path.join(app.paths.modules, name);
 
     if (!fs.existsSync(modulePath)) {
       return addModuleToApp(app, cacheEntry, name, opts);

@@ -196,6 +196,7 @@ var ModuleCache = Class(EventEmitter, function () {
   };
 
   function cleanURL(url) {
+    trace('cleanURL', url);
     return url.split('#', 1)[0].replace(/(?:\.git)?\/?$/, '');
   }
 

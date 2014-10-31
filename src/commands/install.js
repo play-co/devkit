@@ -7,6 +7,8 @@ var install = require('../install');
 var lockfile = require('../util/lockfile');
 var logger = require('../util/logging').get('devkit');
 
+var url = require('url');
+
 var gitClient = require('../util/gitClient');
 
 var UnknownGitRevision = gitClient.UnknownGitRevision;
@@ -62,10 +64,17 @@ var InstallCommand = Class(BaseCommand, function (supr) {
 
       if (module) {
         // single module provided, install it
-        return install.installModule(app, module, {
-          protocol: protocol,
-          skipFetch: skipFetch
-        }).return(app);
+        var opts = {
+          protocol: protocol
+        };
+
+        var moduleUrl = url.parse(module);
+        if (moduleUrl.protocol && moduleUrl.host && moduleUrl.href) {
+          opts.url = moduleUrl.href;
+          opts.protocol = moduleUrl.protocol.replace(':', '');
+        }
+
+        return install.installModule(app, module, opts).return(app);
       }
 
       // no module provided, install all dependencies after we ensure we
