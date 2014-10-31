@@ -154,6 +154,8 @@ Module.setVersion = function (modulePath, version, opts, cb) {
   // Handle optional `opts` argument
   if (!cb) { cb = opts; opts = {}; }
 
+  trace('modulePath', modulePath);
+
   var git = gitClient.get(modulePath);
   var moduleName = path.basename(modulePath);
   var forceInstall = opts.forceInstall;
