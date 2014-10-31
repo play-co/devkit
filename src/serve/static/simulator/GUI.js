@@ -275,7 +275,10 @@ var MainController = exports = Class(lib.PubSub, function() {
     // convert string to opts
     if (typeof device == 'string') {
       try {
-        device = JSON.parse(device);
+        device = {
+          id: 'simulator',
+          simulator: JSON.parse(device)
+        };
       } catch (e) {
         device = {
           id: 'simulator',

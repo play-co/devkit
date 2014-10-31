@@ -210,6 +210,8 @@ exports = Class(squill.Widget, function (supr) {
     this.toolbar.addEventListener("webkitTransitionEnd", bind(this, function () {
       $.removeClass(this.toolbar, 'transition');
     }));
+
+    this.fromJSON(this._opts);
   };
 
   this.setBuilding = function (isBuilding) {
@@ -1063,11 +1065,7 @@ exports = Class(squill.Widget, function (supr) {
 
   this.fromJSON = function (data) {
     if (data.type) {
-      this.setType(data.type);
-    }
-
-    if (data.rotation) {
-      this._rotation = 1;
+      this._device.setType(data.type);
     }
 
     if (data.muted) {
@@ -1076,6 +1074,11 @@ exports = Class(squill.Widget, function (supr) {
 
     if (data.draggable === false) {
       this.setDragEnabled(false);
+    }
+
+    if (data.rotated) {
+      this._rotation = 1;
+      this.update();
     }
   }
 });

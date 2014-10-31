@@ -85,10 +85,14 @@ var Device = exports = Class(lib.PubSub, function (supr) {
       });
     }
 
-    this._simulator = new Simulator(merge({
+    var simOpts = merge({
       controller: this,
       parent: this.rootView
-    }, opts.simulator));
+    }, opts.simulator);
+
+    delete simOpts.type;
+
+    this._simulator = new Simulator(simOpts);
 
     this._simulator.on('change', bind(this, 'emit', 'change'));
 
@@ -96,8 +100,8 @@ var Device = exports = Class(lib.PubSub, function (supr) {
       this.setConn(opts.conn, opts);
     }
 
-    if (opts.type) {
-      this.setType(opts.type);
+    if (opts.simulator.type) {
+      this.setType(opts.simulator.type);
     }
     /*
           parent: this,
