@@ -8,6 +8,9 @@ var commands = require('./index');
 var apps = require('../apps');
 
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var UsageError = require('../util/BaseCommand').UsageError;
+
+var DestinationExistsError = apps.DestinationExistsError;
 
 var InitCommand = Class(BaseCommand, function (supr) {
 
@@ -20,38 +23,41 @@ var InitCommand = Class(BaseCommand, function (supr) {
       .boolean('no-template')
       .describe('no-template', 'copy no files other than manifest.json')
       .describe('local-template', 'path to local application template')
-      .describe('git-template', 'path to git repository')
-  }
+      .describe('git-template', 'path to git repository');
+  };
 
   this.exec = function (args, cb) {
+    return Promise.bind(this).then(function () {
+      // check the app name
+      var appPath = args.shift();
+      var errorMessage;
 
-    // check the app name
-    var appPath = args.shift();
+      if (!appPath) {
+        // TODO: print usage
+        errorMessage = 'No app name provided';
+        this.logger.error(errorMessage);
+        return Promise.reject(new UsageError(errorMessage));
+      }
 
-    if (!appPath) {
-      // TODO: print usage
-      var errorMessage = 'No app name provided';
-      this.logger.error(errorMessage);
-      throw new Error(errorMessage);
-    }
+      var appName = path.basename(appPath);
+      if (!appName) {
+        // TODO: refactor and print usage
+        errorMessage = 'No app name provided';
+        this.logger.error(errorMessage);
+        return Promise.reject(new UsageError(errorMessage));
+      }
 
-    var appName = path.basename(appPath);
-    if (!appName) {
-      // TODO: refactor and print usage
-      var errorMessage = 'No app name provided';
-      this.logger.error(errorMessage);
-      throw new Error(errorMessage);
-    }
+      this.appName = appName;
 
-    if (!/^[a-z][a-z0-9]*$/i.test(appName)) {
-      var errorMessage = 'App name must start with a letter and consist only of letters and numbers';
-      this.logger.error(errorMessage);
-      throw new Error(errorMessage);
-    }
+      if (!/^[a-z][a-z0-9]*$/i.test(appName)) {
+        errorMessage = 'App name must start with a letter and consist only of' +
+          'letters and numbers';
+        this.logger.error(errorMessage);
+        return Promise.reject(new UsageError(errorMessage));
+      }
 
-    appPath = path.resolve(process.cwd(), appPath);
+      this.appPath = appPath = path.resolve(process.cwd(), appPath);
 
-    var f = ff(this, function () {
       var template = {type: void 0};
 
       if (this.opts.argv.template !== void 0) {
@@ -66,16 +72,26 @@ var InitCommand = Class(BaseCommand, function (supr) {
       }
 
       // create the app
-      apps.create(appPath, template, f());
-    }, function (app) {
+      return apps.create(appPath, template);
+    }).then(function (app) {
+
       // change to app root and run install command
       process.chdir(app.paths.root);
-      commands.get('install').exec([], f());
-    }).error(bind(this, function (err) {
-      this.logger.error(err);
-    })).success(bind(this, function () {
-      this.logger.log(color.cyanBright('created new app'), color.yellowBright(appName));
-    })).cb(cb);
+      return commands.get('install').exec([]);
+
+    }).then(function () {
+
+      // Success message
+      this.logger.log(
+        color.cyanBright('created new app'), color.yellowBright(this.appName)
+      );
+
+    }).catch(DestinationExistsError, function (err) {
+      this.logger.error(
+        'The path you specified (' + err.message + ') already exists.',
+        'Aborting.'
+      );
+    }).nodeify(cb);
   };
 });
 

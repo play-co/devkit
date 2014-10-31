@@ -1,16 +1,15 @@
 var EventEmitter = require('events').EventEmitter;
 var path = require('path');
 var fs = require('fs');
-var ff = require('ff');
 var crypto = require('crypto');
 
 var Rsync = require('rsync'); // cp/rsync -a
-var mkdirp = require('mkdirp'); // mkdir -p
-var rimraf = require('rimraf'); // rm -rf
+var mkdirp = Promise.promisify(require('mkdirp')); // mkdir -p
 
 var gitClient = require('../util/gitClient');
 var Module = require('../apps/Module');
 var logger = require('../util/logging').get('cache');
+var rimraf = require('../util/rimraf');
 
 function randomName() {
   return '' + crypto.randomBytes(4).readUInt32LE(0)
@@ -21,6 +20,7 @@ var MODULE_CACHE = path.join(__dirname, '..', '..', 'cache');
 var DEFAULT_URL = 'https://github.com/gameclosure/';
 
 var ModuleCache = Class(EventEmitter, function () {
+
   this.init = function () {
     EventEmitter.call(this);
 
@@ -31,132 +31,172 @@ var ModuleCache = Class(EventEmitter, function () {
     this._isLoaded = false;
     this._entries = {};
 
-    var entries = fs.readdirSync(MODULE_CACHE);
-    var f = ff(this, function () {
-      entries.forEach(function (entry) {
-        var cachePath = path.join(MODULE_CACHE, entry);
-
-        // waitPlain: ignore cache load errors
-        this._loadCachePath(cachePath, f.waitPlain());
-      }, this);
-    }).cb(function () {
+    var entryNames = fs.readdirSync(MODULE_CACHE);
+    Promise.bind(this).return(entryNames).map(function (entry) {
+      var cachePath = path.join(MODULE_CACHE, entry);
+      return getCachedModuleInfo(cachePath);
+    }).reduce(function (entries, entry) {
+      entry && entry.name && (entries[entry.name] = entry);
+      return entries;
+    }, {}).then(function (entries) {
+      this._entries = entries;
       this._isLoaded = true;
       this.emit('loaded');
     });
-  }
+  };
 
-  this._loadCachePath = function (cachePath, cb) {
+  function getCachedModuleInfo (cachePath, cb) {
     var git = gitClient.get(cachePath, {extraSilent: true});
-    var f = ff(this, function () {
-      git.getLatestLocalVersion(f());
-    }, function (version) {
-      f(version);
-      git('show', version + ':package.json', f());
-      Module.getURL(cachePath, f());
-    }, function (version, pkg, url) {
+
+    return Promise.all([
+      git.getLatestLocalTag(),
+      git.getCurrentHead(),
+      git('show', 'HEAD:package.json'),
+      Module.getURL(cachePath)
+    ]).all().spread(function (tag, head, pkg, url) {
+      var version = tag || head;
       var data = JSON.parse(pkg);
-      var name = data.name;
-      var entry = {
+
+      return {
         url: url,
-        version: version,
-        name: name
+        name: data.name,
+        version: version
       };
-
-      var targetPath = path.join(MODULE_CACHE, name);
-      if (targetPath != cachePath && !fs.existsSync(targetPath)) {
-        fs.renameSync(cachePath, targetPath);
-      }
-
-      this._entries[name] = entry;
-
-      f(entry);
-    }).cb(cb);
+    }).nodeify(cb);
   }
 
-  var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/
+  function convertTempModulePath (cachePath, moduleName) {
+    var targetPath = path.join(MODULE_CACHE, moduleName);
+    if (targetPath !== cachePath && !fs.existsSync(targetPath)) {
+      fs.renameSync(cachePath, targetPath);
+    }
+  }
+
+  var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/;
   var SSH_URL = /.+?\@.+?:.+/;
 
-  // if version is not provided, gets the latest version
-  this.add = function (nameOrURL, /* optional */ version, cb) {
+  /**
+   * add module to cache. If version omitted, fetch latest version
+   *
+   * @param {string} nameOrUrl
+   * @param {string} [version]
+   * @param {function} cb
+   */
 
+  this.add = function (nameOrURL, version, cb) {
+    trace('cache.add name:', nameOrURL, 'version:', version);
+    var self = this;
+    var tempName = path.join(MODULE_CACHE, randomName());
+
+    return Promise.resolve(void 0).bind(this).then(function () {
+      if (!this._isLoaded) {
+        var self = this;
+        trace('waiting for module cache to load');
+        return new Promise(function (resolve) {
+          self.once('loaded', resolve);
+        });
+      }
+      return void 0;
+    }).then(function () {
+      trace('module cache loaded');
+      var entry = this._get(nameOrURL);
+      if (entry) {
+        trace('have entry, returning [entry, Promise for setVersion]');
+        // if we already have the repo cloned, just set the requested version
+        // or the latest version
+        return [
+          entry,
+          Module.setVersion(path.join(MODULE_CACHE, entry.name), version)
+        ];
+      }
+
+      return [];
+    }).all().spread(function (entry, newVersion) {
+      if (entry) {
+        trace('updated entry', entry, 'to version', version);
+        // return the cache info with the version we just set
+        entry.version = version;
+        return entry;
+      } else {
+        trace('module not cached; get it.');
+        // clone the repo and add it to the cache.
+        return this.addNewModuleFromRemote(
+          nameOrURL, version, tempName
+        ).then(function (entry) {
+          return entry;
+        });
+      }
+    }).nodeify(cb);
+  };
+
+  this.addNewModuleFromRemote = function (nameOrURL, version, tempName, cb) {
     var url = nameOrURL;
     if (!PROTOCOL.test(nameOrURL) && !SSH_URL.test(nameOrURL)) {
       // try the default URL + name scheme
       url = DEFAULT_URL + nameOrURL;
     }
-
-    // assume we have a valid URL now
-    var tempName = path.join(MODULE_CACHE, randomName());
-    var f = ff(this, function () {
-      if (!this._isLoaded) {
-        this.once('loaded', f.wait());
-      }
-    }, function () {
-      var entry = this._get(nameOrURL);
-      if (entry) {
-        // if we already have the repo cloned, just set the requested version
-        // or the latest version
-        f(entry);
-        Module.setVersion(path.join(MODULE_CACHE, entry.name), version, f());
-      }
-    }, function (entry, version) {
-      if (entry) {
-        // return the cache info with the version we just set
-        entry.version = version;
-        f.succeed(entry);
-      }
-    }, function () {
-      // otherwise, we need to clone the repo and add it to the cache
-      var git = gitClient.get(MODULE_CACHE);
-      git('clone', url, tempName, {silent: false, buffer: false, stdio: 'inherit'}, f());
-    }, function () {
-      // reload cache for proper module name (moves module)
-      this._loadCachePath(tempName, f());
-    }, function (entry) {
-      // get and install the requested version (or the latest version, if none
-      // is provided)
-      Module.setVersion(path.join(MODULE_CACHE, entry.name), {
-          version: version,
-          install: true // force run the install scripts when first downloading a module
-        }, f.wait());
-      f(entry);
-    }).error(function () {
-      rimraf(tempName, function () {});
-    })
-      .cb(cb);
-  }
+    var git = gitClient.get(MODULE_CACHE);
+    return git('clone', url, tempName, {
+      silent: false,
+      buffer: false,
+      stdio: 'inherit'
+    }).bind(this).then(function () {
+      // Ensure we are on the correct version of the module.
+      return Module.setVersion(tempName, version);
+    }).then(function (newVersion) {
+      // Get module metadata
+      return getCachedModuleInfo(tempName);
+    }).then(function (entry) {
+      // Move module to correct location
+      convertTempModulePath(tempName, entry.name);
+      return entry;
+    }).finally(function () {
+      return rimraf(tempName);
+    }).nodeify(cb);
+  };
 
   this.remove = function (name, cb) {
     var modulePath = path.join(MODULE_CACHE, name);
-    rimraf(modulePath, cb);
-  }
+    return rimraf(modulePath, cb);
+  };
 
   this.copy = function (cacheEntry, destPath, cb) {
-    var srcPath = path.join(MODULE_CACHE, cacheEntry.name);
-    logger.log('installing', cacheEntry.name, 'at', destPath);
+    var srcPath = path.join(MODULE_CACHE, cacheEntry.name) + path.sep;
+    var copyTo = path.join(destPath, cacheEntry.name) + path.sep;
 
-    mkdirp(destPath, function (err) {
-      if (err) { return cb && cb(err); }
+    logger.log('installing', cacheEntry.name, 'at', copyTo);
 
-      new Rsync()
+    return mkdirp(copyTo).then(function () {
+
+      return new Promise(function (resolve, reject) {
+        new Rsync()
         .flags('a')
         .source(srcPath)
-        .destination(destPath)
-        .execute(cb);
-    });
-  }
+        .destination(copyTo)
+        .execute(function (err, code, cmd) {
+          if (err) {
+            if (!(err instanceof Error)) { err = new Error(err); }
+            return reject(err);
+          }
+
+          return resolve();
+        });
+      });
+    }).nodeify(cb);
+  };
 
   this.link = function (cacheEntry, destPath, cb) {
     var src = path.join(MODULE_CACHE, cacheEntry.name);
     var dest = path.join(destPath, cacheEntry.name);
-    createLink(src, dest, cb);
-  }
+    return createLink(src, dest, cb);
+  };
 
   this.has = function (nameOrURL) {
     return !!this._get(nameOrURL);
-  }
+  };
 
   function cleanURL(url) {
+    trace('cleanURL', url);
     return url.split('#', 1)[0].replace(/(?:\.git)?\/?$/, '');
   }
 
@@ -164,33 +204,35 @@ var ModuleCache = Class(EventEmitter, function () {
     // ignore versions and trailing slashes for matching against URLs
     var testURL = cleanURL(nameOrURL);
     for (var name in this._entries) {
-      if (name == nameOrURL || cleanURL(this._entries[name].url) == testURL) {
+      if (name === nameOrURL || cleanURL(this._entries[name].url) === testURL) {
         return this._entries[name];
       }
     }
-  }
+  };
 });
 
-function createLink(src, dest, cb) {
-  var f = ff(function () {
-    try {
-      var stat = fs.lstatSync(dest);
-    } catch (e) {
-      if (e.code != 'ENOENT') {
-        throw e;
-      }
-    }
+var unlink = Promise.promisify(fs.unlink);
+var symlink = Promise.promisify(fs.symlink);
+var lstat = Promise.promisify(fs.lstat);
 
+function createLink(src, dest, cb) {
+  return lstat(dest).catch(function (err) {
+    if (err.code !== 'ENOENT') {
+      return Promise.reject(err);
+    }
+  }).then(function (stat) {
     if (stat) {
       if (stat.isSymbolicLink()) {
-        fs.unlink(dest, f());
+        return unlink(dest);
       } else {
-        throw new Error('Please remove the existing module before using --link');
+        return Promise.reject(
+          new Error('Please remove existing module before using --link')
+        );
       }
     }
-  }, function () {
-    fs.symlink(src, dest, 'junction', f());
-  }).cb(cb);
+  }).then(function () {
+    return symlink(src, dest, 'junction');
+  }).nodeify(cb);
 }
 
 module.exports = new ModuleCache();

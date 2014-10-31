@@ -1,28 +1,49 @@
 var fs = require('fs');
-var ff = require('ff');
 var path = require('path');
-var rimraf = require('rimraf');
 var Rsync = require('rsync');
-var lockFile = require('lockfile');
 
 var Module = require('./Module');
+
+var lockFile = require('../util/lockfile');
+var rimraf = require('../util/rimraf');
 var gitClient = require('../util/gitClient');
 var logger = require('../util/logging').get('apps');
 var stringify = require('../util/stringify');
 
+var _exists = require('../util/exists');
+var exists = _exists.exists;
+var IOError = _exists.IOError;
+
+var ApplicationNotFoundError = require('./errors').ApplicationNotFoundError;
+
 var LOCK_FILE = 'devkit.lock';
-var UNCAUGHT_CB = function (err) {
-  if (err) {
-    throw err;
-  }
-};
 
 var APP_TEMPLATE_ROOT = path.join(__dirname, 'templates');
 var DEFAULT_TEMPLATE = 'default';
 
+var appFunctions = require('./functions');
+var resolveAppPath = appFunctions.resolveAppPath;
+
+var readFile = function readFile (path, opts) {
+  return new Promise(function (resolve, reject) {
+    var cb = function readFileHandler (err, res) {
+      if (err) { return reject(err); }
+      return resolve(res);
+    };
+
+    if (!opts) {
+      fs.readFile(path, cb);
+    } else {
+      fs.readFile(path, opts, cb);
+    }
+  });
+};
+
+var MANIFEST = 'manifest.json';
 var App = module.exports = Class(function () {
 
   this.init = function (root, manifest, lastOpened) {
+    trace('Instantiating app from', root);
     this.paths = {
       root: root,
       build: path.join(root, 'build'),
@@ -35,10 +56,15 @@ var App = module.exports = Class(function () {
       manifest: path.join(root, 'manifest.json')
     };
 
-    this.manifest = manifest || {};
+    if (manifest && manifest.toString() === '[object Object]') {
+      this.manifest = manifest;
+    } else {
+      this.manifest = {};
+    }
+
     this._dependencies = this._parseDeps();
     this.lastOpened = lastOpened || Date.now();
-  }
+  };
 
   this.getModules = function () {
     if (!this._modules) {
@@ -46,13 +72,13 @@ var App = module.exports = Class(function () {
     }
 
     return this._modules;
-  }
+  };
 
   this.removeModules = function (toRemove) {
     toRemove.forEach(function (moduleName) {
       delete this._modules[moduleName];
     }, this);
-  }
+  };
 
   this.getClientPaths = function () {
     var appPath = this.paths.root;
@@ -61,9 +87,11 @@ var App = module.exports = Class(function () {
       var module = this._modules[moduleName];
       var clientPaths = module.getClientPaths();
       for (var key in clientPaths) {
-        var p = path.relative(appPath, path.resolve(module.path, clientPaths[key]));
-        if (key == '*') {
-          paths[key] = paths[key].concat(p)
+        var p = path.relative(
+          appPath, path.resolve(module.path, clientPaths[key])
+        );
+        if (key === '*') {
+          paths[key] = paths[key].concat(p);
         } else {
           paths[key] = p;
         }
@@ -71,7 +99,7 @@ var App = module.exports = Class(function () {
     }, this);
 
     return paths;
-  }
+  };
 
   // assuming app is loaded, reload the manifest and modules synchronously
   this.reloadSync = function () {
@@ -79,17 +107,26 @@ var App = module.exports = Class(function () {
       // app does not exist anymore?
       require('./index').unload(this.paths.root);
     } else {
-      this.manifest = JSON.parse(fs.readFileSync(this.paths.manifest, 'utf8'));
+      logger.log(this.paths.manifest);
+      try {
+        this.manifest = JSON.parse(
+          fs.readFileSync(this.paths.manifest, 'utf8')
+        );
+      } catch (e) {
+        logger.error('Error loading and parsing manifest at',
+                     this.paths.manifest);
+        throw e;
+      }
       if (this._modules) {
         this.reloadModules();
       }
     }
-  }
+  };
 
   this.reloadModules = function () {
     this._modules = {};
     this._loadModules();
-  }
+  };
 
   this._loadModules = function () {
     if (!this._modules) {
@@ -124,49 +161,51 @@ var App = module.exports = Class(function () {
       var parentPath = path.resolve(this.paths.root, item.parent);
       var packageFile = path.join(modulePath, 'package.json');
 
-      if (fs.existsSync(packageFile)) {
-        var packageContents;
-        try {
-          packageContents = require(packageFile);
-        } catch (e) {
-          return logger.warn("Module", item.path, "failed to load");
-        }
+      if (!fs.existsSync(packageFile)) { continue; }
 
-        if (packageContents.devkit) {
-          var existingModule = this._modules[packageContents.name];
-          if (existingModule) {
-            if (existingModule.version != packageContents.version) {
-              throw new Error(packageContents.name + ' included twice with different versions:\n'
-                  + existingModule.version + ': ' + existingModule.path + '\n'
-                  + packageContents.version + ': ' + modulePath);
-            }
-          } else {
-            var name = path.basename(modulePath);
-            var version = null;
-            var isDependency = (this.paths.root == parentPath);
-            if (isDependency && this._dependencies[name]) {
-              version = this._dependencies[name].version;
-            }
-
-            this._modules[name] = new Module({
-              name: name,
-              path: modulePath,
-              parent: parentPath,
-              isDependency: isDependency,
-              version: version,
-              packageContents: packageContents
-            });
-          }
-
-          addToQueue(modulePath);
-        }
+      var packageContents;
+      try {
+        packageContents = require(packageFile);
+      } catch (e) {
+        return logger.warn('Module', item.path, 'failed to load');
       }
+
+      if (!packageContents.devkit) { continue; }
+
+      var existingModule = this._modules[packageContents.name];
+      if (existingModule) {
+        if (existingModule.version !== packageContents.version) {
+          throw new Error(
+            packageContents.name +
+            ' included twice with different versions:\n' +
+            existingModule.version + ': ' + existingModule.path + '\n' +
+            packageContents.version + ': ' + modulePath);
+        }
+      } else {
+        var name = path.basename(modulePath);
+        var version = null;
+        var isDependency = (this.paths.root === parentPath);
+        if (isDependency && this._dependencies[name]) {
+          version = this._dependencies[name].version;
+        }
+
+        this._modules[name] = new Module({
+          name: name,
+          path: modulePath,
+          parent: parentPath,
+          isDependency: isDependency,
+          version: version,
+          packageContents: packageContents
+        });
+      }
+
+      addToQueue(modulePath);
     }
-  }
+  };
 
   this.getDependency = function (name) {
     return this._dependencies[name];
-  }
+  };
 
   this._parseDeps = function () {
     var deps = {};
@@ -181,7 +220,7 @@ var App = module.exports = Class(function () {
     }
 
     return deps;
-  }
+  };
 
   this._stringifyDeps = function () {
     var deps = this.manifest.dependencies = {};
@@ -189,29 +228,29 @@ var App = module.exports = Class(function () {
       var dep = this._dependencies[name];
       deps[name] = (dep.url || '') + '#' + (dep.version || '');
     }, this);
-  }
+  };
 
   /* Manifest */
 
   function createUUID (a) {
-    return a
-      ? (a ^ Math.random() * 16 >> a / 4).toString(16)
-      : ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, createUUID);
+    return a ?
+      (a ^ Math.random() * 16 >> a / 4).toString(16) :
+      ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, createUUID);
   }
 
-  var DEFAULT_PROTOCOL = "https";
+  var DEFAULT_PROTOCOL = 'https';
   var REQUIRED_DEPS = [
     {
-      name: "devkit-core",
-      ssh: "git@github.com:",
-      https: "https://github.com/",
-      repo: "gameclosure/devkit-core",
-      tag: ""
+      name: 'devkit-core',
+      ssh: 'git@github.com:',
+      https: 'https://github.com/',
+      repo: 'gameclosure/devkit-core',
+      tag: ''
     }
   ];
 
   function getRequiredDeps(protocol) {
-    protocol = protocol == 'ssh' ? 'ssh' : 'https';
+    protocol = protocol === 'ssh' ? 'ssh' : 'https';
 
     var out = {};
     REQUIRED_DEPS.forEach(function (dep) {
@@ -221,7 +260,7 @@ var App = module.exports = Class(function () {
   }
 
   this.validate = function (opts, cb) {
-    if (typeof opts == 'function') {
+    if (typeof opts === 'function') {
       cb = opts;
       opts = {};
     }
@@ -229,29 +268,30 @@ var App = module.exports = Class(function () {
     if (!opts) { opts = {}; }
 
     var defaults = {
-      "appID": createUUID(),
-      "shortName": opts.shortName || "",
-      "title": opts.title || opts.shortName || "",
+      appID: createUUID(),
+      shortName: opts.shortName || '',
+      title: opts.title || opts.shortName || '',
 
-      "studio": {
-        "name": "Your Studio Name",
-        "domain": "studio.example.com",
-        "stagingDomain": "staging.example.com"
+      studio: {
+        name: 'Your Studio Name',
+        domain: 'studio.example.com',
+        stagingDomain: 'staging.example.com'
       },
 
-      "supportedOrientations": [
-        "portrait",
-        "landscape"
+      supportedOrientations: [
+        'portrait',
+        'landscape'
       ],
 
-      "dependencies": {}
+      dependencies: {}
     };
 
     var changed = false;
+    var key;
 
     // create defaults for anything missing
-    for (var key in defaults) {
-      if (!(key in this.manifest)) {
+    for (key in defaults) {
+      if (!this.manifest.hasOwnProperty(key)) {
         this.manifest[key] = defaults[key];
         changed = true;
       }
@@ -259,33 +299,35 @@ var App = module.exports = Class(function () {
 
     // ensure required dependencies are set
     var requiredDeps = getRequiredDeps(opts.protocol || 'https');
-    for (var key in requiredDeps) {
-      if (!(key in this.manifest.dependencies)) {
-        this.manifest.dependencies[key] = requiredDeps[key];
-        changed = true;
+    if (this.manifest.dependencies) {
+      for (key in requiredDeps) {
+        if (!this.manifest.dependencies.hasOwnProperty(key)) {
+          this.manifest.dependencies[key] = requiredDeps[key];
+          changed = true;
+        }
       }
+    } else {
+      this.manifest.dependencies = requiredDeps;
     }
 
     // if manifest has been changed, save it and update dependencies
     if (changed) {
       this._dependencies = this._parseDeps();
       this._stringifyDeps();
-      this.saveManifest(cb);
+      return this.saveManifest(cb);
     } else {
-      cb && process.nextTick(cb);
+      return Promise.delay(0).nodeify(cb);
     }
   };
 
   this.setModuleVersion = function (moduleName, version, cb) {
-    this.validate(null, bind(this, function (err) {
-      if (!err) {
-        var dep = this._dependencies[moduleName];
-        if (dep && dep.version != version) {
-          dep.version = version;
-        }
+    return this.validate(null).bind(this).then(function () {
+      var dep = this._dependencies[moduleName];
+      if (dep && dep.version !== version) {
+        dep.version = version;
       }
-    }));
-  }
+    }).nodeify(cb);
+  };
 
   this.addDependency = function (name, opts, cb) {
     var dep = this._dependencies[name];
@@ -320,50 +362,54 @@ var App = module.exports = Class(function () {
     } else {
       cb && process.nextTick(cb);
     }
-  }
+  };
 
   this.removeDependency = function (name, cb) {
-    var f = ff(this, function () {
-      // remove from manifest dependencies
-      if (this._dependencies[name]) {
-        logger.log('removing dependency from manifest...');
-        delete this._dependencies[name];
-        this._stringifyDeps();
-        this.saveManifest(f.wait());
-      }
+    var promises = [];
+    // remove from manifest dependencies
+    if (this._dependencies[name]) {
+      logger.log('removing dependency from manifest...');
+      delete this._dependencies[name];
+      this._stringifyDeps();
+      promises.push(this.saveManifest());
+    }
 
-      // remove from file system
-      var modulePath = path.join(this.paths.modules, name);
-      if (fs.existsSync(modulePath)) {
-        logger.log('removing module directory...');
-        rimraf(modulePath, f.wait());
-      }
-    }).cb(cb);
-  }
+    // remove from file system
+    var modulePath = path.join(this.paths.modules, name);
+    if (fs.existsSync(modulePath)) {
+      logger.log('removing module directory...');
+      promises.push(rimraf(modulePath));
+    }
+
+    return Promise.all(promises).nodeify(cb);
+  };
 
   this.saveManifest = function (cb) {
+    trace('App#saveManifest');
+    var writeFile = Promise.promisify(fs.writeFile);
     var data = stringify(this.manifest);
-    return fs.writeFile(path.join(this.paths.manifest), data, cb);
+    return writeFile(path.join(this.paths.manifest), data).nodeify(cb);
   };
 
   this.getPackageName = function() {
     var studio = this.manifest.studio;
     if (studio && studio.domain && this.manifest.shortName) {
-      return printf("%(reversedDomain)s.%(shortName)s", {
+      return printf('%(reversedDomain)s.%(shortName)s', {
         reversedDomain: studio.domain.split(/\./g).reverse().join('.'),
         shortName: this.manifest.shortName
       });
     }
     return '';
-  }
+  };
 
   this.getId = function () {
     return this.manifest.appID.toLowerCase();
-  }
+  };
 
   this.getIcon = function (targetSize) {
     return this.manifest.icon
-      || getIcon(this.manifest.android && this.manifest.android.icons, targetSize)
+      || getIcon(this.manifest.android && this.manifest.android.icons,
+                 targetSize)
       || getIcon(this.manifest.ios && this.manifest.ios.icons, targetSize)
       || '/images/defaultIcon.png';
 
@@ -372,8 +418,11 @@ var App = module.exports = Class(function () {
 
       if (iconList) {
         for (var size in iconList) {
-          if (parseInt(size, 10) == size) {
-            sizes.push(parseInt(size, 10));
+          var numSize = parseInt(size);
+          if (!Number.isNaN(numSize) && numSize.toString() === size) {
+            sizes.push(numSize);
+          } else {
+            logger.warn('Non integer icon size encountered:', size);
           }
         }
 
@@ -392,12 +441,13 @@ var App = module.exports = Class(function () {
 
       return null;
     }
-  }
+  };
 
-  this.createFromTemplate = function (template) {
+  this.createFromTemplate = function (template, cb) {
 
     if (!template.type) {
-      return this.createFromDefaultTemplate();
+      logger.log('Creating app using default template');
+      return this.createFromDefaultTemplate().nodeify(cb);
     }
 
     // if template is local file, copy it
@@ -406,88 +456,86 @@ var App = module.exports = Class(function () {
       templatePath = path.normalize(template.path);
       if (fs.existsSync(templatePath) &&
           fs.lstatSync(templatePath).isDirectory()) {
-        logger.log("Creating app using local template " + templatePath);
-        return this._copyLocalTemplate(templatePath);
+        logger.log('Creating app using local template ' + templatePath);
+        return this._copyLocalTemplate(templatePath, cb);
       } else {
-        logger.warn("Failed to find template " + templatePath);
-        return this.createFromDefaultTemplate();
+        logger.warn('Failed to find template ' + templatePath);
+        return this.createFromDefaultTemplate(cb);
       }
     } else if (template.type === 'git') {
       // if template is not a local path, attempt to clone it
       var tempPath = path.join(APP_TEMPLATE_ROOT, '_template');
-      var f = ff(this, function () {
-        // ensure temporary path is empty
-        if (fs.existsSync(tempPath)) {
-          rimraf(tempPath, f.wait());
-        }
-      }, function () {
+
+      return exists(tempPath).then(function () {
+        trace('tempPath exists - removing');
+        return rimraf(tempPath);
+      }).catch(IOError, function (err) {
+        trace('tempPath does not exist - OK');
+      }).then(function () {
         // shallow clone the repository
         logger.log('Creating app using remote template ' + template.path);
         var git = gitClient.get(APP_TEMPLATE_ROOT);
-        git('clone', '--depth', '1', template.path, tempPath, f.wait());
-      }, function () {
+        return git('clone', '--depth', '1', template.path, tempPath);
+      }).then(function () {
         logger.log('Copying ' + tempPath + ' to ' + this.paths.root);
-        this._copyLocalTemplate(tempPath, f.wait());
-      })
-      .onError(bind(this, function (err) {
-        logger.error("Failed to clone repository " + template.path);
-        logger.error(err);
-
-        // failed - fall back to local default
-        // TODO: bail from entire creation process?
-        this.createFromDefaultTemplate(f.wait());
-      }))
-      .onComplete(bind(this, function () {
-        // make sure temp folder is gone
+        return this._copyLocalTemplate(tempPath, f.wait());
+      }).catch(FatalGitError, function (err) {
+        logger.error(err.message);
+        logger.log('Falling back to default template creation');
+        return this.createFromDefaultTemplate();
+      }).finally(function () {
         if (fs.existsSync(tempPath)) {
-          rimraf(tempPath, function () {});
+          return rimraf(tempPath);
         }
-      }));
+      }).nodeify(cb);
+
     } else if (template.type === 'none') {
       logger.log('Creating application with no template');
+      return Promise.resolve().nodeify(cb);
     } else {
       // create local
-      logger.error("Invalid template - using default");
-      this.createFromDefaultTemplate(f.wait());
+      logger.error('Invalid template - using default');
+      return this.createFromDefaultTemplate().nodeify(cb);
     }
   };
 
   this.createFromDefaultTemplate = function (cb) {
-    logger.log("Creating app using default application template");
+    logger.log('Creating app using default application template');
     var templatePath = path.join(APP_TEMPLATE_ROOT, DEFAULT_TEMPLATE);
-    this._copyLocalTemplate(templatePath);
-    cb && cb();
+    return this._copyLocalTemplate(templatePath, cb);
   };
 
   this._copyLocalTemplate = function (templatePath, cb) {
     // read every file/folder in the template
     var projectRoot = this.paths.root;
-    var rsync = new Rsync();
-    var f = ff(function() {
-      var group = f.group();
-      fs.readdirSync(templatePath).forEach(function(child) {
-        // don't copy .git files
-        if (child === '.git') {
-          return;
-        }
+    var templateFileList = fs.readdirSync(templatePath);
+    return Promise.each(templateFileList, function () {
+      // don't copy .git files
+      if (child === '.git') {
+        return;
+      }
 
-        // copy the file/folder recursively to the new app
-        rsync
-          .flags('r')
-          .source(path.join(templatePath,child))
-          .destination(projectRoot)
-          .execute(group());
+      // copy the file/folder recursively to the new app
+      return new Promise(function (resolve, reject) {
+        new Rsync()
+        .flags('r')
+        .source(path.join(templatePath,child))
+        .destination(projectRoot)
+        .execute(function (err, code, cmd) {
+          if (!err) { return resolve(); }
+          reject(new Error('Error during ' + cmd));
+        });
       });
-    }).onComplete(cb);
+    }).nodeify(cb);
   };
 
   this.acquireLock = function (cb) {
-    lockFile.lock(path.join(this.paths.root, LOCK_FILE), cb || UNCAUGHT_CB);
-  }
+    return lockFile.lock(path.join(this.paths.root, LOCK_FILE)).nodeify(cb);
+  };
 
   this.releaseLock = function (cb) {
-    lockFile.unlock(path.join(this.paths.root, LOCK_FILE), cb || UNCAUGHT_CB);
-  }
+    return lockFile.unlock(path.join(this.paths.root, LOCK_FILE)).nodeify(cb);
+  };
 
   // defines the public JSON API for DevKit extensions
   this.toJSON = function () {
@@ -497,14 +545,61 @@ var App = module.exports = Class(function () {
     }, this);
 
     return {
-        "id": this.paths.root,
-        "lastOpened": this.lastOpened,
-        "appId": this.getId(),
-        "modules": modules,
-        "clientPaths": this.getClientPaths(),
-        "paths": merge({}, this.paths),
-        "manifest": this.manifest,
-        "title": this.manifest.title
+        'id': this.paths.root,
+        'lastOpened': this.lastOpened,
+        'appId': this.getId(),
+        'modules': modules,
+        'clientPaths': this.getClientPaths(),
+        'paths': merge({}, this.paths),
+        'manifest': this.manifest,
+        'title': this.manifest.title
       };
-  }
+  };
 });
+
+App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
+  trace('loadAppFromPath');
+  trace('\tappPath', appPath);
+
+  if (!appPath) {
+    trace('returning early');
+    return Promise.reject(new ApplicationNotFoundError());
+  }
+
+  appPath = resolveAppPath(appPath);
+  var manifestPath = path.join(appPath, MANIFEST);
+
+  return Promise.bind(this).then(function () {
+    trace('trying to read manifest from', manifestPath);
+
+    return new Promise(function (resolve, reject) {
+      fs.readFile(manifestPath, 'utf8', function (err, res) {
+        if (err) { return reject(err); }
+        return resolve(res);
+      });
+    });
+
+  }).catch(function (err) {
+    if (err.code === 'ENOENT') {
+      trace('returning ApplicationNotFoundError');
+      return Promise.reject(new ApplicationNotFoundError(appPath));
+    }
+
+    trace('forwarding unexpected error');
+    return Promise.reject(err);
+  }).then(function (contents) {
+    trace('opened manifest');
+    var manifest = JSON.parse(contents);
+    return manifest;
+  }).catch(SyntaxError, function (err) {
+    trace('Error parsing manifest in appPath', appPath);
+    return Promise.reject(new ApplicationNotFoundError(appPath));
+  }).then(function (manifest) {
+    if (manifest.appID) {
+      trace('returning App for appPath', appPath);
+      return Promise.resolve(new App(appPath, manifest, lastOpened));
+    } else {
+      return Promise.reject(new ApplicationNotFoundError(appPath));
+    }
+  });
+};

@@ -12,6 +12,7 @@
     "devkit": "./src/devkit.js"
   },
   "dependencies": {
+    "bluebird": "^2.3.6",
     "body-parser": "1.x",
     "cli-color": "0.2.3",
     "express": "4.x",
@@ -35,9 +36,13 @@
     "stylus": "0.47.x",
     "uglify-js": "1.3.x"
   },
+  "devDependencies": {
+    "mocha": "^2.0.1"
+  },
   "main": "src/devkit.js",
   "scripts": {
-    "postinstall": "scripts/postinstall.sh"
+    "postinstall": "scripts/postinstall.sh",
+    "test": "./node_modules/.bin/mocha --reporter spec --recursive -C ./tests"
   },
   "private": true,
   "devDependencies": {

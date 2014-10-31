@@ -38,3 +38,18 @@ exports.BaseCommand = Class(function () {
     // to implement
   };
 });
+
+/**
+ * @class UsageError
+ */
+
+function UsageError (message) {
+  this.message = message;
+  this.name = 'UsageError';
+  Error.captureStackTrace(this, UsageError);
+}
+
+UsageError.prototype = Object.create(Error.prototype);
+UsageError.prototype.constructor = UsageError;
+
+exports.UsageError = UsageError;

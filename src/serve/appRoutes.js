@@ -36,7 +36,7 @@ exports.addToAPI = function (opts, api) {
   api.get('/hostModules', function (req, res) {
       var appPath = req.query.app;
       mountExtensions(appPath, function (err, mount) {
-        if (err) { return res.status(500).send(err); }
+        if (err) { return res.send(500, err); }
 
         res.json(mount.info);
       });
@@ -66,11 +66,13 @@ exports.addToAPI = function (opts, api) {
       var f = ff(this, function () {
         if (opts.separateBuildProcess) {
           logger.log('running build in separate process');
-          var build = childProcess.fork(path.resolve(__dirname, '../build/fork'), [JSON.stringify(args)]);
+          var build = childProcess.fork(
+            path.resolve(__dirname, '../build/fork'), [JSON.stringify(args)]
+          );
           var onBuild = f();
           build.on('message', function (msg) { onBuild(msg.err, msg.res); });
         } else {
-          var build = require('../build/');
+          build = require('../build/');
           build.build(args.appPath, args.buildOpts, f());
         }
 
@@ -80,7 +82,8 @@ exports.addToAPI = function (opts, api) {
       }, function (build) {
         mountApp(args.appPath, build.config.outputPath, f());
       }).error(function (err) {
-        return res.status(500).send(err);
+        logger.log(err);
+        return res.send(500, err);
       }).success(function () {
         res.json(portMap[args.appPath].res);
       });
@@ -116,7 +119,9 @@ exports.addToAPI = function (opts, api) {
           try {
             var routes = extension.getMiddleware(require('../api'), app);
           } catch (e) {
-            logger.error("Unable to mount simulator middleware for", moduleName);
+            logger.error(
+              'Unable to mount simulator middleware for', moduleName
+            );
             logger.error(e);
           }
 
@@ -131,7 +136,9 @@ exports.addToAPI = function (opts, api) {
 
             // host simulator routes on simulator server
             if (portMap[appPath] && routes.simulator) {
-              portMap[appPath].middleware.use('/' + module.name, routes.simulator);
+              portMap[appPath].middleware.use(
+                '/' + module.name, routes.simulator
+              );
             }
           }
         }
@@ -191,12 +198,11 @@ exports.addToAPI = function (opts, api) {
     } else {
       var simulatorServer = http.createServer(simulatorApp);
       baseApp.io.listen(simulatorServer);
-      listen();
 
-      function listen() {
+      var listen = function listen() {
         var port = basePort++;
         simulatorServer.listen(port, function () {
-          logger.log("binding port", port, "to", outputPath);
+          logger.log('binding port', port, 'to', outputPath);
 
           portMap[appPath] = {
               port: port,
@@ -206,11 +212,13 @@ exports.addToAPI = function (opts, api) {
 
           cb && cb(null, portMap[appPath].res);
         }).on('error', function (e) {
-          if (e.code == 'EADDRINUSE') {
+          if (e.code === 'EADDRINUSE') {
             listen();
           }
         });
-      }
+      };
+
+      listen();
     }
   }
 
@@ -237,9 +245,11 @@ exports.addToAPI = function (opts, api) {
 
     // get a unique route
     var route;
-    do { route = '/' + hash.toString(36) + '/'; } while ((route in _routes) && ++hash);
+    do {
+      route = '/' + hash.toString(36) + '/';
+    } while ((route in _routes) && ++hash);
     _routes[route] = true;
     _routeMap[appPath] = route;
     return route;
   }
-}
+};
