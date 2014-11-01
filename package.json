@@ -3,7 +3,7 @@
     "name": "Game Closure"
   },
   "name": "devkit",
-  "description": "HTML 5 game engine that builds to browser and mobile",
+  "description": "HTML 5 game platform for browser and mobile",
   "version": "2.0.0-beta.6",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
