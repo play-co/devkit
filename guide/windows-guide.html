@@ -248,14 +248,14 @@
 
             <div id="main" class="row-fluid">
 <h1 id="windows-guide">Windows Guide</h1>
-<p>This guide will get you up and running with the Game Closure DevKit. First, you’ll download and install the DevKit, then get introduced to <code>basil</code>, our command-line tool for creating new projects and development. Once everything is installed and ready to go, please read the <a href="../guide/hello-world.html">Hello, World! Guide</a> to create your first application.</p>
+<p>This guide will get you up and running with the Game Closure DevKit. First, you’ll download and install the DevKit, then get introduced to <code>devkit</code>, our command-line tool for creating new projects and development. Once everything is installed and ready to go, please read the <a href="../guide/hello-world.html">Hello, World! Guide</a> to create your first application.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>The following is a list of prequisites for running the Game Closure DevKit on Windows. Download the following projects and refer to the sections below for configuration tips.</p>
 <p><strong>Web and Native Development</strong></p>
 <ul>
 <li><a href="http://msysgit.github.com/">msysgit</a> (&gt; 1.7.10)
 <ul>
-<li>The full installer should be used since it contains the <code>git bash</code> command prompt that is needed to run <code>basil</code> and the commands below. THe default options during the installation process will work with the GC Devkit.</li>
+<li>The full installer should be used since it contains the <code>git bash</code> command prompt that is needed to run <code>devkit</code> and the commands below. THe default options during the installation process will work with the GC Devkit.</li>
 </ul></li>
 <li><a href="http://nodejs.org">Node.js</a> (&gt; 0.8)</li>
 <li><a href="https://npmjs.org/package/windows">npm</a></li>
@@ -274,7 +274,7 @@
 <li><a href="http://developer.android.com/tools/sdk/ndk/">Android NDK</a></li>
 <li><a href="http://ant.apache.org/manual/install.html">Apache Ant</a></li>
 </ul>
-<p>For more information, see the <a href="http://doc.gameclosure.com/native/android-setup.html">Android Setup Guide</a>.</p>
+<p>For more information, see the <a href="native/android-setup.html">Android Setup Guide</a>.</p>
 <h3 id="installation-tip">Installation Tip</h3>
 <p>The easiest way to install these packages is through their respective installers. Note the location that each of the above dependencies is installed to because they will need to be added to your Windows environment PATH. For some of the above dependencies they come as zip downloads rather than installers. In these cases, they need to be unzipped and the location of the unzipped files needs to be added to your PATH. <em>[This is true for the <strong>Android NDK</strong>, <strong>ant</strong> build tools, and the <strong>Android SDK</strong> when using the adt bundle]</em></p>
 <h2 id="add-the-tools-to-your-path">Add the tools to your PATH</h2>
@@ -319,18 +319,18 @@ C:\Program Files\nodejs\</code></pre>
 $ cd devkit</code></pre>
 <p>This downloads the DevKit in to the <code>./devkit</code> directory located in your current working path. Switch to that directory and run the install script:</p>
 <pre><code>$ ./install.sh</code></pre>
-<p>This installs the command-line program <code>basil</code> which is used create and serve projects. To see a list of basil commands, simply run it in your terminal without any arguments:</p>
-<pre><code>$ basil</code></pre>
-<p>This prints out a list of basil commands. You can get help for a particular command by typing <code>basil help [command]</code>, for example:</p>
-<pre><code>$ basil help init</code></pre>
+<p>This installs the command-line program <code>devkit</code> which is used create and serve projects. To see a list of devkit commands, simply run it in your terminal without any arguments:</p>
+<pre><code>$ devkit</code></pre>
+<p>This prints out a list of devkit commands. You can get help for a particular command by typing <code>devkit help [command]</code>, for example:</p>
+<pre><code>$ devkit help init</code></pre>
 <p>Some commands also take a <code>-h</code> argument to show help.</p>
 <h2 id="update-the-devkit">Update the DevKit</h2>
 <p>To keep your copy of the DevKit up to date, run the update command:</p>
-<pre><code>$ basil update</code></pre>
-<p>The update command is also able to check out older versions of the DevKit or different channels of DevKit versions. Read the help menu with <code>basil update --help</code> for more information on this flexible tool.</p>
+<pre><code>$ devkit update</code></pre>
+<p>The update command is also able to check out older versions of the DevKit or different channels of DevKit versions. Read the help menu with <code>devkit update --help</code> for more information on this flexible tool.</p>
 <h2 id="play-with-examples">Play With Examples</h2>
-<p>Once <code>basil</code> is installed you’re ready to check out a few example projects. First, take a look at the <a href="../guide/hello-world.html">Hello, World! Guide</a> to see how to create a new project. After that, you should be ready to browse some more complicated projects. There are a bunch contained within the <em>examples addon</em>, which comes with a fresh DevKit install.</p>
-<p>This addon installs a collection of projects that demonstrate some game development techniques using the Game Closure DevKit. When you run basil you’ll be able to browse and run the projects, and also see the annotated source for each.</p>
+<p>Once <code>devkit</code> is installed you’re ready to check out a few example projects. First, take a look at the <a href="../guide/hello-world.html">Hello, World! Guide</a> to see how to create a new project. After that, you should be ready to browse some more complicated projects. There are a bunch contained within the <em>examples addon</em>, which comes with a fresh DevKit install.</p>
+<p>This addon installs a collection of projects that demonstrate some game development techniques using the Game Closure DevKit. When you run devkit you’ll be able to browse and run the projects, and also see the annotated source for each.</p>
             </div><!--/row-->
           </div><!--/span-->
         </div><!--/row-->

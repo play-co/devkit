@@ -268,7 +268,7 @@ devkit install</code></pre>
 <pre><code>$ devkit serve</code></pre>
 <p>This will start a server on your machine on port 9200. Navigate your web browser to <code>http://localhost:9200</code> and you’re greeted with the following screen:</p>
 <p><img src="./assets/game-walkthrough/basil-start.png" alt="basil start screenshot" class="screenshot"></p>
-<p>First, we need to select our project: click on the <strong>Projects</strong> link in the left nav and select the <strong>Whack-that-Mole!</strong> game:</p>
+<p>First, we need to select our project: select the <strong>Whack-that-Mole!</strong> game from the list on the left.</p>
 <p><img src="./assets/game-walkthrough/basil-projects.png" alt="basil project select screenshot" class="screenshot"></p>
 <p>With the game icon selected, click the <strong>Simulate</strong> button in the top right to launch the game in a new web browser tab.</p>
 <p><img src="./assets/game-walkthrough/game-title.png" alt="game title screenshot" class="screenshot"></p>
@@ -884,10 +884,10 @@ exports.getSound = function () {
 <p>Through making many games we have found that the most common way to leak memory is by trying to remove and recreate View objects. It would be a bad idea, in our experience, to create a View in response to a button press. The easy solution to avoid JavaScript memory leaks is to never attempt to remove or recreate a View.</p>
 <p>The menu system for your game should be created once near the start of the game and then just referenced later when you return to the menus rather than creating it again each time it is needed.</p>
 <p>All View objects for your game should be created before they are needed rather than directly in response to user input. For instance it would be slow to create a new Enemy object every time you needed one in-game. Instead you should have a ViewPool of Enemy objects that stay allocated and get reused as needed.</p>
-<p>For examples of using ViewPools, see the official <a href="http://doc.gameclosure.com/example/views-pools/">ViewPools example</a> or the Isometric game engine’s <a href="https://github.com/gameclosure/isometric/blob/master/views/GridLayerView.js">GridLayerView</a>.</p>
+<p>For examples of using ViewPools, see the official <a href="example/views-pools/">ViewPools example</a> or the Isometric game engine’s <a href="https://github.com/gameclosure/isometric/blob/master/views/GridLayerView.js">GridLayerView</a>.</p>
 <h4 id="lots-of-views-using-the-blockevents-property">Lots of Views: Using the blockEvents property</h4>
 <p>If you are allocating many Views for e.g. a tile-based map or particle-intensive simulation it would be a good idea to initialize the parent view with <code>blockEvents: true</code>. This prevents the input code from interrogating all the subviews about input events, which is a huge performance improvement.</p>
-<p>A good parent View to use is the GestureView. See the <a href="http://doc.gameclosure.com/example/events-input-gesture/">GestureView example</a> for how to subscribe to Swipe, Pinch, Rotate, DragSingle, FingerDown, FingerUp, and ClearMulti events.</p>
+<p>A good parent View to use is the GestureView. See the <a href="example/events-input-gesture/">GestureView example</a> for how to subscribe to Swipe, Pinch, Rotate, DragSingle, FingerDown, FingerUp, and ClearMulti events.</p>
 <p>The <code>canHandleEvents: false</code> property is similarly useful. The difference is that a View with <code>canHandleEvents: false</code> will still pass events to its children, so it is mainly used for making a view transparent to input.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p><em>Whack-that-Mole!</em>, while relatively simple, is an example of a complete, working game. Sometimes the easiest way to learn an API is to see how the components fit together. In this tutorial we’ve explored the overall flow of multiple game screens, managed the events that indicate our progress through these screen, set up image and sound assets, and implemented the game play dynamics. These are the types of things you’ll need to do in any game.</p>
