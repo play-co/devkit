@@ -86,7 +86,9 @@ var InitCommand = Class(BaseCommand, function (supr) {
         color.cyanBright('created new app'), color.yellowBright(this.appName)
       );
 
-      commands.get('instructions').exec(['new_application'], f());
+      return new Promise(function (resolve) {
+        commands.get('instructions').exec(['new_application'], resolve);
+      });
 
     }).catch(DestinationExistsError, function (err) {
       this.logger.error(
