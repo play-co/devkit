@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: scaling</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#scaling-the-game-to-fit-the-device">Scaling the Game to Fit the Device</a><ul>
+<li><a href="#aspect-ratio">Aspect Ratio</a></li>
+<li><a href="#calculate-scaling">Calculate Scaling</a><ul>
+<li><a href="#scale-the-top-level-view">Scale the Top-Level View</a></li>
+<li><a href="#positioning-game-assets">Positioning Game Assets</a></li>
+<li><a href="#art-deliverables">Art Deliverables</a></li>
+<li><a href="#example-scale-a-background-image-and-game-asset-to-fill-screen">Example: Scale a Background Image and Game Asset to Fill Screen</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="scaling-the-game-to-fit-the-device">Scaling the Game to Fit the Device</h1>
+<p>In this guide you’ll see how to scale your game in a way that fits multiple device aspect ratios. This example is part of the <em>examples</em> add-on, which can be installed in to basil with the following at your command line:</p>
+<pre><code>$ basil install examples</code></pre>
+<p>In the basil web interface, navigate to <strong>Projects &gt; Examples &gt; Layout: Scale Region</strong> to run the example in the simulator.</p>
+<p>It can also be <a href="../example/basics-scalescreen/">viewed online</a> along with the other examples.</p>
+<h2 id="aspect-ratio">Aspect Ratio</h2>
+<p>The aspect ratio of a screen describes the proportional relationship between its width and its height.</p>
+<p>Here’s how the aspect ratios of 4:3 (green box) and 3:2 (red box) can be fit within a 16:9 aspect ratio (blue box) while preserving their aspect ratios and without stretching. Notice the extra padding on the right and left margins of the green and red boxes.</p>
+<p><img src="./assets/scaling/aspect-ratio-1.png" alt="aspect ratio 1" class="screenshot"></p>
+<p>And here’s how the 16:9 and 3:2 aspect ratios are confined within a 4:3 ratio; now there is vertical padding at the top and bottom:</p>
+<p><img src="./assets/scaling/aspect-ratio-2.png" alt="aspect ratio 2" class="screenshot"></p>
+<p>In these diagrams the different ratios are centered within the constraining view. If desired, the constrained ratio could be positioned along an edge, leaving the extra padding along the opposite edge.</p>
+<p>Popular dimensions of different aspect ratios:</p>
+<dl>
+<dt>16:9</dt>
+<dd><ul>
+<li>1280 × 720 (Galaxy Nexus)</li>
+<li>1136 × 640 (iPhone 5)</li>
+<li>1024 × 576</li>
+<li>720 × 405</li>
+</ul>
+</dd>
+<dt>3:2</dt>
+<dd><ul>
+<li>1080 × 720 (High-definition TV)</li>
+<li>960 × 640 (iPhone 4)</li>
+<li>864 × 576</li>
+<li>480 × 320 (iPhone 3)</li>
+</ul>
+</dd>
+<dt>4:3</dt>
+<dd><ul>
+<li>2048 × 1536 (iPad 3 &amp; 4)</li>
+<li>1024 × 768 (iPad 1 &amp; 2)</li>
+<li>960 × 720</li>
+<li>768 × 576</li>
+<li>427 × 320</li>
+<li>320 × 240</li>
+</ul>
+</dd>
+</dl>
+<h2 id="calculate-scaling">Calculate Scaling</h2>
+<p>We’re going to define the maximum displayable region for the game as <strong>576 x 1024 pixels</strong>. This is because, on most phones, the maximum width a texture can be is 1024 pixels. Game developers should work within this 576 x 1024 coordinate space, that way their in-game positions can be consistent across all different aspect ratios by scaling this space. We use these pixel coordinates because, currently, the most extreme resolution on a popular phone is 720 x 1280, and we can easily scale our working dimensions up by 25 percent to reach this: 576 * 1.25 = 720, 1024 * 1.25 = 1280.</p>
+<p>Everything within this 576 x 1024 rectangle will be displayed on the phone, regardless of the device dimensions. Any art assets should be delivered relative to these dimensions.</p>
+<p>So, in our example code listed below, we’ll define the maximum displayable region for the visible portion of the game:</p>
+<pre><code>var boundsWidth = 576;
+var boundsHeight = 1024;</code></pre>
+<p>Here, we’ve defined this region as 576 by 1024 pixels, and as you’ll see below, these are the dimensions used for the background image in this example. This is a 16:9 aspect ratio in portrait mode, the widest available on the more popular phones as shown above.</p>
+<p>We’ll use these values to calculate the base dimensions and scale used for the top-level views. This gives us a 576 x 864 rectangle that we’ll use as the base of our game and any screen coordinates for the in-game positions should be given in these dimensions. In the the code below, we’ll calculate the scaling to apply to these coordinates that will fit it to the device.</p>
+<p>For portrait mode, here’s how to calculate our base rectangle dimensions and scale:</p>
+<pre><code>var baseWidth = boundsWidth; //576
+var baseHeight =  device.screen.height * (boundsWidth / device.screen.width); //864
+var scale = device.screen.width / baseWidth; //1</code></pre>
+<p>Replacing the variables for calculating height we get: 480 * (576 / 320) = 864.</p>
+<p>And in landscape mode, we can simply reverse these calculations:</p>
+<pre><code>var baseWidth = device.screen.width * (boundsHeight / device.screen.height); //864
+var baseHeight = boundsHeight; //576
+var scale = device.screen.height / baseHeight; //1</code></pre>
+<h3 id="scale-the-top-level-view">Scale the Top-Level View</h3>
+<p>Scaling a view ensures that all its child views are also scaled. To center the game views on a screen, set the size and scale of the root view in the scene graph, which is <code>GC.app.view</code>:</p>
+<pre><code>GC.app.view.style.scale = scale;</code></pre>
+<p>You can also position the overflow in a particular direction by offsetting these positions.</p>
+<h3 id="positioning-game-assets">Positioning Game Assets</h3>
+<p>With the base rectangle set, we can dynamically position game assets on the screen so that they maintain their relative position regardless of the device’s aspect ratio. For example, to position a sprite in the middle the background image, simply set it’s x and y position to half of the base region’s width and height:</p>
+<pre><code>var sprite = new SpriteView({
+  superview: background,
+  x: baseWidth / 2,
+  y: baseHeight / 2,
+  width: 300,
+  height: 300,
+  url: &quot;resources/images/sdkBot/sdkBot&quot;,
+  defaultAnimation: &#39;idle&#39;,
+  autoStart: true
+});</code></pre>
+<h3 id="art-deliverables">Art Deliverables</h3>
+<p>Since we’ve established the displayable region of our game to the screen coordinates of 576 x 1024 pixels, this should be the dimensions that art assets get delivered. 1024 pixels is the maximum width of a texture on many devices, and we can then scale it up or down to fit the dimensions of other devices.</p>
+<h3 id="example-scale-a-background-image-and-game-asset-to-fill-screen">Example: Scale a Background Image and Game Asset to Fill Screen</h3>
+<p>In this example we’ll create a scene that fits multiple devices. First, here’s how it looks on the iPhone simulator:</p>
+<p><img src="./assets/scaling/scale-iphone.png" alt="scaling iphone screenshot" class="screenshot"></p>
+<p>By switching the device simulator to a larger device—like the Galaxy Nexus tablet—we can see how this scene is displayed to fill the entire screen:</p>
+<p><img src="./assets/scaling/scale-tablet.png" alt="scaling tablet screenshot" class="screenshot"></p>
+<p>And here’s the code to set up the background <code>ImageView</code> and our sprite that walks along the lunar surface:</p>
+<pre><code>import device;
+import ui.ImageView as ImageView;
+import ui.SpriteView as SpriteView;
+
+var boundsWidth = 576;
+var boundsHeight = 1024;
+var baseWidth = boundsWidth;
+var baseHeight = device.screen.height * (boundsWidth / device.screen.width); //864
+var scale = device.screen.width / baseWidth;
+var rightBoundary = baseWidth; //right boundary for screen wrapping
+var leftBoundary = 0;
+var vx = 0;
+
+exports = Class(GC.Application, function () {
+
+  this.initUI = function () {
+    
+    //scale the root view
+    this.view.style.scale = scale;
+    
+    var background = new ImageView({
+      superview: this.view,
+      x: 0,
+      y: 0,
+      width: baseWidth,
+      height: baseHeight,
+      image: &quot;resources/images/background.jpg&quot;, //576x1024
+      zIndex: 0
+    });
+
+    var sprite = new SpriteView({
+      superview: background,
+      x: baseWidth/2,
+      y: baseHeight - 400,
+      width: 300,
+      height: 300,
+      url: &quot;resources/images/sdkBot/sdkBot&quot;,
+      defaultAnimation: &#39;idle&#39;,
+      autoStart: true,
+      zIndex: 1
+    });
+
+    //sprite movement is determined by mouse position relative to the sprite
+    this.view.on(&#39;InputSelect&#39;, function (evt, pt) {
+      //localize point to sprite, which is one-level deep
+      var x0 = sprite.style.x + sprite.style.width/2,
+          y0 = sprite.style.y + sprite.style.height/2;
+
+      //if the sprite is clicked, stop movement and return to idle animation
+      if (sprite.containsLocalPoint({x: pt.x - sprite.style.x, y: pt.y - sprite.style.y})) {
+        if (sprite.isPlaying) {
+          vx = 0;
+          sprite.resetAnimation();
+        }
+      } else if (pt.x &lt; sprite.style.x + sprite.style.width/2) {
+        //walk left
+        vx = -2;
+        sprite.stopAnimation();
+        if (sprite.style.flipX) { sprite.style.flipX = false; }
+        sprite.startAnimation(&#39;walk&#39;, {loop: true});
+        
+      } else {
+        //walk right
+        vx = 2;
+        sprite.stopAnimation();
+        if (!sprite.style.flipX) { sprite.style.flipX = true; }
+        sprite.startAnimation(&#39;walk&#39;, {loop: true});
+      }
+    });
+
+    GC.app.engine.on(&#39;Tick&#39;, function () {
+      //add horizontal movement
+      sprite.style.x += vx;
+
+      //screen wrapping
+      if (sprite.style.x &gt; rightBoundary) {
+        sprite.style.x = leftBoundary - sprite.style.width;
+      } else if (sprite.style.x + sprite.style.width &lt; leftBoundary) {
+        sprite.style.x = rightBoundary;
+      }
+    });
+  };
+});</code></pre>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

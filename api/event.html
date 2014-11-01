@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: event</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-event.emitter">Class: event.Emitter</a><ul>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#new-emitter">new Emitter ()</a></li>
+<li><a href="#emit-type-args">emit (type [, args …])</a></li>
+<li><a href="#on-type-callback">on (type, callback)</a></li>
+<li><a href="#once-type-callback">once (type, callback)</a></li>
+<li><a href="#removelistener-type-callback">removeListener (type, callback)</a></li>
+<li><a href="#removealllisteners-type">removeAllListeners (type)</a></li>
+<li><a href="#listeners-type">listeners (type)</a></li>
+<li><a href="#setmaxlisteners-n">setMaxListeners (n)</a></li>
+</ul></li>
+<li><a href="#events">Events</a><ul>
+<li><a href="#newlistener-callback-type-handler">'newListener', callback (type, handler)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-event.input.inputevent">Class: event.input.InputEvent</a><ul>
+<li><a href="#methods-1">Methods</a><ul>
+<li><a href="#new-inputevent-id-type-x-y-root-target">new InputEvent (id, type, x, y, root, target)</a></li>
+<li><a href="#clone">clone ()</a></li>
+<li><a href="#cancel">cancel ()</a></li>
+</ul></li>
+<li><a href="#properties">Properties</a><ul>
+<li><a href="#id-number">id <code>{number}</code></a></li>
+<li><a href="#type-number">type <code>{number}</code></a></li>
+<li><a href="#srcpoint-point">srcPoint <code>{Point}</code></a></li>
+<li><a href="#root-viewnull">root <code>{View|null}</code></a></li>
+<li><a href="#target-viewnull">target <code>{View|null}</code></a></li>
+<li><a href="#when-number">when <code>{number}</code></a></li>
+<li><a href="#depth-number-0">depth <code>{number} = 0</code></a></li>
+<li><a href="#cancelled-boolean-false">cancelled <code>{boolean} = false</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-event.callback">Class: event.Callback</a><ul>
+<li><a href="#methods-2">Methods</a><ul>
+<li><a href="#new-callback">new Callback ()</a></li>
+<li><a href="#run-thisarg-callback-args">run ([thisArg,] callback [, args …])</a></li>
+<li><a href="#runortimeout-onfire-ontimeout-duration">runOrTimeout (onFire, onTimeout, duration)</a></li>
+<li><a href="#chain">chain ()</a></li>
+<li><a href="#fire-args">fire ([args …])</a></li>
+<li><a href="#hasfired">hasFired ()</a></li>
+<li><a href="#reset">reset ()</a></li>
+<li><a href="#clear">clear ()</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#drag-events-event.input.drag">Drag Events: event.input.drag</a><ul>
+<li><a href="#event.input.drag.makedraggable-view-opts">event.input.drag.makeDraggable (view, opts)</a></li>
+<li><a href="#example">Example</a></li>
+</ul></li>
+<li><a href="#rotation-events">Rotation Events</a></li>
+<li><a href="#back-button">Back Button</a></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-event.emitter">Class: event.Emitter</h1>
+<p>The Game Closure DevKit provides several mechanisms for handling events that allows cross-object communication. To see what type of events a particular class supports, a list is provided in that component’s API documentation. For example, here are the <a href="./ui-view.html#events">available events</a> on all objects that inherit from <code>ui.View</code>.</p>
+<p>The event emitter follows a common message passing pattern known as <a href="http://en.wikipedia.org/wiki/Publish–subscribe_pattern">publish-subscribe</a>, where objects communicate with each other by sending events. An event is labeled by a text string, and any object that inherits from <code>event.Emitter</code> can subscribe to this event and execute a callback function when it receives the event. Any number of callbacks can be associated with a particular event, allowing multiple listeners to register callbacks for the event without the emitter object knowing anything about who the listeners are or what the callbacks do. Many classes in the Game Closure DevKit inherit from <code>event.Emitter</code> which allows the developer to listen for certain events and run code at a given time.</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li><a href="../example/events-on/">Subscribe to an event</a></li>
+<li><a href="../example/events-once/">Subscribe to an event once</a></li>
+</ul>
+<h2 id="methods">Methods</h2>
+<h3 id="new-emitter">new Emitter ()</h3>
+<p>Create an Emitter instance.</p>
+<pre><code>import event.Emitter as Emitter;
+
+var emitter = new Emitter();</code></pre>
+<p>Create a new class which inherits from <code>event.Emitter</code>:</p>
+<pre><code>var Dog = Class(Emitter, function (supr) {
+  this.init = function () {
+    supr(this, &#39;init&#39;, arguments);
+  };
+});
+
+var monty = new Dog();
+
+monty.on(&#39;mailman&#39;, function (event) {
+  console.log(&quot;Woof-woof!&quot;);
+});</code></pre>
+<h3 id="emit-type-args">emit (type [, args …])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>type {string}</code> —The name of the event type.</li>
+<li><code>args {...*}</code> —Optional arguments to pass to the subscriber’s handler function.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Emit an event to the object. Any of its handler functions subscribed to the given event type are executed. Returns <code>true</code> if the event was handled, otherwise <code>false</code>.</p>
+<p>Using the previously defined <code>Dog</code> (which inherits from <code>Emitter</code>), its listener callback can be triggered by publishing an event it’s subscribed to:</p>
+<pre><code>monty.emit(&#39;mailman&#39;); //=&gt; console prints &quot;Woof-woof!&quot;</code></pre>
+<h3 id="on-type-callback">on (type, callback)</h3>
+<p><em>Alias: <code>addListener</code></em></p>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>type {string}</code> —The name of the event type.</li>
+<li><code>callback {function|string}</code> —The dispatch function, or method name on an object.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li>Return: <code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Add a callback function that is subscribed to a given event type. The function will execute when that event is emitted to the object. The method <code>addListener</code> is an alias for <code>on</code>.</p>
+<pre><code>var emitter = new Emitter();
+
+emitter.on(&#39;add&#39;, function (a, b) {
+  var sum = a + b;
+  console.log(&quot;The sum is: &quot; + sum);
+});
+
+emitter.emit(&#39;add&#39;, 3, 5);  //=&gt; true (console prints &quot;The sum is 8&quot;)</code></pre>
+<h3 id="once-type-callback">once (type, callback)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>type {string}</code> —The name of the event type.</li>
+<li><code>callback {function|string}</code> —The dispatch function, or method name on an object.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Subscribe to an event, and remove the listener after it is received once.</p>
+<pre><code>emitter.once(&#39;one-time&#39;, callback);
+
+emitter.emit(&#39;one-time&#39;); //=&gt; true
+emitter.emit(&#39;one-time&#39;); //=&gt; false</code></pre>
+<h3 id="removelistener-type-callback">removeListener (type, callback)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>type {string}</code> —The name of the event type.</li>
+<li><code>callback {function|string}</code> —The dispatch function, or method name on an object.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Unsubscribe a listener. This function will no longer execute when its event type is emitted to the object.</p>
+<pre><code>emitter.on(&#39;myevent&#39;, callback);
+emitter.emit(&#39;myevent&#39;);                     //=&gt; true
+emitter.removeListener(&#39;myevent&#39;, callback);
+emitter.emit(&#39;myevent&#39;);                     //=&gt; false</code></pre>
+<h3 id="removealllisteners-type">removeAllListeners (type)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>type {string}</code> —The name of the event type.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Unsubscribe all listeners for a given event type.</p>
+<pre><code>emitter.on(&#39;myevent&#39;, callback);
+emitter.on(&#39;myevent&#39;, callback);
+
+emitter.removeAllListeners(&#39;myevent&#39;);
+emitter.emit(&#39;myevent&#39;);               //=&gt; false</code></pre>
+<h3 id="listeners-type">listeners (type)</h3>
+<dl>
+<dt>Parameters:</dt>
+<dd><ol type="1">
+<li><code>type {string}</code> —The name of the event type.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns an array of event handler functions for a given event type. This is a mutable reference to the array, changes to it will affect the emitter.</p>
+<pre><code>emitter.on(&#39;myevent&#39;, callback);
+
+emitter.listeners(&#39;myevent&#39;);  //=&gt; [callback]</code></pre>
+<h3 id="setmaxlisteners-n">setMaxListeners (n)</h3>
+<dl>
+<dt>Parameters:</dt>
+<dd><ol type="1">
+<li><code>n {number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>By default, a warning message will display in the console if more than 10 listeners are added to an object, which may indicate a potential memory leak. Use this method to increase this limit.</p>
+<pre><code>emitter.setMaxListeners(20);</code></pre>
+<h2 id="events">Events</h2>
+<h3 id="newlistener-callback-type-handler">'newListener', callback (type, handler)</h3>
+<ol type="1">
+<li><code>type {string}</code></li>
+<li><code>handler {function}</code></li>
+</ol>
+<p>Emitted when a new listener is added to the object.</p>
+<h1 id="class-event.input.inputevent">Class: event.input.InputEvent</h1>
+<p>Input events provide an object that encapsulates data about the input gesture that created it. For example, when the <code>'InputSelect'</code> event fires, a developer will want to know when, where, and which view the user touched. The objects provided to the handler functions of an event listener are instances of <code>event.input.InputEvent</code></p>
+<p>When an input event is created it is passed sequentially up a hierarchy of <code>ui.View</code> objects, with the top-most view being the root of application.</p>
+<p>Events are assigned a <em>target</em>, the view where it occurred, and a <em>root</em>, the root view where it’s dispatched. Event propagation has two phases: <em>capturing</em> and <em>bubbling</em>. Capturing occurs when the event starts at the root node and follows the view hierarchy down to the target, whereas bubbling starts at the target node and follows the view hierarchy up to the root. You may attach a callback during the capturing phase by appending <code>'Capture'</code> after the event name.</p>
+<p>Usage of an input handler would look like:</p>
+<pre><code>view.on(&#39;InputSelect&#39;, function (evt, pt) {
+  ...
+});</code></pre>
+<p>More information on the types of input events which can occur can be found in <a href="./ui-view.html">ui.View</a> and <a href="./ui-widget-buttonview.html">ui.widget.ButtonView</a>.</p>
+<pre><code>import event.input.InputEvent as InputEvent;</code></pre>
+<h2 id="methods-1">Methods</h2>
+<h3 id="new-inputevent-id-type-x-y-root-target">new InputEvent (id, type, x, y, root, target)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>id {string}</code> —Unique ID representing the input, useful for multi-touch input events.</li>
+<li><code>type {number}</code> —Represents the type of event which occurred.</li>
+<li><code>x {number}</code> —The x-coordinate position of the input event.</li>
+<li><code>y {number}</code> —The y-coordinate position of the input event.</li>
+<li><code>root {View}</code> —Root view which the input event bubbled up to.</li>
+<li><code>target {View}</code> —The view which the input event occurred on.</li>
+</ol>
+</dd>
+</dl>
+<h3 id="clone">clone ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{InputEvent}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Return a new <code>InputEvent</code> using this event’s property values.</p>
+<h3 id="cancel">cancel ()</h3>
+<p>Cancel an event from propagating further.</p>
+<h2 id="properties">Properties</h2>
+<h3 id="id-number">id <code>{number}</code></h3>
+<p>Each input type is identified by a unique ID, for example, the mouse will have the same identifier. For multi-touch input, there will be a distinct ID for each finger throughout a complete input event cycle (such as moving several fingers across a device at the same time). This way you can effectively manage multi-touch events which occur (for actions such as multi-touch gestures, i.e. pinching, multi-finger swiping, etc).</p>
+<h3 id="type-number">type <code>{number}</code></h3>
+<p>A integer value 0-4 representing an event type. An event type can be one of the following enumerable values:</p>
+<pre><code>from event.input.dispatch import eventTypes;</code></pre>
+<ul>
+<li><code>eventTypes.START {number} = 1</code> —Event input has started.</li>
+<li><code>eventTypes.MOVE {number} = 2</code> —Event input has moved.</li>
+<li><code>eventTypes.SELECT {number} = 3</code> —A view has been selected by input.</li>
+<li><code>eventTypes.SCROLL {number} = 4</code> —A view has been scrolled.</li>
+<li><code>eventTypes.CLEAR {number} = 5</code> —An event is no longer over the active input.</li>
+</ul>
+<h3 id="srcpoint-point">srcPoint <code>{Point}</code></h3>
+<p>Object containing <code>x</code> and <code>y</code> coordinate position where the event was dispatched.</p>
+<h3 id="root-viewnull">root <code>{View|null}</code></h3>
+<p>Top view where event is dispatched (the tree root). When the input event is bubbled up, this is where the bubbling ends.</p>
+<h3 id="target-viewnull">target <code>{View|null}</code></h3>
+<p>Bottom view where the event occurred. This should be the view which the handler is being registered on.</p>
+<h3 id="when-number">when <code>{number}</code></h3>
+<p>Elapsed time (in milliseconds) from when the app started.</p>
+<h3 id="depth-number-0">depth <code>{number} = 0</code></h3>
+<p>Number of levels of the tree from root to target.</p>
+<h3 id="cancelled-boolean-false">cancelled <code>{boolean} = false</code></h3>
+<p>Check if an event has been canceled, and therefore, will not propagate further.</p>
+<h1 id="class-event.callback">Class: event.Callback</h1>
+<p>Construct and chain callbacks for asynchronous flow control. For advanced features with a more concise syntax, see the <a href="https://github.com/gameclosure/ff">ff Node.js module</a>.</p>
+<p>Some APIs do not care when an event has fired, or even if it has fired already. An example of this is preloading an image. You need to register a callback for when the image has loaded, but you don’t want to write:</p>
+<pre><code>if (image.isLoaded()) {
+  renderImageToBuffer();
+} else {
+  image.on(&#39;load&#39;, renderImageToBuffer);
+}</code></pre>
+<p>each time you care about the load event. For something like this, you can wrap the underlying <code>load</code> event with an instance of <code>event.Callback</code>. This class queues up callback functions to be run when an event fires. Any callbacks queued up after the event has fired will be immediately executed. Now, the code can read:</p>
+<pre><code>image.doOnLoad(renderImageToBuffer); //Fires immediately if the image has already loaded</code></pre>
+<h2 id="methods-2">Methods</h2>
+<h3 id="new-callback">new Callback ()</h3>
+<pre><code>import event.Callback as Callback;
+
+var callback = new Callback();</code></pre>
+<h3 id="run-thisarg-callback-args">run ([thisArg,] callback [, args …])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>thisArg {object}</code> —Optional object to use as <code>this</code> in the callback function, defaults to the callback itself.</li>
+<li><code>callback {function}</code></li>
+<li><code>args {...*}</code> —Arguments to pass to the callback function.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Add a callback to the callback chain by specifying the object and the method to call within that object. If callback has fired, run it straight away.</p>
+<pre><code>var cb = new Callback();
+cb.run(function (name) { console.log(&quot;Hi, &quot; + name); });
+cb.fire(&quot;Louis&quot;); //=&gt; &quot;Hi, Louis&quot;
+
+cb.run(function () { console.log(&quot;Runs immediately!&quot;); }); //=&gt; &quot;Runs immediately!&quot;</code></pre>
+<p>If arguments are curried to the function then the <code>thisArg</code> object is required.</p>
+<pre><code>function meet_and_greet (a, b) {
+  console.log(a + &quot; say hi to &quot; + b);
+}
+var cb = new Callback();
+cb.run(null, meet_and_greet, &quot;Carl&quot;);
+cb.fire(&quot;Tim&quot;); //=&gt; &quot;Carl say hi to Tim&quot;</code></pre>
+<h3 id="runortimeout-onfire-ontimeout-duration">runOrTimeout (onFire, onTimeout, duration)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>onFire {function}</code> —Run if the callback is fired before the timeout.</li>
+<li><code>onTimeout {function}</code> —Executed if the timeout occurs before the callback is fired.</li>
+<li><code>duration {number}</code> —Amount of milliseconds before a timeout occurs.</li>
+</ol>
+</dd>
+</dl>
+<p>Run two separate callbacks depending on whether the specified timeout occurs or the callback is triggered.</p>
+<pre><code>var cb = new Callback();
+cb.runOrTimeout(function () {
+  console.log(&quot;Run if fired before 5 seconds.&quot;);
+}, function () {
+  console.log(&quot;Run after 5 seconds.&quot;);
+}, 5000);</code></pre>
+<h3 id="chain">chain ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{function}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Chaining allows the loaded callback functions to run <em>after</em> another function is explicitly executed. Each call to <code>chain</code> returns a function that acts as a trigger, and when every trigger is called, the callback functions execute.</p>
+<p>This can be used for managing the flow of asynchronous tasks, such as loading external resources or making connections over a network.</p>
+<pre><code>var cb = new Callback();
+cb.run(function () {
+  console.log(&quot;Resources loaded!&quot;);
+});
+
+var fn1 = cb.chain(),
+    fn2 = cb.chain();
+
+function load_images () {
+  do_load_images():
+  fn1();
+}
+
+function load_sounds () {
+  do_load_sounds():
+  fn2();
+}
+
+load_sounds();
+load_images(); //=&gt; &quot;Resources loaded!&quot;</code></pre>
+<h3 id="fire-args">fire ([args …])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>args {...*}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Fire all the registered callbacks. Any arguments passed to this will be passed into the registered callbacks.</p>
+<h3 id="hasfired">hasFired ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Check if the callback chain has been fired.</p>
+<h3 id="reset">reset ()</h3>
+<p>Allow the callback chain to be fired again.</p>
+<h3 id="clear">clear ()</h3>
+<p>Clears all of the registered callbacks and executes <code>callback.reset ()</code>.</p>
+<h1 id="drag-events-event.input.drag">Drag Events: event.input.drag</h1>
+<p>You can make any <code>View</code> instance draggable like so:</p>
+<pre><code>import ui.ImageView; // any View subclass will work
+import event.input.drag as drag;
+
+// ...
+
+var imageView = new ImageView({
+    superview: someSuperView,
+    image: &#39;resources/images/someImage.png&#39;,
+    autoSize: true
+});
+
+drag.makeDraggable(imageView);</code></pre>
+<p>And voila, your <code>ImageView</code> is draggable. You can make any instance of a <code>View</code> or <code>View</code> subclass draggable with <code>drag.makeDraggable</code>.</p>
+<h2 id="event.input.drag.makedraggable-view-opts">event.input.drag.makeDraggable (view, opts)</h2>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>view {view}</code> —A View instance.</li>
+<li><code>opts {object}</code> —Optional arguments to modify the drag behavior of the view.</li>
+</ol>
+<ul>
+<li><code>radius {number} = 10</code> —How far the pointer must move to trigger a drag.</li>
+<li><code>unbound {boolean} = false</code> —Whether the view can be dragged outside of its superview (superview is larger than view).</li>
+<li><code>cover {boolean} = false</code> —Whether the superview must always be covered by the view (superview is smaller than view).</li>
+</ul>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{view}</code></li>
+</ol>
+</dd>
+</dl>
+<h2 id="example">Example</h2>
+<ul>
+<li><a href="../example/events-input-drag/">Draggable views</a></li>
+</ul>
+<h1 id="rotation-events">Rotation Events</h1>
+<p>You can subscribe to rotation events like this:</p>
+<pre><code>import device;
+
+device.setRotationHandler(function(e) {
+    console.log(e.orientation);
+});</code></pre>
+<dl>
+<dt><code>e.orientation</code> is one of:</dt>
+<dd><ol type="1">
+<li><code>portrait</code></li>
+<li><code>portraitUpsideDown</code></li>
+<li><code>landscapeRight</code></li>
+<li><code>landscapeLeft</code></li>
+<li><code>unknown</code></li>
+<li><code>faceUp</code> – iOS only</li>
+<li><code>faceDown</code> – iOS only</li>
+</ol>
+</dd>
+</dl>
+<h1 id="back-button">Back Button</h1>
+<p>Want to know when the back button is pressed on an Android device? Here’s how to find out:</p>
+<pre><code>import device;
+
+device.setBackButtonHandler(function() {
+    console.log(&quot;someone hit the back button!&quot;);
+});</code></pre>
+<p>If your handler returns <code>false</code>, the code will background your application.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

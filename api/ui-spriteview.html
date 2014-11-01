@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ui-spriteview</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-ui.spriteview">Class: ui.SpriteView</a><ul>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#overview">Overview</a><ul>
+<li><a href="#prebuilt-spritesheets">Prebuilt Spritesheets</a></li>
+</ul></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#new-spriteview-options">new SpriteView ([options])</a></li>
+<li><a href="#startanimation-name-options">startAnimation (name [, options])</a></li>
+<li><a href="#stopanimation">stopAnimation ()</a></li>
+<li><a href="#resetanimation">resetAnimation ()</a></li>
+<li><a href="#resetallanimations-options">resetAllAnimations ([options])</a></li>
+<li><a href="#pause">pause ()</a></li>
+<li><a href="#resume">resume ()</a></li>
+<li><a href="#setframerate-fps">setFramerate (fps)</a></li>
+<li><a href="#getframe-animname-index">getFrame (animName, index)</a></li>
+<li><a href="#getframecount-animname">getFrameCount (animName)</a></li>
+<li><a href="#getgroup-groupid">getGroup (groupID)</a></li>
+</ul></li>
+<li><a href="#properties">Properties</a><ul>
+<li><a href="#visible-boolean">visible <code>{boolean}</code></a></li>
+<li><a href="#framerate-number">frameRate <code>{number}</code></a></li>
+<li><a href="#isplaying-boolean">isPlaying <code>{boolean}</code></a></li>
+<li><a href="#ispaused-boolean">isPaused <code>{boolean}</code></a></li>
+<li><a href="#groupid-string">groupID <code>{string}</code></a></li>
+</ul></li>
+<li><a href="#class-methods">Class Methods</a><ul>
+<li><a href="#spriteview.getgroup-groupid">SpriteView.getGroup (groupID)</a></li>
+</ul></li>
+<li><a href="#class-properties">Class Properties</a><ul>
+<li><a href="#spriteview.allanimations-object">SpriteView.allAnimations <code>{object}</code></a></li>
+</ul></li>
+<li><a href="#spriteview-tick">SpriteView tick</a></li>
+</ul></li>
+<li><a href="#class-sprite-groups">Class: Sprite Groups</a><ul>
+<li><a href="#methods-1">Methods</a><ul>
+<li><a href="#add-sprite">add (sprite)</a></li>
+<li><a href="#remove-uid">remove (uid)</a></li>
+<li><a href="#pause-1">pause ()</a></li>
+<li><a href="#resume-1">resume ()</a></li>
+<li><a href="#stopanimation-1">stopAnimation ()</a></li>
+<li><a href="#resetanimation-1">resetAnimation ()</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-ui.spriteview">Class: ui.SpriteView</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<ul>
+<li><a href="../example/ui-spriteview-basic/">A Basic SpriteView</a></li>
+<li><a href="../example/animation-prebuilt/">Prebuilt Spritesheets</a></li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>A <em>Sprite</em> consists of multiple <em>animations</em> (walk, run, etc.) which themselves are made of multiple <em>frames</em>.</p>
+<p>The sprite system loads images from a directory using file names formatted as:</p>
+<pre><code>directory/spriteName-animationName-01.png
+directory/spriteName-animationName-02.png
+...
+directory/spriteName-animationName-08.png
+... etc ...</code></pre>
+<p>The sprite system infers three things from the file names: the name of the <em>sprite</em>, the name of each <em>animation</em> for the sprite, and the <em>amount</em> of frames required for an animation.</p>
+<p>Given the following images in a project’s <code>resources</code> directory:</p>
+<pre><code>project
+.
+└── resources/
+     └── images/
+          └── characters/
+               ├── carl-idle-01.png
+               ├── carl-idle-02.png
+               ├── carl-idle-03.png
+               ├── carl-idle-04.png
+               ├── carl-walk-01.png
+               ├── carl-walk-02.png
+               └── carl-walk-03.png</code></pre>
+<p>There is one sprite, <em>carl</em>, with two animations, <em>idle</em> and <em>walk</em>. The <em>idle</em> animation contains four frames and the <em>walk</em> animation contains three frames.</p>
+<p>During the build stage, these images are automatically turned in to an optimized sprite-sheet for each directory. These are then saved in the <code>build/.../spritesheets</code> directory of your project, depending on the target of the build (e.g. simulating iPhone will create <code>build/debug/native-ios/spritesheets</code>).</p>
+<p>Developers should not need to touch the generated sprite-sheets, however, if you have changed an animation and are still seeing the old images, you can delete the <code>build/</code> directory to ensure it is re-generated on the next build.</p>
+<h3 id="prebuilt-spritesheets">Prebuilt Spritesheets</h3>
+<p>Normally a SpriteView is initialized with a <code>url</code>. In these cases, the SpriteView compiles image resources into animations as described above. Sometimes, however, we don’t have individual animation frame images to work with. If we’re mocking up a game with free graphics from the internet, for example, it’s much more likely that we’ll have prebuilt spritesheets. It doesn’t make sense to cut them up into individual frames, only for the DevKit to turn them into spritesheets again. Thankfully, the SpriteView knows how to read in prebuilt spritesheets using the <code>sheetData</code> option. A valid <code>sheetData</code> object looks like this:</p>
+<pre><code>{
+  url: &quot;resources/images/enemySprites.png&quot;, // spritesheet
+  width: 32, // animation frame width
+  height: 64, // animation frame height
+  offsetX: 34, // horizontal space between frame images, including padding
+  offsetY: 66, // vertical space between frame images, including padding
+  startX: 10, // x coordinate of first frame on sheet
+  startY: 0, // y coordinate of first frame on sheet
+  anims: {
+    down:  [ [3, 0], [4, 0], [5, 0], [4, 0] ], // xy indices of each frame in animation on spritesheet
+    left:  [ [3, 1], [4, 1], [5, 1], [4, 1] ],
+    right: [ [3, 2], [4, 2], [5, 2], [4, 2] ],
+    up:    [ [3, 3], [4, 3], [5, 3], [4, 3] ]
+  }
+}</code></pre>
+<p>Many of these options fall back to defaults, and are therefore not required. The <code>width</code> and <code>height</code> options default to the width and height of the view itself. Similarly, <code>offsetX</code> and <code>offsetY</code> fall back to width and height. The <code>startX</code> and <code>startY</code> options have default values of 0.</p>
+<p>Thus, at minimum, the <code>sheetData</code> object must contain <code>url</code> and <code>anims</code>. Whether you provide more options depends on the spritesheet itself and how you’re using it in your game.</p>
+<h2 id="methods">Methods</h2>
+<h3 id="new-spriteview-options">new SpriteView ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code></li>
+</ol>
+<ul>
+<li><code>url {string}</code> —Sprite image file name prefix.</li>
+<li><code>sheetData {object}</code> —Data object for loading animations from a prebuilt spritesheet</li>
+<li><code>defaultAnimation {string}</code> —Defaults to the first animation listed in the directory</li>
+<li><code>groupID {string} = 'default'</code> —Specify a Sprite group</li>
+<li><code>frameRate {number} = 15</code> —Rate at which the animation will play each frame.</li>
+<li><code>emitFrameEvents {boolean} = false</code> —Will publish events for an animation and its frame number (<code>myAnim_40</code>).</li>
+<li><code>autoStart {boolean} = false</code> —Animation will start as soon as initialised.</li>
+<li><code>loop {boolean} = true</code> —Animation will continue to play forever.</li>
+<li><code>delay {number} = 0</code> —Delay in milliseconds between animation loop iterations.</li>
+<li><code>onScreen {boolean} = true</code> —Whether to call <code>setImage</code> with every frame update.</li>
+</ul>
+</dd>
+</dl>
+<p>The <code>onScreen</code> property is one way to optimize your game. If you don’t touch it, the <code>SpriteView</code> will behave as expected. If you want to squeeze some extra performance out of your game screen, you can set <code>onScreen</code> to <code>false</code> whenever active sprites are offscreen, and back to <code>true</code> when they enter the visible frame.</p>
+<pre><code>import ui.SpriteView as SpriteView;
+
+var sprite = new SpriteView({
+  superview: parent,
+  x: 0,
+  y: 0,
+  width: 75,
+  height: 100,
+  url: &#39;resources/images/spritename&#39;,
+  frameRate: 30
+});</code></pre>
+<h3 id="startanimation-name-options">startAnimation (name [, options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+<li><code>options {object}</code>
+<ul>
+<li><code>iterations {number} = 1</code> —Number of times to repeat the animation.</li>
+<li><code>callback {function} = null</code> —Called at end of animation.</li>
+<li><code>frame {number} = 0</code> —Frame to start on.</li>
+<li><code>randomFrame {boolean} = false</code> —Start on random frame.</li>
+<li><code>loop {boolean} = false</code> —Continously loop an animation.</li>
+<li><code>delay {number} = 0</code> —Delay in milliseconds between animation loop iterations.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Either <code>iterations</code> or <code>loop</code> should be specified, but never both. Using <code>loop</code> = <code>true</code> is the same as setting iterations = <code>Infinity</code>. Since the animation never ends, the <code>callback</code> function is never invoked.</p>
+<p>Start an animation. After the specified number of <code>iterations</code>, the sprite returns to its <code>defaultAnimation</code>.</p>
+<pre><code>sprite.startAnimation(&#39;run&#39;, {loop: true});</code></pre>
+<h3 id="stopanimation">stopAnimation ()</h3>
+<p>Stops the current animation and sets its visibility to <code>false</code>.</p>
+<h3 id="resetanimation">resetAnimation ()</h3>
+<p>If the current animation loops, start the default animation, otherwise, stop the animation.</p>
+<h3 id="resetallanimations-options">resetAllAnimations ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Completely reset all the sprite’s animations. If provided, update the options.</p>
+<h3 id="pause">pause ()</h3>
+<p>Pause the animation.</p>
+<h3 id="resume">resume ()</h3>
+<p>Resume a paused animation.</p>
+<h3 id="setframerate-fps">setFramerate (fps)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>fps {number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Set the framerate of a sprite.</p>
+<h3 id="getframe-animname-index">getFrame (animName, index)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>animName {string}</code></li>
+<li><code>index {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Frame}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Return the image resource for a particular animation frame.</p>
+<h3 id="getframecount-animname">getFrameCount (animName)</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the number of frames in a given animation.</p>
+<h3 id="getgroup-groupid">getGroup (groupID)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>groupID {string}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Group}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Return the group that the sprite is a member of.</p>
+<h2 id="properties">Properties</h2>
+<h3 id="visible-boolean">visible <code>{boolean}</code></h3>
+<p>Return if the sprite is visible.</p>
+<h3 id="framerate-number">frameRate <code>{number}</code></h3>
+<p>The framerate of the sprite.</p>
+<h3 id="isplaying-boolean">isPlaying <code>{boolean}</code></h3>
+<p>Test if the animation is playing.</p>
+<h3 id="ispaused-boolean">isPaused <code>{boolean}</code></h3>
+<p>Test if an animation is paused.</p>
+<h3 id="groupid-string">groupID <code>{string}</code></h3>
+<p>The group ID the sprite is a member of.</p>
+<h2 id="class-methods">Class Methods</h2>
+<h3 id="spriteview.getgroup-groupid">SpriteView.getGroup (groupID)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>{string} groupID</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Group}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the group. This is useful for keeping track of multiple sprites, for example, if you wanted to pause all of the sprites in an <code>'enemy'</code> group:</p>
+<pre><code>var enemies = SpriteView.getGroup(&#39;enemy&#39;);
+enemies.pause();</code></pre>
+<h2 id="class-properties">Class Properties</h2>
+<h3 id="spriteview.allanimations-object">SpriteView.allAnimations <code>{object}</code></h3>
+<p>Object of all animations found in the resources directory.</p>
+<h2 id="spriteview-tick">SpriteView tick</h2>
+<p>It’s very common to subclass <code>SpriteView</code>. When doing this, it’s important not to override the <code>tick</code> function. This function is handled internally by the class, and replacing it will break things. Beware!</p>
+<h1 id="class-sprite-groups">Class: Sprite Groups</h1>
+<p>Sprites can be grouped for easier coordination.</p>
+<pre><code>var group = SpriteView.getGroup(&#39;groupname&#39;);</code></pre>
+<h2 id="methods-1">Methods</h2>
+<h3 id="add-sprite">add (sprite)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>sprite {SpriteView}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Add a sprite to a group.</p>
+<h3 id="remove-uid">remove (uid)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>uid {string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Remove a sprite from a group given its uid name.</p>
+<h3 id="pause-1">pause ()</h3>
+<p>Pause the animations for each member of a group.</p>
+<h3 id="resume-1">resume ()</h3>
+<p>Resume the animations for each member of a group.</p>
+<h3 id="stopanimation-1">stopAnimation ()</h3>
+<p>Stop the animations for each member of a group.</p>
+<h3 id="resetanimation-1">resetAnimation ()</h3>
+<p>Reset the animations for each member of a group.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

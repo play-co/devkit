@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: localnotify</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#game-closure-devkit-plugin-local-notifications">Game Closure DevKit Plugin: Local Notifications</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#scheduling-notifications">Scheduling Notifications</a><ul>
+<li><a href="#notification-name">Notification: Name</a></li>
+<li><a href="#notification-number">Notification: Number</a></li>
+<li><a href="#combining-notifications">Combining Notifications</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#localnotify-object">localNotify object</a><ul>
+<li><a href="#members">Members:</a><ul>
+<li><a href="#localnotify.onnotify-evt">localNotify.onNotify (evt)</a></li>
+</ul></li>
+<li><a href="#methods">Methods:</a><ul>
+<li><a href="#localnotify.list-callback-function">localNotify.list (callback {function})</a></li>
+<li><a href="#localnotify.get-name-callback-function">localNotify.get (name, callback {function})</a></li>
+<li><a href="#localnotify.clear">localNotify.clear</a></li>
+<li><a href="#localnotify.remove-name">localNotify.remove (name)</a></li>
+<li><a href="#localnotify.add-object">localNotify.add (object)</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="game-closure-devkit-plugin-local-notifications">Game Closure DevKit Plugin: Local Notifications</h1>
+<p>This plugin supports local notifications on iOS and Android platforms.</p>
+<p>NOTE: Right now this is only working for iOS. We will be revisiting it for Android soon.</p>
+<h2 id="overview">Overview</h2>
+<p>Local notifications allow you to schedule messages to appear in the phone’s status area while your app is in the background.</p>
+<p>When delayed by a number of days, notifications are often used by games as a re-engagement strategy.</p>
+<p>The following features are common between notification systems:</p>
+<ul>
+<li>text: Text describing the notification to the user.</li>
+<li>delay: How far in the future to deliver the nofication (or immediately).</li>
+<li>sound: A ringtone-like notification sound that alerts the user.</li>
+<li>number: Count of notifications represented by this one status line.</li>
+</ul>
+<p>Local notifications have slightly different uses based on the target device:</p>
+<h4 id="iphoneipad">iPhone/iPad</h4>
+<p>On iOS devices, local notifications are only practically useful for scheduling notifications to appear in the iOS status area at some time in the future.</p>
+<p>When local notifications are delivered and your app is open, they do not present any visual indication. Instead, the event is delivered to the <code>localNotify.onNotify</code> callback you can optionally specify (see below). This means that notifications delivered while players are in the game essentially do nothing new or useful.</p>
+<p>Another difference on iOS is that the <code>number</code> field causes a badge to appear on your app icon after the notification fires. As soon as your app is opened again the badge count will be cleared and any triggered notifications will be evacuated from the status list at the top of the screen.</p>
+<p>iOS-specific features:</p>
+<ul>
+<li>action: Name of action for accepting notification. [iOS only]</li>
+</ul>
+<p>For additional information see the <a href="http://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Introduction.html#//apple_ref/doc/uid/TP40008194-CH1-SW1">iOS Local Notifications Guide</a>.</p>
+<h4 id="android">Android</h4>
+<p>Notifications appear in the status area with a number of features:</p>
+<p>Android-specific features:</p>
+<ul>
+<li>title: Title for alert is Android status area. [Android only]</li>
+<li>icon: Major icon/photo to display for notification. [Android only]</li>
+<li>vibrate: Vibrate the phone on receipt? [Android only]</li>
+</ul>
+<p>For more overview see the <a href="http://developer.android.com/design/patterns/notifications.html">Android notification design pattern</a> guide.</p>
+<h2 id="installation">Installation</h2>
+<p>Install the Local Notifications plugin by running <code>basil install localnotify</code>.</p>
+<p>Include it in the <code>manifest.json</code> file under the “addons” section for your game:</p>
+<pre><code>&quot;addons&quot;: [
+    &quot;localnotify&quot;
+],</code></pre>
+<p>You can import the localNotify object anywhere in your application:</p>
+<pre><code>import plugins.localnotify.localNotify as localNotify;</code></pre>
+<h2 id="scheduling-notifications">Scheduling Notifications</h2>
+<p>Notification objects have the following schema:</p>
+<ul>
+<li><code>name {string}</code> (REQUIRED) : Name of the notification.</li>
+<li><code>text {string}</code> (REQUIRED) : Text describing the notification to the user.</li>
+<li><code>number {integer}</code> (optional) : Number attached to notification (see below).</li>
+<li><p><code>sound {string}</code> (optional) : One of the following options:</p>
+<ul>
+<li>undefined : No sound. (default)</li>
+<li>true : Use default notification sound.</li>
+<li>“resources/sounds/sound.wav” : Custom short .WAV audio file.</li>
+</ul></li>
+<li><code>action {string}</code> (optional, iOS-only) : Displayed at phone unlock screen as “Unlock to -action-”.</li>
+<li><code>title {string}</code> (optional, Android-only) : Displayed as a title for the status line in the status area.</li>
+<li><code>icon {string}</code> (optional, Android-only) : Path to a .PNG resource to use as an icon for the event.</li>
+<li><code>vibrate {boolean}</code> (optional, Android-only) : Should vibrate on alarm?</li>
+<li><code>userDefined {object}</code> (optional) : User-defined object to store with the notification data.</li>
+<li><code>date {Date}</code> (optional) : Date when notification should trigger, or:</li>
+<li><p><code>delay {object}</code> (optional) : Convenience delay, a sum of:</p>
+<ul>
+<li><code>seconds {integer}</code> : Seconds to add to delay (may be fractional).</li>
+<li><code>minutes {integer}</code> : Minutes to add to delay (may be fractional).</li>
+<li><code>hours {integer}</code> : Hours to add to delay (may be fractional).</li>
+<li><code>days {integer}</code> : Days to add to delay (may be fractional).</li>
+</ul></li>
+</ul>
+<p>For example:</p>
+<pre><code>var myNotification = {
+    name: &quot;unlock&quot;,
+    number: 0,
+    sound: &quot;notify.wav&quot;,
+    vibrate: true,
+    action: &quot;Unlock&quot;,
+    title: &quot;Unlocked a New Level&quot;,
+    text: &quot;You have blasted your way into the Carnage Kingdom!&quot;,
+    delay: {
+        seconds: 32,
+        minutes: 1.5,
+        hours: 2,
+        days: 1
+    },
+    icon: &quot;resources/images/carnageNotify.png&quot;,
+    userDefined: {
+        bought: false
+    }
+};</code></pre>
+<p>Notifications can be scheduled by passing them to the <code>localNotify.add</code> function.</p>
+<h3 id="notification-name">Notification: Name</h3>
+<p>Adding a <code>name</code> field to your notification object is required. When a notification is added it will over-write any existing notification with the same name.</p>
+<p>The name is used to reference the notification in the <code>remove</code> and <code>get</code> functions, and it is included in the information returned from the <code>list</code> function.</p>
+<h3 id="notification-number">Notification: Number</h3>
+<p>Adding the <code>number</code> field to your notification object will modify how the notification appears:</p>
+<pre><code>localNotify.add({
+    name: &quot;HeartAlert&quot;,
+    number: 2,
+    text: &quot;2 friends have sent you Hearts!&quot;
+});</code></pre>
+<p>On iPhone/iPad, the notification counter on your app icon will be set to <code>number</code>. When your app is launched, the counter will be reset to zero.</p>
+<p>On Android, this number will be shown next to the notification in the status area list.</p>
+<h3 id="combining-notifications">Combining Notifications</h3>
+<p>You may choose to group gifts received from other players into a single notification to avoid overwhelming the player by using the following code:</p>
+<pre><code>function addHeartNotification(fromPlayer, gameName) {
+    // Check if single-heart notification exists
+    localNotify.get(&quot;hearts&quot;, function(heart) {
+        if (heart) {
+            var heartCount = heart.count + 1;
+
+            // This will overwrite any existing &quot;hearts&quot; notification
+            localNotify.add({
+                name: &quot;hearts&quot;,
+                action: &quot;Accept All&quot;,
+                title: &quot;Received Gifts: Hearts&quot;,
+                text: &quot;You have received &quot; + heartCount + &quot; Hearts from friends in &quot; + gameName + &quot;!&quot;,
+                number: heartCount
+            });
+        } else {
+            localNotify.add({
+                name: &quot;hearts&quot;,
+                action: &quot;Accept&quot;,
+                title: &quot;Received Gift: Heart&quot;,
+                text: &quot;You have received a Heart from &quot; + fromPlayer + &quot; in &quot; + gameName + &quot;!&quot;,
+                number: 1
+            });
+        }
+    });
+}</code></pre>
+<h1 id="localnotify-object">localNotify object</h1>
+<h2 id="members">Members:</h2>
+<h3 id="localnotify.onnotify-evt">localNotify.onNotify (evt)</h3>
+<ul>
+<li><code>callback {function}</code> —Set to your callback function. The first argument will be the object for the triggered notification.</li>
+</ul>
+<p>Called whenever a local notification is accepted by the user. This is the case for notifications that trigger re-engagement while the app is closed. In this event the event(s) that triggered re-engagement will be delivered as soon as the <code>onNotify</code> callback is set.</p>
+<p>If <code>evt.launched</code> is true, then the notification caused your app to launch. If <code>evt.shown</code> is true, then the notification was shown in the status bar.</p>
+<pre><code>localNotify.onNotify = function(evt) {
+    if (evt.launched) {
+        logger.log(&quot;Got event:&quot;, evt.name, &quot;which launched the app&quot;);
+    } else {
+        logger.log(&quot;Got event:&quot;, evt.name);
+    }
+});</code></pre>
+<h2 id="methods">Methods:</h2>
+<h3 id="localnotify.list-callback-function">localNotify.list (callback {function})</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>callback {function}</code> —Callback function that will receive the list asynchronously. The first argument will be an array of pending notifications.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>void</code></li>
+</ol>
+</dd>
+</dl>
+<p>This function enables you to list any pending notifications that are scheduled for delivery sometime in the future.</p>
+<p>Any notifications that have triggered already will be delivered to the <code>onNotify</code> member.</p>
+<pre><code>localNotify.list(function(notifications) {
+    for (var ii = 0; ii &lt; notifications.length; ++ii) {
+        logger.log(&quot;Pending notification:&quot;, notifications[ii].name);
+    }
+});</code></pre>
+<h3 id="localnotify.get-name-callback-function">localNotify.get (name, callback {function})</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code> —The notification name.</li>
+<li><code>callback {function}</code> —Callback function that will receive the info asynchronously. The first argument will be the notification info.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>void</code></li>
+</ol>
+</dd>
+</dl>
+<p>This function enables you to get information about a notification by name.</p>
+<pre><code>localNotify.get(&quot;name&quot;, function(notification) {
+    if (notification) {
+        logger.log(&quot;Notification text:&quot;, notification.text);
+    } else {
+        logger.log(&quot;Notification DNE&quot;);
+    }
+});</code></pre>
+<h3 id="localnotify.clear">localNotify.clear</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>void</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>void</code></li>
+</ol>
+</dd>
+</dl>
+<p>Clears any pending notifications scheduled to be delivered in the future.</p>
+<pre><code>// Remove all notifications
+localNotify.clear();</code></pre>
+<h3 id="localnotify.remove-name">localNotify.remove (name)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code> —Name of the notification to remove.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>void</code></li>
+</ol>
+</dd>
+</dl>
+<p>This function removes a scheduled notification by name.</p>
+<pre><code>localNotify.remove(&quot;name&quot;);</code></pre>
+<h3 id="localnotify.add-object">localNotify.add (object)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>event {object}</code> —Notification event to deliver.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>void</code></li>
+</ol>
+</dd>
+</dl>
+<p>This function adds a notification to be delivered. See above for the object schema.</p>
+<pre><code>localNotify.add({
+    name: &quot;heart&quot;,
+    action: &quot;Accept&quot;,
+    title: &quot;Received Gift: Heart&quot;,
+    text: &quot;You have received a Heart from &quot; + fromPlayer + &quot;!&quot;
+});</code></pre>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

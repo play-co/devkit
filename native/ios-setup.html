@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ios-setup</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#ios-setup-guide">iOS Setup Guide</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#prerequisites">Prerequisites</a><ul>
+<li><a href="#supported-mobile-devices">Supported Mobile Devices</a></li>
+</ul></li>
+<li><a href="#how-to-install-xcode-prerequisites">How to install Xcode Prerequisites</a></li>
+<li><a href="#apple-developer-account">Apple Developer Account</a></li>
+<li><a href="#install-ios-plugin-for-basil">Install iOS Plugin for Basil</a></li>
+<li><a href="#setting-up-your-game-manifest">Setting Up Your Game Manifest</a></li>
+<li><a href="#setting-up-a-new-mobile-device">Setting Up a New Mobile Device</a></li>
+<li><a href="#troubleshooting-issues">Troubleshooting Issues</a><ul>
+<li><a href="#appendix-manual-install-of-ios-plugin-for-basil">Appendix: Manual Install of iOS Plugin for Basil</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="ios-setup-guide">iOS Setup Guide</h1>
+<h2 id="overview">Overview</h2>
+<p>Running your game on an iPhone or iPad for the first time is that &quot;I made it!&quot; moment when it finally feels real. This guide will help you get from developing in a browser to showing your new game off at parties.</p>
+<p>Building your game to run on a mobile device is done using the Game Closure DevKit <code>basil</code> command-line tool.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>You will need some tools for iOS development:</p>
+<ul>
+<li>Mac OS X 10.6 (or newer) computer</li>
+<li>iPhone/iPad sync cable</li>
+<li>Xcode 4.4 (or newer) and Xcode command-line tools</li>
+<li>Game Closure DevKit (basil)</li>
+</ul>
+<p>For a guide on installing the Game Closure DevKit <a href="../guide/install.html">please see this documentation</a>.</p>
+<h3 id="supported-mobile-devices">Supported Mobile Devices</h3>
+<p>The iOS devices supported are:</p>
+<p><em>iPhone</em>: iPhone 3GS (2009), iPhone 4, iPhone 4S, iPhone 5.</p>
+<p><em>iPad</em>: All devices.</p>
+<p><em>iPod</em>: Touch 3rd Gen (2009), Touch 4th Gen, Touch 5th Gen.</p>
+<p>Other devices <strong>may</strong> work but are not explicitly supported.</p>
+<h2 id="how-to-install-xcode-prerequisites">How to install Xcode Prerequisites</h2>
+<p>In order to develop for iOS, Xcode is required. Xcode can be downloaded from the <a href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12">iTunes App store</a>.</p>
+<p>Additionally, the Xcode command-line tools <strong>are required</strong>. To download these, open Xcode and go to the <em>preferences</em> menu under the <em>Xcode</em> menu. Next, go to the <em>Downloads</em> tab and install the command-line tools. It is recommended to also install the simulator from this tab so that you may test your games on your computer rather than on a physical device.</p>
+<h2 id="apple-developer-account">Apple Developer Account</h2>
+<p>For your initial use of the DevKit there is no reason to set up an Apple Developer account. So you may want to skip this section and come back later. Without an account you will not be able to install your game on a mobile device. Note that you can run your game on the iOS Simulator, which is packaged with Xcode, without an Apple Developer account.</p>
+<p>To do iOS development you will need an <a href="https://developer.apple.com/programs/register/">Apple Developer account</a> which costs $99. To build and install your app on your personal cellphone this is also necessary. By getting an Apple Developer account you will have access to the Apple Developer website and tools to generate provisioning profiles.</p>
+<p>To get started with iOS development, you will need to access the Member Center on the <a href="http://developer.apple.com">Apple Developer website</a>. Enter your Apple ID and Password. Select your team. Enter the iOS Provisioning Portal. Select the Certificates tab. Follow the instructions to request, download, and install your Development Certificate.</p>
+<p>Start Xcode. Open the Organizer. Select “Provisioning Profiles” on the left tab. In the lower-right corner hit Refresh. This should download and install the new certificate on your computer. At this point you should be able to install to devices that have been added to your developer portal (see below).</p>
+<h2 id="install-ios-plugin-for-basil">Install iOS Plugin for Basil</h2>
+<p>Basil is the command-line tool you will use from the Game Closure DevKit to perform native builds. Make sure your version of basil is up to date with <code>basil update</code>.</p>
+<p>The first step to doing iOS development with basil is to install the iOS plugin. At a command-line enter the command:</p>
+<pre><code>$ basil install native-ios</code></pre>
+<p>This downloads and installs the iOS plugin for basil. The download may take some time since it is a large plugin, so please be patient.</p>
+<h2 id="setting-up-your-game-manifest">Setting Up Your Game Manifest</h2>
+<p>Every game includes and must have a manifest.json file with configuration information and more for each game. Several fields are required for a properly configured game for iOS.</p>
+<ul>
+<li>The splash screen and icons for your game should be added before building for iOS devices.<br /></li>
+<li>If you are using any custom TrueType fonts be sure to include those in the manifest file.<br /></li>
+<li>For a complete reference see <a href="../guide/manifest.html">documentation on the manifest.json</a> file.</li>
+</ul>
+<p>In addition to the normal sections in the manifest file you may have already filled in, iOS requires the following sections:</p>
+<h5 id="itunes-app-store">iTunes App Store</h5>
+<p>Add these fields to insure that In-App Purchases will work.</p>
+<pre><code>    &quot;ios&quot;: {
+        &quot;bundleID&quot;: &quot;com.billy.boards&quot;,
+        &quot;appleID&quot;: &quot;1234567&quot;,
+        &quot;version&quot;: &quot;1.0.0&quot;
+    },</code></pre>
+<h5 id="icons">Icons</h5>
+<p>The icons for iOS are listed below. Be sure to include at least this set of icons. <a href="../guide/manifest.html">See the manifest documentation</a> for file formats and other details.</p>
+<pre><code>&quot;ios&quot;: {
+  &quot;icons&quot;: {
+    &quot;renderGloss&quot;: false,
+    &quot;57&quot;: &quot;resources/icons/ios57.png&quot;,
+    &quot;72&quot;: &quot;resources/icons/ios72.png&quot;,
+    &quot;76&quot;: &quot;resources/icons/ios76.png&quot;,
+    &quot;114&quot;: &quot;resources/icons/ios114.png&quot;,
+    &quot;120&quot;: &quot;resources/icons/ios120.png&quot;,
+    &quot;144&quot;: &quot;resources/icons/ios144.png&quot;,
+    &quot;152&quot;: &quot;resources/icons/ios152.png&quot;
+  }
+}</code></pre>
+<p>References:</p>
+<p>[1] Apple provides a <a href="http://developer.apple.com/library/ios/#documentation/userexperience/conceptual/mobilehig/IconsImages/IconsImages.html">guide for icon images</a>.</p>
+<h5 id="orientation">Orientation</h5>
+<p>Choose an orientation for your game, which is a combination of portrait and/or landscape. Landscape means that the long side of the device is horizontal, and portrait means that the long side of the device will be vertical. Unspecified orientations will be disallowed.</p>
+<p>On the iPad, both portrait and landscape orientations will allow upside-down or rightside-up rotations. On the iPhone, for portrait orientation only rightside-up will be allowed.</p>
+<pre><code>    &quot;supportedOrientations&quot;: [
+        &quot;landscape&quot;
+    ],</code></pre>
+<pre><code>    &quot;supportedOrientations&quot;: [
+        &quot;portrait&quot;
+    ],</code></pre>
+<pre><code>    &quot;supportedOrientations&quot;: [
+        &quot;landscape&quot;, &quot;portrait&quot;
+    ],</code></pre>
+<h5 id="truetype-fonts">TrueType Fonts</h5>
+<p>Add a list of TrueType font files to the manifest if you are using them:</p>
+<pre><code>    &quot;ttf&quot;: [
+        &quot;resources/fonts/Arial Black.ttf&quot;
+    ],</code></pre>
+<p>On iOS, it is crucial that custom fonts do not have the same name as a default system font. A complete list of default iOS fonts is available at <a href="http://iosfonts.com">iosfonts.com</a>.</p>
+<h5 id="splash-screen">Splash Screen</h5>
+<p>Define splash screen images for your game. For the complete list of image sizes required and other details <a href="../guide/manifest.html">see the manifest documentation</a>.</p>
+<p>For iPhone, the portrait splash images are used, and when your game specifies landscape mode, those images will be rotated to match the screen orientation.</p>
+<p>Once your game is configured properly for iOS, you’re ready to install it!</p>
+<h2 id="setting-up-a-new-mobile-device">Setting Up a New Mobile Device</h2>
+<p>If you have set up an Apple Developer account then you will need to add new mobile devices to your portal before using them.</p>
+<p>In Xcode, open the Organizer. On the devices tab on the left, select the name of the new connected device. At the bottom of the Organizer, press the (+) [Add To Portal] button. This will add the device to your developer portal.</p>
+<p>At this point you are ready to start building for iOS! Check out the <a href="./ios-build.html">building guide</a> for information on building your game, or the <a href="./ios-test-app.html">test app guide</a> for instructions on how to use the test app for expedited development and testing.</p>
+<h2 id="troubleshooting-issues">Troubleshooting Issues</h2>
+<p>If you run into problems, try our <a href="./ios-troubleshooting.html">iOS troubleshooting guide</a>.</p>
+<h3 id="appendix-manual-install-of-ios-plugin-for-basil">Appendix: Manual Install of iOS Plugin for Basil</h3>
+<p>Clone the Game Closure <a href="https://github.com/gameclosure/native-ios">iOS GitHub repository</a>. Switch to this directory and make sure everything is up-to-date:</p>
+<pre><code>$ git clone https://github.com/gameclosure/native-ios
+$ cd native-ios
+$ git checkout develop
+$ git submodule update --init</code></pre>
+<p>Edit the basil configuration file <strong>config.json</strong> located in the root of the basil install to point to the install location of the iOS plugin:</p>
+<pre><code>{
+  &quot;ios&quot;: {
+    &quot;root&quot;: &quot;path/to/native-ios&quot;
+  }
+}</code></pre>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

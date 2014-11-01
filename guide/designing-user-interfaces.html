@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: designing-user-interfaces</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#designing-user-interfaces">Designing User Interfaces</a><ul>
+<li><a href="#aspect-ratio">Aspect ratio</a></li>
+<li><a href="#fixed-aspect-ratio-stretch-to-fit">Fixed aspect ratio: stretch to fit</a></li>
+<li><a href="#fixed-dpi">Fixed DPI</a></li>
+<li><a href="#automatic-subview-layout">Automatic Subview Layout</a></li>
+<li><a href="#box-layout">Box Layout</a><ul>
+<li><a href="#centering">Centering</a></li>
+<li><a href="#offset-alignment">Offset alignment</a></li>
+<li><a href="#percentage-width-and-height-layoutwidth-and-layoutheight">Percentage width and height: layoutWidth and layoutHeight</a></li>
+<li><a href="#fixed-aspect-ratios">Fixed aspect ratios</a></li>
+</ul></li>
+<li><a href="#linear-layout">Linear Layout</a><ul>
+<li><a href="#layout-order">Layout Order</a></li>
+<li><a href="#ignoring-views-in-the-layout">Ignoring views in the layout</a></li>
+<li><a href="#sizing-the-containing-view-to-fit">Sizing the containing view to fit</a></li>
+<li><a href="#margin">Margin</a></li>
+<li><a href="#padding">Padding</a></li>
+<li><a href="#flex">Flex</a></li>
+<li><a href="#justify-content">Justify Content</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="designing-user-interfaces">Designing User Interfaces</h1>
+<p>When building game UI in <code>timestep</code>, we want to be able to layout views that flow without concern for the screen dpi, aspect ratio, or resolution.</p>
+<p>The first step to building UI is setting up the viewport. This is non-trivial because the viewport changes depending on the screen size. There are a few different methods for configuring your viewport. To understand these methods, you must first understand <em>aspect ratio</em>.</p>
+<h2 id="aspect-ratio">Aspect ratio</h2>
+<p>The <em>aspect ratio</em> is the ratio between the width and the height of a screen resolution. The aspect ratio is important because a UI designed for one screen resolution trivially scales to fit any screen resolution with the same aspect ratio. By trivially we mean that it fills the screen entirely without clipping any content.</p>
+<p>Two different screen resolutions can have the same aspect ratio. For example, the squares <code>100x100</code> and <code>200x200</code> have the same aspect ratio, <code>1:1</code>, while the HD 1080p resolution of <code>1920x1080</code> shares the aspect ratio, <code>16:9</code>, with the iPhone 5’s resolution of <code>1136x640</code>. We refer to the aspect ratio as the smallest integer fraction that represents the ratio.</p>
+<h2 id="fixed-aspect-ratio-stretch-to-fit">Fixed aspect ratio: stretch to fit</h2>
+<p>If you’re only designing for one aspect ratio, it’s relatively easy to design your UI. For example, only targetting the iPhone 5 and other <code>16:9</code> devices would allow you to design for a <code>16x9</code> resolution such as <code>1024x576</code> and scale your content to fit any <code>16x9</code> screen.</p>
+<p>As soon as you want to fill the screen on all devices, however, you need to code your UI with some flexibility to handle the differences in aspect ratios. One method is to still target a fixed aspect ratio, but handle clipping differently. There are three common ways to scale a fixed aspect ratio:</p>
+<ol type="1">
+<li><p><em>cover</em>: The notion of covering a screen means that all available pixels on the screen show the game (no “black bars”). We don’t want to squish or stretch the screen, so we scale the screen to fill all the pixels and clip anything that expands beyond the screen boundaries. In practice, it’s usually fine to clip background images and simply align the important UI elements with the edges of the screen. An example where <em>cover</em> makes a lot of sense is an isometric simulation game. Here, having different aspect ratios simply means that users can see more or less of the game map. UI controls snap to the sides of the screen. Users with higher aspect ratios will see more of the game world than users with lower aspect ratios. In multiplayer games, this may lend itself to a competitive advantage, in which case another scaling method might make more sense.</p></li>
+<li><p><em>contain</em>: The notion of containing a screen means that all pixels in the original design are visible. We scale the screen as large as we can without clipping any pixels. When the aspect ratios are not equivalent, this leads to bars on the side. We can ignore these, resulting in black bars, or fill them with some repeating pattern or texture.</p></li>
+<li><p>Hybrid: UI designers may implement a combination of cover and contain. Usually, this is done by prefering <em>cover over contain</em>, choosing a maximum amount of clipping that is allowed for cover. If covering would result in too much clipping, the UI is first scaled using <code>cover</code> to the maximum allowed clip and then scaled using <code>contain</code> to ensure that all important visual regions are not being clipped.</p></li>
+</ol>
+<h2 id="fixed-dpi">Fixed DPI</h2>
+<p>For UI-heavy games, you may want to scale your UI based on dpi, but then dynamically position all subviews according to the screen widths. For background images, you could either apply the <code>cover</code> or <code>contain</code> methods directly to the images or use a scaling method based on slices (see ScaledImageView).</p>
+<h2 id="automatic-subview-layout">Automatic Subview Layout</h2>
+<p>For either the fixed dpi or fixed aspect ratio methods, you will want to impose higher-level positioning constraints on your views. In a game, you may only care about the <code>x</code>, <code>y</code>, <code>width</code>, and <code>height</code> of a view. The game logic determines exactly where each subview is. Consider an army marching across a field: a developer would probably use a subview for each army unit with a controller class setting each subview’s position based on an underlying data model. but in a UI, you frequently want to position views relative to each other. For example, “place this image 20px from the bottom edge of the screen,” or, “put these images in a line with 5px of space between each image.”</p>
+<p>Each view in timestep can contain subviews. A UI composed of several buttons or input fields, however, can quickly become tedious to layout by hand.</p>
+<p>You typically set the position of a basic timestep view by setting its <code>x</code>, <code>y</code>, <code>width</code>, and <code>height</code>. Layouts define higher-level rules that control some (or all) of these attributes for you.</p>
+<h2 id="box-layout">Box Layout</h2>
+<p>The <code>box</code> layout is a collection of the most basic layout positioning rules. Most other layouts extend from the <code>box</code> layout – for example, a view with a <code>linear</code> layout can be positioned using any of these properties as well.</p>
+<p>Compared to more advanced layouts such as <code>linear</code>, the <code>box</code> layout does not control the layout of its subviews.</p>
+<h3 id="centering">Centering</h3>
+<p>If you want to center multiple views, you should consider using <code>justifyContent: center</code> in a <code>linear</code> layout, but you can use the <code>centerX</code> and <code>centerY</code> properties for aligning a single view in the parent view.</p>
+<style>
+.figure { border: 1px solid #888; width: 300px; height: 350px; background: #EEE -webkit-linear-gradient(270deg, #CCC, #EEE); 
+    box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 3px
+}
+.figure-phone {
+  width: 170px; height: 280px; margin: auto; border-radius: 10px; margin-top: 30px; background: #444; border-style: solid; border-color: black; border-width: 1px;
+  background: -webkit-linear-gradient(280deg, #333, #666 50%, #000 51%, #444);
+  box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.5);
+}
+.root-view { margin: 20px auto; width: 160px; height: 240px; background: rgba(200, 200, 230, 0.9); border-radius: 2px; }
+.centered-view {  width: 50px; height: 50px; margin: 0px auto;
+  -webkit-animation-name: expandIt;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 5s;
+  -webkit-animation-timing-function: linear;
+  -webkit-transform-origin: center top
+}
+.boxLayout .centered-view {
+    position: relative;
+    top: 20px;
+    background: blue;
+}
+    
+@-webkit-keyframes expandIt {
+  0% {
+  }
+  50% {
+    width: 100px;
+    height: 100px;
+  }
+  100% {
+  }
+}
+.caption {
+
+}
+</style>
+<div class="figure">
+    <div class="figure-phone">
+        <div class="root-view boxLayout">
+            <div class="centered-view">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="caption" markdown>
+Figure 1: centered view with <code>{y: 20, centerX: true}</code>.
+</div>
+
+
+<h3 id="offset-alignment">Offset alignment</h3>
+<p>The propeties <code>top</code>, <code>left</code>, <code>right</code>, <code>bottom</code> specify the distance from the corresponding edge of the parent view. The layout computes (and overwrites) values for <code>width</code>, <code>height</code>, <code>x</code>, and <code>y</code> based on these properties. When the superview resizes, these properties automatically update the view’s position.</p>
+<p>If both <code>top</code> and <code>bottom</code> are set, the view is stretched to meet both constraints (overriding any preset <code>height</code>). Similarly, if both <code>left</code> and <code>right</code> are set, the <code>width</code> is ignored.</p>
+<h3 id="percentage-width-and-height-layoutwidth-and-layoutheight">Percentage width and height: layoutWidth and layoutHeight</h3>
+<p><strong>Note: the following also applies to <code>height</code> and <code>layoutHeight</code>.</strong></p>
+<p>You can apply constraints to the <code>width</code> of a view using <code>layoutWidth</code>. Setting <code>layoutWidth</code> of a view to a percentage value, e.g. <code>&quot;80%&quot;</code>, will constrain the view to 80% of the superview’s width.</p>
+<p>You can also assign the constant <code>&quot;wrapContent&quot;</code> to <code>layoutWidth</code>, which fits the width of the view to the sum of its children.</p>
+<h3 id="fixed-aspect-ratios">Fixed aspect ratios</h3>
+<p>Sometimes you want to control one dimension of a view, while fixing the other dimension to a particular ratio of the first. To do this, set the <code>aspectRatio</code> property of a view. We define <code>aspectRatio</code> as the ratio <code>width / height</code>.</p>
+<p>If you want the <code>aspectRatio</code> to be computed automatically, set <code>style.fixedAspectRatio</code> to <code>true</code>. Any <code>ImageView</code> with <code>autoSize: true</code> and <code>fixedAspectRatio: true</code> will update the aspect ratio automatically when the image is auto-sized.</p>
+<h2 id="linear-layout">Linear Layout</h2>
+<p>The <code>linear</code> layout extends from the <code>box</code> layout.</p>
+<p>One of the most common representations of a layout is a line. This encapsulates everything from a high-level structural layout such as a header, body, and footer (vertical line) to a more detailed layout such as a list of buttons in a toolbar (horizontal line). Linear layouts can be easily nested to build more complex UI.</p>
+<p>The <code>LinearLayout</code> class makes configuration of linear lists of views very easy. To change the layout of a view, set the <code>layout</code> property of a view:</p>
+<p>Programatically:</p>
+<pre><code>var view = new View({
+  layout: &#39;linear&#39;,
+  direction: &#39;vertical&#39;
+});
+
+var redview = new View({
+  superview: view,
+  backgroundColor: &#39;red&#39;
+});
+
+var blueview = new View({
+  superview: view,
+  backgroundColor: &#39;blue&#39;,
+  flex: 1
+});
+
+var greenview = new View({
+  superview: view,
+  backgroundColor: &#39;green&#39;
+});</code></pre>
+<p>Or using JSON:</p>
+<pre><code>var MainView = Class(View, function (supr) {
+  this._def = {
+    layout: &#39;linear&#39;,
+    children: [
+      {backgroundColor: &#39;red&#39;},
+      {backgroundColor: &#39;blue&#39;}
+    ]
+  };  
+});</code></pre>
+<h3 id="layout-order">Layout Order</h3>
+<p>Subviews are ordered by <code>zIndex</code> first and add-order second. This means that if the <code>zIndex</code> values for two subviews are equivalent, the two views are sorted by the order in which they were added, with later views appearing last. Setting <code>zIndex</code> can therefore resort the subviews.</p>
+<p>Sometimes, you need to layout views in a different order than the underlying sort order. For example, in a vertical layout with a fixed header and a scrolling body, you may want the header positioned above the body so that it can overlap the body content. Setting the header’s <code>zIndex</code> will change the order of the subviews. If the header has a higher <code>zIndex</code>, the body renders first and the header renders second, placing the header <em>above</em> the body. However, you still want the header to be positioned first in the linear layout.</p>
+<p>To specify a sorting for the layout order that differs from the subview order, set the <code>order</code> property on a subview’s style. Higher <code>order</code> values will be later in the layout. The <code>order</code> defaults to <code>0</code> and should always be an integer.</p>
+<h3 id="ignoring-views-in-the-layout">Ignoring views in the layout</h3>
+<p>Sometimes you want some, but not all, subviews to be in your linear layout. By default, all subviews are in a linear layout. To remove a view from the layout, set the <code>inLayout</code> property of a subview’s style to <code>false</code>.</p>
+<h3 id="sizing-the-containing-view-to-fit">Sizing the containing view to fit</h3>
+<p>This can be accomplished using the same <code>layoutWidth</code> and <code>layoutHeight</code> values inherited from the box layout.</p>
+<h3 id="margin">Margin</h3>
+<p>A view in a <code>linear</code> layout can specify margin using the style properties <code>top</code>, <code>left</code>, <code>bottom</code>, and <code>right</code>. This adds space around each view when they are layed out.</p>
+<h3 id="padding">Padding</h3>
+<p>A view with a linear layout can add <code>padding</code> using the <code>style.padding</code> property. <code>style.padding</code> is an instance of <code>ui.layout.Padding</code>. You can assign directly to it with a number or string, such as:</p>
+<pre><code>// 10px padding on all sides
+view.style.padding = 10;
+
+// 10px padding on top/botom
+// 20px padding on left/right
+view.style.padding = &quot;10 20&quot;;
+
+// 10px on top, 20px on right
+// 30px on bottom, 40px on left
+// (clockwise set)
+view.style.padding = &quot;10 20 30 40&quot;;</code></pre>
+<p>You can also address the four sides of padding independently:</p>
+<pre><code>view.style.padding.top = 10;
+view.style.padding.right = 30;
+view.style.padding.left = 40;
+view.style.padding.bottom = 20;</code></pre>
+<h3 id="flex">Flex</h3>
+<p>A view in a layout can specify a dynamic resize attribute <code>flex</code>. This can only be used if the containing view has a fixed dimension (the layout does not have <code>layoutWidth</code> set to <code>wrapContent</code>).</p>
+<p>A view with <code>flex</code> set to a nonzero value will expand to fit the available size. It will not shrink below its <code>minWidth</code>, if one is set. It will also not exceed <code>maxWidth</code>.</p>
+<h3 id="justify-content">Justify Content</h3>
+<p>If, after laying out all subviews, there is space left over, you can choose to distribute that space between the views in different ways. Set the <code>justifyContent</code> property of a view to one of the following:</p>
+<ul>
+<li><code>start</code>: the default value, this does what you would expect for the default behavior - views are laid out in order from the start and all space is left at the end of the line.</li>
+<li><code>end</code>: The extra space is pushed to the front of the line.</li>
+<li><code>center</code>: The space is distributed between the start and end of the line. This effectively centers the subviews!</li>
+<li><code>space</code>: Space is distributed evenly between all gaps in subviews.</li>
+<li><code>space-outside</code>: Space is distributed evenly between all gaps in subviews as well as at the start and end of the line.</li>
+</ul>
+<style>
+.justifyCentered { background: none; position: relative; top: 20px; }
+.justifyCentered.hWrapContent { border: 1px solid red; border-radius: 2px; }
+.hWrapContent .centered-view { border: none !important; padding: 10px 0px; position: relative; }
+.justifyCentered .subview { top: 5px; bottom: 5px; display: inline-block; border-radius: 2px; }
+.justifyCentered .subview:first-child {
+    position: absolute;
+    left: 5px;
+    padding-right: 3px;
+    right: 50%;
+}
+
+.subviewblue {
+    background: blue -webkit-linear-gradient(270deg, rgb(0, 0, 255), rgb(0, 0, 200)); 
+    height: 100%;
+}
+
+.justifyCentered .subview:last-child {
+    position: absolute;
+    width: 50%;
+    right: 5px;
+    padding-left: 8px;
+}
+
+.justifyCentered .centered-view { border: 1px solid green; position: relative; border-radius: 2px; }
+
+</style>
+
+<div class="figure">
+    <div class="figure-phone">
+        <div class="root-view">
+            <div class="justifyCentered hWrapContent">
+              <div class="centered-view">
+                  <div class="subview"><div class="subviewblue"></div></div>
+                  <div class="subview"><div class="subviewblue"></div></div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="caption" markdown>
+Figure 1: centered view with <code>{y: 20, justifyContent: 'center', layoutHeight: 'wrapContent', layoutWidth: 'wrapContent'}</code>.
+</div>
+
+<div class="figure">
+    <div class="figure-phone">
+        <div class="root-view">
+            <div class="justifyCentered">
+                <div class="centered-view">
+                  <div class="subview"><div class="subviewblue"></div></div>
+                  <div class="subview"><div class="subviewblue"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="caption" markdown>
+Figure 1: centered view with <code>{y: 20, justifyContent: 'center', layoutHeight: 'wrapContent', layoutWidth: 'wrapContent'}</code>.
+</div>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

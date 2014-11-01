@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ui-view</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-ui.view">Class: ui.View</a><ul>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#new-view-options">new View ([options])</a></li>
+<li><a href="#updateopts-options">updateOpts ([options])</a></li>
+<li><a href="#getapp">getApp ()</a></li>
+<li><a href="#getsuperview">getSuperview ()</a></li>
+<li><a href="#getparents">getParents ()</a></li>
+<li><a href="#getsubviews">getSubviews ()</a></li>
+<li><a href="#getsubview-i">getSubview (i)</a></li>
+<li><a href="#addsubview-view">addSubview (view)</a></li>
+<li><a href="#removesubview-view">removeSubview (view)</a></li>
+<li><a href="#removeallsubviews">removeAllSubviews ()</a></li>
+<li><a href="#removefromsuperview">removeFromSuperview ()</a></li>
+<li><a href="#needsrepaint">needsRepaint ()</a></li>
+<li><a href="#needsreflow">needsReflow ()</a></li>
+<li><a href="#sethandleevents-handleevents-ignoresubviews">setHandleEvents (handleEvents [, ignoreSubviews])</a></li>
+<li><a href="#isinputover">isInputOver ()</a></li>
+<li><a href="#startdrag-options">startDrag ([options])</a></li>
+<li><a href="#isdragging">isDragging ()</a></li>
+<li><a href="#localizepoint-point">localizePoint (point)</a></li>
+<li><a href="#getposition-relativeto">getPosition ([relativeTo])</a></li>
+<li><a href="#containslocalpoint-point">containsLocalPoint (point)</a></li>
+<li><a href="#getboundingshape">getBoundingShape ()</a></li>
+<li><a href="#getrelativeregion-region-parent">getRelativeRegion (region, parent)</a></li>
+<li><a href="#getfilters">getFilters ()</a></li>
+<li><a href="#setfilter-filter">setFilter (filter)</a></li>
+<li><a href="#removefilter">removeFilter ()</a></li>
+<li><a href="#gettag">getTag ()</a></li>
+<li><a href="#hide">hide ()</a></li>
+<li><a href="#show">show ()</a></li>
+<li><a href="#focus">focus ()</a></li>
+<li><a href="#blur">blur ()</a></li>
+</ul></li>
+<li><a href="#properties">Properties</a><ul>
+<li><a href="#style-object">style <code>{object}</code></a></li>
+</ul></li>
+<li><a href="#events">Events</a><ul>
+<li><a href="#init">init ()</a></li>
+<li><a href="#render-ctx">render (ctx)</a></li>
+<li><a href="#onfocus">onFocus ()</a></li>
+<li><a href="#onblur">onBlur ()</a></li>
+<li><a href="#tick-dt">tick (dt)</a></li>
+</ul></li>
+<li><a href="#input-events">Input Events</a><ul>
+<li><a href="#inputstart-callback-event-point">'InputStart', callback (event, point)</a></li>
+<li><a href="#inputselect-callback-event-point">'InputSelect', callback (event, point)</a></li>
+<li><a href="#inputmove-callback-event-point">'InputMove', callback (event, point)</a></li>
+<li><a href="#inputover-callback-over-overcount-attarget">'InputOver', callback (over, overCount, atTarget)</a></li>
+<li><a href="#inputout-callback-over-overcount-attarget">'InputOut', callback (over, overCount, atTarget)</a></li>
+<li><a href="#dragstart-callback-dragevent">'DragStart', callback (dragEvent)</a></li>
+<li><a href="#drag-callback-startevt-dragevt-delta">'Drag', callback (startEvt, dragEvt, delta)</a></li>
+<li><a href="#dragstop-callback-dragevt-selectevt">'DragStop', callback (dragEvt, selectEvt)</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-ui.view">Class: ui.View</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>A view is the base display object for rendering regions to the screen. Each view has a size and position, and can be nested within other views to create a scene graph. This scene graph is a tree of views that composes the visible elements of the screen, organizing the game content in to a hierarchy which can be used to define boundaries for capturing input events. The game engine uses <code>View</code> objects to accelerate performance on mobile devices.</p>
+<p>Views have methods for adding and removing superviews and subviews (parents and children), can set handler functions for events, and contain properties for styling how the view is displayed on the screen.</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li><a href="../example/views-basic/">A Basic View</a></li>
+<li><a href="../example/views-style/">Changing the View Style</a></li>
+<li><a href="../example/views-nested/">Nested Views</a></li>
+<li><a href="../example/views-addremove/">Add and Remove Views</a></li>
+<li><a href="../example/events-input-click/">Input Click Event</a></li>
+<li><a href="../example/events-input-move/">Input Move Event</a></li>
+<li><a href="../example/events-input-out/">Input Out Event</a></li>
+<li><a href="../example/events-input-drag/">Input Drag Event</a></li>
+<li><a href="../example/views-style/">Modifying a View’s Style</a></li>
+<li><a href="../example/views-rotate/">Rotate a View</a></li>
+</ul>
+<h2 id="methods">Methods</h2>
+<h3 id="new-view-options">new View ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code> —Optional.</li>
+</ol>
+<ul>
+<li><code>superview {View}</code> —Parent or Super view to place this view.</li>
+<li><code>id {string}</code> —Unique identifier.</li>
+<li><code>tag {string}</code> —Human readable tag for the UI Inspector.</li>
+<li><code>filters {Filter}</code> —Filter object.</li>
+<li><code>infinite {boolean} = false</code> —Infinite width and height generally for maps or backgrounds.</li>
+<li><code>canHandleEvents {boolean} = true</code> —Input events can pass through if <code>false</code>.</li>
+</ul>
+</dd>
+</dl>
+<p>The constructor used to create an instance of a <code>ui.View</code> object. In addition to the options listed here, <a href="#properties">style definition properties</a> can also be passed in this object.</p>
+<pre><code>import ui.View as View;
+
+var view = new View({
+  id: &#39;MyCrazyView&#39;,
+  superview: parent,
+  x: 50,
+  y: 50,
+  width: 100,
+  height: 100,
+  backgroundColor: &#39;#0000ff&#39;
+});</code></pre>
+<h3 id="updateopts-options">updateOpts ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code> —The options object is the same as defined for the constructor.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{object}</code> —Returns the options object.</li>
+</ol>
+</dd>
+</dl>
+<p>Update the properties and styles of a view.</p>
+<h3 id="getapp">getApp ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{ui.Engine}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the root application for the view, <a href="./appengine.html#singleton-gc.app.engine">GC.app.engine</a>. This is the top-level node of the scene graph, a <a href="./appengine.html#class-ui.engine">ui.Engine</a> singleton automatically instantiated by the game engine.</p>
+<h3 id="getsuperview">getSuperview ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{View}</code> —Return the view’s parent in the scene graph hierarchy.</li>
+</ol>
+</dd>
+</dl>
+<h3 id="getparents">getParents ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array}</code> —A collection of <code>View</code> elements.</li>
+</ol>
+</dd>
+</dl>
+<p>Returns an array of all parent ancestors of the current view to the root of the scene graph.</p>
+<h3 id="getsubviews">getSubviews ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array}</code> —A collection of <code>View</code> elements.</li>
+</ol>
+</dd>
+</dl>
+<p>Returns an array containing a reference to all of the view’s children. Since this function has an execution time of <em>O(n)</em>, you should store a reference to the array and then iterate:</p>
+<pre><code>for (var i = 0, children = view.getSubviews(), len = children.length; i &lt; len; i++) {
+  children[i].style.update({
+    x = i * 10,
+    y = i * 10
+  });
+}</code></pre>
+<h3 id="getsubview-i">getSubview (i)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>i {number}</code> —Array index position.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{View}</code> —Return a child subview at the given array index.</li>
+</ol>
+</dd>
+</dl>
+<h3 id="addsubview-view">addSubview (view)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>view {View}</code> —The view to add as a child of this view.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol start="2" type="1">
+<li><code>{View}</code> —Returns the view that was passed to this method.</li>
+</ol>
+</dd>
+</dl>
+<p>Add a view as a child subview.</p>
+<h3 id="removesubview-view">removeSubview (view)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>view {View}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Removes a child subview from this view.</p>
+<h3 id="removeallsubviews">removeAllSubviews ()</h3>
+<p>Removes all child subviews from this view.</p>
+<h3 id="removefromsuperview">removeFromSuperview ()</h3>
+<p>Removes this view from its parent superview.</p>
+<h3 id="needsrepaint">needsRepaint ()</h3>
+<p>Notifies the renderer that the view needs to be redrawn on next animation frame. This function is only needed if you’re using a DOM rendering backend.</p>
+<h3 id="needsreflow">needsReflow ()</h3>
+<p>Notifies the <code>ui.Engine</code> that the view needs its position updated.</p>
+<h3 id="sethandleevents-handleevents-ignoresubviews">setHandleEvents (handleEvents [, ignoreSubviews])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>handleEvents {boolean} = true</code> —Configure the view to handle or not handle input events.</li>
+<li><code>ignoreSubviews {boolean} = false</code> —Optionally block input events on all subviews.</li>
+</ol>
+</dd>
+</dl>
+<p>A view that can not handle events will pass them through to other views positioned beneath them on the screen. By default, a view handles all input events. In the <em>UI Inspector</em> you can see which views are underneath the input cursor by hovering over an element and using <em>control-click</em>.</p>
+<p>If the <code>ignoreSubviews</code> option is set to <code>true</code>, all events on the view’s children are also ignored.</p>
+<h3 id="isinputover">isInputOver ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>If an input event is over a view, return <code>true</code>, otherwise <code>false</code>.</p>
+<h3 id="startdrag-options">startDrag ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>inputStartEvent {InputEvent} = 'START'</code></li>
+<li><code>radius {number} = 0</code></li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Respond to an input event by dragging the view. This will fire drag events so you can make a view follow the drag events.</p>
+<p>The right time to call <code>startDrag</code> is inside the <code>&quot;InputStart&quot;</code> event:</p>
+<pre><code>view.on(&quot;InputStart&quot;, function (evt) {
+      view.startDrag({
+        inputStartEvt: evt,
+        radius: 10
+      });
+});</code></pre>
+<p>In this example, the drag events will start firing after a 10 pixel drag occurs.</p>
+<p>To listen for a drag on a view and update its position:</p>
+<pre><code>view.on(&#39;DragStart&#39;, function (dragEvt) {
+  view.style.x = dragEvt.srcPt.x;
+  view.style.y = dragEvt.srcPt.y;
+});
+
+view.on(&#39;Drag&#39;, function (startEvt, dragEvt, delta) {
+  view.style.x = dragEvt.srcPt.x;
+  view.style.y = dragEvt.srcPt.y;
+});
+
+view.on(&#39;DragStop&#39;, function (startEvt, dragEvt) {
+  view.style.x = dragEvt.srcPt.x;
+  view.style.y = dragEvt.srcPt.y;
+});</code></pre>
+<p>See the DragStart, Drag, and DragStop documentation for more information about handling these events.</p>
+<h3 id="isdragging">isDragging ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Test if the view is being dragged.</p>
+<h3 id="localizepoint-point">localizePoint (point)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>point {Point}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Point}</code> —Returns the given point, with updated values.</li>
+</ol>
+</dd>
+</dl>
+<p>Convert a point to a local position relative to this view.</p>
+<h3 id="getposition-relativeto">getPosition ([relativeTo])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>relativeTo {View}</code> —Optional.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{object}</code>
+<ul>
+<li><code>x {number}</code></li>
+<li><code>y {number}</code></li>
+<li><code>rotation {number}</code></li>
+<li><code>width {number}</code></li>
+<li><code>height {number}</code></li>
+<li><code>scale {number}</code></li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Get position of a view relative to a superview. If <code>relativeTo</code> is not provided, get the position relative to the top-most superview (the root of the scene graph.).</p>
+<h3 id="containslocalpoint-point">containsLocalPoint (point)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>point {Point}</code> —A point being an object with <code>x</code> and <code>y</code> numeric properties.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Determine if the given point is contained by the view.</p>
+<h3 id="getboundingshape">getBoundingShape ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Rect}</code>, the shape defined when the view was created.</li>
+</ol>
+</dd>
+</dl>
+<p>Return the bounding rectangle for a view.</p>
+<h3 id="getrelativeregion-region-parent">getRelativeRegion (region, parent)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>region {Rect}</code></li>
+<li><code>parent {View}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li>Return <code>{Rect}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Return the location of a rectangle region in a parent’s coordinate space.</p>
+<h3 id="getfilters">getFilters ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Return an array of filters attached to a view.</p>
+<h3 id="setfilter-filter">setFilter (filter)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>filter {Filter}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Sets the filter on this view. If this view already has a filter, the old filter is removed. A filter can be applied to multiple views, but no view can have more than one filter.</p>
+<h3 id="removefilter">removeFilter ()</h3>
+<p>Remove the filter from this view.</p>
+<h3 id="gettag">getTag ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Return the human-readable name for a view.</p>
+<h3 id="hide">hide ()</h3>
+<p>Make the view invisible.</p>
+<h3 id="show">show ()</h3>
+<p>Make the view visible.</p>
+<h3 id="focus">focus ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Indicate to the focus manager this view has focus.</p>
+<h3 id="blur">blur ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Indicate to the focus manager this element has been blurred.</p>
+<h2 id="properties">Properties</h2>
+<h3 id="style-object">style <code>{object}</code></h3>
+<p>The properties of a view’s <code>style</code> object determine the look and style of a view. If not passed as options to a view constructor, the style properties can be set on this object.</p>
+<pre><code>var view = new View({visible: true}); //now you see me
+
+view.style.visible = false;           //now you don&#39;t</code></pre>
+<p>The <code>style</code> object contains the following properties:</p>
+<ul>
+<li><code>layout {string} = false</code> —Options are <code>'box'</code> or <code>'linear'</code>. For details, see the <a href="../guide/designing-user-interfaces.html">Designing User Interfaces Guide</a>.</li>
+<li><code>x {number} = 0</code> —The position of the top-left corner of a view on the x-axis relative to its parent.</li>
+<li><code>y {number} = 0</code> —The position of the top-left corner of a view on the y-axis relative to its parent.</li>
+<li><code>offsetX {number} = 0</code> —The x position of the anchor point for translation, relative to the top-left corner of the view.</li>
+<li><code>offsetY {number} = 0</code> —The y position of the anchor point for translation, relative to the top-left corner of the view.</li>
+<li><code>anchorX {number} = 0</code> —The x position of the anchor point for rotation and scaling, relative to the top-left corner of the view.</li>
+<li><code>anchorY {number} = 0</code> —The y position of the anchor point for rotation and scaling, relative to the top-left corner of the view.</li>
+<li><code>flipX {boolean} = false</code> —If <code>true</code>, flips the view in-place on the x-axis.</li>
+<li><code>flipY {boolean} = false</code> —If <code>true</code>, flips the view in-place on the y-axis.</li>
+<li><code>width {number}</code> —The width of a view, defaults to the width of the view’s parent.</li>
+<li><code>height {number}</code> —The height of a view, defaults to the height of the view’s parent.</li>
+<li><code>widthPercentage {number}</code></li>
+<li><code>heightPercentage {number}</code></li>
+<li><code>scale {number} = 1</code> —Increase or decrease the size of the view.</li>
+<li><code>scaleX {number} = 1</code> —Increase or decrease the size of the view in the X direction.</li>
+<li><code>scaleY {number} = 1</code> —Increase or decrease the size of the view in the Y direction.</li>
+<li><code>r {number} = 0</code> —The rotation of a view in radians.</li>
+<li><code>visible {boolean} = true</code> —If the view is shown or hidden. The view will not accept input events while hidden.</li>
+<li><code>opacity {number} = 1</code> —The transparency of a view from 0.0 to 1.0. The view accepts input events even when fully transparent.</li>
+<li><code>zIndex {number} = 0</code> —The larger the value, the closer to the front the view appears. This is relative to a view’s siblings, not the entire scene graph.</li>
+<li><code>backgroundColor {string}</code> —Background color of the view.</li>
+<li><code>clip {boolean} = false</code> —If <code>true</code>, child views get clipped to the boundaries of this view.</li>
+</ul>
+<p>The following <code>style</code> properties are available to any view with a <code>'box'</code> or <code>'linear'</code> layout:</p>
+<ul>
+<li><code>centerAnchor {boolean} = false</code> —If <code>true</code>, centers anchorX and anchorY, recentering whenever dimensions change.</li>
+<li><code>centerX {boolean} = false</code> —If <code>true</code>, centers x, recentering whenever dimensions change.</li>
+<li><code>centerY {boolean} = false</code> —If <code>true</code>, centers y, recentering whenever dimensions change.</li>
+</ul>
+<p>The <code>style</code> object contains the following methods:</p>
+<h4 id="style.update-style">style.update (style)</h4>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>style {object}</code> —Using the properties enumerated here.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code> —Returns this view.</li>
+</ol>
+</dd>
+</dl>
+<p>Update the view’s style.</p>
+<pre><code>view.style.update({
+  x: 100,
+  y: 200,
+  backgroundColor: &#39;red&#39;
+});</code></pre>
+<h4 id="style.copy">style.copy ()</h4>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{object}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns a shallow copy of the view’s style object. You can use this object to update another view’s style.</p>
+<pre><code>var old_style = view1.style.copy();
+
+view2.style.update(old_style);</code></pre>
+<h2 id="events">Events</h2>
+<p>There are several input events which can be subscribed to on a view. Subscribing to these events allows you to do things such as click or drag a view, or react to these events within their respectives callbacks from the event handler.</p>
+<h3 id="init">init ()</h3>
+<p>If you are deriving from View, the object constructor is triggered when a new instance of the view is constructed.</p>
+<p>Example of deriving from View in MyView.js :</p>
+<pre><code>exports = Class(View, function(supr) {
+    this.init = function(opts) {
+        supr(this, &#39;init&#39;, [opts]);
+
+        // Handle class instantiation here
+    }
+
+    this.tick = function(dt) {
+        // Handle &#39;dt&#39; milliseconds time passing here
+    }
+...</code></pre>
+<h3 id="render-ctx">render (ctx)</h3>
+<p>By overriding the render call, you are able to bypass the normal rendering of the view to access OpenGL calls on native platforms more directly. When the view would normally be rendered to the backbuffer, this function is called and you are responsible for providing render commands.</p>
+<p>Please see the <a href="./context.html">Context2D class documentation</a> for more information.</p>
+<p>Example of deriving from View in MyView.js :</p>
+<pre><code>exports = Class(View, function(supr) {
+    this.init = function(opts) {
+        supr(this, &#39;init&#39;, [opts]);
+
+        // Handle class instantiation here
+    }
+
+    this.render = function(ctx) {
+        // Handle manual rendering operations here
+    }
+...</code></pre>
+<h3 id="onfocus">onFocus ()</h3>
+<p>The callback function is triggered when focus is given to this view.</p>
+<pre><code>view.onFocus = function () {
+  console.log(&quot;View has focus!&quot;);
+};</code></pre>
+<h3 id="onblur">onBlur ()</h3>
+<p>The callback function is triggered when this view loses focus.</p>
+<pre><code>view.onBlur = function () {
+  console.log(&quot;View has lost focus!&quot;);
+};</code></pre>
+<h3 id="tick-dt">tick (dt)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>dt {number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>This callback function is executed on every tick of the game engine.</p>
+<pre><code>view.tick = function (dt) {
+  this.exampleMethod(dt);
+};</code></pre>
+<p>This is a convenience method that can be used instead of subscribing to the <code>'Tick'</code> event on the main game engine:</p>
+<pre><code>GC.app.engine.on(&#39;Tick&#39;, function (dt) {
+  view.exampleMethod(dt);
+});</code></pre>
+<h2 id="input-events">Input Events</h2>
+<h3 id="inputstart-callback-event-point">'InputStart', callback (event, point)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>event {InputEvent}</code></li>
+<li><code>point {Point}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Fired on a mousedown / touch occurrence. <code>event</code> represents the InputEvent which occurred from InputStart occurring. <code>point</code> is a point relative to the top-left corner of the view.</p>
+<p>Subscribe to the capture-phase event with <code>'InputStartCapture'</code>.</p>
+<pre><code>view.on(&#39;InputStart&#39;, function (event, point) {
+  console.log(&quot;This view had touch begin on it at: &quot; + point.x + &quot;,&quot; + point.y);
+});</code></pre>
+<h3 id="inputselect-callback-event-point">'InputSelect', callback (event, point)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>event {InputEvent}</code></li>
+<li><code>point {Point}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Fired on a mouseup / touchend occurence. <code>event</code> represents the InputEvent which occurred from InputSelect occurring. <code>point</code> is a point relative to the top-left corner of the view. The capture-phase event is available by subscribing to <code>'InputSelectCapture'</code>.</p>
+<pre><code>view.on(&#39;InputSelect&#39;, function (event, point) {
+  console.log(&quot;View clicked at position: &quot; + point.x + &quot;,&quot; + point.y);
+});</code></pre>
+<h3 id="inputmove-callback-event-point">'InputMove', callback (event, point)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>event {InputEvent}</code></li>
+<li><code>point {Point}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Fired after an <code>'InputStart'</code> event, when the input is moving on the view.</p>
+<pre><code>view.on(&#39;InputMove&#39;, function (event, point) {
+  console.log(&quot;This view had touch begin on it at: &quot; + point.x + &quot;,&quot; + point.y);
+});</code></pre>
+<h3 id="inputover-callback-over-overcount-attarget">'InputOver', callback (over, overCount, atTarget)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>over</code></li>
+<li><code>overCount {number}</code></li>
+<li><code>atTarget</code></li>
+</ol>
+</dd>
+</dl>
+<p>The event is fired when input is moved over a view.</p>
+<pre><code>view.on(&#39;InputOver&#39;, function (over, overCount, atTarget) {
+  ...
+});</code></pre>
+<h3 id="inputout-callback-over-overcount-attarget">'InputOut', callback (over, overCount, atTarget)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>over</code></li>
+<li><code>overCount {number}</code></li>
+<li><code>atTarget</code></li>
+</ol>
+</dd>
+</dl>
+<p>The event is fired when input is moved off a view.</p>
+<pre><code>view.on(&#39;InputOut&#39;, function (over, overCount, atTarget) {
+  ...
+});</code></pre>
+<h3 id="dragstart-callback-dragevent">'DragStart', callback (dragEvent)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>dragEvt {InputEvent}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Fired when dragging starts. <code>dragEvt</code> represents the event from which dragging started. <code>dragEvt.srcPt</code> contains the point where the drag started.</p>
+<pre><code>view.on(&#39;DragStart&#39;, function (dragEvt) {
+  console.log(&quot;Drag started at (&quot;, dragEvt.srcPt.x, &quot;,&quot;, dragEvt.srcPt.y, &quot;) screen coordinates&quot; );
+});</code></pre>
+<h3 id="drag-callback-startevt-dragevt-delta">'Drag', callback (startEvt, dragEvt, delta)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>startEvt {InputEvent}</code></li>
+<li><code>dragEvt {InputEvent}</code></li>
+<li><code>delta {number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Fired during dragging. <code>startEvt</code> represents the event from which dragging started. <code>dragEvt</code> represents the event occuring from movement on the view. <code>delta</code> represents the difference between the last <code>dragEvt</code> and this one.</p>
+<pre><code>view.on(&#39;Drag&#39;, function (startEvt, dragEvt, delta) {
+  console.log(&quot;Drag continued at (&quot;, dragEvt.srcPt.x, &quot;,&quot;, dragEvt.srcPt.y, &quot;) screen coordinates&quot; );
+});</code></pre>
+<h3 id="dragstop-callback-dragevt-selectevt">'DragStop', callback (dragEvt, selectEvt)</h3>
+<p>Parameters: 1. <code>startEvt {InputEvent}</code> 2. <code>dragEvt {InputEvent}</code></p>
+<p>Fired when dragging is stopped. <code>startEvt</code> represents the event from which dragging started. <code>dragEvt</code> represents the event which occurs when the dragging has stopped.</p>
+<pre><code>view.on(&#39;DragStop&#39;, function (dragEvent, selectEvent) {
+  console.log(&quot;Drag ended at (&quot;, dragEvt.srcPt.x, &quot;,&quot;, dragEvt.srcPt.y, &quot;) screen coordinates&quot; );
+});</code></pre>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

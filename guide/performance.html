@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: performance</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#performance-best-practices">Performance Best Practices</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#preload-resources">Preload resources</a></li>
+<li><a href="#optimize-selectively">Optimize Selectively</a></li>
+<li><a href="#manually-trigger-gc">Manually trigger GC</a></li>
+<li><a href="#allocate-fewer-objects">Allocate fewer objects</a><ul>
+<li><a href="#use-view-pools">Use View pools</a></li>
+</ul></li>
+<li><a href="#native-code-is-faster-than-javascript">Native code is faster than JavaScript</a></li>
+<li><a href="#use-the-animation-engine">Use the animation engine</a></li>
+<li><a href="#schedule-tasks-over-multiple-frames">Schedule tasks over multiple frames</a></li>
+<li><a href="#recommended-reading">Recommended Reading</a></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="performance-best-practices">Performance Best Practices</h1>
+<h2 id="overview">Overview</h2>
+<p>A smooth framerate in your game is essential for a good user experience. The Game Closure DevKit allows you to write your game code rapidly in JavaScript software, which will then also run accelerated on mobile hardware.</p>
+<p>Reaching your performance goals requires keeping a few key concepts in mind while coding. JavaScript is a garbage-collected language, meaning that periodically all of the disposed objects need to be collected and freed so the memory can be reused. This garbage collection can cause frames to drop if a large number of objects are being created and freed by your game.</p>
+<p>Rapid development is a top priority, and you can always go back and apply the following techniques after your game is up and running to improve performance further. Testing your game on lower-end phones such as the iPhone 3GS will help you determine how much time needs to be spent actually working on performance issues.</p>
+<h2 id="preload-resources">Preload resources</h2>
+<p>Resource loading can be hard on a game’s framerate. Make sure to preload any assets before you need them to prevent noticeable in-game lags. This also prevents game assets from “blinking in” after gameplay starts.</p>
+<p>Example preloader usage:</p>
+<pre><code>import ui.resource.loader as loader;
+
+loader.preload([&quot;resources/images/tutorial&quot;, &quot;resources/sounds&quot;], function() {
+    console.log(&quot;Finished loading tutorial images!&quot;);
+});</code></pre>
+<p>See the <a href="./load-assets.html">asset loading guide</a> for more information on how to preload resources.</p>
+<h2 id="optimize-selectively">Optimize Selectively</h2>
+<p>Any code that <em>can</em> be taken out of a loop, <em>should</em> be taken out. Function calls carry some additional overhead. Generally, modern JavaScript engines optimize for most use cases, but using a tool like <a href="http://jsperf.com">jsPerf</a> to test snippets can be very insightful (even though it run tests in your browser, the lessons can still apply).</p>
+<p>Also, get comfortable with debugging JavaScript using the Chrome Developer Tools, especially the <a href="https://developers.google.com/chrome-developer-tools/docs/profiles">Profiles Panel</a>, with particular attention to the <strong>CPU profiler</strong> and the <strong>Heap profiler</strong>.</p>
+<p>While log messages are helpful to make development faster, avoid excessive logging to the console every frame for your final release.</p>
+<h2 id="manually-trigger-gc">Manually trigger GC</h2>
+<p>Manually triggering garbage collection (GC) while waiting for user input or otherwise waiting at a menu or modal screen will prevent GC lag spikes from occurring during gameplay when they are noticeable.</p>
+<p>Invoke <code>device.collectGarbage();</code> to force garbage collection. Note that this has no effect in web browsers.</p>
+<h2 id="allocate-fewer-objects">Allocate fewer objects</h2>
+<p>The more objects that are created, the greater the performance lag when the JavaScript engine needs to garbage collect them, and if there are any references to an object, its memory won’t be de-allocated. It’s better to reuse existing objects than create new ones, so for example:</p>
+<ul>
+<li>Use <code>Date.now()</code> instead of <code>+new Date()</code>.</li>
+<li>Clear an old array with <code>arr.length = 0</code> instead of creating a new one.</li>
+<li>Likewise, recycle objects rather than creating new ones.</li>
+</ul>
+<p>There are some symptoms for bad garbage collection:</p>
+<ul>
+<li>Excessive logs about garbage collection (GC) from V8 (Android) in <code>adb logcat</code> or Spidermonkey (iOS) on the Xcode console.</li>
+<li>Irregular glitches in framerate when you’re not doing anything notable in JavaScript.</li>
+<li>Smooth framerates punctuated with brief lag spikes.</li>
+</ul>
+<h3 id="use-view-pools">Use View pools</h3>
+<p>Since you take a performance hit when creating objects, it can be beneficial to create “pools” of <code>View</code> objects ahead of time, and then when your ready to use them, acquire them from the already allocated pool. When you are done with the view, release it back to the pool so it can be used again later.</p>
+<p>This means that no garbage collection needs to be done at all for these heavy objects, reducing GC churn during gameplay.</p>
+<h2 id="native-code-is-faster-than-javascript">Native code is faster than JavaScript</h2>
+<p>JavaScript is fast, but it’s even faster to let the native runtime do the work. Calls to JavaScript have more overhead than native code. The more code you can offload to the native side, the faster your game will run.</p>
+<h2 id="use-the-animation-engine">Use the animation engine</h2>
+<p>This is related to the previous tip. Using our <a href="../api/animate.html">animation engine</a> is faster than calculating in a game loop because it can be optimized for native execution. The less calculations in JavaScript, the better!</p>
+<h2 id="schedule-tasks-over-multiple-frames">Schedule tasks over multiple frames</h2>
+<p>Game calculations can be expensive, especially when done on each frame. Many times, effects such as physics collisions and AI and be run every other frame (or even less) without a loss in visual quality. It’s important to schedule these tasks across animation frames for a consistent, and better performing game.</p>
+<h2 id="recommended-reading">Recommended Reading</h2>
+<p>Most of the references you will find online are <a href="../native/native-v8.html">V8-specific</a> tips, which have an effect on the Chrome Web Browser and the Android native platforms. However, a subset of these best practices has a positive impact on performance in <a href="../native/native-sm.html">SpiderMonkey</a> also, which will help on iOS devices.</p>
+<p>[1] An excellent starting point: <a href="http://www.html5rocks.com/en/tutorials/speed/v8/">http://www.html5rocks.com/en/tutorials/speed/v8/</a>.</p>
+<p>[2] For a more technical overview with good examples: <a href="http://oreilly.com/server-administration/excerpts/even-faster-websites/writing-efficient-javascript.html">http://oreilly.com/server-administration/excerpts/even-faster-websites/writing-efficient-javascript.html</a>.</p>
+<p>[3] For a deep dive into technical information see Florian Loitsch’s blog: <a href="http://floitsch.blogspot.com/2012/03/optimizing-for-v8-introduction.html">http://floitsch.blogspot.com/2012/03/optimizing-for-v8-introduction.html</a>.</p>
+<p>[4] In particular, we have found that using Google D8 to inspect deoptimizations is a great way to profile your JavaScript code for performance improvements that can be gained through refactoring your code. See this blog post: <a href="http://floitsch.blogspot.com/2012/03/optimizing-for-v8-inlining.html">An introduction to deoptimizations</a>.</p>
+<p>[5] Finally: A 45 minute video from Google I/O 2012 on <a href="http://www.youtube.com/watch?v=UJPdhx5zTaw">“Breaking the JavaScript Speed Limit with V8”</a></p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

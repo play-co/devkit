@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ui-images</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-ui.imageview">Class: ui.ImageView</a><ul>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#new-imageview-options">new ImageView ([options])</a></li>
+<li><a href="#getimage">getImage ()</a></li>
+<li><a href="#setimage-url-options">setImage (url [, options])</a></li>
+<li><a href="#setimage-img-options">setImage (img [, options])</a></li>
+<li><a href="#autosize">autoSize ()</a></li>
+<li><a href="#getorigwidth">getOrigWidth ()</a></li>
+<li><a href="#getorigheight">getOrigHeight ()</a></li>
+</ul></li>
+<li><a href="#events">Events</a><ul>
+<li><a href="#doonload-callback">doOnLoad (callback)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-ui.imagescaleview">Class: ui.ImageScaleView</a><ul>
+<li><a href="#methods-1">Methods</a><ul>
+<li><a href="#new-imagescaleview-options">new ImageScaleView ([options])</a></li>
+</ul></li>
+<li><a href="#tile-options">Tile Options</a></li>
+<li><a href="#slice-options">9-Slice Options</a></li>
+<li><a href="#overlapping-sides">Overlapping Sides</a></li>
+<li><a href="#using-6-slice">Using 6-Slice</a></li>
+<li><a href="#using-3-slice">Using 3-Slice</a></li>
+<li><a href="#using-2-slice">Using 2-Slice</a></li>
+</ul></li>
+<li><a href="#class-ui.resource.image">Class: ui.resource.Image</a><ul>
+<li><a href="#methods-2">Methods</a><ul>
+<li><a href="#new-image-options">new Image ([options])</a></li>
+<li><a href="#isready">isReady ()</a></li>
+<li><a href="#destroy">destroy ()</a></li>
+<li><a href="#setsrcimage-image">setSrcImage (image)</a></li>
+<li><a href="#setsrcimage-image-1">setSrcImage (image)</a></li>
+<li><a href="#geturl">getURL ()</a></li>
+<li><a href="#seturl-url">setURL (url)</a></li>
+<li><a href="#getimagedata">getImageData ()</a></li>
+<li><a href="#getwidth">getWidth ()</a></li>
+<li><a href="#getorigwidth-1">getOrigWidth ()</a></li>
+<li><a href="#getheight">getHeight ()</a></li>
+<li><a href="#getorigheight-1">getOrigHeight ()</a></li>
+<li><a href="#getsource">getSource ()</a></li>
+<li><a href="#getmap">getMap ()</a></li>
+<li><a href="#setmap-x-y-w-h-margintop-marginright-marginbottom-marginleft">setMap (x, y, w, h, marginTop, marginRight, marginBottom, marginLeft)</a></li>
+</ul></li>
+<li><a href="#events-1">Events</a><ul>
+<li><a href="#doonload-callback-1">doOnLoad (callback)</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-ui.imageview">Class: ui.ImageView</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>Display an image within a <code>View</code>.</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li><a href="../example/images-basic/">A Basic Image</a></li>
+<li><a href="../example/images-nine-slice/">9-Slice Scaling</a></li>
+<li><a href="../example/images-nine-slice-animation/">9-Slice Animation</a></li>
+<li><a href="../example/images-six-slice/">6-Slice Scaling</a></li>
+<li><a href="../example/images-three-slice/">3-Slice Scaling</a></li>
+<li><a href="../example/images-two-slice/">2-Slice Scaling</a></li>
+<li><a href="../example/images-cover-contain/">Cover/Contain Scaling</a></li>
+<li><a href="../example/images-tiled/">Tiling</a></li>
+</ul>
+<h2 id="methods">Methods</h2>
+<h3 id="new-imageview-options">new ImageView ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>image {string|ui.resource.Image} = false</code> —Image to render. A path in the resources directory or <a href="#class-ui.resource.image"><code>Image</code></a> instance.</li>
+<li><code>autoSize {boolean} = false</code> —If <code>false</code>, stretch the image to the dimensions of the view. Use the image dimensions if <code>true</code>.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<pre><code>import ui.ImageView as ImageView;
+
+var imageview = new ImageView({
+  superview: parent,
+  image: &#39;resources/images/example.png&#39;,
+  width: 100,
+  height: 100,
+  x: 0,
+  y: 0
+});</code></pre>
+<h3 id="getimage">getImage ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{ui.resource.Image}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the internal <code>ui.resource.Image</code> instance to be rendered.</p>
+<h3 id="setimage-url-options">setImage (url [, options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>url {string}</code></li>
+<li><code>options {object}</code> —Optional.
+<ul>
+<li><code>autoSize {boolean} = false</code> —Stretch the image to the View dimensions if <code>false</code>. Use the image dimensions if <code>true</code>.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Set the image from its path in the resources directory. This will create a new <code>Image</code> instance on each call to <code>setImage</code>. Doing this frequently may cause garbage collection issues so consider using <code>Image</code> instead of path strings <em>(see definition below)</em>.</p>
+<pre><code>imageview.setImage(&#39;resources/images/example2.png&#39;);</code></pre>
+<h3 id="setimage-img-options">setImage (img [, options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>img {ui.resource.Image}</code></li>
+<li><code>options {object}</code>
+<ul>
+<li><code>autoSize {boolean} = false</code> —Stretch the image to the view dimensions if <code>false</code>. Use the image dimensions if <code>true</code>.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Sets the image for the <code>ImageView</code> using an instance of <code>ui.resource.Image</code>.</p>
+<pre><code>import ui.resource.Image as Image;
+
+var image = new Image({url: &#39;resources/images/example2.png&#39;};
+imageview.setImage(image);</code></pre>
+<h3 id="autosize">autoSize ()</h3>
+<p>Resize the views width and height to the actual dimensions of the image. If <code>fixedAspectRatio</code> is set, it will constrain the dimensions to the ratio.</p>
+<h3 id="getorigwidth">getOrigWidth ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the source image width.</p>
+<h3 id="getorigheight">getOrigHeight ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the source image height.</p>
+<h2 id="events">Events</h2>
+<h3 id="doonload-callback">doOnLoad (callback)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>callback {function}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Registers a callback to be run once the image has fully loaded (uses <a href="./event.html#class-event.callback">event.Callback</a>). Callback is executed with the <code>ImageView</code> instance as the context.</p>
+<h1 id="class-ui.imagescaleview">Class: ui.ImageScaleView</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>A specialized <code>ImageView</code> for advanced scaling techniques, including 9-Slice.</p>
+<h2 id="methods-1">Methods</h2>
+<h3 id="new-imagescaleview-options">new ImageScaleView ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>image {string|ui.resource.Image} = false</code> —Source image. Just like <code>ImageView</code>, specify a string path or an instance of <code>ui.resource.Image</code>.</li>
+<li><code>autoSize {boolean} = false</code> —Stretch the image to the view dimensions if <code>false</code>. Use the image dimensions if <code>true</code>.</li>
+<li><code>scaleMethod {string} = 'stretch'</code> —Valid options are <code>'none'</code>, <code>'stretch'</code>, <code>'cover'</code>, <code>'contain'</code>, <code>'tile'</code>, <code>'9slice'</code>, <code>'6slice'</code>, <code>'3slice'</code> and <code>'2slice'</code>.</li>
+<li><code>debug {boolean} = false</code> —Display scaling measurements.</li>
+<li><code>rows {number} = undefined</code> —Number of rows when <code>scaleMethod</code> is <code>'tile'</code>.</li>
+<li><code>columns {number} = undefined</code> —Number of columns when <code>scaleMethod</code> is <code>'tile'</code>.</li>
+<li><code>renderCenter {boolean} = true</code> —Render the center of a 9-slice. Make this <code>false</code> if you want your <code>ImageScaleView</code> to be a frame.</li>
+<li><code>sourceSlices {object}</code> —source slices. See below for details.
+<ul>
+<li><code>horizontal {object}</code>
+<ul>
+<li><code>left {number}</code></li>
+<li><code>center {number}</code></li>
+<li><code>right {number}</code></li>
+</ul></li>
+<li><code>vertical {object}</code>
+<ul>
+<li><code>top {number}</code></li>
+<li><code>middle {number}</code></li>
+<li><code>bottom {number}</code></li>
+</ul></li>
+</ul></li>
+<li><code>destSlices {object}</code> —destination slices. Setting these values to 0 can create 3- and 6-slice scaling.
+<ul>
+<li><code>horizontal {object}</code>
+<ul>
+<li><code>left {number}</code></li>
+<li><code>right {number}</code></li>
+</ul></li>
+<li><code>vertical {object}</code>
+<ul>
+<li><code>top {number}</code></li>
+<li><code>bottom {number}</code></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<h2 id="tile-options">Tile Options</h2>
+<p>When <code>scaleMethod</code> is <code>'tile'</code>, you must define either <code>rows</code> or <code>columns</code> (<em>not</em> both). For example:</p>
+<pre><code>new ui.ImageScaleView({
+    superview: this,
+    image: &#39;resources/images/flower.png&#39;,
+    layout: &#39;box&#39;,
+    scaleMethod: &#39;tile&#39;,
+    columns: 5
+});</code></pre>
+<h2 id="slice-options">9-Slice Options</h2>
+<p>The <code>sourceSlices</code> is an object that specifies where the slices start and end. For 9-slice you need to specify the sizes of the 3 columns and 3 rows. <code>horizontal</code> refers to the columns and <code>vertical</code> refers to the rows if you were to visualise it as a grid.</p>
+<div class="figure-wrapper">
+<figure>
+<img src="./assets/ui-imageview/9slice.png" class="diagram" />
+<figcaption>
+Demonstrates how the <code>sourceSlices</code> object determines slice sizes and the effects after resizing the view.
+</figcaption>
+</figure>
+</div>
+
+<p>The above diagram demonstrates how the numbers in <code>sourceSlices</code> represent the width of the horizontal slices and heights of the vertical slices. It also shows how resizing will retain the sizes of the corner slices while only stretching the edge and center slice.</p>
+<p>The <code>destSlices</code> option is an advanced option to change the size of the slices when it’s rendered. By default it will retain it’s original size (by using the values in <code>sourceSlices</code>).</p>
+<h2 id="overlapping-sides">Overlapping Sides</h2>
+<p>If the sum of the destination values exceeds the width or the height of the view then the sides will be scaled back. For example: A view has a <code>width</code> of 40 pixels and the <code>left</code> and <code>right</code> values are 25 then the <code>center</code> will not be applied and the <code>left</code> and <code>right</code> values will be scaled back to the maximum available size of 20 pixels for each side.</p>
+<h2 id="using-6-slice">Using 6-Slice</h2>
+<p>For horizontal slices you must pass the following properties:</p>
+<ul>
+<li><code>sourceSlices {object}</code>
+<ul>
+<li><code>horizontal {object}</code>
+<ul>
+<li><code>left {number}</code></li>
+<li><code>center {number}</code></li>
+<li><code>right {number}</code></li>
+</ul></li>
+<li><code>vertical {object}</code>
+<ul>
+<li><code>top {number}</code></li>
+<li><code>bottom {number}</code></li>
+</ul></li>
+</ul></li>
+<li><code>destSlices {object}</code> —Optional, if omitted then the <code>sourceSlices</code> will be used
+<ul>
+<li><code>horizontal {object}</code>
+<ul>
+<li><code>left {number}</code></li>
+<li><code>right {number}</code></li>
+</ul></li>
+<li><code>vertical {object}</code>
+<ul>
+<li><code>top {number}</code></li>
+<li><code>bottom {number}</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="figure-wrapper">
+<figure>
+<img src="./assets/ui-imageview/6slice-h.png" class="diagram" />
+<figcaption>
+Horizontal 6-slice.
+</figcaption>
+</figure>
+</div>
+
+<p>For vertical slices you must pass the following properties:</p>
+<ul>
+<li><code>sourceSlices {object}</code>
+<ul>
+<li><code>horizontal {object}</code>
+<ul>
+<li><code>left {number}</code></li>
+<li><code>right {number}</code></li>
+</ul></li>
+<li><code>vertical {object}</code>
+<ul>
+<li><code>top {number}</code></li>
+<li><code>middle {number}</code></li>
+<li><code>bottom {number}</code></li>
+</ul></li>
+</ul></li>
+<li><code>destSlices {object}</code> —Optional, if omitted then the <code>sourceSlices</code> will be used
+<ul>
+<li><code>horizontal {object}</code>
+<ul>
+<li><code>left {number}</code></li>
+<li><code>right {number}</code></li>
+</ul></li>
+<li><code>vertical {object}</code>
+<ul>
+<li><code>top {number}</code></li>
+<li><code>bottom {number}</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="figure-wrapper">
+<figure>
+<img src="./assets/ui-imageview/6slice-v.png" class="diagram" />
+<figcaption>
+Vertical 6-slice.
+</figcaption>
+</figure>
+</div>
+
+<h2 id="using-3-slice">Using 3-Slice</h2>
+<p>For horizontal slices you must pass the following properties:</p>
+<ul>
+<li><code>sourceSlices {object}</code>
+<ul>
+<li><code>horizontal {object}</code>
+<ul>
+<li><code>left {number}</code></li>
+<li><code>center {number}</code></li>
+<li><code>right {number}</code></li>
+</ul></li>
+</ul></li>
+<li><code>destSlices {object}</code> —Optional, if omitted then the <code>sourceSlices</code> will be used
+<ul>
+<li><code>horizontal {object}</code>
+<ul>
+<li><code>left {number}</code></li>
+<li><code>right {number}</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="figure-wrapper">
+<figure>
+<img src="./assets/ui-imageview/3slice-h.png" class="diagram" />
+<figcaption>
+Horizontal 3-slice.
+</figcaption>
+</figure>
+</div>
+
+<p>For vertical slices you must pass the following properties:</p>
+<ul>
+<li><code>sourceSlices {object}</code>
+<ul>
+<li><code>vertical {object}</code>
+<ul>
+<li><code>top {number}</code></li>
+<li><code>middle {number}</code></li>
+<li><code>bottom {number}</code></li>
+</ul></li>
+</ul></li>
+<li><code>destSlices {object}</code> —Optional, if omitted then the <code>sourceSlices</code> will be used
+<ul>
+<li><code>vertical {object}</code>
+<ul>
+<li><code>top {number}</code></li>
+<li><code>bottom {number}</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="figure-wrapper">
+<figure>
+<img src="./assets/ui-imageview/3slice-v.png" class="diagram" />
+<figcaption>
+Vertical 3-slice.
+</figcaption>
+</figure>
+</div>
+
+<h2 id="using-2-slice">Using 2-Slice</h2>
+<p>If the <code>scaleMethod</code> is set to <code>'2slice'</code> then you can control the direction of the slices through the source slice properties.</p>
+<p>For horizontal slices you must pass the following properties:</p>
+<ul>
+<li><code>sourceSlices {object}</code>
+<ul>
+<li><code>horizontal {object}</code>
+<ul>
+<li><code>left {number}</code></li>
+<li><code>right {number}</code></li>
+</ul></li>
+</ul></li>
+<li><code>destSlices {object}</code> —Optional, if omitted then the <code>sourceSlices</code> will be used
+<ul>
+<li><code>horizontal {object}</code>
+<ul>
+<li><code>left {number}</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="figure-wrapper">
+<figure>
+<img src="./assets/ui-imageview/2slice-h.png" class="diagram" />
+<figcaption>
+Horizontal 2-slice.
+</figcaption>
+</figure>
+</div>
+
+<p>For vertical slices you must pass the following properties:</p>
+<ul>
+<li><code>sourceSlices {object}</code>
+<ul>
+<li><code>vertical {object}</code>
+<ul>
+<li><code>top {number}</code></li>
+<li><code>bottom {number}</code></li>
+</ul></li>
+</ul></li>
+<li><code>destSlices {object}</code> —Optional, if omitted then the <code>sourceSlices</code> will be used
+<ul>
+<li><code>vertical {object}</code>
+<ul>
+<li><code>top {number}</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="figure-wrapper">
+<figure>
+<img src="./assets/ui-imageview/2slice-v.png" class="diagram" />
+<figcaption>
+Vertical 2-slice.
+</figcaption>
+</figure>
+</div>
+
+
+<h1 id="class-ui.resource.image">Class: ui.resource.Image</h1>
+<p>This class represents an Image resource. It is not renderable without a <code>View</code>. A view will use this resource as the source and can therefore do advanced rendering with the resource. Supports taking a subset of images, to support extracting from compacted sprite sheets. Also supports applying filters to an image, usually by the View class.</p>
+<h2 id="methods-2">Methods</h2>
+<h3 id="new-image-options">new Image ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>scale {boolean} = false</code> —If <code>true</code>, will scale the width and height according to the original ratio.</li>
+<li><code>sourceW {number} = -1</code> —Source width of the desired area on the image.</li>
+<li><code>sourceH {number} = -1</code> —Source height of the desired area on the source image.</li>
+<li><code>sourceX {number} = 0</code> —Source X position of the desired area on the source image.</li>
+<li><code>sourceY {number} = 0</code> —Source Y position of the desired area on the source image.</li>
+<li><code>marginTop {number} = 0</code></li>
+<li><code>marginBottom {number} = 0</code></li>
+<li><code>marginRight {number} = 0</code></li>
+<li><code>marginLeft {number} = 0</code></li>
+<li><code>sourceScale {number} = 1</code> —Scale of the source area.</li>
+<li><code>url {string}</code> —A URL or a base64 encoded image string.</li>
+<li><code>srcImage {Image}</code> —Using an instance of the native DOM Image object.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Creates an Image.</p>
+<pre><code>import ui.resource.Image as Image;
+
+var image = new Image({url: &#39;resources/images/example.png&#39;};</code></pre>
+<h3 id="isready">isReady ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns whether the image has loaded.</p>
+<h3 id="destroy">destroy ()</h3>
+<p>Destroys the image.</p>
+<h3 id="setsrcimage-image">setSrcImage (image)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>image {Image}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Sets the raw (HTML) internal image.</p>
+<h3 id="setsrcimage-image-1">setSrcImage (image)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>image {string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Sets the raw (HTML) internal image’s URL.</p>
+<h3 id="geturl">getURL ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the image URL.</p>
+<h3 id="seturl-url">setURL (url)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>url {string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Sets the image URL.</p>
+<h3 id="getimagedata">getImageData ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{ImageData}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the image data object from a canvas. Only available in browsers.</p>
+<h3 id="getwidth">getWidth ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the image’s computed width (taking into account margin and scale).</p>
+<h3 id="getorigwidth-1">getOrigWidth ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the image’s actual, “natural” width (i.e. width ignoring margin and scale).</p>
+<h3 id="getheight">getHeight ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the image’s computed height (taking into account margin and scale).</p>
+<h3 id="getorigheight-1">getOrigHeight ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the image’s actual, “natural” height (i.e. height ignoring margin and scale).</p>
+<h3 id="getsource">getSource ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Image}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the raw (HTML) image.</p>
+<h3 id="getmap">getMap ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{object}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the internal <code>ImageMap</code> object. This class models the region of a larger image that this “Image” references.</p>
+<h3 id="setmap-x-y-w-h-margintop-marginright-marginbottom-marginleft">setMap (x, y, w, h, marginTop, marginRight, marginBottom, marginLeft)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>x {number}</code></li>
+<li><code>y {number}</code></li>
+<li><code>w {number}</code></li>
+<li><code>h {number}</code></li>
+<li><code>marginTop {number}</code></li>
+<li><code>marginRight {number}</code></li>
+<li><code>marginBottom {number}</code></li>
+<li><code>marginLeft {number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Sets the properties of the internal <code>ImageMap</code> object.</p>
+<h2 id="events-1">Events</h2>
+<h3 id="doonload-callback-1">doOnLoad (callback)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>callback {function}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Registers a callback to be run once the image has fully loaded (done with <a href="./event.html#class-event.callback">event.Callback</a>).</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

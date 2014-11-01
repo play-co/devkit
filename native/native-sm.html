@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: native-sm</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#mozilla-spidermonkey">Mozilla SpiderMonkey</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#why-spidermonkey">Why SpiderMonkey?</a></li>
+<li><a href="#code-base">Code Base</a></li>
+<li><a href="#major-improvements-from-game-closure">Major Improvements from Game Closure:</a></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="mozilla-spidermonkey">Mozilla SpiderMonkey</h1>
+<h2 id="overview">Overview</h2>
+<p>Mozilla SpiderMonkey is an interpreter and JIT (Just-in-Time) Compiler for JavaScript. Apple does not allow self-modifying app code onto the App Store, so the Game Closure DevKit is based on the interpreter mode of SpiderMonkey, rather than the much faster IonMonkey engine. We compile out the IonMonkey code during our builds.</p>
+<p>The <a href="http://en.wikipedia.org/wiki/Mozilla_Public_License">Mozilla Public License</a> is permissive enough to allow us to use it in a commercial or open-source setting as long as the modified SpiderMonkey source code is provided. You may download the source code for our branch of SpiderMonkey <a href="https://github.com/gameclosure/spidermonkey-ios">here</a>.</p>
+<p>To see how SpiderMonkey fits into the native stack on iOS, see the <a href="./native-stack.html">Native Stack Overview</a>.</p>
+<h2 id="why-spidermonkey">Why SpiderMonkey?</h2>
+<p>Another mature interpreter project is JavaScript Core. Since it is licensed under the LGPL, however, it cannot be used on the iTunes App Store. LGPL projects must be dynamically linked, which is not permitted for apps. And several games have been regrettably pulled off the App Store as a result of using JavaScript Core.</p>
+<h2 id="code-base">Code Base</h2>
+<p>We are branched off Mozilla FIREFOX_AURORA_18_BASE from Nov 8 at node bb4d68b03164eb7480c1a2b5a652d75c50084f18.</p>
+<p>We removed most of the code unrelated to the JavaScript engine itself and heavily modified what remained.</p>
+<h2 id="major-improvements-from-game-closure">Major Improvements from Game Closure:</h2>
+<h4 id="added-a-build-script-for-generating-optimized-fat-binaries-for-armv7-and-i386">Added a build script for generating optimized fat binaries for ARMv7 and i386</h4>
+<ul>
+<li>Added ios target to configure script:</li>
+</ul>
+<p><code>--with-ios-target=iPhoneOS --with-ios-version=$IOS_SDK --with-ios-min-version=$MIN_IOS_VERSION --with-ios-arch=armv7</code></p>
+<ul>
+<li>configure changes:</li>
+</ul>
+<p><code>-mvectorize-with-neon-quad -fprefetch-loop-arrays -mfloat-abi=hard -ftree-vectorize -march=armv7-a -mfpu=vfpv3-d16</code></p>
+<ul>
+<li>Remove JIT compiler and other unused features:</li>
+</ul>
+<pre><code>--disable-shared-js --disable-tests
+--disable-ion --disable-jm --disable-tm
+--enable-llvm-hacks --disable-methodjit
+--disable-monoic --disable-polyic</code></pre>
+<ul>
+<li>GC Optimizations:</li>
+</ul>
+<p><code>--disable-root-analysis --disable-exact-rooting --enable-gcincremental</code></p>
+<ul>
+<li>Optimization flags:</li>
+</ul>
+<p><code>--enable-optimize=-O3 --with-thumb=yes --enable-strip --enable-install-strip</code></p>
+<h4 id="built-in-nspr-for-multithreaded-garbage-collection">Built in NSPR for multithreaded garbage collection</h4>
+<ul>
+<li>Built and linked to NSPR for multithreading</li>
+<li><code>JS_THREADSAFE</code> = 1</li>
+<li>Removed <code>PM_SetCurrentThreadName</code>, unsupported on our platform</li>
+<li>Removed PRLink, same problem</li>
+</ul>
+<h4 id="optimized-garbage-collection-for-small-intervals">Optimized Garbage Collection for small intervals</h4>
+<p>From our code we call <code>MaybeGC()</code> in <code>js_tick()</code> every fourth frame.</p>
+<ul>
+<li><code>gcNextSmallGCTime</code> added</li>
+<li><code>GC_IDLE_SMALL_SPAN</code> = 1 second</li>
+<li><code>GC_IDLE_FULL_SPAN</code> = 10 seconds</li>
+<li><code>MaybeGC()</code> modified to run incremental GC periodically</li>
+</ul>
+<h4 id="changed-the-way-scriptdebugepilogue-works-to-allow-for-step-out-js-debugger">Changed the way ScriptDebugEpilogue works to allow for step-out JS debugger</h4>
+<ul>
+<li>Now will call an executeHook with null hookData instead of not at all</li>
+</ul>
+<h4 id="optimizations">Optimizations</h4>
+<ul>
+<li><code>#define inline __inline__ __attribute__((always_inline))</code></li>
+<li>Removed assertions from critical paths</li>
+<li><p>Replaced assembly code double-to-int conversion with integer-only C code</p></li>
+<li><p>Disabled a lot of unused features in jsversion.h:</p></li>
+</ul>
+<pre><code>#define JS_HAS_STR_HTML_HELPERS 0       /* has str.anchor, str.bold, etc. */
+#define JS_HAS_OBJ_PROTO_PROP   1       /* has o.__proto__ etc. */
+#define JS_HAS_OBJ_WATCHPOINT   0       /* has o.watch and o.unwatch */
+#define JS_HAS_TOSOURCE         0       /* has Object/Array toSource method */
+#define JS_HAS_CATCH_GUARD      1       /* has exception handling catch guard */
+#define JS_HAS_UNEVAL           0       /* has uneval() top-level function */
+#define JS_HAS_CONST            1       /* has JS2 const as alternative var */
+#define JS_HAS_FUN_EXPR_STMT    1       /* has function expression statement */
+#define JS_HAS_NO_SUCH_METHOD   0       /* has o.__noSuchMethod__ handler */
+#define JS_HAS_GENERATORS       0       /* has yield in generator function */
+#define JS_HAS_BLOCK_SCOPE      0       /* has block scope via let/arraycomp */
+#define JS_HAS_DESTRUCTURING    0       /* has [a,b] = ... or {p:a,q:b} = ... */
+#define JS_HAS_GENERATOR_EXPRS  0       /* has (expr for (lhs in iterable)) */
+#define JS_HAS_EXPR_CLOSURES    0       /* has function (formals) listexpr */</code></pre>
+<h4 id="bugfixes">Bugfixes</h4>
+<ul>
+<li>Fixed a null exception in MarkValueRootRange</li>
+<li><code>JS_EncodeStringToBuffer()</code> now does UTF8 conversion instead of truncation, which fixes Chinese/Korean text strings</li>
+<li>Fixed <code>SlowArrayClass</code> so that RegEx results do not act strangely</li>
+</ul>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

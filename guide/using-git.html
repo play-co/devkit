@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: using-git</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#getting-started-with-git">Getting Started with Git</a><ul>
+<li><a href="#intro">Intro</a><ul>
+<li><a href="#getting-around">Getting around</a></li>
+</ul></li>
+<li><a href="#workflow">Workflow</a><ul>
+<li><a href="#a-reasonable-development-model">A reasonable development model</a></li>
+<li><a href="#adding-a-feature">Adding a feature</a></li>
+<li><a href="#update-a-branch-from-remote">Update a branch from remote</a></li>
+<li><a href="#working-with-others">Working with others</a></li>
+<li><a href="#checking-out-a-remote-branch">Checking out a remote branch</a></li>
+<li><a href="#pull-requests-on-github">Pull requests on GitHub</a></li>
+</ul></li>
+<li><a href="#git-tips">Git Tips</a><ul>
+<li><a href="#add-sections-of-a-file">Add sections of a file</a></li>
+<li><a href="#merge-sections-of-a-file-from-another-branch">Merge sections of a file from another branch</a></li>
+<li><a href="#view-history">View history</a></li>
+<li><a href="#see-changes">See changes</a></li>
+<li><a href="#fixing-mistakes">Fixing mistakes</a></li>
+<li><a href="#copy-a-file-from-between-branches">Copy a file from between branches</a></li>
+<li><a href="#new-tags">New tags</a></li>
+<li><a href="#ignore-files">Ignore files</a></li>
+<li><a href="#gui">GUI</a></li>
+<li><a href="#colors">Colors</a></li>
+<li><a href="#healthy-repo">Healthy repo</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="getting-started-with-git">Getting Started with Git</h1>
+<h2 id="intro">Intro</h2>
+<h3 id="getting-around">Getting around</h3>
+<p>Even though the <em>git utility</em> has many features, only a few commands are needed to start working. And since it’s a very popular revision control system, there’s plenty of information about it, and <em>GitHub</em>—the popular web-based hosting service we use to manage our git projects.</p>
+<p>If you have tab-completion set up in your shell, list available git commands with:</p>
+<p><code>$ git &lt;tab&gt;</code></p>
+<p>To see a git command’s usage:</p>
+<p><code>$ git command -h</code></p>
+<p>And to see a git command’s manual page:</p>
+<p><code>$ git help command</code><br/> or<br/> <code>$ man git-command</code></p>
+<p>To see the differences between the working branch and the last commit, and to display a list of additional commands needed to unstage a file:</p>
+<p><code>$ git status</code></p>
+<p>To list branches, or to list <em>all</em> branches (including remotes):</p>
+<p><code>$ git branch</code><br/> <code>$ git branch -a</code></p>
+<p>To delete a remote branch (after, say, your feature request has been merged):</p>
+<p><code>$ git push origin --delete branchname</code></p>
+<p>Please read the GitHub help for <a href="http://help.github.com/remotes/">managing remote branches</a>; it’s confusing to see a list of old branches that no one knows anything about.</p>
+<p>Once a file has been committed, git may act funny when you move it around. Even though git normally resolves discrepancies on its own, it’s worth understanding how these commands work:</p>
+<p><code>$ git mv file</code><br/> <code>$ git rm file</code></p>
+<h4 id="see-also">See also:</h4>
+<ul>
+<li><a href="http://git-scm.com/documentation">git-scm.com/documentation</a></li>
+<li><a href="http://help.github.com">help.github.com</a></li>
+<li><a href="http://gitref.org">gitref.org</a></li>
+</ul>
+<h2 id="workflow">Workflow</h2>
+<h3 id="a-reasonable-development-model">A reasonable development model</h3>
+<p>The complications with git are not so much how to use it, but how to use it when collaborating with other people. Workflow is not something enforced by the tool, but by the people using it. As such, check with your project leader to make sure everyone is on the same page, obviously, that direction supersedes any advice given here.</p>
+<p>A popular development model is to reserve the <code>master</code> branch for <em>production-ready</em> releases, and use <code>develop</code> as the <em>integration branch</em>. When <code>develop</code> reaches a stable point and is ready for release, the branch is merged back into <code>master</code> and tagged with a release number. Feature branches are forked from <code>develop</code>; this is where most of the day-to-day coding occurs. Hotfixes are forked from <code>master</code> and merged back into the <code>master</code> <em>and</em> <code>develop</code> branches.</p>
+<h4 id="see-also-1">See also:</h4>
+<ul>
+<li><a href="http://nvie.com/posts/a-successful-git-branching-model/">A Successful Git Branching Model</a></li>
+</ul>
+<h3 id="adding-a-feature">Adding a feature</h3>
+<p>Since branching is easy with git, generally, a new feature is added by creating a new branch and merging it back.</p>
+<pre><code># create a new myfeature branch from the current branch (probably master)
+$ git checkout -b myfeature
+
+# ...hack, hack, hack...
+$ git add file
+$ git commit -m &quot;A message about the changes made.&quot;
+# ...rinse, repeat...
+
+# switch back to main branch (or where you want to merge to)
+$ git checkout master
+# update branch to include changes
+$ git merge myfeature
+
+# remove the feature branch
+$ git branch -d myfeature</code></pre>
+<h3 id="update-a-branch-from-remote">Update a branch from remote</h3>
+<p><code>$ git pull origin mybranch</code></p>
+<h3 id="working-with-others">Working with others</h3>
+<p>Now we’ll look at a more real-life example of adding a new feature to the <em>develop</em> branch. Remember, <em>origin</em> is just a name for a branch, there’s nothing inherently special about it other than the convention to point it at the GitHub remote repository.</p>
+<pre><code># create myfeature branch from the develop branch
+$ git checkout -b myfeature develop
+
+# ...hack, hack, hack...
+$ git add file
+$ git commit -m &quot;A message about the changes made.&quot;
+# ...rinse, repeat...
+
+# switch back to develop
+$ git checkout develop
+
+# update from remote (this is basically a git pull)
+$ git fetch origin
+$ git merge origin/develop
+# develop branch is now up-to-date
+
+# switch back to feature branch
+$ git checkout myfeature
+
+# update feature branch
+$ git merge develop
+# ...handle merge conflicts manually or use &#39;git mergetool&#39;...
+
+# if long-standing feature, push feature branch to remote for safekeeping
+$ git push origin myfeature
+
+# and optionally, to remove the feature branch
+$ git checkout develop
+$ git branch -d myfeature
+</code></pre>
+<h3 id="checking-out-a-remote-branch">Checking out a remote branch</h3>
+<p>List remote branches and tracking status:</p>
+<p><code>$ git remote show origin</code></p>
+<p>If the remote branch is not listed as <code>tracked</code>, then fetch them:</p>
+<p><code>$ git fetch</code></p>
+<p>Now checkout the remote branch just like a local branch:</p>
+<p><code>$ git checkout -b mybranchname origin/branchname</code></p>
+<h4 id="see-also-2">See also:</h4>
+<ul>
+<li><a href="http://help.github.com/remotes/">Remotes</a></li>
+<li><a href="http://git-scm.com/book/en/Git-Branching-Basic-Branching-and-Merging#Basic-Merge-Conflicts">Basic Merge Conflicts</a></li>
+</ul>
+<h3 id="pull-requests-on-github">Pull requests on GitHub</h3>
+<p>While the git tool has its own command for code management, <code>git request-pull</code>, this process is quite a bit easier using GitHub’s <em>pull request</em> mechanism.</p>
+<pre><code># create a new feature branch
+git checkout -b myfeature
+
+# ...hack, hack, hack...
+git add file
+git commit -m &quot;A message about the changes made.&quot;
+# ...rinse, repeat...
+
+# push to github
+git push origin myfeature</code></pre>
+<p>To issue a <em>pull request</em> on GitHub, navigate to the repository page—make sure you’re on the feature branch you wish to merge—and click <strong>Pull Request</strong>.</p>
+<p>Make sure to:</p>
+<ol type="1">
+<li>Enter a meaningful message about your changes.</li>
+<li>Check the repository:branch <em>from</em> and <em>to</em> (to change these, click <strong>Change Commits</strong>).</li>
+<li>Preview.</li>
+<li>Click <strong>Send Pull Request</strong></li>
+</ol>
+<p>After your pull request has been accepted and merged, delete the feature branch from the remote to cut down the clutter:</p>
+<p><code>$ git push origin --delete myfeature</code></p>
+<h4 id="see-also-3">See also:</h4>
+<ul>
+<li><a href="http://help.github.com/send-pull-requests/">Send Pull Requests</a></li>
+</ul>
+<h2 id="git-tips">Git Tips</h2>
+<h3 id="add-sections-of-a-file">Add sections of a file</h3>
+<p>Running <code>git add -p &lt;file&gt;</code> will let you interactively choose which parts or the file to add to a commit. This is can be helpful when you want to break up multiple additions into separate commits, or for testing purposes where you want to ignore some isolated changes.</p>
+<h3 id="merge-sections-of-a-file-from-another-branch">Merge sections of a file from another branch</h3>
+<p>While on the branch you want to merge <em>to</em>, this command will interactively ask you to merge each chunk:</p>
+<p><code>git checkout --patch frombranch file</code></p>
+<h3 id="view-history">View history</h3>
+<p>List commits in reverse chronological order:</p>
+<p><code>$ git log</code></p>
+<p>List commits and include the diff with each one:</p>
+<p><code>$ git log -p</code></p>
+<p>Print each commit on a single line:</p>
+<p><code>$ git log --pretty=oneline</code></p>
+<p>Show the commit history of the file:</p>
+<p><code>$ git blame &lt;file&gt;</code></p>
+<p>Restrict history of a file to line numbers 20-25:</p>
+<p><code>$ git blame -L 20,25 &lt;file&gt;</code></p>
+<h4 id="see-also-4">See also:</h4>
+<ul>
+<li><a href="http://git-scm.com/book/en/Git-Basics-Viewing-the-Commit-History">Viewing the Commit History</a></li>
+</ul>
+<h3 id="see-changes">See changes</h3>
+<p>To see what’s been changed but not yet staged:</p>
+<p><code>$ git diff</code></p>
+<p>To see what’s been staged and will go into the next commit:</p>
+<p><code>$ git diff --staged</code></p>
+<p>List the names of files changed in this branch against another:</p>
+<p><code>$ git diff --name-status anotherbranch</code></p>
+<p>View the changes between two arbitrary commits:</p>
+<p><code>$ git diff &lt;commit&gt; &lt;commit&gt;</code></p>
+<p>If only passed a single commit then it has the same effect as using HEAD instead.</p>
+<h4 id="see-also-5">See also:</h4>
+<ul>
+<li><a href="http://git-scm.com/book/en/Git-Basics-Recording-Changes-to-the-Repository#Viewing-Your-Staged-and-Unstaged-Changes">Viewing Your Staged and Unstaged Changes</a></li>
+</ul>
+<h3 id="fixing-mistakes">Fixing mistakes</h3>
+<p>If you’ve messed up the working tree, but haven’t committed yet, return to the last committed state with:</p>
+<p><code>$ git reset --hard HEAD</code></p>
+<p>If you’ve committed something you want to undo, you can create a new commit that undoes whatever was done by the old commit. To do this pass a reference of the bad commit to <code>git revert</code>. For example, to revert the most recent commit:</p>
+<p><code>$ git revert HEAD</code></p>
+<h4 id="see-also-6">See also:</h4>
+<ul>
+<li><a href="http://git-scm.com/book/en/Git-Basics-Undoing-Things">Undoing Things</a></li>
+</ul>
+<h3 id="copy-a-file-from-between-branches">Copy a file from between branches</h3>
+<p>First, switch to the destination branch:</p>
+<p><code>$ git checkout destbranch</code></p>
+<p>Then, checkout the file you want from another branch:</p>
+<p><code>$ git checkout anotherbranch file</code></p>
+<h3 id="new-tags">New tags</h3>
+<p>If there’s a bug in a release, you’ll need to release a new tag. But, if you update an existing tag, only people who haven’t seen the tag before will correctly get the tag.</p>
+<p>If you do end up in this state, you can get the new tag by running:</p>
+<pre><code>git tag -d tagname
+git fetch --tags
+git checkout tagname
+git reset --hard</code></pre>
+<h3 id="ignore-files">Ignore files</h3>
+<p>Often you won’t want to track certain files or directories in a git repository, such as log and build files. To ignore these, create a list of matching file name patterns in a <code>.gitignore</code> file in a directory of the git tree. You may also create a global ignore file as well.</p>
+<h4 id="see-also-7">See also:</h4>
+<ul>
+<li><a href="http://git-scm.com/book/ch2-2.html#Ignoring-Files">Doc: Ignoring Files</a></li>
+<li><a href="http://help.github.com/ignore-files/">GitHub: Ignore Files</a></li>
+</ul>
+<h3 id="gui">GUI</h3>
+<p>There are a number of third-party utilites for visualizing a git repo, but there’s also a simple, built-in, tool as well:</p>
+<p><code>$ git gui</code></p>
+<h3 id="colors">Colors</h3>
+<p>Here is Billy’s <code>~/.gitconfig</code>, featuring his famous recipe for git console colors:</p>
+<pre><code>[user]
+  name = Johnny Game Closure
+  email = you@gameclosure.com
+
+[apply]
+  whitespace = nowarn
+
+[color]
+  branch = auto
+  diff = auto
+  status = auto
+
+[color &quot;branch&quot;]
+  current = yellow bold
+  local = cyan bold
+  remote = green bold
+
+[color &quot;diff&quot;]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+
+[color &quot;status&quot;]
+  added = yellow bold
+  changed = green bold
+  untracked = cyan</code></pre>
+<h3 id="healthy-repo">Healthy repo</h3>
+<p>General repository cleanup helps reduce disk space and increase performance by compressing file revisions and removing unnecessary files and unreachable objects. <code>git gc</code> can be run very quickly and is often automatically called by some git commands. For a more aggressive, but time-consuming, optimization, run:</p>
+<p><code>$ git gc --aggressive</code></p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

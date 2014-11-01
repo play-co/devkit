@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: billing</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#game-closure-devkit-plugin-billing">Game Closure DevKit Plugin: Billing</a><ul>
+<li><a href="#installation">Installation</a><ul>
+<li><a href="#ios-setup">iOS Setup</a></li>
+</ul></li>
+<li><a href="#handling-purchases">Handling Purchases</a></li>
+<li><a href="#handling-purchase-failures">Handling Purchase Failures</a></li>
+<li><a href="#checking-for-market-availability">Checking for Market Availability</a></li>
+<li><a href="#requesting-purchases">Requesting Purchases</a></li>
+<li><a href="#disabling-purchases">Disabling Purchases</a></li>
+<li><a href="#restoring-purchases">Restoring Purchases</a></li>
+</ul></li>
+<li><a href="#billing-object">billing object</a><ul>
+<li><a href="#events">Events</a><ul>
+<li><a href="#marketavailable">“MarketAvailable”</a></li>
+</ul></li>
+<li><a href="#members">Members:</a><ul>
+<li><a href="#billing.ismarketavailable">billing.isMarketAvailable</a></li>
+<li><a href="#billing.onpurchase-itemname">billing.onPurchase (itemName)</a></li>
+<li><a href="#billing.onfailure-reason-itemname">billing.onFailure (reason, itemName)</a></li>
+</ul></li>
+<li><a href="#methods">Methods:</a><ul>
+<li><a href="#billing.purchase-itemname-simulate">billing.purchase (itemName, [simulate])</a></li>
+<li><a href="#billing.restore-callback">billing.restore ([callback])</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="game-closure-devkit-plugin-billing">Game Closure DevKit Plugin: Billing</h1>
+<p>The billing plugin supports in-app purchases from the Google Play Store on Android, and from the Apple App Store on iOS, through one simple unified API.</p>
+<h2 id="installation">Installation</h2>
+<p>Install the billing plugin by running <code>basil install billing</code>.</p>
+<p>Include it in the <code>manifest.json</code> file under the “addons” section for your game:</p>
+<pre><code>&quot;addons&quot;: [
+    &quot;billing&quot;
+],</code></pre>
+<p>You can import the billing object anywhere in your application:</p>
+<pre><code>import plugins.billing.billing as billing;</code></pre>
+<h3 id="ios-setup">iOS Setup</h3>
+<p>For iOS you should ensure that your game’s <code>manifest.json</code> has the correct “bundleID”, “appleID”, and “version” fields.</p>
+<p>The store item Product IDs must be prefixed with your bundleID (as in “com.gameshop.sword”), but you should refer to the item as “sword” in your JavaScript code.</p>
+<p>If any of your in-app purchases are managed instead of consumable then you will need to make additional changes. To be accepted on the iOS app store you must have a [Restore Purchases] button. See the <code>Restoring Purchases</code> section below for details.</p>
+<p>After building your game, you will need to turn on the IAP entitlement. This can be done by selecting your project, choosing the “Capabilities” tab, and turning on the In-App Purchase entitlement. You will be prompted to log in to your development team.</p>
+<h2 id="handling-purchases">Handling Purchases</h2>
+<p>In the JavaScript code for your game, you should write some code to handle in-app purchases. After reading the previous state of the purchasable items from <code>localStorage</code>, your code should set up a <code>billing.onPurchase</code> handler:</p>
+<pre><code>// Initialize the coin counter
+var coinCount = localStorage.getItem(&quot;coinCount&quot;) || 0;
+
+var purchaseHandlers = {
+    &quot;fiveCoins&quot;: function() {
+        // Update the visual coin counter here.
+        coinCount += 5;
+        localStorage.setItem(&quot;coinCount&quot;, coinCount);
+        // Pop-up award modal here.
+    }
+};
+
+function handlePurchase(item) {
+    var handler = purchaseHandlers[item];
+    if (typeof handler === &quot;function&quot;) {
+        handler();
+    }
+};
+
+billing.onPurchase = handlePurchase;</code></pre>
+<p>The callback you set for <code>billing.onPurchase</code> is only called on successful purchases. It will be called once for each purchase that should be credited to the player. Purchases will be queued up until the callback is set, and then they will all be delivered, one at a time.</p>
+<p>After a player successfully purchases an item, it is a good idea to store it in offline local storage to persist between runs of the game. This can be done with the normal HTML5 localStorage API as shown above.</p>
+<p>Consumable purchases must be tracked by your own application. Managed purchases can be tracked by the App Store, but will require you to implement a Restore Purchases button in your app. If you are tracking managed purchases in your local storage data, be aware that the <code>billing.onPurchase</code> callback will likely be called with that item again while restoring purchases, so you will need to avoid double-crediting the player.</p>
+<h2 id="handling-purchase-failures">Handling Purchase Failures</h2>
+<p>When purchases fail, the failure may be handled with the <code>billing.onFailure</code> callback:</p>
+<pre><code>function handleFailure(reason, item) {
+    if (reason !== &quot;cancel&quot;) {
+        // Market is unavailable - User should turn off Airplane mode or find reception.
+    }
+
+    // Else: Item purchase canceled - No need to present a dialog in response.
+}
+
+billing.onFailure = handleFailure;</code></pre>
+<p>Handling these failures is <em>optional</em>.</p>
+<p>One way to respond is to pop up a modal dialog that says “please check that Airplane mode is disabled and try again later.” It may also be interesting to do some analytics on how often users cancel purchases or fail to make purchases.</p>
+<h2 id="checking-for-market-availability">Checking for Market Availability</h2>
+<p>Purchases can fail to go through due to network failures or market unavailability. You can verify that the market is available by checking <code>billing.isMarketAvailable</code> before displaying your in-app store. You can also subscribe to a “MarketAvailable” event (see event documentation below).</p>
+<pre><code>// In response to player clicking In-App Store button:
+
+if (!billing.isMarketAvailable) {
+    // Market is unavailable - User should turn off Airplane mode or find reception.
+}</code></pre>
+<p>Checking for availability is entirely optional.</p>
+<h2 id="requesting-purchases">Requesting Purchases</h2>
+<p>All purchases are handled as consumables. For this reason, it is up to you to make sure that players do not purchase ie. character unlocks two times as the billing plugin cannot differentiate those types of one-time upgrade -style purchases from consumable currency -style purchases.</p>
+<p>When you request a purchase, a system modal will pop up that the user will interact with and may cancel. Purchases may also fail for other reasons such as network outages.</p>
+<p>Kicking off a new purchase is done with the <code>billing.purchase</code> function:</p>
+<pre><code>// In response to player clicking the &quot;5 coin purchase&quot; button:
+
+billing.purchase(&quot;fiveCoins&quot;);</code></pre>
+<h2 id="disabling-purchases">Disabling Purchases</h2>
+<p>The purchase callback may happen at any time, even during gameplay. So it is a good idea to disable the callback when it is inopportune by setting it to null. When you want to receive the callback events, just set it back to the handler and any queued events will be delivered as shown in this example code:</p>
+<pre><code>// When player enters game and should not be disturbed by purchase callbacks:
+function DisablePurchaseEvents() {
+    billing.onPurchase = null;
+    billing.onFailure = null;
+}
+
+// And when they return to the menu system:
+function EnablePurchaseEvents() {
+    billing.onPurchase = handlePurchase; // see definitions in examples above
+    billing.onFailure = handleFailure;
+}</code></pre>
+<h2 id="restoring-purchases">Restoring Purchases</h2>
+<p>In order to ship an app with in-app purchases other than “Consumable” on the iOS App Store, you are required to include a [Restore Purchases] button, which must query the App Store for past purchases made from the same Apple ID and restore them in the game. The way to implement this button is by using the <code>billing.restore</code> function.</p>
+<p>Note that on iOS you do not need to do this if all of your purhcases are consumable.</p>
+<pre><code>billing.restore(function(err) {
+    if (err) {
+        logger.log(&quot;Unable to restore purchases:&quot;, err);
+    } else {
+        logger.log(&quot;Finished restoring purchases!&quot;);
+    }
+});</code></pre>
+<p>Your <code>billing.onPurchase</code> callback will receive all of the old items while restoring.</p>
+<p>Finally, the provided callback will be called, letting you know when the restoration completes, or if the restoration failed and why.</p>
+<p>If an in-game button press triggers <code>billing.restore</code> then the button should be disabled until the result comes back to your callback.</p>
+<h1 id="billing-object">billing object</h1>
+<h2 id="events">Events</h2>
+<h3 id="marketavailable">“MarketAvailable”</h3>
+<p>This event fires whenever market availability changes. It is safe to ignore these events.</p>
+<pre><code>billing.on(&#39;MarketAvailable&#39;, function (available) {
+    if (available) {
+    } else {
+    }
+});</code></pre>
+<p>Read the <a href="http://docs.gameclosure.com/api/event.html">event system documentation</a> for other ways to handle these events.</p>
+<h2 id="members">Members:</h2>
+<h3 id="billing.ismarketavailable">billing.isMarketAvailable</h3>
+<ul>
+<li><code>boolean</code> —True when market is available.</li>
+</ul>
+<p>The market can become unreachable when network service is interrupted or if the mobile device enters Airplane mode.</p>
+<p>It is safe to disregard this flag.</p>
+<pre><code>if (billing.isMarketAvailable) {
+    logger.log(&quot;~~~ MARKET IS AVAILABLE&quot;);
+} else {
+    logger.log(&quot;~~~ MARKET IS NOT AVAILABLE&quot;);
+}</code></pre>
+<h3 id="billing.onpurchase-itemname">billing.onPurchase (itemName)</h3>
+<ul>
+<li><code>callback {function}</code> —Set to your callback function. The first argument will be the name of the item that should be credited to the player.</li>
+</ul>
+<p>Called whenever a purchase completes. This may also be called for a purchase that was outstanding from a previous session that had not been credited to the player yet.</p>
+<p>The callback function should not pop up the purchase success dialog while they are playing. Setting the <code>billing.onPurchase</code> callback to <strong>null</strong> when purchases should not interrupt gameplay is recommended.</p>
+<pre><code>billing.onPurchase = function(itemName) {
+    logger.log(&quot;~~~ PURCHASED:&quot;, itemName);
+});</code></pre>
+<h3 id="billing.onfailure-reason-itemname">billing.onFailure (reason, itemName)</h3>
+<ul>
+<li><code>callback {function}</code> —Set to your callback function. The first argument will be the reason for the failure. The second argument will be the name of the item that was requested. Sometimes the name will be <code>null</code>.</li>
+</ul>
+<p>Unlike the success callback, failures are not queued up for delivery. When failures are not handled they are not reported.</p>
+<p>The <code>itemName</code> argument to the callback is not reliable. Sometimes it will be <code>null</code>.</p>
+<p>Handling failure events is optional.</p>
+<p>Common failure values:</p>
+<ul>
+<li>“cancel” : User canceled the purchase or item was unavailable.</li>
+<li>“service” : Not connected to the Market. Try again later.</li>
+<li>Other Reasons : Was not able to make purchase request for some other reason.</li>
+</ul>
+<h2 id="methods">Methods:</h2>
+<h3 id="billing.purchase-itemname-simulate">billing.purchase (itemName, [simulate])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>itemName {string}</code> —The item name string.</li>
+<li><code>[simulate {string}]</code> —Optional simulation mode: <code>undefined</code> means disabled. “simulate” means simulate a successful purchase. Any other value will be used as a simulated failure string.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>void</code></li>
+</ol>
+</dd>
+</dl>
+<p>Initiate the purchase of an item by its name.</p>
+<p>The purchase may fail if the player clicks to deny the purchase, or if the network is unavailable, among other reasons. If the purchase fails, the <code>billing.onFailure</code> handler will be called. Handling failures is optional.</p>
+<p>If the purchase succeeds, then the <code>billing.onPurchase</code> callback you set will be called. This callback should be where you credit the user for the purchase.</p>
+<pre><code>billing.purchase(&quot;fiveCoins&quot;);</code></pre>
+<h3 id="billing.restore-callback">billing.restore ([callback])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>[callback {function}]</code> —Optional callback.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>void</code></li>
+</ol>
+</dd>
+</dl>
+<p>Initiate restoring old purchases. These will only restore “managed” purchases set up for your application that are tracked by the app store servers. Consumable purchases will be lost if local storage is wiped for any reason.</p>
+<p>Your <code>billing.onPurchase</code> callback will be called for each old purchase.</p>
+<p>When restoration completes, the optional callback provided to <code>billing.restore</code> will be invoked.</p>
+<pre><code>billing.restore(function(err) {
+    if (err) {
+        logger.log(&quot;Unable to restore purchases:&quot;, err);
+    } else {
+        logger.log(&quot;Finished restoring purchases!&quot;);
+    }
+});</code></pre>
+<p>See the guide section above on <code>Restoring Purchases</code> for more information.</p>
+<h5 id="simulation-mode">Simulation Mode</h5>
+<p>To test purchases without hitting the market, pass a second parameter of “simulate” or “cancel”. On browser builds or in the web simulator, purchases will always simulate success otherwise.</p>
+<pre><code>billing.purchase(&quot;fiveCoins&quot;, &quot;simulate&quot;); // Simulates success
+billing.purchase(&quot;fiveCoins&quot;, &quot;cancel&quot;); // Simulates failure &quot;cancel&quot;</code></pre>
+<p>Simulation mode does not support the <code>billing.restore</code> method.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

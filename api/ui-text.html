@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ui-text</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-ui.textview">Class: ui.TextView</a><ul>
+<li><a href="#minimum-and-maximum-size">Minimum and maximum size</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#new-textview-options">new TextView ([options])</a></li>
+</ul></li>
+<li><a href="#sizing">Sizing</a><ul>
+<li><a href="#settext-text">setText (text)</a></li>
+<li><a href="#gettext">getText ()</a></li>
+<li><a href="#updateopts-options">updateOpts (options)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-ui.textpromptview">Class: ui.TextPromptView</a><ul>
+<li><a href="#examples-1">Examples</a></li>
+<li><a href="#methods-1">Methods</a><ul>
+<li><a href="#new-textpromptview-options">new TextPromptView ([options])</a></li>
+<li><a href="#setprompt-prompt">setPrompt (prompt)</a></li>
+<li><a href="#showprompt">showPrompt ()</a></li>
+</ul></li>
+<li><a href="#events">Events</a><ul>
+<li><a href="#change-callback-value">'Change', callback (value)</a></li>
+<li><a href="#cancel-callback">'Cancel', callback ()</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-ui.texteditview">Class ui.TextEditView</a><ul>
+<li><a href="#examples-2">Examples</a></li>
+<li><a href="#methods-2">Methods</a><ul>
+<li><a href="#new-texteditview-options">new TextEditView ([options])</a></li>
+<li><a href="#gettext-1">getText ()</a></li>
+<li><a href="#settext-text-1">setText (text)</a></li>
+<li><a href="#registertextfilter-fn">registerTextFilter (fn)</a></li>
+</ul></li>
+<li><a href="#events-1">Events</a><ul>
+<li><a href="#change-callback-value-1">'Change', callback (value)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-ui.scoreview">Class: ui.ScoreView</a><ul>
+<li><a href="#examples-3">Examples</a></li>
+<li><a href="#methods-3">Methods</a><ul>
+<li><a href="#new-scoreview-options">new ScoreView ([options])</a></li>
+<li><a href="#setcharacterdata-data">setCharacterData (data)</a></li>
+<li><a href="#settext-text-2">setText (text)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-ui.resource.font">Class: ui.resource.Font</a><ul>
+<li><a href="#methods-4">Methods</a><ul>
+<li><a href="#new-font-font">new Font (font)</a></li>
+<li><a href="#new-font-options">new Font ([options])</a></li>
+<li><a href="#getname">getName ()</a></li>
+<li><a href="#getsize">getSize ()</a></li>
+<li><a href="#getweight">getWeight ()</a></li>
+</ul></li>
+<li><a href="#class-methods">Class Methods</a><ul>
+<li><a href="#font.parse-font">Font.parse (font)</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-ui.textview">Class: ui.TextView</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>Display text on a screen within a <code>View</code>. The <code>TextView</code> class offers different options to handle the size of the text related to the size of the view. Setting <code>autoSize</code> lets the view increase in size when the text does not fit, setting <code>autoFontSize</code> scales the text until it fits in the view.</p>
+<h2 id="minimum-and-maximum-size">Minimum and maximum size</h2>
+<p>The minimum and maximum size can be controlled with the <code>style.minWidth</code>, <code>style.minHeight</code>, <code>style.maxWidth</code> and <code>style.maxHeight</code> properties. If both <code>autoSize</code> and <code>autoFontSize</code> are set to true and the view is smaller than the given maximum size then the view will grow to fit the text (if necessary) and if the maximum size is reached and the text still does not fit then the font will be scaled.</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li><a href="../example/text-textviews/">TextViews Options</a></li>
+<li><a href="../example/text-textviews-random/">Lots of TextViews</a></li>
+<li><a href="../example/text-textviews-clock/">TextView Clock</a></li>
+<li><a href="../example/text-fonts-ttf">TTF Fonts</a></li>
+<li><a href="../example/text-prompt/">TextPromptView</a></li>
+<li><a href="../example/text-input/">TextEditView</a></li>
+<li><a href="../example/text-scoreview/">ScoreView</a></li>
+<li><a href="../example/text-internationalization/">Internationalization</a></li>
+</ul>
+<h2 id="methods">Methods</h2>
+<h3 id="new-textview-options">new TextView ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code> —<code>TextView</code> specific options, also accepts <a href="./ui-view.html#new-view-options"><code>View</code> options</a>.</li>
+</ol>
+<ul>
+<li><code>text {string}</code> —The text to display.</li>
+<li><code>size {number} = 128</code> —The default font size of the text – scales down to fit view when autoFontSize is true (default).</li>
+<li><code>lineHeight {number} = 1.2</code> —How tall each line should be when wrap is turned on.</li>
+<li><code>fontFamily {string} = device.defaultFontFamily</code> —Font family to be used by the text in the text view (ex: “Helvetica”)</li>
+<li><code>fontWeight {string} = 'normal'</code> —How thick the characters are. Options: <code>'normal'</code>, <code>'bold'</code>, or a number weight.</li>
+<li><code>color {string} = &quot;blue&quot;</code> —The color of the text. See below for color string format.</li>
+<li><code>backgroundColor {string} = &quot;blue&quot;</code> —The background color of the text view. See below for color string format.</li>
+<li><code>strokeColor {string} = undefined</code> —The color of the stroke. See below for color string format.</li>
+<li><code>shadowColor {string} = undefined</code> —Color of the drop shadow behind the text. See below for color string format.</li>
+<li><code>strokeWidth {number} = 2</code> —Width of text stroke.</li>
+<li><code>shadowWidth {number} = 2</code> —Width of drop shadow.</li>
+<li><code>padding {number|array} = 0</code> —The amount of vertical padding the text exhibits within the text view.</li>
+<li><code>verticalAlign: &quot;middle&quot;</code> —How the text should be aligned vertically within the text view. Options: <code>'top'</code>, <code>'bottom'</code>, <code>'middle'</code>.</li>
+<li><code>horizontalAlign: &quot;center&quot;</code> —How the text should be aligned horizontally within the text view. Options: <code>'left'</code>, <code>'right'</code>, <code>'center'</code>, <code>'justify'</code>.</li>
+<li><code>wrap {boolean} = false</code> —Whether or not the text should wrap. A description of the rules of wrapping when wrap is turned on can be found below.</li>
+<li><code>hardWrap {boolean}</code> —Optional, if true and the text is a single line which is too wide then the string will be split into lines which fit within the given width of the view.</li>
+<li><code>autoSize {boolean} = false</code> —Fit the text view to text (details below).</li>
+<li><code>autoFontSize {boolean} = true</code> —Fit text to the text view (details below).</li>
+<li><code>buffer {boolean} = true</code> —Buffer this <code>TextView</code> instead of rerendering every tick.</li>
+</ul>
+</dd>
+<dd><ol start="2" type="1">
+<li>Colors (<code>color</code>, <code>backgroundColor</code>, <code>shadowColor</code>, <code>strokeColor</code>) can be any of the following values:</li>
+</ol>
+<ul>
+<li><code>null</code> or <code>undefined</code> : No color (transparent).</li>
+<li><code>blue</code> : Standard CSS color names. See <a href="http://www.w3schools.com/cssref/css_colornames.asp">this website</a> for a complete list.</li>
+<li><code>#330033</code> : Standard HTML Hexadecimal RGB code. See <a href="http://www.w3schools.com/cssref/css_colors.asp">this website</a> for a detailed description of this format.</li>
+<li><code>rgb(255,0,0)</code> : Standard HTML RGB code. See <a href="http://www.w3schools.com/cssref/css_colors.asp">this website</a> for a detailed description of this format.</li>
+<li><code>rgba(255,0,0,0.8)</code> : Standard HTML RGBA code with alpha value between 0 and 1 in the final parameter.</li>
+</ul>
+</dd>
+</dl>
+<p>Buffering greatly improves <code>TextView</code> performance, but an unlimited amount of text can’t fit in the buffer. Therefore, if you have many <code>TextView</code>s in your game, it may make sense to set <code>buffer</code> to <code>false</code> in some cases – typically, in scenes without many <code>TextView</code>s, where performance isn’t an issue.</p>
+<p>For fonts to work in the emulator, they must be installed system-wide. For fonts to work on native Android or iOS, be sure to fill out the manifest.json file. There are some additional considerations for Android and iOS. Please see the <a href="../guide/manifest.html">manifest.json documentation</a>.</p>
+<pre><code>import ui.TextView as TextView;
+
+var text = new TextView({
+  superview: parent,
+  x: 25,
+  y: 100,
+  width: 400,
+  text: &quot;Hello, world!&quot;,
+  size: 24,
+  shadowColor: &#39;#999999&#39;
+});</code></pre>
+<h2 id="sizing">Sizing</h2>
+<p>The <code>TextView</code> supports several options for handling how a text is sized within the view. You can control these options through the properties <code>'autoSize'</code>, <code>'autoFontSize'</code> or <code>'wrap'</code>.</p>
+<ul>
+<li><code>autoFontSize = true</code>, <code>wrap = true</code>, <code>autoSize = true</code>: Wrap words until the text fits horizontally or the line is reduced to a single word. If the widest word does not fit, decrease the font size. If the resulting lines exceed the height of the widget, then increase the height of the widget.</li>
+<li><code>autoFontSize = true</code>, <code>wrap = false</code>, <code>autoSize = true</code>: Measure the maximum line width and the height of the lines, then increase the size of the widget if necessary.</li>
+<li><code>autoFontSize = true</code>, <code>wrap = true</code>, <code>autoSize = false</code>: Wrap words until the text fits horizontally or the line is reduced to a single word. If the largest word doesn’t fit, then reduce the font size. If the resulting number of lines exceeds the widget height then reduce the font size.</li>
+<li><code>autoFontSize = true</code>, <code>wrap = false</code>, <code>autoSize = false</code>: Measure the maximum line width and the height of the lines and decrease the size of the font is necessary.</li>
+<li><code>autoFontSize = false</code>, <code>wrap = true</code>, <code>autoSize = true</code>: Wrap words until the text fits horizontally or the line is reduced to a single word. If the most wide word does not fit then increase the width of the widget. If the resulting number of lines exceeds the height of the widget the increase the height of the widget.</li>
+<li><code>autoFontSize = false</code>, <code>wrap = false</code>, <code>autoSize = true</code>: Measure the maximum line width and the height of the lines and increase the size of the widget if necessary.</li>
+<li><code>autoFontSize = false</code>, <code>wrap = true</code>, <code>autoSize = false</code>: Wrap words until the text fits horizontally or the line is reduced to a single word. If the text does not fit then is will either overflow or be clipped depending on the clip setting of the widget. Whether the overflow is top, bottom, left or right depends on the alignment settings.</li>
+<li><code>autoFontSize = false</code>, <code>wrap = false</code>, <code>autoSize = false</code>: If the text does not fit then is will either overflow or be clipped depending on the clip setting of the widget. Whether the overflow is top, bottom, left or right depends on the alignment settings.</li>
+</ul>
+<h3 id="settext-text">setText (text)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>text {string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Set the display text. The text view will readjust itself with the current options using the given text.</p>
+<h3 id="gettext">getText ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Return the display text.</p>
+<h3 id="updateopts-options">updateOpts (options)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Update text options.</p>
+<h1 id="class-ui.textpromptview">Class: ui.TextPromptView</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-text.html#class-ui.textview">ui.TextView</a></li>
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>This class presents the user a prompt for entering text input. The <code>TextPromptView</code> consists of two elements, the view part which is visible and a dialog. When the view is clicked a prompt dialog is shown. If the user enters or changes text and presses ok then the text of the view will be updated.</p>
+<h2 id="examples-1">Examples</h2>
+<ul>
+<li><a href="../example/text-prompt/">Using a Text Prompt</a></li>
+</ul>
+<h2 id="methods-1">Methods</h2>
+<h3 id="new-textpromptview-options">new TextPromptView ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code></li>
+</ol>
+<ul>
+<li><code>prompt {text} = ''</code> —The text message shown on the dialog.</li>
+<li><code>autoShowKeyboard {boolean} = false</code> —Show the keyboard when the dailog is shown on native.</li>
+<li><code>isPassword {boolean} = false</code> —This is a password field – hide input.</li>
+</ul>
+</dd>
+</dl>
+<pre><code>import ui.TextPromptView as TextPromptView;
+
+var textprompt = new TextPromptView({
+  prompt: &quot;Please enter your name&quot;
+});</code></pre>
+<h3 id="setprompt-prompt">setPrompt (prompt)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>prompt {string}</code> —Set the text to display in the prompt dialog.</li>
+</ol>
+</dd>
+</dl>
+<h3 id="showprompt">showPrompt ()</h3>
+<p>Present the input dialog to the user.</p>
+<h2 id="events">Events</h2>
+<h3 id="change-callback-value">'Change', callback (value)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>value {string}</code> —The updated value of the <code>TextPromptView</code>.</li>
+</ol>
+</dd>
+</dl>
+<p>The <code>Change</code> event is published when the text in the dialog is changed and ok is pressed.</p>
+<h3 id="cancel-callback">'Cancel', callback ()</h3>
+<p>The <code>Cancel</code> event is published when the cancel button in the dialog is pressed.</p>
+<h1 id="class-ui.texteditview">Class ui.TextEditView</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>This class provides a text input field. Note that currently the <code>TextEditView</code> falls back to the <code>TextPromptView</code> on iOS and in the simulator.</p>
+<h2 id="examples-2">Examples</h2>
+<ul>
+<li><a href="../example/text-input/">Getting Text Input</a></li>
+</ul>
+<h2 id="methods-2">Methods</h2>
+<h3 id="new-texteditview-options">new TextEditView ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code></li>
+</ol>
+<ul>
+<li><code>hint {text} = ''</code> —The message shown in the text field.</li>
+<li><code>color {string} = 'black'</code> —Color of input text.</li>
+<li><code>hintColor {string} = '#979797'</code> —Color of hint text.</li>
+<li><code>paddingLeft {number}</code> —Padding around embedded TextView.</li>
+<li><code>paddingRight {number}</code> —Padding around embedded TextView.</li>
+<li><code>paddingUp {number}</code> —Padding around embedded TextView.</li>
+<li><code>paddingDown {number}</code> —Padding around embedded TextView.</li>
+</ul>
+</dd>
+</dl>
+<pre><code>import ui.TextEditView as TextEditView;
+
+var namefield = new TextEditView({
+  hint: &#39;Please enter your name&#39;
+});</code></pre>
+<h3 id="gettext-1">getText ()</h3>
+<p>Returns contents of text input field.</p>
+<h3 id="settext-text-1">setText (text)</h3>
+<p>Sets input field value to <code>text</code>. If <code>text</code> is null, sets input field value to hint text.</p>
+<h3 id="registertextfilter-fn">registerTextFilter (fn)</h3>
+<p>Registers <code>fn</code> with the <code>TextEditView</code>. <code>fn</code> is a transformation function that takes one string argument and returns a string. This can be used to process text entered into the input field.</p>
+<h2 id="events-1">Events</h2>
+<h3 id="change-callback-value-1">'Change', callback (value)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>value {string}</code> —The updated value of the <code>TextEditView</code>.</li>
+</ol>
+</dd>
+</dl>
+<p>The <code>Change</code> event is published when the text in the input field is changed.</p>
+<h1 id="class-ui.scoreview">Class: ui.ScoreView</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>This class is designed for high performance text rendering using images. It is ideal for scores or other in-game counters that update often.</p>
+<h2 id="examples-3">Examples</h2>
+<ul>
+<li><a href="../example/text-scoreview/">Using a ScoreView</a></li>
+</ul>
+<h2 id="methods-3">Methods</h2>
+<h3 id="new-scoreview-options">new ScoreView ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code></li>
+</ol>
+<ul>
+<li><code>characterData {object}</code> —The characters to use in this ScoreView. If undefined, you must call setCharacterData before rendering text.</li>
+<li><code>horizontalAlign {string} = 'center'</code> —Text alignment - ‘center’, ‘right’, or ‘left’.</li>
+<li><code>verticalAlign {string} = 'middle'</code> —Text alignment - ‘middle’, ‘top’, or ‘bottom’.</li>
+<li><code>spacing {number} = 0</code> —How much space to put between each character.</li>
+</ul>
+</dd>
+</dl>
+<pre><code>import ui.ScoreView as ScoreView;
+var yellowScore = new ScoreView({
+  characterData: {
+    &quot;0&quot;: { &quot;image&quot;: &quot;resources/images/numbers/yellow_0.png&quot; },
+    &quot;1&quot;: { &quot;image&quot;: &quot;resources/images/numbers/yellow_1.png&quot; },
+    &quot;2&quot;: { &quot;image&quot;: &quot;resources/images/numbers/yellow_2.png&quot; },
+    &quot;3&quot;: { &quot;image&quot;: &quot;resources/images/numbers/yellow_3.png&quot; },
+    &quot;4&quot;: { &quot;image&quot;: &quot;resources/images/numbers/yellow_4.png&quot; },
+    &quot;5&quot;: { &quot;image&quot;: &quot;resources/images/numbers/yellow_5.png&quot; },
+    &quot;6&quot;: { &quot;image&quot;: &quot;resources/images/numbers/yellow_6.png&quot; },
+    &quot;7&quot;: { &quot;image&quot;: &quot;resources/images/numbers/yellow_7.png&quot; },
+    &quot;8&quot;: { &quot;image&quot;: &quot;resources/images/numbers/yellow_8.png&quot; },
+    &quot;9&quot;: { &quot;image&quot;: &quot;resources/images/numbers/yellow_9.png&quot; }
+  }
+});</code></pre>
+<h3 id="setcharacterdata-data">setCharacterData (data)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>data {object}</code> —The character data to use with this SpriteView. Each character object has the following properties:</li>
+</ol>
+<ul>
+<li><code>image {string}</code> —The image resource of this character (required).</li>
+<li><code>width {number}</code> —If undefined, falls back to actual character width.</li>
+<li><code>offset {number} = 0</code> —Optional value for kerning.</li>
+</ul>
+</dd>
+</dl>
+<h3 id="settext-text-2">setText (text)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>text {string}</code> —The text to display in this ScoreView.</li>
+</ol>
+</dd>
+</dl>
+<!--
+# Class: ui.TextInputView
+
+Inherits from
+:    1. [ui.View](./ui-view.html)
+     2. [event.Emitter](./event.html#class-event.emitter)
+
+Enter text input inline. *This is not working.*
+
+## Methods
+
+### new TextInputView ([options])
+
+Parameters
+:    1. `options {object`
+
+~~~
+import ui.TextInputView as TextInputView;
+~~~
+-->
+
+
+<h1 id="class-ui.resource.font">Class: ui.resource.Font</h1>
+<p>Basic font representation class.</p>
+<h2 id="methods-4">Methods</h2>
+<h3 id="new-font-font">new Font (font)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>font {string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a font from a standard CSS font string.</p>
+<h3 id="new-font-options">new Font ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>name {string} = device.defaultFamilyName</code></li>
+<li><code>size {number} = 20</code></li>
+<li><code>unit {string} = 'px'</code></li>
+<li><code>style {string}</code></li>
+<li><code>weight {string}</code></li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a font from options.</p>
+<pre><code>import ui.resource.Font as Font;
+
+var font = new Font(&quot;16px Helvetica&quot;);</code></pre>
+<h3 id="getname">getName ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the font family.</p>
+<h3 id="getsize">getSize ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the font size in pixels.</p>
+<h3 id="getweight">getWeight ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{string}</code> —-Returns the font weight.</li>
+</ol>
+</dd>
+</dl>
+<h2 id="class-methods">Class Methods</h2>
+<h3 id="font.parse-font">Font.parse (font)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>font {string}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Font}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a Font from a font string.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

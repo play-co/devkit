@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: android-setup</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#android-setup-guide">Android Setup Guide</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#prerequisites">Prerequisites</a><ul>
+<li><a href="#supported-mobile-devices">Supported Mobile Devices</a></li>
+</ul></li>
+<li><a href="#install-the-command-line-tools-for-xcode">Install the Command Line Tools for Xcode</a></li>
+<li><a href="#install-the-android-sdk">Install the Android SDK</a></li>
+<li><a href="#install-the-android-ndk">Install the Android NDK</a></li>
+<li><a href="#install-android-plugin-for-basil">Install Android Plugin for Basil</a></li>
+<li><a href="#generating-a-keystore">Generating a Keystore</a></li>
+<li><a href="#setting-up-your-game-manifest">Setting Up Your Game Manifest</a></li>
+<li><a href="#configuring-a-new-android-device">Configuring a New Android Device</a></li>
+<li><a href="#troubleshooting-issues">Troubleshooting Issues</a><ul>
+<li><a href="#appendix-manual-install-of-the-android-plugin-for-basil">Appendix: Manual Install of the Android Plugin for Basil</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="android-setup-guide">Android Setup Guide</h1>
+<h2 id="overview">Overview</h2>
+<p>Testing your game on your cellphone for the first time is an exhilerating affair full of nail-biting anticipation. The process of getting there for Android devices has been stream-lined for you in the Game Closure DevKit.</p>
+<p>This guide is mainly for Linux or OSX. To install on Windows please follow the <a href="../guide/windows-guide.html">Windows install guide</a> first.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>You will need some tools for Android development:</p>
+<ul>
+<li>Mac OS X 10.6 (or newer) computer</li>
+<li>USB sync cable for your cellphone</li>
+<li>Android SDK 15</li>
+<li>Android NDK r9</li>
+<li><a href="https://developer.apple.com/downloads">Command Line Tools for Xcode</a> or <a href="https://itunes.apple.com/us/app/xcode/id497799835">Xcode</a></li>
+<li>Game Closure DevKit (basil)</li>
+</ul>
+<p>Note that we require Android NDK r9. Beware r8e, which has a serious bug. For more information, see <a href="http://developer.appcelerator.com/blog/2013/03/correcting-a-bug-in-the-latest-google-ndk-r8e.html">Ingo Muschenetz’s explanation and patch</a>.</p>
+<p>For a guide on installing the Game Closure DevKit <a href="../guide/install.html">please see this documentation</a>.</p>
+<h3 id="supported-mobile-devices">Supported Mobile Devices</h3>
+<p>Nearly all Android cellphones and tablets are supported, including all devices powered by processors in the ARM9 family on the ARMv5TE(J) architecture. This means all TI OMAP processors. For example the first Motorola Droid phone was powered by a TI OMAP 3430 built for the ARMv7 instruction set.</p>
+<p>Android version 2.2 (API level 8) is the minimum required version. The original Motorola Droid received an over-the-air update for this in late 2010. According to the <a href="http://developer.android.com/about/dashboards/">Android developer site</a> only about 2.6% of cellphones that access Google Play are unsupported at this time by the Game Closure DevKit. The first Android phone (the T-Mobile G1 / HTC Dream) is unsupported, as an example.</p>
+<h2 id="install-the-command-line-tools-for-xcode">Install the Command Line Tools for Xcode</h2>
+<p>The command line tools are just as good as Xcode for the GCDK and take up far less disk space, so get those unless you already have Xcode installed:</p>
+<p><a href="https://developer.apple.com/downloads">Command Line Tools for Xcode</a></p>
+<p>Yes, you do need an Apple ID to download the packages, sorry about that. If you install Xcode from the App Store, the Command Line Tools are now an optional installation. You’ll need to enable them under Preferences &gt; Downloads.</p>
+<h2 id="install-the-android-sdk">Install the Android SDK</h2>
+<p>Download and install the <a href="http://developer.android.com/sdk/">Android SDK</a> to your local machine. If you are using the <a href="http://mxcl.github.com/homebrew/">Homebrew</a> package manager, run:</p>
+<pre><code>$ brew update
+$ brew install android</code></pre>
+<p>Running <code>android</code> at the command-line brings up a GUI front-end that will allow you to install various android API targets. Install the SDK Platform under Android 4.0.3 (API 15), Android Support Library in the Extras sections at the bottom of the list, and the Android SDK Platform-tools in the tools section at the top.</p>
+<div class="figure-wrapper">
+<figure>
+<img src="./assets/android/packages.png" />
+<figcaption>
+All the checked items are required for android installation.
+</figcaption>
+</figure>
+</div>
+
+<p>You will then be prompted with an Accept window. Check <code>Accept All</code> and wait for the download and installation to finish.</p>
+<div class="figure-wrapper">
+<figure>
+<img src="./assets/android/accept-all.png" />
+<figcaption>
+Accept installation of the required packages.
+</figcaption>
+</figure>
+</div>
+
+<h2 id="install-the-android-ndk">Install the Android NDK</h2>
+<p>The Android NDK is also required for Android development. An easy way to install the Android NDK is to use homebrew:</p>
+<pre><code>$ brew update
+$ brew install android-ndk</code></pre>
+<p>The homebrew install script will add the required NDK tools to your path.</p>
+<h2 id="install-android-plugin-for-basil">Install Android Plugin for Basil</h2>
+<p>Basil is the command-line tool you will use from the Game Closure DevKit to perform native builds. Make sure your version of basil is up to date with <code>basil update</code>.</p>
+<p>The first step to doing Android development with basil is to install the Android plugin. At a command-line enter the command:</p>
+<pre><code>$ basil install native-android</code></pre>
+<p>This downloads and installs the Android plugin for basil.</p>
+<h2 id="generating-a-keystore">Generating a Keystore</h2>
+<p>To digitally sign your game’s binary file for release, you will need to generate a keystore file. The purpose and process are described on the <a href="http://developer.android.com/tools/publishing/app-signing.html">Android Developer site</a>. Note that the keystore is only required for release builds. You can skip this step for now if you will only be debugging your game.</p>
+<p>A quick-start example:</p>
+<pre><code> $ keytool -genkey -v -keystore beards.keystore -alias &quot;bearded bobs&quot; -keyalg RSA -keysize 2048 -validity 10000
+Enter keystore password: fuzzyfiggin
+Re-enter new password: fuzzyfiggin
+What is your first and last name?
+  [Unknown]:  Bob Baxter
+What is the name of your organizational unit?
+  [Unknown]:  SDK
+What is the name of your organization?
+  [Unknown]:  Game Closure
+What is the name of your City or Locality?
+  [Unknown]:  Mountain View
+What is the name of your State or Province?
+  [Unknown]:  CA
+What is the two-letter country code for this unit?
+  [Unknown]:  US
+Is CN=Bob Baxter, OU=SDK, O=Game Closure, L=Mountain View, ST=CA, C=US correct?
+  [no]:  yes
+
+Generating 2,048 bit RSA key pair and self-signed certificate (SHA1withRSA) with a validity of 10,000 days
+    for: CN=Bob Baxter, OU=SDK, O=Game Closure, L=Mountain View, ST=CA, C=US
+Enter key password for &lt;bearded bobs&gt;
+    (RETURN if same as keystore password):
+[Storing beards.keystore]</code></pre>
+<p>You will want to copy your keystore to a convenient location and then reference it in the <code>config.json</code> file in the root of your Game Closure DevKit folder.</p>
+<p>An example “android” section in DevKit’s <code>config.json</code> file:</p>
+<pre><code>    &quot;android&quot;: {
+        &quot;root&quot;: &quot;/Users/bbaxter/cleanroom/android&quot;,
+        &quot;key&quot;: &quot;bearded bobs&quot;,
+        &quot;keystore&quot;: &quot;/Users/bbaxter/cleanroom/basil/beards.keystore&quot;,
+        &quot;storepass&quot;: &quot;fuzzyfiggin&quot;,
+        &quot;keypass&quot;: &quot;fuzzyfiggin&quot;
+    }</code></pre>
+<p>Note this is not in the <code>manifest.json</code> file in your game folder but in the <code>config.json</code> file in your devkit folder.</p>
+<p>The <code>storepass</code> is the keystore password you typed initially. And <code>keypass</code> is the key password, which will be the same as the keystore password if you opted not to enter one.</p>
+<h2 id="setting-up-your-game-manifest">Setting Up Your Game Manifest</h2>
+<p>Every game includes and must have a manifest.json file with configuration information and more for each game. Several fields are required for a properly configured game for Android.</p>
+<ul>
+<li>The splash screen and icons for your game should be added before building for Android devices.</li>
+<li>If you are using any custom TrueType fonts be sure to include those in the manifest file.</li>
+<li>For a complete reference see <a href="../guide/manifest.html">documentation on the manifest.json</a> file.</li>
+</ul>
+<p>In addition to the normal sections in the manifest file you may have already filled in, Android requires the following sections:</p>
+<h5 id="google-play">Google Play</h5>
+<p>Add the app version code from Google Play here:</p>
+<pre><code>    &quot;android&quot;: {
+        &quot;versionCode&quot;: 1
+    },</code></pre>
+<h5 id="icons">Icons</h5>
+<p>The icon sizes used for Android are listed below. Be sure to include at least this set of icons. <a href="../guide/manifest.html">See the manifest documentation</a> for file formats and other details.</p>
+<pre><code>&quot;android&quot;: {
+  &quot;icons&quot;: {
+    &quot;36&quot;: &quot;resources/icons/android36.png&quot;,
+    &quot;48&quot;: &quot;resources/icons/android48.png&quot;,
+    &quot;72&quot;: &quot;resources/icons/android72.png&quot;,
+    &quot;96&quot;: &quot;resources/icons/android96.png&quot;
+  }
+}</code></pre>
+<h5 id="orientation">Orientation</h5>
+<p>Choose an orientation for your game, which is a combination of portrait and/or landscape. Landscape means that the long side of the device is horizontal, and portrait means that the long side of the device will be vertical. Unspecified orientations will be disallowed.</p>
+<p>On tablets, both portrait and landscape orientations will allow upside-down or rightside-up rotations. On a phone, for portrait orientation only rightside-up will be allowed.</p>
+<pre><code>    &quot;supportedOrientations&quot;: [
+        &quot;landscape&quot;
+    ],</code></pre>
+<pre><code>    &quot;supportedOrientations&quot;: [
+        &quot;portrait&quot;
+    ],</code></pre>
+<pre><code>    &quot;supportedOrientations&quot;: [
+        &quot;landscape&quot;, &quot;portrait&quot;
+    ],</code></pre>
+<h5 id="truetype-fonts">TrueType Fonts</h5>
+<p>Add a list of TrueType font files to the manifest if you are using them:</p>
+<pre><code>    &quot;ttf&quot;: [
+        &quot;resources/fonts/Arial Black.ttf&quot;
+    ],</code></pre>
+<p>On Android, it is crucial that custom .TTF file names match an internal font name.</p>
+<h5 id="splash-screen">Splash Screen</h5>
+<p>Define splash screen images for your game. For the complete list of image sizes required and other details <a href="../guide/manifest.html">see the manifest documentation</a>.</p>
+<p>If you are also releasing on iOS then all the sizes are mandatory. However, splash screens are somewhat optional for Android. Leaving them out completely will cause the game to display black until it is loaded. When your game starts running, it will select the best splash image among the ones provided to match the device’s screen size, and will rotate it to match the orientation.</p>
+<p>Providing fewer splash images will reduce the download time for your game, but the trade-off will be a splash image that looks worse on some devices. The Landscape splash images can be left off entirely for Android without any ill effects and is recommended.</p>
+<p>Once your game is configured properly for Android, you’re ready to install it!</p>
+<h2 id="configuring-a-new-android-device">Configuring a New Android Device</h2>
+<p>If you are not able to find the “Developer options” menu, you will need to perform a “magic knock” to unlock it on Android 4.2 or newer. Following this simple procedure:</p>
+<ol type="1">
+<li>Open the Settings app.</li>
+<li>Select “About phone” at the bottom of the list.</li>
+<li>Scroll to the bottom to see the “Build number” item.</li>
+<li>Tap on the Build number five times.</li>
+</ol>
+<p>To begin building for an Android device you need to enable USB Debugging on the test device. The process to enable debugging is:</p>
+<ol type="1">
+<li>Open the Settings app.</li>
+<li>Select “Applications” at the middle of the list.</li>
+<li>Select “Development settings” aka “Developer options”.</li>
+<li>Tap the check box next to USB debugging and tap OK.</li>
+</ol>
+<p>It is recommended to set the USB Charge mode to “Charge Only” while connected so that the phone will not unmount its internal storage while connected via USB. To do this:</p>
+<ol type="1">
+<li>Connect the phone to your computer via the USB cable.</li>
+<li>Pull open the Android notification toaster (hold the top of the screen and swipe down).</li>
+<li>Select USB Connection.</li>
+<li>Select “Charge Only” and tap OK.</li>
+</ol>
+<h2 id="troubleshooting-issues">Troubleshooting Issues</h2>
+<p>If you run into problems, try our <a href="./android-troubleshooting.html">Android troubleshooting guide</a>.</p>
+<h3 id="appendix-manual-install-of-the-android-plugin-for-basil">Appendix: Manual Install of the Android Plugin for Basil</h3>
+<p><strong>This process should only be done as a last resort.</strong> Make sure your version of basil is up to date with <code>basil update</code>.</p>
+<p>Clone the Game Closure <a href="https://github.com/gameclosure/native-android">Android GitHub repository</a>. Switch to this directory and make sure everything is up-to-date:</p>
+<pre><code>$ git clone https://github.com/gameclosure/native-android
+$ cd native-android
+$ git checkout develop
+$ git submodule update --init</code></pre>
+<p>To let basil know where to find the android repository, update the <strong>config.json</strong> file located in the root of the basil install:</p>
+<pre><code>{
+  &quot;android&quot;: {
+    &quot;root&quot;: &quot;path/to/native-android&quot;
+  }
+}</code></pre>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

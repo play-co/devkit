@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ui-color</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-ui.color">Class: ui.Color</a><ul>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#new-color-options">new Color ([options])</a></li>
+<li><a href="#new-color-r-g-b-a">new Color ([r, g, b, a])</a></li>
+<li><a href="#new-color-rgba">new Color ([rgba])</a></li>
+<li><a href="#set-color">set (color)</a></li>
+<li><a href="#get">get ()</a></li>
+<li><a href="#parse-color">parse (color)</a></li>
+<li><a href="#tostring">toString ()</a></li>
+<li><a href="#tohex">toHex ()</a></li>
+</ul></li>
+<li><a href="#properties">Properties</a><ul>
+<li><a href="#r-number-0">r <code>{number} = 0</code></a></li>
+<li><a href="#g-number-0">g <code>{number} = 0</code></a></li>
+<li><a href="#b-number-0">b <code>{number} = 0</code></a></li>
+<li><a href="#a-number-1">a <code>{number} = 1</code></a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-ui.color">Class: ui.Color</h1>
+<p>The <code>Color</code> class is provided as a convenience for parsing and storing color values from a number of different formats.</p>
+<h2 id="methods">Methods</h2>
+<h3 id="new-color-options">new Color ([options])</h3>
+<ol type="1">
+<li><code>options {object}</code> —Optional.
+<ul>
+<li><code>r {number} = 0</code> —The red value of the color, from 0 to 255.</li>
+<li><code>g {number} = 0</code> —The green value of the color, from 0 to 255.</li>
+<li><code>b {number} = 0</code> —The blue value of the color, from 0 to 255.</li>
+<li><code>a {number} = 1</code> —The alpha value of the color, from 0 to 1.</li>
+</ul></li>
+</ol>
+<p>Color component values can be passed as object properties to the constructor:</p>
+<pre><code>import ui.Color as Color;
+
+var rgba = new Color({r: 23, g: 234, b: 0, a: 0.8});</code></pre>
+<h3 id="new-color-r-g-b-a">new Color ([r, g, b, a])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>r {number} = 0</code> —The red value of the color, from 0 to 255.</li>
+<li><code>g {number} = 0</code> —The green value of the color, from 0 to 255.</li>
+<li><code>b {number} = 0</code> —The blue value of the color, from 0 to 255.</li>
+<li><code>a {number} = 1</code> —The alpha value of the color, from 0 to 1.</li>
+</ol>
+</dd>
+</dl>
+<p>Component values can also be passed as individual parameters to the constructor:</p>
+<pre><code>var rgba = new Color(23, 234, 0, 0.8);</code></pre>
+<h3 id="new-color-rgba">new Color ([rgba])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>rgba {string}</code> —A color string in hexadecimal or CSS-style format.</li>
+</ol>
+</dd>
+</dl>
+<p>Colors can be one of the following values:</p>
+<ul>
+<li>“blue” : Standard CSS color names. See <a href="http://www.w3schools.com/cssref/css_colornames.asp">this website</a> for a complete list.</li>
+<li>“#330033” : Standard HTML Hexadecimal RGB code. See <a href="http://www.w3schools.com/cssref/css_colors.asp">this website</a> for a detailed description of this format.</li>
+<li>“rgb(255,0,0)” : Standard HTML RGB code. See <a href="http://www.w3schools.com/cssref/css_colors.asp">this website</a> for a detailed description of this format.</li>
+<li>“rgb(255,0,0,0.8)” : Standard HTML RGB code with alpha value between 0 and 1 in the final parameter.</li>
+</ul>
+<pre><code>var rgba = new Color(&#39;rgba(23,234,0,0.8)&#39;);</code></pre>
+<h3 id="set-color">set (color)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>color {object}</code>
+<ul>
+<li><code>r {number} = 0</code> —Red component, a number between 0 and 255.</li>
+<li><code>g {number} = 0</code> —Green component, a number between 0 and 255.</li>
+<li><code>b {number} = 0</code> —Blue component, a number between 0 and 255.</li>
+<li><code>a {number} = 1</code> —Optional alpha component, a number between 0 and 1.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Set the component values of a color.</p>
+<pre><code>rgba.set({r: 87, g: 24, b: 220, a: 0.7});</code></pre>
+<h3 id="get">get ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>color {object}</code>
+<ul>
+<li><code>r {number}</code> —Red component, a number between 0 and 255.</li>
+<li><code>g {number}</code> —Green component, a number between 0 and 255.</li>
+<li><code>b {number}</code> —Blue component, a number between 0 and 255.</li>
+<li><code>a {number}</code> —Alpha component, a number between 0 and 1.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Return a new object containing the component values of this color.</p>
+<h3 id="parse-color">parse (color)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>color {string}</code> —Color string in hexadecimal or CSS-style format.</li>
+</ol>
+</dd>
+</dl>
+<p>Parse a color string and set the red-green-blue-alpha component values.</p>
+<pre><code>rgba.parse(&#39;#ff00ff&#39;); //Hexadecimal format
+
+rgba.parse(&#39;rgba(255,0,255,0.5)&#39;); //CSS-style RGBA format</code></pre>
+<h3 id="tostring">toString ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the color as a string in the CSS-style format: <code>'rgba(R, G, B, A)'</code>.</p>
+<h3 id="tohex">toHex ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the color as a string in the hexadecimal format: <code>'#RRGGBB'</code>.</p>
+<h2 id="properties">Properties</h2>
+<h3 id="r-number-0">r <code>{number} = 0</code></h3>
+<p>The red component of the color. A number between 0 and 255.</p>
+<h3 id="g-number-0">g <code>{number} = 0</code></h3>
+<p>The green component of the color. A number between 0 and 255.</p>
+<h3 id="b-number-0">b <code>{number} = 0</code></h3>
+<p>The blue component of the color. A number between 0 and 255.</p>
+<h3 id="a-number-1">a <code>{number} = 1</code></h3>
+<p>The alpha component of the color. A number between 0.0 and 1.0.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

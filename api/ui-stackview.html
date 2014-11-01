@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ui-stackview</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-ui.stackview">Class: ui.StackView</a><ul>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#new-stackview-options">new StackView ([options])</a></li>
+<li><a href="#getstack">getStack ()</a></li>
+<li><a href="#getcurrentview">getCurrentView ()</a></li>
+<li><a href="#hasview-view">hasView (view)</a></li>
+<li><a href="#push-view-noanimate-reverse">push (view [, noAnimate, reverse])</a></li>
+<li><a href="#pop-noanimate-reverse">pop ([noAnimate, reverse])</a></li>
+<li><a href="#popall-noanimate">popAll ([noAnimate])</a></li>
+<li><a href="#remove-view">remove (view)</a></li>
+</ul></li>
+<li><a href="#events">Events</a></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-ui.stackview">Class: ui.StackView</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>A view that contains a collection of child views. Views are pushed onto the stack and popped off the stack; the view at the top position of the stack is rendered to the screen.</p>
+<p>This is a handy way to organize a collection of game screens, tabs, or other views that need to be displayed one at a time. The <code>StackView</code> provides a convenient means to navigate through game screens and be assured the user will not get stuck without a way out—views can always get popped off the stack until you get to the root view.</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li><a href="../example/ui-stackview-basic/">Basic StackView</a></li>
+</ul>
+<h2 id="methods">Methods</h2>
+<h3 id="new-stackview-options">new StackView ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code> —Options parameters are inherited from the <code>ui.View</code> class.</li>
+</ol>
+</dd>
+</dl>
+<pre><code>var stackview = new StackView({
+  superview: this,
+  x: 0,
+  y: 0,
+  width: 300,
+  height: 300,
+  scale: 1,
+  zIndex: 3
+});</code></pre>
+<h3 id="getstack">getStack ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array}</code> —Return an array of views contained in this stack.</li>
+</ol>
+</dd>
+</dl>
+<p>The bottom view is indexed at 0, and the current view is at the end of the returned array. Avoid modifying the returned stack directly, instead use the helper functions below.</p>
+<h3 id="getcurrentview">getCurrentView ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{View}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Return the current visible view at the top of the stack.</p>
+<h3 id="hasview-view">hasView (view)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>view {View}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol start="2" type="1">
+<li><code>{boolean}</code> —Return <code>true</code> if the given view is contained in this stack.</li>
+</ol>
+</dd>
+</dl>
+<h3 id="push-view-noanimate-reverse">push (view [, noAnimate, reverse])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>view {View}</code></li>
+<li><code>noAnimate {boolean} = false</code> —If <code>true</code>, do not animate the view when displaying.</li>
+<li><code>reverse {boolean} = false</code> —By default, wipe in from the right. If <code>true</code>, wipe in from the left.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{View}</code> —Same as the provided view object.</li>
+</ol>
+</dd>
+</dl>
+<p>Add a view to the <code>StackView</code> collection. Since it is now on top of the stack it will be visible. The <code>height</code> and <code>width</code> of the added view will be scaled up to fit the dimensions of the <code>StackView</code>. Additionally, the new view’s <code>y</code> value is forced to zero so that the new view perfectly fills the <code>StackView</code>.</p>
+<p>By default, when a view is pushed to the top of a <code>StackView</code>, it will animate in from right to left. When <code>noAnimate</code> is set to <code>true</code>, the view will not animate in, and will simply appear on top. If <code>reverse</code> is set to <code>true</code>, the view will animate in from the left to right.</p>
+<pre><code>// x, y, width, and height are all set by the StackView
+var view = new ui.View({});
+
+stackview.push(view);</code></pre>
+<h3 id="pop-noanimate-reverse">pop ([noAnimate, reverse])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>noAnimate {boolean} = false</code> —If <code>true</code>, do <em>not</em> animate in the new top view.</li>
+<li><code>reverse {boolean} = true</code> —By default, the view is animated from right to left. If <code>false</code>, animate the wipe from left to right.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li>Return: <code>{View}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Remove a view from the top of the <code>StackView</code>. Unless <code>noAnimate</code> is true, this animates the view to the right, makes it invisible, then removes it as a subview.</p>
+<h3 id="popall-noanimate">popAll ([noAnimate])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>noAnimate {boolean} = false</code> —If <code>true</code>, do <em>not</em> animate out the child views.</li>
+</ol>
+</dd>
+</dl>
+<p>Removes all child views from the <code>StackView</code>, allowing it to be re-used. Note that this should be used instead of <code>removeAllSubviews</code> as it clears the inner stack.</p>
+<h3 id="remove-view">remove (view)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>view {View}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Removes a child view from the stack. Will not animate out regardless of position.</p>
+<h2 id="events">Events</h2>
+<h4 id="viewwillappear-callback">'ViewWillAppear', callback ()</h4>
+<p>Event emitted to the child view when it is schedules to appear, but before it has animated in.</p>
+<h4 id="viewdidappear-callback">'ViewDidAppear', callback ()</h4>
+<p>Event emitted to the child view once it has appeared, and after any animations.</p>
+<h4 id="viewwilldisappear-callback">'ViewWillDisappear', callback ()</h4>
+<p>Event emitted to the child view when it is scheduled to disappear, but before it has animated out.</p>
+<h4 id="viewdiddisappear-callback">'ViewDidDisappear', callback ()</h4>
+<p>Event emitted to the child view once it has disappeared, after any animations.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

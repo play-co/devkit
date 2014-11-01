@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: manifest</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#project-manifest-options">Project Manifest Options</a><ul>
+<li><a href="#supported-configuration-settings">Supported Configuration Settings</a><ul>
+<li><a href="#appid">appID</a></li>
+<li><a href="#shortname">shortName</a></li>
+<li><a href="#title">title</a></li>
+<li><a href="#description">description</a></li>
+<li><a href="#studio">studio</a></li>
+<li><a href="#version">version</a></li>
+<li><a href="#sdkversion">sdkVersion</a></li>
+<li><a href="#group">group</a></li>
+<li><a href="#doc">doc</a></li>
+<li><a href="#supportedorientations">supportedOrientations</a></li>
+<li><a href="#icon">icon</a></li>
+<li><a href="#splash">splash</a></li>
+<li><a href="#scaledpr">scaleDPR</a></li>
+<li><a href="#unlockviewport">unlockViewport</a></li>
+<li><a href="#nativeurlscheme">nativeURLScheme</a></li>
+<li><a href="#disablenativeviews">disableNativeViews</a></li>
+<li><a href="#android">android</a></li>
+<li><a href="#ios">ios</a></li>
+<li><a href="#truetype-fonts-ttf">TrueType Fonts (TTF)</a></li>
+<li><a href="#mpmetricskey">mpMetricsKey</a></li>
+<li><a href="#fonts">fonts</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="project-manifest-options">Project Manifest Options</h1>
+<p>Each game has its configuration stored in the <code>manifest.json</code> file, located in the root directory of the project. This file is auto-generated when a project is initialized and controls the build process for your game. These options are stored in <a href="http://www.json.org">JSON</a> format and can be edited by hand. For example, a minimal <code>manifest.json</code> configuration might look something like this:</p>
+<pre><code>{
+  &quot;appID&quot;: &quot;abcdefghijklmnopqrstuvwxyz012345&quot;,
+  &quot;shortName&quot;: &quot;helloWorld&quot;,
+  &quot;title&quot;: &quot;Hello, World!&quot;,
+  &quot;supportedOrientations&quot;: [&quot;portrait&quot;],
+  &quot;studio&quot;: {
+    &quot;name&quot;: &quot;Jolly Fun Times, Inc.&quot;,
+    &quot;domain&quot;: &quot;example.com&quot;
+  }
+}</code></pre>
+<p>Manifest options are per game, they affect not only how the game appears in the Basil development environment, but also where to find image and font resources, store third-party service keys, and configures the environment to build for native devices.</p>
+<p>From inside the JavaScript code for your game, these options are accessible at runtime via the CONFIG global variable. For example: <code>CONFIG.title</code> and <code>CONFIG.appID</code>.</p>
+<h2 id="supported-configuration-settings">Supported Configuration Settings</h2>
+<p><strong>Note:</strong> If you’re getting parse errors from your <code>manifest.json</code> file, make sure to run it through a tool such as <a href="http://jsonlint.com">JSONLint</a>, the JSON file format can be a bit fickle at times.</p>
+<h3 id="appid">appID</h3>
+<ol type="1">
+<li><code>{string}</code> —Auto-generated ID.</li>
+</ol>
+<p>This is a unique identifier for your game used by basil and is auto-generated when a new project is created. The <code>appID</code> is a string containing only alpha-numeric characters.</p>
+<h3 id="shortname">shortName</h3>
+<ol type="1">
+<li><code>{string}</code> —Defaults to the directory name of a new project.</li>
+</ol>
+<p>The <code>shortName</code> is an internal code name used for links to your project by the basil tools and to name output files during the build process. This is a alpha-numeric string—which <em>does not</em> start with a number—and should be unique to your game studio. It may contain dots (.) or dashes (-). It may <em>not</em> contain spaces ( ) nor underscores (_).</p>
+<h3 id="title">title</h3>
+<ol type="1">
+<li><code>{string}</code></li>
+</ol>
+<p>The full title of the game which is displayed on menus in the simulator and under the application icon when installed on a phone.</p>
+<h3 id="description">description</h3>
+<ol type="1">
+<li><code>{string}</code></li>
+</ol>
+<p>A brief description of your game.</p>
+<h3 id="studio">studio</h3>
+<ol type="1">
+<li><code>{object}</code>
+<ul>
+<li><code>name {string}</code> —The studio name.</li>
+<li><code>domain {string}</code> —The URL of the studio.</li>
+</ul></li>
+</ol>
+<p>Information about the studio publishing the game.</p>
+<h3 id="version">version</h3>
+<ol type="1">
+<li><code>{string}</code></li>
+</ol>
+<p>The version number or string for your game, for example: <code>'v0.1-beta'</code>. This is provided as a convenience for game developers, so use whatever convention you wish.</p>
+<h3 id="sdkversion">sdkVersion</h3>
+<ol type="1">
+<li><code>{string}</code></li>
+</ol>
+<p>The version of the Game Closure DevKit used to build this project. This value is automatically filled in when the game is run by basil.</p>
+<h3 id="group">group</h3>
+<ol type="1">
+<li><code>{string}</code></li>
+</ol>
+<p>If a group name is present, the project will be displayed in a separate tab in the Basil Web Interface. All games that contain the same group name will appear in a list together.</p>
+<h3 id="doc">doc</h3>
+<ol type="1">
+<li><code>{string}</code> —URL.</li>
+</ol>
+<p>This is a URL link pointing to documentation for the project. This is used for the examples to display the annotated source code and displayed in the basil project list.</p>
+<h3 id="supportedorientations">supportedOrientations</h3>
+<ol type="1">
+<li><code>{array} = [&quot;portrait&quot;]</code> —Options are <code>&quot;portrait&quot;</code>, <code>&quot;landscape&quot;</code>, or both.</li>
+</ol>
+<p>Specify which orientations are allowed on the mobile device. The simulator will default to the first entry in the array, for example:</p>
+<pre><code>&quot;supportedOrientations&quot;: [&quot;landscape&quot;, &quot;portrait&quot;],</code></pre>
+<h3 id="icon">icon</h3>
+<ol type="1">
+<li><code>{string}</code> —Path to app store game icon, 512x512px.</li>
+</ol>
+<p>This is the icon that will be displayed in the Game Closure DevKit web interface for your game.</p>
+<pre><code>&quot;icon&quot;: &quot;resources/icons/icon512.png&quot;,</code></pre>
+<h3 id="splash">splash</h3>
+<ol type="1">
+<li><code>{object}</code>
+<ul>
+<li><code>autoHide {boolean} = false</code> —Automatically hide the splash image when the app starts.</li>
+<li><code>universal {string}</code> —Path to a high resoution universal splash image that will automatically be used to fill in any of the missing sizes for the splash keys below.</li>
+<li><code>portrait480 {string} (optional)</code> —Path to splash image, 320x480px, topside-left.</li>
+<li><code>portrait960 {string} (optional)</code> —Path to splash image, 640x960px, topside-left.</li>
+<li><code>portrait1024 {string} (optional)</code> —Path to splash image, 768x1024px, topside-up.</li>
+<li><code>portrait1136 {string} (optional)</code> —Path to splash image, 640x1136px, topside-left.</li>
+<li><code>portrait2048 {string} (optional)</code> —Path to splash image, 1536x2048px, topside-up.</li>
+<li><code>landscape768 {string} (optional)</code> —Path to splash image, 1024x768px, topside-up.</li>
+<li><code>landscape1536 {string} (optional)</code> —Path to splash image, 2048x1536px, topside-up.</li>
+<li><code>music {string}</code> —Path to music to play on startup.</li>
+</ul></li>
+</ol>
+<p>For easy usage, set <code>autoHide</code> set to true and provide a <code>universal</code> image. For a portrait game you should specify a portrait image for universal, oriented topside-up. For a landscape game you should specify a landscape image, oriented topside-up. The DevKit will automatically crop and scale the image to fit other screen sizes. For this <code>universal</code> image, the long side of the image should be around 2048 pixels for good presentation on larger device screens.</p>
+<p>The splash section is used to specify splash screen images for Android and iPhone/iPad devices. All splash screens should be PNG image files at 8-bit 3-channel RGB color.</p>
+<p>Setting the <code>autoHide</code> property to <code>true</code> causes the splash screen to be automatically removed after loading completes. If <code>autoHide</code> is <code>false</code>—the default—the developer can manually remove the splash screen by calling <code>GC.hidePreloader()</code>.</p>
+<p>Example simple <code>manifest.json</code> settings:</p>
+<pre><code>&quot;splash&quot;: {
+  &quot;autoHide&quot;: true,
+  &quot;universal&quot;: &quot;resources/splash/portrait2048.png&quot;,
+}</code></pre>
+<p>Example advanced <code>manifest.json</code> settings:</p>
+<pre><code>&quot;splash&quot;: {
+  &quot;autoHide&quot;: true,
+  &quot;portrait480&quot;: &quot;resources/splash/portrait480.png&quot;,
+  &quot;portrait960&quot;: &quot;resources/splash/portrait960.png&quot;,
+  &quot;portrait1024&quot;: &quot;resources/splash/portrait1024.png&quot;,
+  &quot;portrait1136&quot;: &quot;resources/splash/portrait1136.png&quot;,
+  &quot;portrait2048&quot;: &quot;resources/splash/portrait2048.png&quot;,
+  &quot;landscape768&quot;: &quot;resources/splash/landscape768.png&quot;,
+  &quot;landscape1536&quot;: &quot;resources/splash/landscape1536.png&quot;
+}</code></pre>
+<h3 id="scaledpr">scaleDPR</h3>
+<ol type="1">
+<li><code>{boolean} = false</code></li>
+</ol>
+<p>Mobile browser flag for setting device DPI or low DPI.</p>
+<h3 id="unlockviewport">unlockViewport</h3>
+<ol type="1">
+<li><code>{boolean} = false</code></li>
+</ol>
+<p>If this is set to <code>true</code>, scrolling in a mobile web browser will display the address bar.</p>
+<h3 id="nativeurlscheme">nativeURLScheme</h3>
+<ol type="1">
+<li><code>{string} = &quot;tealeaf&quot;</code></li>
+</ol>
+<p>Defines the URL protocol for cross-app communication on native devices which allows an app to be opened from a url in the browser.</p>
+<h3 id="disablenativeviews">disableNativeViews</h3>
+<ol type="1">
+<li><code>{boolean} = false</code></li>
+</ol>
+<p>Use a scene graph system written in entirely in JavaScript instead of the one implemented in native code. This can be used for debugging purposes when testing a game on a native device to pinpoint where in the stack an error is occurring.</p>
+<h3 id="android">android</h3>
+<ol type="1">
+<li><code>{object}</code>
+<ul>
+<li><code>versionCode {number}</code> —Google Play version code.</li>
+<li><code>&quot;icons&quot; {object}</code> contains:
+<ul>
+<li><code>36 {string}</code> —Path to small game app icon, size: 36x36px.</li>
+<li><code>48 {string}</code> —Path to medium game app icon, size: 48x48px.</li>
+<li><code>72 {string}</code> —Path to large game app icon, size: 72x72px.</li>
+<li><code>96 {string}</code> —Path to extra-large game app icon, size: 96x96px.</li>
+<li><code>144 {string}</code> —Path to Nexus 10 game app icon, size: 144x144px.</li>
+</ul></li>
+</ul></li>
+</ol>
+<p>Device specific settings for Android phones and tablets. The Google Play store version code can be set here, and app icon paths are set in this section.</p>
+<p>Icons are displayed in the simulator and are used for your game on a mobile device. All icons are PNG image files, using 8-bit 3/4 channel RGBA. Android icons should have any glossy effects prerendered in the image file, if desired.</p>
+<p>In the <code>manifest.json</code> file, include the icon images like this:</p>
+<pre><code>&quot;android&quot;: {
+  &quot;versionCode&quot;: 1,
+  &quot;icons&quot;: {
+    &quot;36&quot;: &quot;resources/icons/android36.png&quot;,
+    &quot;48&quot;: &quot;resources/icons/android48.png&quot;,
+    &quot;72&quot;: &quot;resources/icons/android72.png&quot;,
+    &quot;96&quot;: &quot;resources/icons/android96.png&quot;,
+    &quot;144&quot;: &quot;resources/icons/android144.png&quot;
+  }
+}</code></pre>
+<h3 id="ios">ios</h3>
+<ol type="1">
+<li><code>{object}</code>
+<ul>
+<li><code>bundleID {string}</code> —The game bundle ID from iTunes Connect.</li>
+<li><code>appleID {string}</code> —The game Apple ID from iTunes Connect.</li>
+<li><code>version {string}</code> —The game version from iTunes Connect.</li>
+<li><code>&quot;icons&quot; {object}</code> contains:
+<ul>
+<li><code>renderGloss {boolean}</code> —Specify <code>true</code> to have Xcode render gloss over your icon images.</li>
+<li><code>57 {string}</code> —Path to iPhone/iPod Touch game app icon, size: 57x57px.</li>
+<li><code>72 {string}</code> —Path to iPad game app icon, size: 72x72px.</li>
+<li><code>76 {string}</code> —Path to iOS 7 iPad non-retina game app icon, size: 76x76px.</li>
+<li><code>114 {string}</code> —Path to retina iPhone/iPod Touch game app icon, size: 114x114px.</li>
+<li><code>120 {string}</code> —Path to iOS 7 retina iPhone game app icon, size: 120x120px.</li>
+<li><code>144 {string}</code> —Path to retina iPad game app icon, size: 144x144px.</li>
+<li><code>152 {string}</code> —Path to iOS 7 retina iPad game app icon, size: 152x152px.</li>
+</ul></li>
+</ul></li>
+</ol>
+<p>Device specific settings for iOS phones and tablets. In this section you can copy settings from iTunes Connect to have your game hooked up properly for in-app purchases. You should also specify icon images in this section.</p>
+<p>Icons are displayed in the DevKit web emulator and are used to represent your game in the app list when installed on a mobile device. All icons are PNG image files, using 8-bit 3/4 channel RGBA.</p>
+<p>These icons can be rendered flat since as the “glossy” effect can added during the build process. Specify <code>&quot;renderGloss&quot;: true</code> to enable this feature.</p>
+<p>In the <code>manifest.json</code> file, include the icon images like this:</p>
+<pre><code>&quot;ios&quot;: {
+  &quot;bundleID&quot;: &quot;ggshooter&quot;,
+  &quot;appleID&quot;: &quot;12345678&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;icons&quot;: {
+    &quot;renderGloss&quot;: false,
+    &quot;57&quot;: &quot;resources/icons/ios57.png&quot;,
+    &quot;72&quot;: &quot;resources/icons/ios72.png&quot;,
+    &quot;76&quot;: &quot;resources/icons/ios76.png&quot;,
+    &quot;114&quot;: &quot;resources/icons/ios114.png&quot;,
+    &quot;120&quot;: &quot;resources/icons/ios120.png&quot;,
+    &quot;144&quot;: &quot;resources/icons/ios144.png&quot;,
+    &quot;152&quot;: &quot;resources/icons/ios152.png&quot;
+  }
+}</code></pre>
+<p>Note that your app will be rejected from the iOS App Store if any of these images are missing.</p>
+<h3 id="truetype-fonts-ttf">TrueType Fonts (TTF)</h3>
+<p>Provide a list of TrueType fonts that are used by your game.</p>
+<pre><code>    &quot;ttf&quot;: [
+        &quot;resources/fonts/Arial Black.ttf&quot;
+    ],</code></pre>
+<p>For Android targets, it is crucial that custom .TTF file names match a name inside the font file.</p>
+<p>For iOS targets, it is crucial that custom fonts do not have the same name as a default system font. A complete list of default iOS fonts is available at <a href="http://iosfonts.com">iosfonts.com</a>.</p>
+<h3 id="mpmetricskey">mpMetricsKey</h3>
+<ol type="1">
+<li><code>{string}</code></li>
+</ol>
+<p>The MixPanel metrics key.</p>
+<h3 id="fonts">fonts</h3>
+<ol type="1">
+<li><code>{array}</code></li>
+</ol>
+<p>Internal data saved for custom bitmap fonts. Do not edit this.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

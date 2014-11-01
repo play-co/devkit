@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: plugins</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#devkit-native-plugins">DevKit Native Plugins</a><ul>
+<li><a href="#plugin-example-geolocation">Plugin Example: GeoLocation</a></li>
+<li><a href="#using-plugins-from-your-game">Using plugins from your game</a></li>
+<li><a href="#plugin-directory-structure">Plugin Directory Structure</a><ul>
+<li><a href="#sending-javascript-events-to-native-code">Sending JavaScript Events to Native Code</a></li>
+<li><a href="#receiving-javascript-events-from-native-code">Receiving JavaScript Events from Native Code</a></li>
+<li><a href="#plugin-javascript-design-recommendations">Plugin JavaScript Design Recommendations</a></li>
+<li><a href="#android-integration">Android Integration</a></li>
+<li><a href="#ios-integration">iOS Integration</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="devkit-native-plugins">DevKit Native Plugins</h1>
+<p>The Game Closure DevKit supports a plugin system that enables you to develop unique features for your game in native code and JavaScript that will seamlessly interoperate with and persist through upgrades to new versions.</p>
+<ul>
+<li><p>These plugins can be easily shared privately with your internal development team or shared back to Game Closure to benefit the rest of the HTML5 game development community.</p></li>
+<li><p>Plugins allow your game to use a minimum set of permissions, which will prevent users from getting scared off.</p></li>
+<li><p>Native plugin code has access to the <code>manifest.json</code> file contents so you can configure the plugins through that file.</p></li>
+<li><p>Native code and JavaScript interact through a message passing interface.</p></li>
+</ul>
+<p>The JS Event System is used to send events to JavaScript, and a function is used to deliver events from JavaScript to native code. This native interface is the same for both iOS and Android.</p>
+<h2 id="plugin-example-geolocation">Plugin Example: GeoLocation</h2>
+<p>To demonstrate the plugin system, take the <a href="https://github.com/gameclosure/geoloc">GeoLocation Plugin</a> as an example. It will be referenced throughout the documentation.</p>
+<p>To install the Geolocation addon, run <code>basil install geoloc</code>. It will be installed under <code>devkit/addons/geoloc</code>. You can also manually install addons under the <code>addons</code> directory.</p>
+<p>If you would like to add your plugin to the list of plugins that can be automatically installed with <code>basil install</code> please open up a discussion with us.</p>
+<h2 id="using-plugins-from-your-game">Using plugins from your game</h2>
+<p>The user of the plugin must include it in the <code>manifest.json</code> file under the “addons” section:</p>
+<pre><code>    &quot;addons&quot;: [
+        &quot;geoloc&quot;
+    ],</code></pre>
+<p>Furthermore at the top of the game’s <code>src/Application.js</code>:</p>
+<pre><code>import plugins.geoloc.install;</code></pre>
+<p>This imports the <code>install.js</code> file under <code>devkit/addons/geoloc/js/</code>. This file checks if it is running on native or in the browser, and will add a JS wrapper to the <code>navigator</code> object for native.</p>
+<p>What to import may vary from plugin to plugin, so please refer to the documentation that is provided with the plugin for usage instructions. Plugin developers should provide documentation in a README.md file so that users know how to set it up.</p>
+<h2 id="plugin-directory-structure">Plugin Directory Structure</h2>
+<p>The plugin system for iOS consists of several pieces: There will be a JavaScript wrapper for the native functions. A configuration file describes what files and dependencies need to be added to the native project before building. And of course there is the native source code that interacts with your JavaScript wrapper.</p>
+<p>A normal DevKit plugin has a simple directory structure:</p>
+<pre><code>├── README.md
+├── android
+│   ├── GeolocPlugin.java
+│   ├── config.json
+│   ├── manifest.xml
+│   └── manifest.xsl
+├── ios
+│   ├── GeoLoc.h
+│   ├── GeoLoc.mm
+│   └── config.json
+├── js
+│   └── install.js
+├── index.js
+└── package.json</code></pre>
+<p>All plugins should have a <code>README.md</code> or similar documentation to describe how to install it and platform-specific considerations when using the plugin.</p>
+<p>The <code>index.js</code> file is used by the addon system to notify the addon of <code>basil</code> events. And the <code>package.json</code> file is a nodejs configuration file that specifies npm dependencies for the <code>index.js</code> source code.</p>
+<p>The <code>android</code> and <code>ios</code> directories contain configuration and code for the supported native targets.</p>
+<p>The <code>js</code> directory contains JavaScript files that will be added to the JavaScript include path under the <code>plugins.myAddonName</code> namespace.</p>
+<h4 id="index.js">./index.js</h4>
+<p>The index JavaScript file can export several methods that get invoked by <code>basil</code> for different reasons:</p>
+<ul>
+<li><p><code>exports.init(common)</code> : Called when the addon is upgraded or first installed.</p></li>
+<li><p><code>exports.load(common)</code> : Called on all addons when the addon is loaded on <code>basil</code> startup before a build begins.</p></li>
+</ul>
+<pre><code>exports.init = function (common) {
+    var logger = new common.Formatter(&#39;geoloc&#39;);
+    logger.log(&quot;Initializing&quot;);
+    exports.load();
+};
+
+exports.load = function (common) {
+    var logger = new common.Formatter(&#39;geoloc&#39;);
+    logger.log(&quot;Loading&quot;);
+}</code></pre>
+<p>Usually native plugins do not need to do anything in the index.js file, but the option is there if you need it. Furthermore, you can leave out the index.js and package.json files entirely without causing any problems.</p>
+<h4 id="js">./js/</h4>
+<p>The <code>js</code> directory contains JavaScript files that will be added to the JavaScript include path under <code>import plugins.addonName.*</code>. In the case of geoloc, this is <code>import plugins.geoloc.install;</code> to import the <code>install.js</code> file.</p>
+<p>You do not need to add a plugin to a game’s <code>manifest.json</code> “addons” section to use JavaScript imports that it provides.</p>
+<h4 id="android">./android/</h4>
+<p>Please see the <a href="../native/android-plugin.html">Android Plugin documentation</a> for a description of the files under the <code>android</code> directory.</p>
+<h4 id="ios">./ios/</h4>
+<p>Please see the <a href="../native/ios-plugin.html">iOS Plugin documentation</a> for a description of the files under the <code>ios</code> directory.</p>
+<h3 id="sending-javascript-events-to-native-code">Sending JavaScript Events to Native Code</h3>
+<p>To communicate with your native code from JavaScript, the <code>NATIVE.plugins.sendEvent</code> function is used to send data to the plugin, and the <code>NATIVE.events.registerHandler</code> function is used to receive data from the plugin.</p>
+<p>For example, to send the GeoLocation plugin a request called “onRequest” with a JSON object as a parameter:</p>
+<pre><code>var e = {id:1, method:&quot;getPosition&quot;, arguments:{}};
+NATIVE.plugins.sendEvent(&quot;GeolocPlugin&quot;, &quot;onRequest&quot;, JSON.stringify(e));</code></pre>
+<p>This causes the <code>onRequest</code> function in the <code>GeolocPlugin</code> native class to be invoked.</p>
+<p>Another way to improve the readability of your code is to split the <code>NATIVE.plugins.sendEvent</code> call into a convenient wrapper. In the following example from the <a href="http://github.com/gameclosure/facebook/">Facebook plugin</a>, <code>pluginSend(&quot;login&quot;);</code> can be used instead of the long-hand form above:</p>
+<pre><code>function pluginSend(evt, params) {
+    NATIVE &amp;&amp; NATIVE.plugins.sendEvent(&quot;FacebookPlugin&quot;, evt,
+                JSON.stringify(params || {}));
+}
+
+var Facebook = Class(function () {
+    this.login = function() {
+        pluginSend(&quot;login&quot;);
+    };
+});
+
+exports = new Facebook();</code></pre>
+<h3 id="receiving-javascript-events-from-native-code">Receiving JavaScript Events from Native Code</h3>
+<p>To receive data from the plugin via the Events subsystem:</p>
+<pre><code>NATIVE.events.registerHandler(&#39;geoloc&#39;, function(evt) {
+    if (evt.failed) {
+    } else {
+    }
+});</code></pre>
+<p>The following <code>pluginOn</code> and <code>invokeCallbacks</code> functions are helpful wrappers from the <a href="http://github.com/gameclosure/facebook/">Facebook plugin</a> you can drop into your own plugin to easily handle callbacks from native code:</p>
+<pre><code>function pluginOn(evt, next) {
+    NATIVE &amp;&amp; NATIVE.events.registerHandler(evt, next);
+}
+
+function invokeCallbacks(list, clear) {
+    // Pop off the first two arguments and keep the rest
+    var args = Array.prototype.slice.call(arguments);
+    args.shift();
+    args.shift();
+
+    // For each callback,
+    for (var ii = 0; ii &lt; list.length; ++ii) {
+        var next = list[ii];
+
+        // If callback was actually specified,
+        if (next) {
+            // Run it
+            next.apply(null, args);
+        }
+    }
+
+    // If asked to clear the list too,
+    if (clear) {
+        list.length = 0;
+    }
+}
+
+var Facebook = Class(function () {
+    var loginCB = [];
+
+    this.init = function(opts) {
+        pluginOn(&quot;facebookState&quot;, function(evt) {
+            invokeCallbacks(loginCB, true, evt.state === &quot;open&quot;);
+        });
+    }
+
+    this.login = function(next) {
+        loginCB.push(next);
+
+        pluginSend(&quot;login&quot;);
+    };
+});
+
+exports = new Facebook();</code></pre>
+<h5 id="matching-requests-to-responses">Matching requests to responses</h5>
+<p>If it is necessary to match a request with the response from the plugin, it is good practice to include an <code>id</code> field in the request, which can be provided in the response to match it with the request.</p>
+<p>This is not demonstrated here since GeoLocation does not need to match responses with requests. A JavaScript array keyed with these ids is a good way to remember the callback functions to call when a response arrives.</p>
+<h3 id="plugin-javascript-design-recommendations">Plugin JavaScript Design Recommendations</h3>
+<p>Note that the <code>geoloc</code> plugin is a special case that breaks out of the normal js.io class system to add features to the global <code>navigator</code> object. The preferred way to develop addon JavaScript is by using the normal js.io class system.</p>
+<p>For example, for the <a href="https://github.com/gameclosure/mopub/">MoPub</a> plugin there is a <code>js/moPub.js</code> file:</p>
+<pre><code>var MoPub = Class(function () {
+    this.showInterstitial = function () {
+        logger.log(&quot;{moPub} Showing interstitial&quot;);
+
+        NATIVE &amp;&amp; NATIVE.plugins.sendEvent(&quot;MoPubPlugin&quot;, &quot;showInterstitial&quot;,
+                JSON.stringify({}));
+        }
+    };
+});
+
+exports = new MoPub();</code></pre>
+<p>The JS object is imported in games that use it with:</p>
+<pre><code>import plugins.mopub.moPub as moPub;</code></pre>
+<p>And then games can use the <code>showInterstitial</code> method:</p>
+<pre><code>moPub.showInterstitial();</code></pre>
+<h3 id="android-integration">Android Integration</h3>
+<p>Please see the <a href="../native/android-plugin.html">Android Plugin documentation</a>.</p>
+<h3 id="ios-integration">iOS Integration</h3>
+<p>Please see the <a href="../native/ios-plugin.html">iOS Plugin documentation</a>.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

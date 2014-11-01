@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ouya</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#game-closure-devkit-plugin-ouya">Game Closure DevKit Plugin: OUYA</a><ul>
+<li><a href="#ouya-hardware-setup">OUYA Hardware Setup</a></li>
+<li><a href="#usage">Usage</a></li>
+</ul></li>
+<li><a href="#ouya-object">ouya object</a><ul>
+<li><a href="#events">Events</a><ul>
+<li><a href="#ouya.ondigitalinput-evt">ouya.onDigitalInput (evt)</a></li>
+<li><a href="#ouya.onanaloginput-evt">ouya.onAnalogInput (evt)</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="game-closure-devkit-plugin-ouya">Game Closure DevKit Plugin: OUYA</h1>
+<p>The OUYA plugin provides support for the OUYA controller.</p>
+<h2 id="ouya-hardware-setup">OUYA Hardware Setup</h2>
+<p>To install and test games on the OUYA you will need to add a new Vendor ID to your .android/adb_usb.ini file as described in the OUYA documentation and also the <a href="http://docs.gameclosure.com/native/android-troubleshooting.html">DevKit Android troubleshooting guide</a>.</p>
+<p>The Vendor ID for the OUYA is 0x2836</p>
+<p>Then you can connect a micro-USB data cable to the OUYA just like an Android cellphone and run <code>basil debug native-android --clean --install</code> to build and install the game as normal.</p>
+<h2 id="usage">Usage</h2>
+<p>Install the plugin with <code>basil install ouya</code>.</p>
+<p>Include it in the <code>manifest.json</code> file under the “addons” section for your game:</p>
+<pre><code>&quot;addons&quot;: [
+    &quot;ouya&quot;
+],</code></pre>
+<p>To use the OUYA controller in your game, import the JavaScript component:</p>
+<pre><code>import plugins.ouya.ouya as ouya;</code></pre>
+<p>To receive input events from the OUYA controller, override the <code>ouya.onDigitalInput</code> and <code>ouya.onAnalogInput</code> event handlers:</p>
+<pre><code>ouya.onDigitalInput = function(evt) {
+    logger.log(&quot;received digital input from player&quot;, evt.player, &quot;with keyCode&quot;,
+        evt.code, &quot;and action&quot;, evt.action == ouya.ACTION.DOWN ? &quot;DOWN&quot;: &quot;UP&quot;);
+};
+
+ouya.onAnalogInput = function(evt) {
+    logger.log(&quot;received analog input from player&quot;, evt.player, &quot;: lsx&quot;, evt.lsx, &quot;, lsy&quot;,
+        evt.lsy, &quot;, rsx&quot;, evt.rsx, &quot;, rsy&quot;, evt.rsy, &quot;, l2&quot;, evt.l2, &quot;, r2&quot;, evt.r2);
+};</code></pre>
+<p>For an example application that uses the OUYA controller for input, check out the Platformer example project under <code>devkit/projects/platformer</code> and also on <a href="http://github.com/gameclosure/platformer">the Platformer github page</a></p>
+<p>When you hold down an “O”, “U”, “Y”, or “A” button on the OUYA controller, it will report an ouya.ACTION.DOWN event repeatedly until the key is released, so you may want to write code like this to edge-trigger on the key presses:</p>
+<pre><code>ouya.onDigitalInput = function(evt) {
+    // If &quot;O&quot; button is pressed or released,
+    if (evt.code == ouya.BUTTON.O &amp;&amp; this.lastAction != evt.action) {
+        this.lastAction = evt.action;
+
+        // If button was just pressed,
+        if (evt.action == ouya.ACTION.DOWN) {
+            this.onJump();
+        } else {
+            this.onJumpDone();
+        }
+    }
+}.bind(this);</code></pre>
+<p>The OUYA analog sticks produce x,y values in the range of -1..1, with 0 being the center neutral position. The following code demonstrates how to respond to an analog stick swipe:</p>
+<pre><code>ouya.onAnalogInput = function(evt) {
+    // Get left analog stick x,y
+    var x = evt.lsx, y = evt.lsy;
+
+    // If the stick is far from center,
+    if (x * x + y * y &gt; 0.5 * 0.5) {
+        this.onDive();
+    }
+}.bind(this);</code></pre>
+<h1 id="ouya-object">ouya object</h1>
+<h2 id="events">Events</h2>
+<h3 id="ouya.ondigitalinput-evt">ouya.onDigitalInput (evt)</h3>
+<ul>
+<li><code>callback {function}</code> —Set to your callback function. The first argument will be the event information object.</li>
+</ul>
+<p>The event object schema is</p>
+<ul>
+<li><p><code>player</code> {integer} : Which remote controller is generating the event.</p></li>
+<li><p><code>code</code> {integer} : Enumeration with values:</p>
+<ul>
+<li>ouya.BUTTON.O</li>
+<li>ouya.BUTTON.U</li>
+<li>ouya.BUTTON.Y</li>
+<li>ouya.BUTTON.A</li>
+<li>ouya.BUTTON.MENU</li>
+<li>ouya.BUTTON.DPAD.UP</li>
+<li>ouya.BUTTON.DPAD.DOWN</li>
+<li>ouya.BUTTON.DPAD.RIGHT</li>
+<li>ouya.BUTTON.DPAD.LEFT</li>
+<li>ouya.BUTTON.L[1]</li>
+<li>ouya.BUTTON.L[2]</li>
+<li>ouya.BUTTON.L[3]</li>
+<li>ouya.BUTTON.R[1]</li>
+<li>ouya.BUTTON.R[2]</li>
+<li>ouya.BUTTON.R[3]</li>
+</ul></li>
+<li><p><code>action</code> {integer} : Enumeration with values:</p>
+<ul>
+<li>ouya.ACTION.DOWN = Button is pressed down (sent repeatedly)</li>
+<li>ouya.ACTION.UP = Button is released</li>
+</ul></li>
+</ul>
+<p>See the <a href="https://devs.ouya.tv/developers/docs/controllers">main OUYA controller docs</a> for more information.</p>
+<h3 id="ouya.onanaloginput-evt">ouya.onAnalogInput (evt)</h3>
+<ul>
+<li><code>callback {function}</code> —Set to your callback function. The first argument will be the event information object.</li>
+</ul>
+<p>The event object schema is</p>
+<ul>
+<li><p><code>player</code> {integer} : Which remote controller is generating the event.</p></li>
+<li><code>lsx</code> {float} : Left stick x position [-1..0..1]</li>
+<li><p><code>lsy</code> {float} : Left stick y position [-1..0..1]</p></li>
+<li><code>rsx</code> {float} : Right stick x position [-1..0..1]</li>
+<li><p><code>rsy</code> {float} : Right stick y position [-1..0..1]</p></li>
+<li><code>l2</code> {float} : Left top button 2 position</li>
+<li><p><code>r2</code> {float} : Right top button 2 position</p></li>
+</ul>
+<p>See the <a href="https://devs.ouya.tv/developers/docs/controllers">main OUYA controller docs</a> for more information.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

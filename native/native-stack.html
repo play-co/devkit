@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: native-stack</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#native-stack-overview">Native Stack Overview</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#components">Components</a><ul>
+<li><a href="#game-closure-devkit-game-code">Game Closure DevKit / Game Code</a></li>
+<li><a href="#gc-api">GC API</a></li>
+<li><a href="#javascript-interpreter">JavaScript Interpreter</a></li>
+<li><a href="#core">Core</a></li>
+<li><a href="#platform">Platform</a></li>
+<li><a href="#androidjava">Android/Java</a></li>
+</ul></li>
+<li><a href="#moving-around-the-stack">Moving Around the Stack</a><ul>
+<li><a href="#game-closure-devkit-tofrom-gc-api">Game Closure DevKit to/from GC API</a></li>
+<li><a href="#gc-api-tofrom-core-or-platform-through-the-javascript-interpreter">GC API to/from Core or Platform through the JavaScript Interpreter</a></li>
+<li><a href="#core-tofrom-platform">Core to/from Platform</a></li>
+<li><a href="#platform-tofrom-java-code-android-only">Platform to/from Java Code (Android Only)</a></li>
+</ul></li>
+<li><a href="#example-playing-a-sound">Example: Playing a Sound</a></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="native-stack-overview">Native Stack Overview</h1>
+<p>The following document provides a brief overview of how the Game Closure stack interacts with native code. Several layers are required to have JavaScript, C, C++, Java, and Objective-C++ communicate with each other. Additionally, the design allows for large amounts of code to be shared between Android and iOS.</p>
+<h2 id="overview">Overview</h2>
+<p>The following diagram shows the flow of data/function calls between the various components of the Game Closure DevKit native stack. Blocks in purple use JavaScript, those in blue use C and C++, those in green use Java, and those in orange use Objective-C++.</p>
+<div class="figure-wrapper">
+<figure>
+<img src="./assets/stack/native-stack-diagram.png" alt="native stack"></img>
+<figcaption>
+Native Stack Diagram.
+</figcaption>
+</figure>
+</div>
+
+<h2 id="components">Components</h2>
+<p>This section briefly explains the focus of each component of the DevKit and describes some of the important directories within them. Additionally the git repository for each component is included for reference.</p>
+<h3 id="game-closure-devkit-game-code">Game Closure DevKit / Game Code</h3>
+<ul>
+<li><strong>git</strong>: <a href="https://github.com/gameclosure/devkit">devkit</a></li>
+<li><strong>language</strong>: JavaScript</li>
+<li><strong>directories</strong>:
+<ul>
+<li><strong>src</strong>: Contains the source of the code used to build the basil tool.</li>
+<li><strong>lib</strong>: Contains the source code for the Game Closure DevKit components.</li>
+</ul></li>
+</ul>
+<p>The JavaScript code for the Game Closure DevKit and running game code. The code at this level is platform independent and runs the same on both web browsers and mobile devices. When running on a native device, this code is run by the V8 interpreter on Android and Spidermonkey on iOS.</p>
+<h3 id="gc-api">GC API</h3>
+<ul>
+<li><strong>git</strong>: <a href="https://github.com/gameclosure/gcapi">gcapi</a></li>
+<li><strong>language</strong>: JavaScript</li>
+<li><strong>directories:</strong>
+<ul>
+<li><strong>native</strong>: This holds the js code used to communicate to and from native</li>
+</ul></li>
+</ul>
+<p>This layer provides the backend implementations for the DevKit JavaScript layer. It provides platform-specific code allowing a JavaScript game to communicate with the browser or mobile device. When running on a native mobile phone this layer acts as a bridge from JavaScript to native code through the JavaScript interpreter. This code should be considered as a private API that should generally not be accessed directly by game code.</p>
+<h3 id="javascript-interpreter">JavaScript Interpreter</h3>
+<ul>
+<li><strong>git</strong>: <a href="https://github.com/gameclosure/native-android">native-android</a>, <a href="https://github.com/gameclosure/native-ios">native-ios</a></li>
+<li><strong>language</strong>: C++</li>
+<li><strong>directories:</strong>
+<ul>
+<li><strong>android:Tealeaf/jni/js</strong>: Directory containing the code to interface with the V8 interpreter.<br /></li>
+<li><strong>ios:tealeaf/js</strong>: Directory containing the code to interface with the Spidermonkey interpreter.</li>
+</ul></li>
+</ul>
+<p>This is the native layer that interprets all the JavaScript code in the project. When running in native on iOS the Spidermonkey interpreter is used, whereas the V8 interpreter is used on Android. In addition to running the JavaScript code, it provides a bridge between the js-api layer and the Native Core/Platform layers.</p>
+<h3 id="core">Core</h3>
+<ul>
+<li><strong>git</strong>: <a href="https://github.com/gameclosure/native-core">native-core</a></li>
+<li><strong>language</strong>: C/C++ <strong>directories:</strong>
+<ul>
+<li><strong>platform</strong>: Contains header files that are implemented differently per native platform.<br /></li>
+<li><strong>timestep</strong>: Directory containing code dealing specifically with the timestep game engine.</li>
+</ul></li>
+</ul>
+<p>Native accelerated components of the Game Closure DevKit. This portion of the code manages state and functions that are shared between all native platforms. It provides OpenGL rendering and other native functions to keep the JavaScript games running smoothly.</p>
+<h3 id="platform">Platform</h3>
+<ul>
+<li><strong>git</strong>: <a href="https://github.com/gameclosure/native-android">native-android</a>, <a href="https://github.com/gameclosure/native-ios">native-ios</a><br /></li>
+<li><strong>language</strong>: C++, Objective C++</li>
+<li><strong>directories:</strong>
+<ul>
+<li><strong>android: Tealeaf/jni/platform</strong>: Directory containing code to interface between Android Java code, native code, and native core.</li>
+<li><strong>iOS: tealeaf/platform</strong>: Directory containing code to interface between Objective-C code and native core.</li>
+</ul></li>
+</ul>
+<p>Code to bridge the native core and the js-api with device specific code. On android this code is in C++ where as on iOS it is in Objective-C.</p>
+<h3 id="androidjava">Android/Java</h3>
+<ul>
+<li><strong>git</strong>: <a href="https://github.com/gameclosure/native-android">native-android</a><br /></li>
+<li><strong>language</strong>: Java</li>
+</ul>
+<p>Java code used to directly communicate with the Android OS and other device features.</p>
+<h2 id="moving-around-the-stack">Moving Around the Stack</h2>
+<p>The following is a brief overview on moving between the various regions in the DevKit stack. These boundaries exist because of the need to communicate between various programming languages and because they allow code reuse between different platforms.</p>
+<h3 id="game-closure-devkit-tofrom-gc-api">Game Closure DevKit to/from GC API</h3>
+<p>Moving from the Game Closure DevKit requires calling JavaScript functions that live within the native folder of gcapi. Since the Game Closure DevKit makes the correct calls to gcapi behind the scenes the user does not need to know which platform their code will be running on.</p>
+<h3 id="gc-api-tofrom-core-or-platform-through-the-javascript-interpreter">GC API to/from Core or Platform through the JavaScript Interpreter</h3>
+<p>From within native code several JavaScript objects are created and added to the single object <code>NATIVE</code>. This global object in JavaScript provides functions that allow moving from JavaScript to C and back. Native code can also use the interpreter to make calls other functions that live inside of JavaScript.</p>
+<h3 id="core-tofrom-platform">Core to/from Platform</h3>
+<p>Using code defined in platform headers, calls can be made into platform code so that it can be processed by the device. By keeping the headers separate from the definition the interface in core can be kept the same with different implementations per platform. For android the platform files are written in c++, whereas on iOS they are written in Objective c.</p>
+<h3 id="platform-tofrom-java-code-android-only">Platform to/from Java Code (Android Only)</h3>
+<p>Often code needs to be passed back to Java to interact directly with Android OS features. In Android, this is done using JNI calls which allow code to call from Java to C++ and C++ to Java. Within the Android platform code the <code>native_shim.cpp</code> is an important file in this process.</p>
+<h2 id="example-playing-a-sound">Example: Playing a Sound</h2>
+<p>One feature that requires touching all parts of the DevKit is sound loading. This example shows how a sound is loaded if the user tries to play an unloaded sound from JavaScript when running on a native Android device.</p>
+<ol type="1">
+<li><p><strong><a href="https://github.com/gameclosure/timestep/blob/master/src/AudioManager.js">timestep/src/AudioManager.js</a></strong>: First a call is made in JavaScript to <code>audiomanager.play</code> which tries to play the required sound and we assume for this example it has not yet been loaded. Since we are running on a native device this means a call is made to <code>HTML5API.js</code> to start the loading process.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/timestep/blob/master/src/ui/backend/sound/HTML5API.js">timestep/src/ui/backend/sound/HTML5API.js</a></strong>: This file represents an API for playing named sounds. In our example it will use the <code>Audio.js</code> class in native to try and play the sound.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/gcapi/tree/master/src/native/Audio.js">gcapi/src/native/Audio.js</a></strong>: Since the sound that is trying to be played has not yet been loaded it will be loaded by making a call to <code>Native.sound.loundSound</code>. This is a function that is created from native code and acts a bridge between JavaScript and C.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-android/tree/master/TeaLeaf/jni/js/js_sound.cpp">native-android/TeaLeaf/jni/js/js_sound.cpp</a></strong>: This file contains the function <code>defLoadSound</code> which is ran when <code>Native.sound.loundSound</code> is called from JavaScript. This function hands the load request to <code>sound_manager.cpp</code> in platform by calling <code>sound_manager_load_sound</code> so that sound can be handled differently on iOS and Android.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-android/tree/master/TeaLeaf/jni/platform/sound_manager.cpp">native-android/TeaLeaf/jni/platform/sound_manager.cpp</a></strong>: Within this file a JNI call into java is made to <code>loadSound</code> in <code>NativeShim.java</code>.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-android/tree/master/TeaLeaf/src/com/tealeaf/NativeShim.java">NativeShim.java</a></strong>: Within this file the sound being requested to load is placed on the sound queue by calling <code>SoundQueue.loadSound</code> which is processed in <code>SoundQueue.java</code>.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-android/tree/master/TeaLeaf/src/com/tealeaf/SoundQueue.java">SoundQueue.java</a></strong>: Within this file the <code>run</code> function is ran on its own thread and it continually looks for events on the sound queue to process and will begin processing the newly added load event. The sound will be given to an instance of <code>SoundManager</code> to be loaded by calling <code>soundManager.loadSound</code>.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-android/tree/master/TeaLeaf/src/com/tealeaf/SoundManager.java">SoundManager.java</a></strong>: This is the file where sounds are actually loaded from the app or url. Within this file another <code>run</code> function exists and is also ran on its own thread. The function runs continuously and checks for new sounds to load. Once the sound is loaded it adds a sound loaded event to <code>EventQueue</code>.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-android/tree/master/TeaLeaf/src/com/tealeaf/EventQueue.java">EventQueue.java</a></strong>: EventQueue holds a list of events that are to be sent to JavaScript. These events are added to the queue by calling <code>pushEvent</code> and are dispatched from the GLThread in Android in <code>TeaLeafGLSurfaceView.java</code>.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-android/tree/master/TeaLeaf/src/com/tealeaf/TeaLeafGLSurfaceView.java">TeaLeafGLSurfaceView.java</a></strong>: This file contains code that needs to be run on the main GL thread. In our case, all of the JavaScript engine code is also run on this thread. Before every frame is drawn the <code>dispatchEvents</code> function is called on <code>EventQueue</code> to send all events to native code through <code>NativeShim</code>.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-android/tree/master/TeaLeaf/src/com/tealeaf/NativeShim.java">NativeShim.java</a></strong>: <code>dispatchEvents</code> is declared in NativeShim.java and is called to dispatch the events to native code. The function is marked as native and is defined within the file <code>native_shim.cpp</code>.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-android/tree/master/TeaLeaf/jni/platform/native_shim.cpp">native-android/TeaLeaf/jni/platform/native_shim.cpp</a></strong>: The <code>dispatchEvents</code> function from <code>NativeShim.java</code> is declared as <code>Java_com_tealeaf_NativeShim_dispatchEvents</code> within the native_shim. This c function is used to pass each event on the list to native core by calling <code>core_dispatch_event</code>.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-core/blob/master/events.c">native-core/events.c</a></strong>: The <code>core_dispatch_event</code> function defined in <code>events.c</code> takes each event and makes a call to <code>js_dispatch_event</code> which dispatches the event to JavaScript.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/native-android/tree/master/TeaLeaf/jni/js/js_events.cpp">native-android/TeaLeaf/jni/js/js_events.cpp</a></strong>: The <code>js_dispatch_event</code> function defined in this file makes calls using the V8 JavaScript Interpreter in order to get the events back to JavaScript. The events are dispatched using the <code>NATIVE.events.dispatchEvent</code> which lives on the <code>NATIVE</code> object in JavaScript.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/gcapi/tree/master/src/native/events.js">gcapi/src/native/events.js</a></strong>: The call from native code ends up in the <code>events.js</code> file which eventually sends the event to <code>soundLoading.js</code>.</p></li>
+<li><p><strong><a href="https://github.com/gameclosure/gcapi/tree/master/src/native/soundLoading.js">gcapi/src/native/soundLoading.js</a></strong>: Finally, the event makes it to the listener that was registered from with <code>soundLoading.js</code>. This function takes the sound event and calls the <code>onLoad</code> handler associated with it.</p></li>
+</ol>
+<p>While there may seem to be a lot of steps to loading a sound, the separation of concerns is important for maintaining a stable system that allows for code reuse.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

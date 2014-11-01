@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ui-widget-buttonview</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-ui.widget.buttonview">Class: ui.widget.ButtonView</a><ul>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#title">Title</a></li>
+<li><a href="#icon">Icon</a></li>
+<li><a href="#toggle-option">Toggle option</a></li>
+<li><a href="#sound">Sound</a></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#new-buttonviewoptions">new ButtonView([options])</a></li>
+<li><a href="#updateoptsoptions">updateOpts({options})</a></li>
+<li><a href="#gettext">getText ()</a></li>
+<li><a href="#settitle-title">setTitle (title)</a></li>
+<li><a href="#geticon">getIcon ()</a></li>
+<li><a href="#seticon-icon">setIcon (icon)</a></li>
+<li><a href="#setstate-state">setState (state)</a></li>
+</ul></li>
+<li><a href="#states">States</a></li>
+<li><a href="#events">Events</a><ul>
+<li><a href="#up-callback">'up', callback ()</a></li>
+<li><a href="#down-callback">'down', callback ()</a></li>
+<li><a href="#disabled-callback">'disabled', callback ()</a></li>
+<li><a href="#selected-callback">'selected', callback ()</a></li>
+<li><a href="#unselected-callback">'unselected', callback ()</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-ui.widget.buttonview">Class: ui.widget.ButtonView</h1>
+<p>This class provides a quick and easy way to create Buttons or any other widget with button-like states (such as checkboxes, switches or radiobuttons). You can listen for state changes, automatically swap an image or play a sound for entering a state.</p>
+<p>Because this class is a subclass of <code>ImageScaleView</code> you can use several options of applying background images, see <a href="./ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a> for more details.</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li><a href="../example/ui-button/">Button: Basic demo</a></li>
+<li><a href="../example/ui-button-toggle/">Button: Toggle demo</a></li>
+</ul>
+<h2 id="title">Title</h2>
+<p>The <code>ButtonView</code> has a title which is a <code>TextView</code> child. The settings for the title can be applied by passing a <code>text</code> object in the constructor options. See <a href="./ui-text.html#class-ui.textview">ui.TextView</a> for information about the format of the options.</p>
+<h2 id="icon">Icon</h2>
+<p>The <code>ButtonView</code> has an icon which is an <code>ImageView</code> child. The settings for the icon can be applied by passing an <code>icon</code> object in the constructor options. See <a href="./ui-images.html#class-ui.imageview">ui.ImageScale</a> for information about the format of the options.</p>
+<h2 id="toggle-option">Toggle option</h2>
+<p>The <code>ButtonView</code> class can also function as an interface element to select or deselect an option like a checkbox. When using the <code>ButtonView</code> as a checkbox then only the <code>images.selected</code> and <code>images.unselected</code> have to be assigned, the <code>images.up</code> and <code>images.down</code> properties are optional.</p>
+<h2 id="sound">Sound</h2>
+<p>You may have sounds play whenever the button enters a state by providing an instance of <a href="./audio.html"><code>AudioManager</code></a> in the option <code>audioManager</code>. A corresponding object option named <code>sounds</code> is required where the key is the state and the value is the name of the sound to play (this just calls <a href="./audio.html#play-name-options"><code>AudioManager#play()</code></a> with the provided value).</p>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<h2 id="methods">Methods</h2>
+<h3 id="new-buttonviewoptions">new ButtonView([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>onClick {function}</code> —Shortcut way of assigning a callback to a click.</li>
+<li><code>clickOnce {boolean} = false</code> —When true, button will enter <code>DISABLED</code> state after a click.</li>
+<li><code>state {ButtonView.states}</code> —Optional, the initial state of the button, the default is <code>ButtonView.states.UP</code></li>
+<li><code>toggleSelected {boolean} = false</code> —When true, button will toggle in between <code>SELECTED</code> and <code>UNSELECTED</code> state on every click.</li>
+<li><code>title {string}</code> —Optional, The title of the button</li>
+<li><code>text {object}</code> —These options are applied to the title text which is an instance of <code>TextView</code></li>
+<li><code>icon {object}</code> —These options are applied to the icon image which is an instance of <code>ImageView</code></li>
+<li><code>on {object}</code> —Callbacks for each state
+<ul>
+<li><code>up {string}</code> —Optional, The callback which will be called when the button changes to the <code>up</code> state</li>
+<li><code>down {string}</code> —Optional, The callback which will be called when the button changes to the <code>down</code> state</li>
+<li><code>disabled {string}</code> —Optional, The callback which will be called when the button changes to the <code>disabled</code> state</li>
+<li><code>selected {string}</code> —Optional, The callback which will be called when the button changes to the <code>selected</code> state</li>
+<li><code>unselected {string}</code> —Optional, The callback which will be called when the button changes to the <code>unselected</code> state</li>
+</ul></li>
+<li><code>images {object}</code> —Change the image to the specified image upon entering a state. The key refers to the state and the value is either <code>Image</code> or a <code>string</code> image path
+<ul>
+<li><code>up {string}</code> —Optional, The filename or instance of <code>Image</code> to show on the <code>up</code> state</li>
+<li><code>down {string}</code> —Optional, The filename or instance of <code>Image</code> to show on the <code>down</code> state</li>
+<li><code>disabled {string}</code> —Optional, The filename or instance of <code>Image</code> to show on the <code>disabled</code> state</li>
+<li><code>selected {string}</code> —Optional, The filename or instance of <code>Image</code> to show on the <code>selected</code> state</li>
+<li><code>unselected {string}</code> —Optional, The filename or instance of <code>Image</code> to show on the <code>unselected</code> state</li>
+</ul></li>
+<li><code>audioManager {AudioManager}</code> —Optional, an instance of AudioManager that contains the sounds to play. The <code>sounds</code> object will play a sound on this instance.</li>
+<li><code>sounds {object}</code> —Run a sound when the button enters a state
+<ul>
+<li><code>up {string}</code> —Optional, The name of the sound effect to play on up</li>
+<li><code>down {string}</code> —Optional, The name of the sound effect to play on down</li>
+<li><code>disabled {string}</code> —Optional, The name of the sound effect to play on <code>disabled</code></li>
+<li><code>selected {string}</code> —Optional, The name of the sound effect to play on <code>selected</code></li>
+<li><code>unselected {string}</code> —Optional, The name of the sound effect to play on <code>unselected</code></li>
+</ul></li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Change images and play a sound when the button toggles selected state.</p>
+<pre><code>import ui.widget.ButtonView as ButtonView;
+
+var buttonview = new ButtonView({
+  superview: parent,
+  width: 200,
+  height: 100,
+  x: 0,
+  y: 0,
+  images: {
+    down: &quot;resources/images/selected.png&quot;,
+    up: &quot;resources/images/unselect.png&quot;
+  },
+  on: {
+    down: function () {
+      console.log(&quot;This function is called when the button transitions to down!&quot;);
+    },
+    up: function () {
+      console.log(&quot;This function is called when the button transitions to up!&quot;);
+    }
+  }
+});</code></pre>
+<h3 id="updateoptsoptions">updateOpts({options})</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Replaces the current options (including <code>images</code>, <code>sounds</code> and <code>on</code>) with the <code>options</code> object passed to this function. This replaces, and does not merge, the current options. This is similar to <code>TextView.updateOpts</code>. This means that you may want to <code>util.merge</code> the object you pass in with the current options, like in the example below.</p>
+<pre><code>var buttonview = new ButtonView({
+  superview: parent,
+  width: 200,
+  height: 100,
+  x: 0,
+  y: 0,
+  sounds: {
+    &quot;down&quot;: &quot;resources/ting.mp3&quot;
+  }
+});
+
+//now, to change the &quot;down&quot; sound, we must use updateOpts
+//however, we wish to keep the other options, so we shall `merge` the objects
+
+buttonView.updateOpts(util.merge(buttonView._opts, {
+  sounds: {
+    &quot;down&quot;: &quot;resources/bang.mp3&quot;
+  }
+}));</code></pre>
+<h3 id="gettext">getText ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{TextView}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Get the <code>TextView</code> instance which contains the title text.</p>
+<h3 id="settitle-title">setTitle (title)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>title {string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Set the title, updates the <code>text</code> property in the <code>TextView</code> child.</p>
+<h3 id="geticon">getIcon ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{ImageView}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Get the <code>ImageView</code> instance which contains the icon image.</p>
+<h3 id="seticon-icon">setIcon (icon)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>icon {string|Image}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Set the icon image, the parameter can be a string with the path to the image or an instance of <code>Image</code>.</p>
+<h3 id="setstate-state">setState (state)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>state {ButtonView.state}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Set the state of the image. When the state is selected the background image will also be updated.</p>
+<h2 id="states">States</h2>
+<p>The button can have several states, when the <code>toggleSelected</code> option is set to <code>true</code> then the state switches between <code>ButtonView.states.SELECTED</code> and <code>ButtonView.states.UNSELECTED</code> and vice versa. The <code>toggleSelected</code> option also works in concert with the <code>ButtonView.states.UP</code> and <code>ButtonView.states.DOWN</code> states.</p>
+<p>If the <code>toggleSelected</code> state is <code>false</code> then the images and sounds associated with the <code>ButtonView.states.SELECTED</code> and <code>ButtonView.states.UNSELECTED</code> states -which are <code>images.selected</code>, <code>images.unselected</code>, <code>sounds.selected</code> and <code>sounds.unselected</code>- will never be used.</p>
+<dl>
+<dt>The states are defined in an enum, <code>ButtonView.states</code>:</dt>
+<dd><ol type="1">
+<li><code>UP</code></li>
+<li><code>DOWN</code></li>
+<li><code>DISABLED</code></li>
+<li><code>SELECTED</code></li>
+<li><code>UNSELECTED</code></li>
+</ol>
+</dd>
+</dl>
+<h2 id="events">Events</h2>
+<h3 id="up-callback">'up', callback ()</h3>
+<p>This callback is set with the <code>on.up</code> option. Emitted when the button state is <code>up</code>.</p>
+<h3 id="down-callback">'down', callback ()</h3>
+<p>This callback is set with the <code>on.down</code> option. Emitted when the button state is <code>down</code>.</p>
+<h3 id="disabled-callback">'disabled', callback ()</h3>
+<p>This callback is set with the <code>on.disabled</code> option. Emitted when the button state becomes <code>disabled</code>.</p>
+<h3 id="selected-callback">'selected', callback ()</h3>
+<p>This callback is set with the <code>on.selected</code> option. Emitted when the button selected state becomes <code>selected</code>.</p>
+<h3 id="unselected-callback">'unselected', callback ()</h3>
+<p>This callback is set with the <code>on.unselected</code> option. Emitted when the button selected state becomes <code>unselected</code>.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: game-walkthrough</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#quick-start-game-walk-through">3. Quick Start: Game Walk-Through</a><ul>
+<li><a href="#game-install">Game Install</a></li>
+<li><a href="#browser-debugging">Browser Debugging</a><ul>
+<li><a href="#ui-inspector">UI Inspector</a></li>
+<li><a href="#browser-debugging-tools">Browser Debugging Tools</a></li>
+<li><a href="#class-system">Class System</a></li>
+</ul></li>
+<li><a href="#project-structure">Project Structure</a></li>
+<li><a href="#game-flow">Game Flow</a></li>
+<li><a href="#game-structure">Game Structure</a><ul>
+<li><a href="#the-entry-point-application.js">The Entry Point: Application.js</a></li>
+<li><a href="#the-game-awaits-titlescreen.js">The Game Awaits: TitleScreen.js</a></li>
+<li><a href="#the-game-begins-gamescreen.js">The Game Begins: GameScreen.js</a></li>
+<li><a href="#an-important-asset-molehill.js">An Important Asset: MoleHill.js</a></li>
+<li><a href="#sound">Sound</a></li>
+<li><a href="#where-to-go-from-here">Where To Go From Here?</a></li>
+</ul></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="quick-start-game-walk-through">3. Quick Start: Game Walk-Through</h1>
+<p><em>Whack That Mole!</em> is a basic, non-trivial, game built using the Game Closure DevKit. The <a href="https://github.com/gameclosure/whack-that-mole">source code</a> is available and in this guide we’ll step through it to see how the components of the Game Closure DevKit fit together.</p>
+<p>This walk-through assumes that you have the Game Closure DevKit up and running. See the <a href="../guide/install.html">Quick Start Guide</a> for details on how to get set up.</p>
+<h2 id="game-install">Game Install</h2>
+<p>Clone the Whack a Mole Example from github.</p>
+<pre><code>git clone https://github.com/gameclosure/whack-that-mole/ whackthatmole</code></pre>
+<p>Install devkit inside the Whack that Mole project.</p>
+<pre><code>cd whackthatmole
+devkit install</code></pre>
+<p>Run the devkit server from the command-line:</p>
+<pre><code>$ devkit serve</code></pre>
+<p>This will start a server on your machine on port 9200. Navigate your web browser to <code>http://localhost:9200</code> and you’re greeted with the following screen:</p>
+<p><img src="./assets/game-walkthrough/basil-start.png" alt="basil start screenshot" class="screenshot"></p>
+<p>First, we need to select our project: click on the <strong>Projects</strong> link in the left nav and select the <strong>Whack-that-Mole!</strong> game:</p>
+<p><img src="./assets/game-walkthrough/basil-projects.png" alt="basil project select screenshot" class="screenshot"></p>
+<p>With the game icon selected, click the <strong>Simulate</strong> button in the top right to launch the game in a new web browser tab.</p>
+<p><img src="./assets/game-walkthrough/game-title.png" alt="game title screenshot" class="screenshot"></p>
+<p>The game is now running in the browser simulator! On the title screen, click the <strong>Play</strong> button to begin. The game is simple enough, just whack the moles when they peak out of their holes in the ground. After 20 seconds or so, the game ends and your score is displayed. Then simply click anywhere on the screen to return back to the title screen.</p>
+<h2 id="browser-debugging">Browser Debugging</h2>
+<p>One of the keys to a great developer experience is great debugging tools. There has been a lot of effort put into the developer environment of the Game Closure DevKit so that it’s easy to get up and running, and easy to see how the code in your game works. With your game running in the browser, not only do you get access to all the great development tools provided by the browser, but your speed of development increases because your feedback loop is quicker. You get to see how your game changes immediately in the browser, instead of spending valuable development time waiting to compile and upload code to a mobile device.</p>
+<h3 id="ui-inspector">UI Inspector</h3>
+<p>One of the nice tools we provide is the <em>UI Inspector</em>. This lets the developer get a top-down look of the game’s scene graph, to see exactly how all the views fit together. You can target a particular view by navigating through the menu tree, or by simply hovering over a view in the simulator. You can then inspect the properties of the selected view, and even alter these properties right in the inspector. Since these effects will be instantly seen in the game, you can make user interface and game play adjustments instantaneously, rather than waiting through a lengthy feedback loop of reloading the entire browser page.</p>
+<p><img src="./assets/game-walkthrough/ui-inspector.png" alt="ui inspector screenshot" class="screenshot"></p>
+<h3 id="browser-debugging-tools">Browser Debugging Tools</h3>
+<p>One of the great things about working with JavaScript is the great debugging tools that modern web browsers have built-in. In the Chrome browser, you can access the developer tools by clicking the control settings icon in the upper right corner, then <strong>Tools</strong> &gt; <strong>JavaScript Console</strong>. This will open up a console where you can type in JavaScript commands to your game:</p>
+<p><img src="./assets/game-walkthrough/game-console.png" alt="browser console screenshot" class="screenshot"></p>
+<p>To access the JavaScript variables in your game’s context you’ll need to switch from the <code>&lt;top frame&gt;</code> console frame to the game’s frame <code>Simulator_0</code>, this option is selectable on the bottom of the console window.</p>
+<p>Once you’re in the proper context, at the console type:</p>
+<pre><code>&gt; GC.app.view</code></pre>
+<p>This will return a reference to the root node of the scene graph. From there you can view and alter its properties, or even traverse the view hierarchy and access any of its children.</p>
+<h3 id="class-system">Class System</h3>
+<p>We’ll be structuring this game in to multiple files using our <a href="../api/utilities.html#import">class and module system</a>. We will discuss the system throughout this document, but the implementation details are available in the documentation.</p>
+<h2 id="project-structure">Project Structure</h2>
+<p>A game created with the Game Closure DevKit has this basic file structure:</p>
+<pre><code>.
+├── manifest.json
+├── modules/
+    └── devkit-core
+├── resources/
+└── src
+    └── Application.js</code></pre>
+<p>There is the <code>manifest.json</code> file located in the project directory which contains our project’s configuration options, the <code>src</code> directory containing our application code, and the <code>resources</code> directory where the game assets are stored.</p>
+<p>The game’s manifest can contain any number of project specific configuration options in JSON format. A typical, minimal <code>manifest.json</code> file has a generated application ID hash, a name, and perhaps the device orientation of the game. This file is usually generated by devkit, but can be edited by hand. For example, this could be the <code>manifest.json</code> file used by our game:</p>
+<pre><code>{
+  &quot;appID&quot;: &quot;abcdefghijklmnopqrstuvwxyz012345&quot;,
+  &quot;shortName&quot;: &quot;whackthatmole&quot;,
+  &quot;title&quot;: &quot;Whack-that-Mole!&quot;,
+  &quot;supportedOrientations&quot;: [
+    &quot;portrait&quot;
+  ]
+}</code></pre>
+<p>You can find a complete list of <a href="../guide/manifest.html">manifest options</a> in the documentation.</p>
+<p>There is also a <code>modules</code> directory, which is where devkit installs the devkit-core runtime and any additional dependencies listed in your manifest.</p>
+<p>The <code>resources</code> directory provides a place to store game assets, like images and sound files.</p>
+<p>The JavaScript code we’ll develop for our game is located in the <code>src</code> directory. The entry point for the game is the <code>./src/Application.js</code> file, which defines an object that inherits from the <code>GC.Application</code> class. This object has a number of options that you can find in its <a href="../api/appengine.html">API documentation</a>.</p>
+<h2 id="game-flow">Game Flow</h2>
+<p>Before diving into the implementation details of <em>Whack-that-Mole!</em>, let’s take a top-down look at the application and get an overview of how the game flows together.</p>
+<p><img src="./assets/game-walkthrough/game-flow.png" alt="game flow screenshot" class="screenshot"></p>
+<p>First, the Game Closure DevKit is initialized and the environment is set up for the user’s application. The entry point for the game is the <code>./src/Application.js</code> file in the project’s directory. This file initializes all of the game screens and manages the events for moving between them.</p>
+<p>The application uses a <em>View Stack</em> for pushing on—and popping off—game screens. When the game is started, the title screen is pushed onto the stack. This displays the screen graphics and awaits user input to begin the game. This screen is defined in the <code>./src/TitleScreen.js</code> file.</p>
+<p>When the user taps the play button, the game play screen is then pushed onto our screen stack. The game play screen is responsible for setting up the game assets and interface, then starting, playing, and ending the game. This is defined in the <code>./src/GameScreen.js</code> file.</p>
+<p>When the game ends, the user’s score is displayed and the game screen holds while we await user input to continue. Upon receiving that tap, the game screen is popped off the screen stack, revealing the title screen. The game returns to the title screen and, as before, awaits to be played again.</p>
+<h2 id="game-structure">Game Structure</h2>
+<p>The complete file structure of our project can be see here:</p>
+<pre><code>.
+├── manifest.json
+├── modules
+│   └── devkit-core ...
+├── resources
+│   ├── images
+│   │   ├── hole_back.png
+│   │   ├── hole_front.png
+│   │   ├── icon.png
+│   │   ├── mole_hit.png
+│   │   ├── mole_normal.png
+│   │   └── title_screen.png
+│   └── sounds
+│       ├── effect
+│       │   └── whack.mp3
+│       └── music
+│           └── levelmusic.mp3
+└── src
+    ├── Application.js
+    ├── GameScreen.js
+    ├── MoleHill.js
+    ├── TitleScreen.js
+    └── soundcontroller.js</code></pre>
+<p>The logic of our game is contained in the files located in the <code>./src</code> directory, which we’ll look at now.</p>
+<h3 id="the-entry-point-application.js">The Entry Point: Application.js</h3>
+<p>Once the Game Closure DevKit environment is initialized, the game picks up in your project’s <code>./src/Application.js</code> file. In <em>Whack-that-Mole!</em>, this file is rather short, and its purpose is to initialize the title screen and game screen and handle events for directing the game flow.</p>
+<pre><code>/*
+ * The main application file, your game code begins here.
+ */
+
+// devkit imports
+import device;
+import ui.StackView as StackView;
+// user imports
+import src.TitleScreen as TitleScreen;
+import src.GameScreen as GameScreen;
+import src.soundcontroller as soundcontroller;
+
+/* Your application inherits from GC.Application, which is
+ * exported and instantiated when the game is run.
+ */
+exports = Class(GC.Application, function () {
+
+ /* Run after the engine is created and the scene graph is in
+  * place, but before the resources have been loaded.
+  */
+  this.initUI = function () {
+    var titlescreen = new TitleScreen(),
+        gamescreen = new GameScreen();
+
+    this.view.style.backgroundColor = &#39;#30B040&#39;;
+
+    //Add a new StackView to the root of the scene graph
+    var rootView = new StackView({
+      superview: this,
+      x: device.width / 2 - 160,
+      y: device.height / 2 - 240,
+      width: 320,
+      height: 480,
+      clip: true,
+      backgroundColor: &#39;#37B34A&#39;
+    });
+
+    rootView.push(titlescreen);
+
+    var sound = soundcontroller.getSound();
+
+   /* Listen for an event dispatched by the title screen when
+    * the start button has been pressed. Hide the title screen,
+    * show the game screen, then dispatch a custom event to the
+    * game screen to start the game.
+    */
+    titlescreen.on(&#39;titlescreen:start&#39;, function () {
+      sound.play(&#39;levelmusic&#39;);
+      rootView.push(gamescreen);
+      gamescreen.emit(&#39;app:start&#39;);
+    });
+
+   /* When the game screen has signalled that the game is over,
+    * show the title screen so that the user may play the game again.
+    */
+    gamescreen.on(&#39;gamescreen:end&#39;, function () {
+      sound.stop(&#39;levelmusic&#39;);
+      rootView.pop();
+    });
+  };
+
+ /* Executed after the asset resources have been loaded.
+  * If there is a splash screen, it&#39;s removed.
+  */
+  this.launchUI = function () {};
+});</code></pre>
+<p>At the top of this file, two modules from the DevKit and three additional source files are imported in to our project using the <a href="../api/utilities.html#import"><code>import</code></a> statement:</p>
+<pre><code>// devkit imports
+import device;
+import ui.StackView as StackView;
+// user imports
+import src.TitleScreen as TitleScreen;
+import src.GameScreen as GameScreen;
+import src.soundcontroller as soundcontroller;</code></pre>
+<p>These files have been written as modules and are assigned to variables within this file.</p>
+<p>Note that this <code>Application.js</code> file is also a module, it’s a class that inherits from <code>GC.Application</code> using the <code>Class</code> function (see <a href="../api/utilities.html#class-name-superconstructor-constructor">the Class docs</a> for more info). This new class is then assigned to the <code>exports</code> object, a predefined object within each module file that is returned when another file imports this one. When our application is instantiated, it’s assigned to the global property <code>GC.app</code>, which can be accessed anywhere in your game code. Since you are only going to have one application in your game, you can just think of this as a singleton. Within the application’s class definition function, you can refer to it using the <code>this</code> object. A working—bare-bones—<code>Application.js</code> file can look like this:</p>
+<p>The <code>device</code> module contains information about the physical device running the application. We can use this to obtain information about the browser window, or even a native mobile application depending on where your game is running. You can view a complete list of <a href="../api/device.html">device properties</a> in the documentation.</p>
+<pre><code>exports = Class(GC.Application, function () {
+  // class definition goes here ...
+  // this === GC.app //=&gt; true
+});</code></pre>
+<p>The <code>GC.Application</code> class is special in that it has two callback functions, <code>initUI</code> and <code>launchUI</code>, that it checks for and runs when ready—this is where we’ll hook in our main game code. The <code>initUI</code> function is run after the Game Closure engine is created and the scene graph is ready. When the <code>launchUI</code> function is called, the splash/loading screen is removed if one is defined.</p>
+<h4 id="creating-the-screens">Creating the Screens</h4>
+<p>After our game screen classes have been imported at the top of our file, we instantiate them in the <code>initUI</code> function. This is when our game engine is ready.</p>
+<pre><code>var titlescreen = new TitleScreen(),
+    gamescreen = new GameScreen();</code></pre>
+<p>We’ll look in detail about how these screens are constructed in the next couple of sections.</p>
+<p>When the scene graph for the game engine is created, its root node is stored at <code>GC.app.view</code>. Any View that is attached as a child to this node, or its descendants, can be rendered to the screen. The root view is a little special because it’s an instance of <a href="../api/ui-stackview.html">ui.StackView</a>, which is a <em>subclass</em> of <a href="../api/ui-view.html">ui.View</a>. It has additional functionality for pushing and popping child views and transitioning between them.</p>
+<p>You can also see that there is some simple sound code in here, but we’ll look at that towards the end of this guide. The <code>soundcontroller</code> module returns a <a href="../api/audio.html"><code>AudioManager</code></a> singleton, which we use to play the level music when we transition to the game screen.</p>
+<h4 id="event-management">Event Management</h4>
+<p>In the event handling code, we listen for the game start and end events on our two screens and manage our root <code>StackView</code>:</p>
+<pre><code>titlescreen.on(&#39;titlescreen:start&#39;, function () {
+  //...
+  GC.app.view.push(gamescreen);
+  gamescreen.emit(&#39;app:start&#39;);
+});
+
+gamescreen.on(&#39;gamescreen:end&#39;, function () {
+  //...
+  GC.app.view.pop();
+});</code></pre>
+<p>When the event to start the game is received, the game screen is <em>pushed</em> on to the <code>rootView</code> stack view. There is no need to remove the title screen already in the stack, the game screen is simply “on top” of it and becomes the visible view of the application. By default, pushing another view to the <code>StackView</code> has a side-scrolling animation transition, this can be turned off. We’ll look at the details of the game’s event flow in a moment as we step through the title screen.</p>
+<h3 id="the-game-awaits-titlescreen.js">The Game Awaits: TitleScreen.js</h3>
+<p>With our application framework in place, let’s see how the title screen is constructed. The screen is an instance of the <code>TitleScreen</code> class, defined in the <code>./src/TitleScreen.js</code> file. It is instantiated once in <code>./src/Application.js</code> and added to the root view where it remains throughout the lifetime of the application.</p>
+<h4 id="anatomy-of-a-view">Anatomy of a View</h4>
+<p>The view hierarchy structure of the <code>TitleScreen</code> class is relatively simple. There is a single background image that fits the screen, and an “invisible” child view placed over the portion of the background image designated as the play button. This button will detect an input event, then signal to the main application that the user is ready to start the game. Since this is such a small class, we’ll look at the file in its entirety here, then break down it’s component pieces:</p>
+<pre><code>import ui.View;
+import ui.ImageView;
+
+exports = Class(ui.ImageView, function (supr) {
+  this.init = function (opts) {
+    opts = merge(opts, {
+      x: 0,
+      y: 0,
+      image: &quot;resources/images/title_screen.png&quot;
+    });
+
+    supr(this, &#39;init&#39;, [opts]);
+
+    var startbutton = new ui.View({
+      superview: this,
+      x: 58,
+      y: 313,
+      width: 200,
+      height: 100
+    });
+
+    startbutton.on(&#39;InputSelect&#39;, bind(this, function () {
+      this.emit(&#39;titlescreen:start&#39;);
+    }));
+  };
+});</code></pre>
+<p>First, we need to import the classes and modules that are used within this class:</p>
+<pre><code>import ui.View;
+import ui.ImageView;</code></pre>
+<p><code>ui.View</code> is a class used as the basic display object for rendering elements to the screen. To do this, a view must be attached to the game’s scene graph (a hierarchy of view nodes). Views have style properties which control how they are rendered to the screen, they can emit and subscribe to events, and they have methods for adding and removing their subviews and superviews. The details of the <code>ui.View</code> properties and methods can be found <a href="../api/ui-view.html">in the documentation</a>, with example uses.</p>
+<p><code>ui.ImageView</code> is a subclass of <code>ui.View</code>. Along with the properties it inherits from the base View, <code>ImageView</code> has additional methods for setting an image to be used within a view. Check the <a href="../api/ui-images.html">ImageView API</a> for more details.</p>
+<p>Now that we have imported our dependencies, we can define our <code>TitleScreen</code> class. Here we use the <code>Class</code> function to define our screen module as a sub-class of the <code>ui.ImageView</code> type:</p>
+<pre><code>exports = Class(ui.ImageView, function (supr) {
+  this.init = function (opts) {
+    opts = merge(opts, {
+      //...
+    });
+
+    supr(this, &#39;init&#39;, [opts]);
+  };
+});</code></pre>
+<p>Each class defined by the <a href="../api/utilities.html#class-name-superconstructor-constructor">Class function</a> has an <code>init</code> method which is executed when a new object is instantiated, or in this case when <code>new TitleScreen</code> is called. Within this initialization example, the <code>merge</code> utility function is used to consolidate the default options set in the class with the options properties passed to the constructor, you can see how this function works in the <a href="../api/utilities.html#merge-obj1-obj2-obj3">Utilities API</a>. Then we initialize the underlying superclass by calling the <code>init</code> method of this superclass and passing it the merged options object. Here’s the complete <code>init</code> function:</p>
+<pre><code>this.init = function (opts) {
+  opts = merge(opts, {
+    x: 0,
+    y: 0,
+    image: &quot;resources/images/title_screen.png&quot;
+  });
+
+  supr(this, &#39;init&#39;, [opts]);
+
+  this.build();
+};</code></pre>
+<p>The <code>title_screen.png</code> image file is loaded as the <code>image</code> option for <code>ui.ImageView</code>.</p>
+<p>The <code>supr</code> function is provided as an argument to the class definition by the <code>Class</code> function. As parameters it takes the object, a method name on the object to execute, and an array of arguments to apply to this function. Since <code>opts</code> is a single object, it’s wrapped in a new array before passing it to <code>supr</code>.</p>
+<h4 id="the-play-button">The Play Button</h4>
+<p>Remember the <code>build</code> function we invoke at the end of <code>init</code>? Here’s what it does:</p>
+<pre><code>this.build = function() {
+  var startbutton = new ui.View({
+    superview: this,
+    x: 58,
+    y: 313,
+    width: 200,
+    height: 100
+  });
+
+  startbutton.on(&#39;InputSelect&#39;, bind(this, function () {
+    this.emit(&#39;titlescreen:start&#39;);
+  }));
+};</code></pre>
+<p>For the title screen, we create our “invisible” start button and position it exactly over the correct portion of the background image. The view is attached as a child to the instance of the <code>TitleScreen</code> by passing <code>this</code> as the <code>superview</code> option. Then we attach an <code>InputSelect</code> listener to capture user clicks and taps. Here we emit a title screen start event, which we listen for in this view’s parent, the <code>Application.js</code> file. For more info on input events, see <a href="../api/ui-view.html#events">the input Event Docs</a>.</p>
+<h4 id="event-flow">Event Flow</h4>
+<p>You just saw how the start button captures user input and propagates this to the main application. Here’s an overview of the entire event flow of the game. You’ll see the rest of these events later, but for now here’s how the player is moved through the game using these events:</p>
+<p><img src="./assets/game-walkthrough/game-event-flow.png" alt="event flow screenshot" class="screenshot"></p>
+<p>After the application is created and the game screens are set up, the player enters at the title screen. Upon clicking the start button, the <code>'titlescreen:start'</code> event is emitted and captured at the top-level of the application. From there, the game play screen is added, the user plays the game, and then the <code>'gamescreen:end'</code> event is emitted back to the application. Here the application removes the game screen, and the player is dropped back to the title screen right where they began.</p>
+<h3 id="the-game-begins-gamescreen.js">The Game Begins: GameScreen.js</h3>
+<p>The <code>GameScreen</code> class is defined in the <code>./src/GameScreen.js</code> file and is the longest of the project. Fortunately, much of that code is for building its child view hierarchy, a process that we already looked at in detail in the previous section. Beyond setting up child views and game assets, there are functions for defining the flow for the player starting and playing the game, and then the end game sequence that displays the score. You can view the file in it’s entirety <a href="https://github.com/gameclosure/whack-that-mole/blob/master/src/GameScreen.js">on GitHub</a>, but we’ll look at the important sections here.</p>
+<h4 id="set-up-the-screen">Set up the screen</h4>
+<p>Like our previous files, we import the classes and modules that are required for this file:</p>
+<pre><code>import animate;
+import device;
+import ui.View;
+import ui.ImageView;
+import ui.TextView;
+import src.MoleHill as MoleHill;</code></pre>
+<p>Since you’ve already seen <code>ui.View</code>, <code>ui.ImageView</code>, and <code>device</code>, let’s look at the others.</p>
+<p>You can probably guess what <code>ui.TextView</code> does, it’s simply a view that allows you to display text on the screen. This is helpful for scores, labels, and anything else that people read. In addition to the style properties for regular views, you can configure font size and color for <code>TextViews</code>. For a full list of <code>TextView</code> properties, check out <a href="../api/ui-text.html">the API</a>.</p>
+<p><code>animate</code> is <a href="../api/animate.html">a module</a> used for animating views, objects, and style properties. This is a “tweening engine” used to interpolate between screen positions. Most importantly, since it can be optimized for native devices, you should favor this module over manual calculations within the game loop. We’ll look its usage and syntax in more detail as we come across it.</p>
+<p>The final import statement in this file is a little more interesting:</p>
+<pre><code>import src.MoleHill as MoleHill;</code></pre>
+<p>The class <code>src.MoleHill</code> is a reference to the <code>./src/MoleHill.js</code> class located in our project directory. Besides the classes and modules defined in the DevKit, user defined classes and modules can be imported into the game. Here the <code>as</code> command is used to alias the <code>src.MoleHill</code> to simply the <code>MoleHill</code> object. You can use this for any import statement but it’s especially handy for user-defined classes with long path names. For more information on the import command, see <a href="../api/utilities.html#import">the docs</a>.</p>
+<p>Like <code>TitleScreen</code>, the <code>GameScreen</code> class is instantiated only once, in the <code>Application.js</code> file. Its <code>init</code> function defines options for its dimensions to match the device dimensions, as well as setting a green background color that will serve as our grass. We initialize our superclass by passing in the options to the <code>supr</code> function.</p>
+<pre><code>this.init = function (opts) {
+  opts = merge(opts, {
+    x: 0,
+    y: 0,
+    width: 320,
+    height: 480,
+    backgroundColor: &#39;#37B34A&#39;
+  });
+
+  supr(this, &#39;init&#39;, [opts]);
+
+  this.build();
+};
+
+this.build = function() {
+  this.on(&#39;app:start&#39;, bind(this, start_game_flow));
+
+  this._scoreboard = new ui.TextView({
+    superview: this,
+    x: 0,
+    y: 15,
+    width: device.width,
+    height: 50,
+    autoSize: false,
+    size: 38,
+    verticalAlign: &#39;middle&#39;,
+    textAlign: &#39;center&#39;,
+    multiline: false,
+    color: &#39;#fff&#39;
+  });
+
+  var x_offset = 5;
+  var y_offset = 160;
+  var y_pad = 25;
+  var layout = [[1, 0, 1], [0, 1, 0], [1, 0, 1]];
+
+  this._molehills = [];
+
+  //loop over the layout grid, row then column
+  for (var row = 0, len = layout.length; row &lt; len; row++) {
+    for (var col = 0; col &lt; len; col++) {
+        //if there was a 1 in the grid, create a mole
+      if (layout[row][col] !== 0) {
+        var molehill = new MoleHill();
+        molehill.style.x = x_offset + col * molehill.style.width;
+        molehill.style.y = y_offset + row * (molehill.style.height + y_pad);
+        this.addSubview(molehill);
+        this._molehills.push(molehill);
+
+        //update score on hit event
+        molehill.on(&#39;molehill:hit&#39;, bind(this, function () {
+          if (game_on) {
+            score = score + hit_value;
+            this._scoreboard.setText(score.toString());
+          }
+        }));
+      }
+    }
+  }
+
+  this._countdown = new ui.TextView({
+    superview: this._scoreboard,
+    visible: false,
+    x: 260,
+    y: -5,
+    width: 50,
+    height: 50,
+    size: 24,
+    color: &#39;#fff&#39;,
+    opacity: 0.7
+  });
+};</code></pre>
+<p>This is a little longer than some of our previous <code>build</code> functions, but it’s easily understood. First, a listener is attached for an <code>'app:start'</code> event which will start the game. This is dispatched from the root of our application, after the start button click event was handled, and executes the <code>start_game_flow</code> function. Under that we create a score board and define the position and layout of the mole hills on the device’s screen. We then create a number of <code>MoleHill</code> objects (five in this example), add them as a subview to this <code>GameScreen</code> instance, and attach an event handler to each one which updates the score on registering a hit. The <code>MoleHill</code> class is defined in the file <code>./src/MoleHill.js</code> and we’ll look at that soon. Basically, it’s a collection of images that are composited to show mole poking his head out of its hill, and their animation functions.</p>
+<p>With the mole hills in place, all that’s left to do is set up the countdown <code>TextView</code>, this is attached to the score board we created above.</p>
+<h4 id="starting-sequence">Starting sequence</h4>
+<p>With the child views set, we can now step through starting, playing, and ending the game.</p>
+<p>Within the <code>init</code> constructor, we add listener function to handle the <code>'app:start'</code> event that was dispatched from the top-level of our application. It then calls <code>start_game_flow</code> which plays the introductory animation sequence, then starts the game play by calling <code>play_game</code>:</p>
+<pre><code>function start_game_flow () {
+  var that = this;
+
+  animate(that._scoreboard).wait(1000)
+    .then(function () {
+      that._scoreboard.setText(text.READY);
+    }).wait(1500).then(function () {
+      that._scoreboard.setText(text.SET);
+    }).wait(1500).then(function () {
+      that._scoreboard.setText(text.GO);
+      //start game ...
+      game_on = true;
+      play_game.call(that);
+    });
+}</code></pre>
+<p>The &quot;Ready, Set, Go!&quot; message is displayed sequentially, with a brief pause between words. At the end of each pause, the text of the score board is updated and another animation step is added. In the final step, the game is started by executing <code>play_game.call(that)</code>; we apply the <code>that</code> object (which is just a reference to <code>this</code>) so the proper context is referenced in the subsequent function.</p>
+<h4 id="game-play">Game play</h4>
+<p>With everything set up, there’s not much to the actual game play. It consists of setting up a few timers; the <code>tick</code> function picks a random mole to animate out of its hole, another timer to update the countdown <code>TextView</code> each second, and then some timeouts for setting up and ending the game:</p>
+<pre><code>function play_game () {
+  var i = setInterval(bind(this, tick), mole_interval),
+      j = setInterval(bind(this, update_countdown), 1000);
+
+    //when the game is up reset all timers, flags and countdown
+  setTimeout(bind(this, function () {
+    game_on = false;
+    clearInterval(i);
+    clearInterval(j);
+    setTimeout(bind(this, end_game_flow), mole_interval * 2);
+    this._countdown.setText(&quot;:00&quot;);
+  }), game_length);
+
+  //Make countdown timer visible, remove start message if still there.
+  setTimeout(bind(this, function () {
+    this._scoreboard.setText(score.toString());
+    this._countdown.style.visible = true;
+  }), game_length * 0.25);
+
+  //Running out of time! Set countdown timer red.
+  setTimeout(bind(this, function () {
+    this._countdown.updateOpts({color: &#39;#CC0066&#39;});
+  }), game_length * 0.75);
+}
+
+function tick () {
+    //choose a mole by random
+  var len = this._molehills.length,
+      molehill = this._molehills[Math.random() * len | 0];
+
+    //choose another if it&#39;s already active
+  while (molehill.activeMole) {
+    molehill = this._molehills[Math.random() * len | 0];
+  }
+  molehill.showMole();
+}
+
+function update_countdown () {
+  countdown_secs -= 1;
+  this._countdown.setText(&quot;:&quot; + ((&quot;00&quot; + countdown_secs).slice(-2)));
+}</code></pre>
+<h4 id="ending-sequence">Ending sequence</h4>
+<p>After the game timer is over, the game ends and the ending animation sequence begins—this is coordinated in the <code>end_game_flow</code> function. The end game sequence checks if a new high score has been set, and displays a closing message based on that. An ending animation is played by popping up the mole and alternating between hit image states, giving the appearance that he is laughing at you.</p>
+<pre><code>function end_game_flow () {
+  var isHighScore = (score &gt; high_score),
+      end_msg = get_end_message(score, isHighScore);
+
+  this._countdown.setText(&#39;&#39;); //clear countdown text
+  //resize scoreboard text to fit everything
+  this._scoreboard.updateOpts({
+    text: &#39;&#39;,
+    x: 10,
+    size: 17,
+    verticalAlign: &#39;top&#39;,
+    textAlign: &#39;left&#39;,
+    multiline: true
+  });
+
+  //check for high-score and do appropriate animation
+  if (isHighScore) {
+    high_score = score;
+    this._molehills.forEach(function (molehill) {
+      molehill.endAnimation();
+    });
+  } else {
+    var i = (this._molehills.length-1) / 2 | 0; //just center mole
+    this._molehills[i].endAnimation(true);
+  }
+
+  this._scoreboard.setText(end_msg);
+  //slight delay before allowing a tap reset
+  setTimeout(bind(this, emit_endgame_event), 2000);
+}</code></pre>
+<p>Once the new score board message is set and the mole animation is underway, a two second timeout is created that adds a one-time event handler to listen for the user to touch the screen:</p>
+<pre><code>function emit_endgame_event () {
+  this.once(&#39;InputSelect&#39;, function () {
+    this.emit(&#39;gamescreen:end&#39;);
+    reset_game.call(this);
+  });
+}</code></pre>
+<p>When the screen is clicked, the game is reset and a <code>'gamescreen:end'</code> event is emitted and handled in the top-level application. From there, this game screen is pushed off the view stack, revealing the title screen ready for the user to play again.</p>
+<h3 id="an-important-asset-molehill.js">An Important Asset: MoleHill.js</h3>
+<p>The <code>MoleHill</code> class is another larger class, and again we won’t look at it in complete detail since you’ve already seen how views work. For a complete listing of the <code>./src/MoleHill.js</code> file, you can browse it <a href="https://github.com/gameclosure/whack-that-mole/blob/master/src/MoleHill.js">online</a>.</p>
+<h4 id="aligning-the-components">Aligning the components</h4>
+<p>At a high level, a single mole hill is a collection of three image assets stacked one on top of the next: the back of the mole hill, the mole, and the front of the mole hill. By animating the mole up and down on the y-axis and giving it a clipping rectangle to mask it out beyond certain dimensions, the mole will appear like it’s “jumping” out of the ground, and ready to be whacked!</p>
+<pre><code>this.build = function () {
+  var hole_back = new ui.ImageView({
+    superview: this,
+    image: hole_back_img,
+    //...
+  });
+
+  this._inputview = new ui.View({
+    superview: this,
+    clip: true,
+    //...
+  });
+
+  this._moleview = new ui.ImageView({
+    superview: this._inputview,
+    image: mole_normal_img,
+    //...
+  });
+
+  var hole_front = new ui.ImageView({
+    superview: this,
+    canHandleEvents: false,
+    image: hole_front_img,
+    //...
+  });
+
+  //...
+
+  this._inputview.on(&#39;InputSelect&#39;, bind(this, function () {
+    if (this.activeInput) {
+      sound.play(&#39;whack&#39;);
+      this.emit(&#39;molehill:hit&#39;);
+      this.hitMole();
+    }
+  }));
+};</code></pre>
+<p>Here, you can visualize how the component <code>ImageView</code>’s are stacked together to make a single mole hill:</p>
+<p><img src="./assets/game-walkthrough/molehill-layers.png" alt="molehill layers screenshot" class="screenshot"></p>
+<p>Since the body of the mole extends below the front molehill image, the illusion of the mole diving into the ground will be ruined unless we can show <em>only</em> the section of the mole’s body that is above the ground line. This can be done by creating a new <code>View</code> and using it as a clipping mask. Just set the <code>clip</code> option on the view to <code>true</code>, and any child views attached to it will display only the regions <em>within</em> the boundaries of the clipping view. In the above diagram, the clipping view for the mole is represented in the middle layer as the square drawn on top of the mole.</p>
+<p>We’re also going to use this clipping view as a button region to test if a hit has been registered on a mole. Any tap within its bounding area, when the mole is active, will count as a hit and update the score. But, we have a problem. The view used to capture user input is obscured by the <code>ImageView</code> displaying the front of the mole hill, and therefore any clicks on the screen area where the mole is located will be captured by the <code>hole_front</code> view, and these will <em>not</em> propagate to the <code>_inputview</code>, which is where we need to register the event. We can avoid this by setting the <code>canHandleEvents</code> option to <code>false</code> on the <code>hole_front</code> view which covers our intended input view. This allows events to “pass through” the view so the views positioned underneath will receive the input instead.</p>
+<p>Also in the <code>build</code> function, an <code>Animator</code> object is created that references the <code>_moleview</code> child, which is the <code>ImageView</code> of the mole’s body:</p>
+<pre><code>this._animator = animate(this._moleview);</code></pre>
+<p>This creates a reference to an animation object that we will call over the course of the game. We could execute <code>animate(this._moleview)</code> each time we need to animate a property on the view, but that wouldn’t be as efficient. Having a reference to this object attached to the view means we can access it whenever we need it and not have to create a new <code>Animator</code> instance for each animation.</p>
+<h4 id="animating-the-mole">Animating the mole</h4>
+<p>Three animation sequences are defined on the <code>MoleHill</code> class: the mole popping up out of its hole, the mole lowering back in to its hole, and an ending animation which raises the mole up slowly and makes him laugh at you. These are defined in the following methods using the <code>Animator</code> object we just created:</p>
+<pre><code>this.showMole = function () {
+  if (this.activeMole === false) {
+    this.activeMole = true;
+    this.activeInput = true;
+
+    this._animator.now({y: mole_up}, 500, animate.EASE_IN)
+      .wait(1000).then(bind(this, function () {
+        this.activeInput = false;
+      })).then({y: mole_down}, 200, animate.EASE_OUT)
+      .then(bind(this, function () {
+        this.activeMole = false;
+      }));
+  }
+};
+
+this.hitMole = function () {
+  if (this.activeMole &amp;&amp; this.activeInput) {
+    this.activeInput = false;
+
+    this._animator.clear()
+      .now((function () {
+        this._moleview.setImage(mole_hit_img);
+      }).bind(this))
+        .then({y: mole_down}, 1500)
+        .then(bind(this, function () {
+          this._moleview.setImage(mole_normal_img);
+          this.activeMole = false;
+          this.activeInput = false;
+      }));
+    }
+};
+
+this.endAnimation = function () {
+  this.activeInput = false;
+  this._animator.then({y: mole_up}, 2000)
+  .then(bind(this, function () {
+    this._interval = setInterval(bind(this, function () {
+      if (this._moleview.getImage() === mole_normal_img) {
+        this._moleview.setImage(mole_hit_img);
+      } else {
+        this._moleview.setImage(mole_normal_img);
+      }
+    }), 100);
+  }));
+};</code></pre>
+<p>The <code>animate</code> function interpolates values on a JavaScript object property, and if passed a <code>View</code> will interpolate the values on its <code>style</code> property. This is provided as a convenience since most likely these are the properties you’ll want to animate.</p>
+<p>For an example, let’s step through the animation sequence of popping a mole out if its hole. The following is from the <code>showMole</code> method:</p>
+<pre><code>this._animator.now({y: mole_up}, 500, animate.EASE_IN)
+  .wait(1000).then(bind(this, function () {
+    this.activeInput = false;
+  })).then({y: mole_down}, 200, animate.EASE_OUT)
+    .then(bind(this, function () {
+      this.activeMole = false;
+  }));</code></pre>
+<p>The first step here is the animator’s call to <code>.now({y: mole_up}, 500, animate.EASE_IN)</code>, which immediately operates on the <code>y</code> property on the animator object, and is defined as the <code>this._moleview</code> view. Because the subject of the animation is an instance of a <code>View</code> class, we’re actually operating on its <code>style.y</code> property, or the vertical position of the mole image on the screen. The <code>mole_up</code> variable, set to 5 at the top of the file, is the offset relative to its parent view <code>this._inputview</code>. The first part of this animation will take half a second, or 500 milliseconds, and ease in to the final position. When this completes, the mole will be peeking his head out of the hole.</p>
+<p>At this point, the second phase of the animation is run <code>.wait(1000)</code>. This pauses the animation sequence for one second before moving on to the next item in the sequence. Visually, this makes the mole stand up for a moment before darting back in to his hole. If the mole is tapped within this time, a hit is registered and the user’s score increases.</p>
+<p>Now, the command <code>.then( ... )</code> is called. It’s passed a callback function which gets run immediately. The function sets the <code>activeInput</code> property of the mole hill to <code>false</code>, which means the mole is no longer eligible to receive hits. When that action is completed, the animation moves on to the next item in the sequence.</p>
+<p>We now want the mole to dive back into its hole, so we issue the command <code>.then({y: mole_down}, 200, animate.EASE_OUT)</code>. As we’ve seen, the <code>.then</code> function can be called in a multitude of ways. Here we’re passing it the same arguments as the previous <code>.now()</code> call. This lowers the mole back down on the y-axis in 200 milliseconds, easing out of its starting position and stopping below the ground line of the hill.</p>
+<p>When the lowering animation is complete, we issue the final command in the animation sequence: <code>.then( ... )</code> supplied with a callback function to set the <code>activeMole</code> property of the mole hill to <code>false</code>. The sequence has now finished.</p>
+<h3 id="sound">Sound</h3>
+<p>The sound is added to our game using a singleton controller located in the file <code>./src/soundcontroller.js</code>:</p>
+<pre><code>import AudioManager;
+
+exports.sound = null;
+
+exports.getSound = function () {
+  if (!exports.sound) {
+    exports.sound = new AudioManager({
+      path: &#39;resources/sounds&#39;,
+      files: {
+        levelmusic: {
+          path: &#39;music&#39;,
+          volume: 0.5,
+          background: true,
+          loop: true
+        },
+        whack: {
+          path: &#39;effect&#39;,
+          background: false
+        }
+      }
+    });
+  }
+  return exports.sound;
+};</code></pre>
+<p>Here we create a single <code>AudioManager</code> object when the application is launched and return this object whenever <code>getSound</code> is called throughout the game. The details of loading and playing sounds can be found in <a href="../api/audio.html">the API</a>.</p>
+<p>To see how sound is used in this game, we’ll look back at our <code>./src/Application.js</code> file and its <code>initUI</code> function:</p>
+<pre><code>this.initUI = function () {
+  //...
+
+  var sound = soundcontroller.getSound();
+
+  //...
+
+  titlescreen.on(&#39;titlescreen:start&#39;, function () {
+    sound.play(&#39;levelmusic&#39;);
+    GC.app.view.push(gamescreen);
+    GC.app.emit(&#39;app:start&#39;);
+  });
+
+  gamescreen.on(&#39;gamescreen:end&#39;, function () {
+    sound.stop(&#39;levelmusic&#39;);
+    GC.app.view.pop();
+  });
+};</code></pre>
+<p>After the start button has been pressed, the <code>titlescreen:start</code> event is captured and the handler plays the background music for the level. The audio file will continue playing throughout the duration of the game play, and will loop if the clip runs to the end if specified in the loading options for <code>levelmusic</code>, <code>loop: true</code>. This is all set up when we create our sounds with <code>new AudioManager(...)</code> in <code>./src/soundcontroller.js</code>.</p>
+<h3 id="where-to-go-from-here">Where To Go From Here?</h3>
+<p>Before we set you loose, we have a few suggestions for how to avoid some common pitfalls when writing JavaScript games. First off you’ll want to use the Chrome debugging tools. Secondly: Be sure not to try to delete Views after you create them since it is easy to make mistakes. Finally, consider using the <code>blockEvents</code> property to improve performance.</p>
+<h4 id="debugging-tools">Debugging Tools</h4>
+<p>With the Chrome browser you already have a great set of JavaScript debugging tools when you’re using the web simulator. Check out the Google Developers page <a href="https://developers.google.com/chrome-developer-tools/">for Chrome Developer Tools</a> to get more information on how to make the most of the toolset.</p>
+<p>You are able to set breakpoints, step, and inspect any of your JS variables. Chrome also has the best heap and CPU profiling tools available in our opinion and makes finding performance hotspots easy.</p>
+<h4 id="reuse-views-avoiding-javascript-memory-leaks">Reuse Views: Avoiding JavaScript Memory Leaks</h4>
+<p>JavaScript memory leaks can cause headaches down the road when you start running your game on the memory constrained devices. The most common symptom is that the game will “freeze” on the device and never recover.</p>
+<p>Through making many games we have found that the most common way to leak memory is by trying to remove and recreate View objects. It would be a bad idea, in our experience, to create a View in response to a button press. The easy solution to avoid JavaScript memory leaks is to never attempt to remove or recreate a View.</p>
+<p>The menu system for your game should be created once near the start of the game and then just referenced later when you return to the menus rather than creating it again each time it is needed.</p>
+<p>All View objects for your game should be created before they are needed rather than directly in response to user input. For instance it would be slow to create a new Enemy object every time you needed one in-game. Instead you should have a ViewPool of Enemy objects that stay allocated and get reused as needed.</p>
+<p>For examples of using ViewPools, see the official <a href="http://doc.gameclosure.com/example/views-pools/">ViewPools example</a> or the Isometric game engine’s <a href="https://github.com/gameclosure/isometric/blob/master/views/GridLayerView.js">GridLayerView</a>.</p>
+<h4 id="lots-of-views-using-the-blockevents-property">Lots of Views: Using the blockEvents property</h4>
+<p>If you are allocating many Views for e.g. a tile-based map or particle-intensive simulation it would be a good idea to initialize the parent view with <code>blockEvents: true</code>. This prevents the input code from interrogating all the subviews about input events, which is a huge performance improvement.</p>
+<p>A good parent View to use is the GestureView. See the <a href="http://doc.gameclosure.com/example/events-input-gesture/">GestureView example</a> for how to subscribe to Swipe, Pinch, Rotate, DragSingle, FingerDown, FingerUp, and ClearMulti events.</p>
+<p>The <code>canHandleEvents: false</code> property is similarly useful. The difference is that a View with <code>canHandleEvents: false</code> will still pass events to its children, so it is mainly used for making a view transparent to input.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p><em>Whack-that-Mole!</em>, while relatively simple, is an example of a complete, working game. Sometimes the easiest way to learn an API is to see how the components fit together. In this tutorial we’ve explored the overall flow of multiple game screens, managed the events that indicate our progress through these screen, set up image and sound assets, and implemented the game play dynamics. These are the types of things you’ll need to do in any game.</p>
+<p>From here you might want to start experimenting with changing the assets or their properties in the game by using the UI Inspector in the browser simulator, or just by changing values in the project code and re-freshing. Alternately you could create some simple game screens and manage the flow between them by capturing and handling events. With this skeleton in place you can flesh out any game flow, and even use this as the foundation to build a game entirely your own!</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

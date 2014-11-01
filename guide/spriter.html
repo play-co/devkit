@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: spriter</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#spriter">Spriter</a><ul>
+<li><a href="#about-the-metadata.json-file">About the metadata.json file</a><ul>
+<li><a href="#lets-walk-through-the-creation-of-a-metadata.json-file.">Let’s walk through the creation of a <code>metadata.json</code> file.</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#examples">Examples</a><ul>
+<li><a href="#here-are-several-examples-with-explanations">Here are several examples with explanations</a></li>
+</ul></li>
+<li><a href="#api">API</a><ul>
+<li><a href="#conditions">Conditions</a></li>
+<li><a href="#options">Options</a></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="spriter">Spriter</h1>
+<h2 id="about-the-metadata.json-file">About the metadata.json file</h2>
+<p>The <code>metadata.json</code> file is a JSON file that is placed inside any directory that is to be sprited (or one that you’d like to filter in some way by the spriter) which applies rules and options recursively unless another <code>metadata.json</code> file overwrites its options down the directory structure.</p>
+<p>Here is one example of how a <code>metadata.json</code> may look :</p>
+<pre><code>{
+    &quot;rules&quot;: [
+        {
+            &quot;cond-target&quot;: &quot;browser-mobile&quot;,
+            package: false
+        },
+        {
+            &quot;cond-target&quot;: &quot;native-android&quot;,
+            &quot;cond-fileList&quot;: [&quot;bar/baz.png&quot;, &quot;foo.png&quot;],
+            &quot;forceJpeg&quot;: true
+        }
+
+    ]
+
+}</code></pre>
+<p><em>This metadata.json states that on browser-mobile builds to not package any files in this directory (or below), and for native-android, force the given files to be jpegs</em></p>
+<p>The <code>metadata.json</code> file is essentially a compilation of <strong>rules</strong> which define how the current directory (and below) should be sprited (or not sprited) or treated.</p>
+<p>There should be a top-level <code>rules</code> key which should consist of an <code>array</code> of <code>rule objects</code> where each <code>rule object</code> contains at least one <code>condition</code> to describe when that rule should be triggered, as well as options describing what to be done when triggered.</p>
+<p><code>rules</code> are allowed to overlap and there can be multiple rules with overlapping <code>conditions</code> within the same <code>metadata.json</code> file.</p>
+<p>A <code>rule</code> without any conditions will always occur.</p>
+<h3 id="lets-walk-through-the-creation-of-a-metadata.json-file.">Let’s walk through the creation of a <code>metadata.json</code> file.</h3>
+<ol type="1">
+<li>Let’s first assume some directory structure for your resources.</li>
+</ol>
+<pre><code>- foo.png
+- bar.png
+- baz.png
+backgrounds/
+    - bg1.png
+    - bg2.png
+    - bg3.png
+character/
+    walk/
+        - walk1.png
+        - walk2.png
+        - walk3.png
+    run/
+        - run1.png
+        - run2.png
+        - run3.png
+</code></pre>
+<ol start="2" type="1">
+<li>Let’s say that we wanted to make sure that all of the images inside of the <code>backgrounds</code> directory were exported as jpegs when building for browser-mobile. We would first create a rules array inside of a <code>metadata.json</code> file inside of the <code>backgrounds</code> directory so that the directory structure would then look like:</li>
+</ol>
+<pre><code>foo.png
+bar.png
+baz.png
+backgrounds
+    - metadata.json
+    - bg1.png
+    - bg2.png
+    - bg3.png
+...</code></pre>
+<p>With the <code>metadata.json</code> file starting out as:</p>
+<pre><code>{
+    &quot;rules&quot;: [
+    ]
+}</code></pre>
+<ol start="3" type="1">
+<li>Now let’s add a rule that will be triggered when we are building for browser-mobile</li>
+</ol>
+<pre><code>{
+    &quot;rules&quot;: [
+        {   
+            &quot;cond-target&quot;: &quot;browser-mobile&quot;,
+        }
+    ]
+}</code></pre>
+<ol start="4" type="1">
+<li>And now, force files to be jpegs under this condition</li>
+</ol>
+<pre><code>{
+    &quot;rules&quot;: [
+        {   
+            &quot;cond-target&quot;: &quot;browser-mobile&quot;,
+            &quot;forceJpeg&quot;: true
+        }
+    ]
+}</code></pre>
+<p>4a) Another way to accomplish the same result would be to place a <code>metadata.json</code> in the base directory and add a condition for files along with the current one for targets. So that the rule would only trigger for browser-mobile and on those specific files. Here is what that would look like:</p>
+<pre><code>{
+    &quot;rules&quot;: [
+        {   
+            &quot;cond-target&quot;: &quot;browser-mobile&quot;,
+            &quot;cond-fileList&quot;: [&quot;backgrounds/bg1.png&quot;, 
+                              &quot;backgrounds/bg2.png&quot;, 
+                              &quot;backgrounds/bg3.png&quot;],
+            &quot;forceJpeg&quot;: true
+        }
+    ]
+}</code></pre>
+<p>4b) or even simpler:</p>
+<pre><code>{
+    &quot;rules&quot;: [
+        {   
+            &quot;cond-target&quot;: &quot;browser-mobile&quot;,
+            &quot;cond-fileList&quot;: [&quot;backgrounds&quot;]
+            &quot;forceJpeg&quot;: true
+        }
+    ]
+}</code></pre>
+<h1 id="examples">Examples</h1>
+<h3 id="here-are-several-examples-with-explanations">Here are several examples with explanations</h3>
+<p><code>metadata.json</code></p>
+<pre><code>{
+    &quot;rules&quot;: [
+        {
+            &quot;cond-target&quot;: &quot;browser-mobile&quot;,
+            &quot;pngquant&quot;: {
+                &quot;speed&quot;: 3,
+                &quot;quality&quot;: &quot;0-100&quot;
+            },
+            &quot;po2&quot;: false
+        },
+        {
+            &quot;cond-target&quot;: &quot;native-android&quot;,
+            &quot;pngquant&quot;: {
+                &quot;speed&quot;: 8,
+                &quot;quality&quot;: &quot;0-100&quot;
+            },
+            &quot;po2&quot;: true
+        }
+    ]
+}</code></pre>
+<p><em>stuff</em></p>
+<hr />
+<p>Given this directory structure:</p>
+<pre><code>icons/
+    metadata.json
+    - go.png
+    - sms.png
+    alternative/
+        metadata.json
+        - go.png
+        - sms.png</code></pre>
+<p><strong><em>icons/metadata.json</em></strong></p>
+<pre><code>{
+    &quot;rules&quot;: [
+        {
+            &quot;cond-target&quot;: &quot;browser-mobile&quot;,
+            &quot;package&quot;: false,
+            &quot;sprite&quot;: false         
+        }
+    ]
+}</code></pre>
+<p><em>stuff</em></p>
+<p><strong><em>icons/alternative/metadata.json</em></strong></p>
+<pre><code>{
+    &quot;rules&quot;: [
+        {
+            &quot;cond-target&quot;: &quot;browser-mobile&quot;,
+            &quot;package&quot;: true,
+            &quot;sprite&quot;: true          
+        }
+    ]
+}</code></pre>
+<p><em>stuff</em></p>
+<p>However, this can all be done more simply by doing this in <strong><em>icons/metadata.json</em></strong></p>
+<pre><code>{
+    &quot;rules&quot;: [
+        {
+            &quot;cond-target&quot;: &quot;browser-mobile&quot;,
+            &quot;cond-fileList&quot;: [&quot;./go.png&quot;, &quot;./sms.png&quot;],
+            &quot;package&quot;: true,
+            &quot;sprite&quot;: true          
+        }
+    ]
+}</code></pre>
+<h1 id="api">API</h1>
+<h3 id="conditions">Conditions</h3>
+<ul>
+<li><code>cond-buildMode</code> <em>string</em><br />Accepts:
+<ul>
+<li>“debug”</li>
+<li>“release”</li>
+</ul></li>
+<li><code>cond-target</code> <em>string</em><br />Accepts:
+<ul>
+<li>“native-android”<br /></li>
+<li>“native-ios”<br /></li>
+<li>“browser-mobile”<br /></li>
+</ul></li>
+<li><code>cond-fileList</code> <em>string array</em>
+<ul>
+<li>A list of files to process.<br /></li>
+<li>Filepaths are relative to the cwd of the <code>metadata.json</code></li>
+<li>It’s perfectly legal to give files in child directories</li>
+<li>Directories also count as files</li>
+</ul></li>
+</ul>
+<h3 id="options">Options</h3>
+<p>Options are applied onto items which pass the condition tests of a rule.<br />These items will be referenced as “items” below.</p>
+<ul>
+<li><p><code>package</code> <em>boolean</em><br /><strong>default: true</strong><br />Whether or not to package the items in the build.</p></li>
+<li><p><code>sprite</code> <em>boolean</em><br /><strong>default: true</strong><br />Whether or not to sprite the items on sprite sheets or leave them separate.</p></li>
+<li><p><code>scale</code> <em>number</em><br /><strong>default: 1.0</strong><br />How much to scale the items by.</p></li>
+<li><p><code>forceJpeg</code> <em>boolean</em><br /><strong>default: false</strong><br />Whether or not to force converting the items to jpeg</p></li>
+<li><p><code>po2</code> <em>boolean</em><br /><strong>default: true</strong><br />Whether or not the sprite sheets created from the items should be power’s of two</p></li>
+</ul>
+<h5 id="png-quant-options">PNG Quant Options</h5>
+<ul>
+<li><p><code>usePNGQuant</code> <em>boolean</em><br /><strong>default: false</strong><br />Whether or not to use PNGQuant</p></li>
+<li><p><code>PNGQuantSpeed</code> <em>number</em><br /><strong>default: 3</strong></p></li>
+<li><p><code>PNGQuantQuality</code> <em>string</em><br /><strong>default: 0-100</strong></p></li>
+</ul>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: animate</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#module-animate">Module: animate</a><ul>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#animate-obj-groupid">animate (obj, groupID)</a></li>
+<li><a href="#animate.getgroup-id">animate.getGroup (id)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-animate.animator">Class: animate.Animator</a><ul>
+<li><a href="#methods-1">Methods</a><ul>
+<li><a href="#new-animator-subject-group">new Animator (subject, group)</a></li>
+<li><a href="#clear">clear ()</a></li>
+<li><a href="#pause">pause ()</a></li>
+<li><a href="#ispaused">isPaused ()</a></li>
+<li><a href="#resume">resume ()</a></li>
+<li><a href="#hasframes">hasFrames ()</a></li>
+<li><a href="#wait-duration">wait (duration)</a></li>
+<li><a href="#now-target-duration-transition-ontick">now (target, duration, transition, onTick)</a></li>
+<li><a href="#then-target-duration-transition-ontick">then (target, duration, transition, onTick)</a></li>
+<li><a href="#then-callback">then (callback)</a></li>
+<li><a href="#debug">debug ()</a></li>
+<li><a href="#commit">commit ()</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-group">Class: Group</a><ul>
+<li><a href="#methods-2">Methods</a><ul>
+<li><a href="#get-id">get (id)</a></li>
+<li><a href="#add-id-animation">add (id, animation)</a></li>
+<li><a href="#isactive">isActive ()</a></li>
+<li><a href="#onanimationfinish-animation">onAnimationFinish (animation)</a></li>
+</ul></li>
+<li><a href="#events">Events</a><ul>
+<li><a href="#finish">'Finish'</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-particleengine">Class: ParticleEngine</a><ul>
+<li><a href="#methods-3">Methods</a><ul>
+<li><a href="#obtainparticlearray-count">obtainParticleArray (count)</a></li>
+<li><a href="#emitparticles-parray">emitParticles (pArray)</a></li>
+<li><a href="#runtick-dt">runTick (dt)</a></li>
+</ul></li>
+<li><a href="#overview">Overview</a><ul>
+<li><a href="#size">Size</a></li>
+<li><a href="#opacity">Opacity</a></li>
+<li><a href="#lifespan">Lifespan</a></li>
+<li><a href="#other">Other</a></li>
+</ul></li>
+<li><a href="#cartesian-physics">Cartesian Physics</a><ul>
+<li><a href="#position">Position</a></li>
+<li><a href="#velocity">Velocity</a></li>
+<li><a href="#acceleration">Acceleration</a></li>
+</ul></li>
+<li><a href="#polar-physics">Polar Physics</a></li>
+<li><a href="#triggers">Triggers</a></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="module-animate">Module: animate</h1>
+<p><code>animate</code> is a module used for programmatically moving, changing, and animating properties, especially <a href="../api/ui-view.html">ui.View</a> properties. It is a “tweening engine” that interpolates between screen positions, opacity, or any other numeric JavaScript property. It’s most important feature is that it’s optimized for mobile devices using native code, so you should favor this module instead of manual position calculations within your game loop.</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li><a href="../example/animation-basic/">Basic Animation</a></li>
+<li><a href="../example/animation-continuous/">Continuous Animation</a></li>
+<li><a href="../example/animation-pause/">Pause an Animation</a></li>
+<li><a href="../example/animation-trail/">Create a Trail Animation</a></li>
+<li><a href="../example/animation-multibox/">Multiple Animations</a></li>
+<li><a href="../example/animation-particles/">Particle Engine</a></li>
+<li><a href="../example/animation-prebuilt/">Prebuilt Spritesheets</a></li>
+</ul>
+<h2 id="methods">Methods</h2>
+<h3 id="animate-obj-groupid">animate (obj, groupID)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>obj {ui.View|object}</code> —The view or object to animate.</li>
+<li><code>groupID {number}</code> —The group identifier for this animation, <a href="#class-group">see below</a></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Animator}</code> —Returns the animator object so the function call can be chained.</li>
+</ol>
+</dd>
+</dl>
+<p>Create an Animator for a <a href="../api/ui-view.html">View</a> or generic JavaScript object. Note that when animating a <a href="../api/ui-view.html">View</a> object, the animation engine will tween based on the object’s <code>style</code> property. But when passing in a generic object, the animation engine will tween based on the object’s top level properties instead.</p>
+<pre><code>import animate;
+
+var animator = animate(myView);
+
+// typical usage is via method chaining
+// moves a view 100px to the right, then 100px downwards.
+animate(myView).now({x: 100}).then({y: 100});</code></pre>
+<h3 id="animate.getgroup-id">animate.getGroup (id)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>id {number}</code> —The group identifier of the group to fetch.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Group}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the Group with the specified identifier. <a href="#class-group">See below</a> for more information on groups.</p>
+<h1 id="class-animate.animator">Class: animate.Animator</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>The animation engine.</p>
+<h2 id="methods-1">Methods</h2>
+<h3 id="new-animator-subject-group">new Animator (subject, group)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>subject {object}</code> —The view or object to animate.</li>
+<li><code>group {Group}</code> —The group object for this animation, <a href="#class-group">see below</a></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a new Animator with a <a href="../api/ui-view.html">View</a> or object to animate, with an optional Group to add them to. Note: the preferred method for creating an animator object is not to use the <code>new</code> keyword, but instead to invoke the animate function:</p>
+<pre><code>// do not use:
+// var animator = new animate.Animator(object);
+// instead use this:
+var animator = animate(object);</code></pre>
+<h3 id="clear">clear ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Clears any animation frames currently scheduled. This will stop the animation immediately without completing any additional frames.</p>
+<pre><code>var myAnimation = animate(view).now({x: 100}, 5000);
+
+setTimeout( function() {
+  myAnimation.clear(); //view.x has stopped in its tracks, without reaching the target value.
+}, 1500);</code></pre>
+<h3 id="pause">pause ()</h3>
+<p>Pauses the animation.</p>
+<h3 id="ispaused">isPaused ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns whether the animation is paused.</p>
+<h3 id="resume">resume ()</h3>
+<p>Resumes the animation if paused.</p>
+<h3 id="hasframes">hasFrames ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns whether there are any frames left in the animation queue.</p>
+<h3 id="wait-duration">wait (duration)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>duration {number}</code> —Duration of the wait in milliseconds.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Adds a delay (in milliseconds) to the animation queue. This function can be invoked instead of <code>setTimeout</code>, and when used in conjunction with <code>animator.then(callback)</code> affords greater timing control than <code>setTimeout</code>.</p>
+<pre><code>animate(view).wait(500).then(function () {
+  console.log(&quot;called after 500ms&quot;);
+});</code></pre>
+<h3 id="now-target-duration-transition-ontick">now (target, duration, transition, onTick)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>target {View|object}</code> —Will interpolate the appropriate number values of the provided object.</li>
+<li><code>duration {number}</code> —Duration of the animation in milliseconds.</li>
+<li><code>transition {number}</code> —Type of animation transition. See below for transition types.</li>
+<li><code>onTick {function}</code> —A callback to control the speed of the transition.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Starts an animation frame immediately. An animation frame is defined by the duration, transition type, and properties that are being “tweened” by the animation engine.</p>
+<p>An animation transition can be one of the following:</p>
+<ul>
+<li><code>animate.linear</code> —Animation has the same speed from start to finish.</li>
+<li><code>animate.easeIn</code> —Animation has a slow start.</li>
+<li><code>animate.easeOut</code> —Animation has a slow end.</li>
+<li><code>animate.easeInOut</code> —Animation has both slow start and slow end.</li>
+</ul>
+<h3 id="then-target-duration-transition-ontick">then (target, duration, transition, onTick)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>target {View|object}</code> —Will interpolate the appropriate number values of the provided object.</li>
+<li><code>duration {number}</code> —Duration of the animation in milliseconds.</li>
+<li><code>transition {number}</code> —Type of animation transition. See above for transition types.</li>
+<li><code>onTick {function}</code> —A callback to control the speed of the transition.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li>Return: <code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Similar to <code>.now()</code>, but adds the animation frame to the object’s animation queue rather than animating the frame immediately.</p>
+<pre><code>animate(view).then({x: 500, y: 500}, 1000);
+
+// these can be chained
+animate(view).now({x: 10}, 300).then({
+  x: 500,
+  y: 500
+}, 1000).then({
+  x: 50,
+  y: 50
+}, 200).then({
+  x: 100,
+  y: 10
+}, 1000);</code></pre>
+<h3 id="then-callback">then (callback)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>callback {function}</code> —The callback function to be invoked at the appropriate point in the queue.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Adds a callback function to the queue. Useful for running code after an animation frame completes.</p>
+<pre><code>animate(view).now({x: 10}).then(function(){
+  console.log(&#39;view has been moved to x = 10.&#39;);
+});</code></pre>
+<p>You can also specify a duration after the callback. This will execute the given function multiple times once per tick until the duration ends. Note this will execute the given function multiple times and not just once after the duration ends; use <code>wait</code> (above) to achieve this.</p>
+<h3 id="debug">debug ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Turns debug logging on. This will log information about the current animation frame like duration, transition, and what properties are being animated.</p>
+<h3 id="commit">commit ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Finishes the animation immediately, moving all values to the position specified by the final frame in the animation queue.</p>
+<pre><code>var myAnimation = animate(view).now({
+  x: 100
+}, 5000);
+
+setTimeout( function() {
+  myAnimation.commit(); //view.x is now at 100 and the animation is complete.
+}, 1500);</code></pre>
+<h1 id="class-group">Class: Group</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>A group of animations. Groups are typically used to track a complex animation involving multiple view animations.</p>
+<pre><code>animate(firstView, &#39;complexAnimation1&#39;).now({ //the second argument is the group id 
+  x: 100
+}, 100);
+
+animate(secondView, &#39;complexAnimation1&#39;).now({
+  x: 100
+}, 200);
+
+animate.getGroup(&#39;complexAnimation1&#39;).on(&#39;Finish&#39;, function(){
+  console.log(&#39;The complex animation is finished!&#39;);
+});</code></pre>
+<h2 id="methods-2">Methods</h2>
+<h3 id="get-id">get (id)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>id {string}</code> —The identifier of the animation to fetch from the group.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Animator}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns an animation from the group.</p>
+<pre><code>var animGroup = animate.getGroup(&#39;complexAnimation1&#39;);
+
+var anim = animGroup.get(&#39;loopDeLoops&#39;);</code></pre>
+<h3 id="add-id-animation">add (id, animation)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>id {string}</code> —The identifier of the animation to add to the group.</li>
+<li><code>animation {Animator}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Animator}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Adds an animation to the group and returns it.</p>
+<h3 id="isactive">isActive ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns true if any animations in the group have frames in their animation queue.</p>
+<h3 id="onanimationfinish-animation">onAnimationFinish (animation)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>animation {Animator}</code> —The animation object to signal as being finished.</li>
+</ol>
+</dd>
+</dl>
+<p>Removes an animation from the group. If none of the remaining animations in the group have frames left in their queue, the <code>finish</code> event will be published.</p>
+<h2 id="events">Events</h2>
+<h3 id="finish">'Finish'</h3>
+<p>Published when all animations in the group have completed all the frames in their respective animation queues.</p>
+<h1 id="class-particleengine">Class: ParticleEngine</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-view.html">ui.View</a></li>
+</ol>
+</dd>
+</dl>
+<p>The goal of this class is to facilitate high performance view animation with minimal garbage collection.</p>
+<h2 id="methods-3">Methods</h2>
+<h3 id="obtainparticlearray-count">obtainParticleArray (count)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>count {number}</code> —How many particle objects to return.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Array}</code> —Returns an array of <code>count</code> particle objects.</li>
+</ol>
+</dd>
+</dl>
+<p>Call <code>obtainParticleArray</code> to get the array of particle objects from the engine. These objects should be modified and passed into <code>emitParticles</code> when they’re ready. Note that there is only one particle objects array per engine. This array is provided by the engine, and there’s no need to create your own.</p>
+<h3 id="emitparticles-parray">emitParticles (pArray)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>pArray {array}</code> —An array of particle objects to animate.</li>
+</ol>
+</dd>
+</dl>
+<p>Call <code>emitParticles</code> with the array of particle objects to queue them up for animation. Remember that this is the same array returned by <code>obtainParticleArray</code>.</p>
+<h3 id="runtick-dt">runTick (dt)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>dt {number}</code> —How many milliseconds of particle animations to run.</li>
+</ol>
+</dd>
+</dl>
+<p>Calling <code>runTick</code> runs enqueued particle animations for <code>dt</code> milliseconds. This arrangement means that you can have hundreds of particle engines in your game, and none of them will tick unless you explicitly ask them to. It also makes it easy to speed up or slow down your effects by simply scaling the <code>dt</code> you pass into <code>runTick</code>.</p>
+<h2 id="overview">Overview</h2>
+<p><code>ParticleEngine.js</code> uses a pool of <code>ImageView</code>s to animate special effects as defined by particle objects. To create an effect, first call <code>obtainParticleArray(n)</code> where n is the number of particles you want in your effect. You will receive an array with n particle object literals pre-populated with their default property values. Modify the particle object properties to define how they move through space and time. Once all of your objects’ properties are established, pass the same array back to the particle engine via <code>emitParticles(array)</code>. The arrays, object literals, and <code>ImageView</code>s are all managed internally by the engine to minimize garbage creation and collection.</p>
+<p>Set up a particle engine like this:</p>
+<pre><code>import ui.ParticleEngine as ParticleEngine;
+
+this.pEngine = new ParticleEngine({
+  superview: someView,
+  width: 1,
+  height: 1,
+  initCount: 10
+});</code></pre>
+<p>When the time is right, emit particles like this:</p>
+<pre><code>var particleObjects = this.pEngine.obtainParticleArray(10);
+for (var i = 0; i &lt; 10; i++) {
+  var pObj = particleObjects[i];
+  pObj.dx = Math.random() * 100;
+  pObj.dy = Math.random() * 100;
+  pObj.width = 20;
+  pObj.height = 20;
+  pObj.image = &#39;resources/images/sparkle.png&#39;;
+}
+this.pEngine.emitParticles(particleObjects);</code></pre>
+<p>Don’t forget to update the particle engine in your tick function:</p>
+<pre><code>var tick = function(dt) {
+  // .. tick logic ..
+  this.pEngine.runTick(dt);
+  // .. more tick logic ..
+};</code></pre>
+<p>These properties control the size and opacity of the particle over time. All deltas are in units per second.</p>
+<h3 id="size">Size</h3>
+<ul>
+<li><code>width {number}</code> width (default: 1)</li>
+<li><code>dwidth {number}</code> delta width (default: 0)</li>
+<li><code>ddwidth {number}</code> delta delta width (default: 0)</li>
+<li><code>height {number}</code> height (default: 1)</li>
+<li><code>dheight {number}</code> delta height (default: 0)</li>
+<li><code>ddheight {number}</code> delta delta height (default: 0)</li>
+<li><code>scale {number}</code> scale (default: 1)</li>
+<li><code>dscale {number}</code> delta scale (default: 0)</li>
+<li><code>ddscale {number}</code> delta delta scale (default: 0)</li>
+</ul>
+<h3 id="opacity">Opacity</h3>
+<ul>
+<li><code>opacity {number}</code> opacity (default: 1)</li>
+<li><code>dopacity {number}</code> delta opacity (default: 0)</li>
+<li><code>ddopacity {number}</code> delta delta opacity (default: 0)</li>
+</ul>
+<p>All numeric particle properties can have their own velocity and acceleration set by prefixing ‘d’ and ‘dd’, respectively, to the property name. For example, if you want to stretch a particle’s width, and then have it shrink, you might define particle properties like this:</p>
+<pre><code>pObj.width = 100;
+pObj.dwidth = 50;
+pObj.ddwidth = -75;</code></pre>
+<p>The following properties govern the basic timing and appearance of the particle.</p>
+<h3 id="lifespan">Lifespan</h3>
+<ul>
+<li><code>ttl {number}</code> time to live in milliseconds (default: 1000)</li>
+<li><code>delay {number}</code> time in ms before particle goes active (default: 0)</li>
+</ul>
+<h3 id="other">Other</h3>
+<ul>
+<li><code>image {string}</code> the image URL used for this particle (default: null)</li>
+<li><code>transition {string}</code> transition function ID (default: “linear”)</li>
+<li><code>onStart {function}</code> called when a particle becomes active (default: null)</li>
+<li><code>onDeath {function}</code> called when a particle finishes (default: null)</li>
+</ul>
+<p><code>transition</code> can be one of: “linear”, “easeIn”, “easeInOut”, “easeOut”.</p>
+<p>There are two ways to define the motion of particle data objects:</p>
+<ul>
+<li>Cartesian Physics</li>
+<li>Polar Physics</li>
+</ul>
+<h2 id="cartesian-physics">Cartesian Physics</h2>
+<p>If you like properties like <code>x</code> and <code>y</code>, you’ll love Cartesian Physics. Here are the basic properties you’ll need:</p>
+<h3 id="position">Position</h3>
+<ul>
+<li><code>x {number}</code> starting x position (default: 0)</li>
+<li><code>y {number}</code> starting y position (default: 0)</li>
+<li><code>r {number}</code> rotation (default: 0)</li>
+<li><code>anchorX {number}</code> x anchor (default: 0)</li>
+<li><code>anchorY {number}</code> y anchor (default: 0)</li>
+</ul>
+<p>And here are the corresponding delta properties:</p>
+<h3 id="velocity">Velocity</h3>
+<ul>
+<li><code>dx {number}</code> delta x (default: 0)</li>
+<li><code>dy {number}</code> delta y (default: 0)</li>
+<li><code>dr {number}</code> delta r (default: 0)</li>
+<li><code>danchorX {number}</code> delta anchor x (default: 0)</li>
+<li><code>danchorY {number}</code> delta anchor y (default: 0)</li>
+</ul>
+<h3 id="acceleration">Acceleration</h3>
+<ul>
+<li><code>ddx {number}</code> delta delta x (default: 0)</li>
+<li><code>ddy {number}</code> delta delta y (default: 0)</li>
+<li><code>ddr {number}</code> delta delta r (default: 0)</li>
+<li><code>ddanchorX {number}</code> delta delta anchor x (default: 0)</li>
+<li><code>ddanchorY {number}</code> delta delta anchor y (default: 0)</li>
+</ul>
+<p>Say I wanted to launch of bunch of particles up and to the right and let gravity take over. Say I also wanted a bit of variance. I’d probably do something like this:</p>
+<pre><code>var particleObjects = this.pEngine.obtainParticleArray(10);
+for (var i = 0; i &lt; 10; i++) {
+  var pObj = particleObjects[i];
+  pObj.dx = 100 + Math.random() * 20;
+  pObj.dy = -100 + Math.random() * 20;
+  pObj.ddy = 50; // gravity is same for all particles
+  pObj.width = 20;
+  pObj.height = 20;
+  pObj.image = &#39;resources/images/sparkle.png&#39;;
+}
+this.pEngine.emitParticles(particleObjects);</code></pre>
+<p>This will shoot a light spray of particles up and to the right, to be rained down in due time thanks to delta delta y.</p>
+<h2 id="polar-physics">Polar Physics</h2>
+<p>Enjoy circles, angles, and vectors? Then Polar Physics is for you.</p>
+<ul>
+<li><code>polar {boolean}</code> set true to use polar coordinates (default: false)</li>
+<li><code>ox {number}</code> x origin (default: 0)</li>
+<li><code>oy {number}</code> y origin (default: 0)</li>
+<li><code>theta {number}</code> starting angle (default: 0)</li>
+<li><code>radius {number}</code> starting radius (default: 0)</li>
+<li><code>dtheta {number}</code> delta theta (default: 0)</li>
+<li><code>dradius {number}</code> delta radius (default: 0)</li>
+<li><code>ddtheta {number}</code> delta delta theta (default: 0)</li>
+<li><code>ddradius {number}</code> delta delta radius (default: 0)</li>
+</ul>
+<p>Try this simple effect, which pulses particles away from and toward the center:</p>
+<pre><code>var particleObjects = this.pEngine.obtainParticleArray(10);
+for (var i = 0; i &lt; 10; i++) {
+  var pObj = particleObjects[i];
+  pObj.polar = true;
+  pObj.dradius = 400;
+  pObj.ddradius = -200;
+  pObj.theta = i * 2 * Math.PI / 10;
+  pObj.ttl = 5000;
+  pObj.width = 20;
+  pObj.height = 20;
+  pObj.image = &#39;resources/images/sparkle.png&#39;;
+}
+this.pEngine.emitParticles(particleObjects);</code></pre>
+<p>NOTE: when using polar particles, <code>dx</code>, <code>dy</code>, <code>ddx</code>, and <code>ddy</code> translate the polar origin point.</p>
+<h2 id="triggers">Triggers</h2>
+<p>Triggers allow you to attach any number of callbacks to a particle. They fire when a certain particle property reaches a certain value, as specified per each trigger.</p>
+<ul>
+<li><code>property {string}</code> check this property’s value for trigger</li>
+<li><code>value {number}</code> value at which to trigger an action</li>
+<li><code>smaller {boolean}</code> if true, check if a property is &lt; value, otherwise &gt;</li>
+<li><code>action {function}</code> called when trigger occurs, passes particle</li>
+<li><code>count {number}</code> removes trigger after it has occurred count times (optional)</li>
+</ul>
+<p>For example, a trigger that causes particles to bounce off of a certain y-value, as if it were solid ground, might look like this:</p>
+<pre><code>pObj.triggers.push({
+    property: &#39;y&#39;,
+    value: 500,
+    smaller: false,
+    action: function(particle) {
+        // bounce the particle!
+        particle.style.y = 500;
+        particle.pData.dy = -particle.pData.dy / 2;
+    }
+});</code></pre>
+<p>NOTE: you can access and modify a particle’s data object at any time via its <code>pData</code> property.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

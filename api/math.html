@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: math</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#module-math.util">Module: math.util</a><ul>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#interpolate-a-b-t">interpolate (a, b, t)</a></li>
+<li><a href="#random-a-b-generator">random (a, b [, generator])</a></li>
+<li><a href="#clip-n-min-max">clip (n, min, max)</a></li>
+<li><a href="#sign-n">sign (n)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#module-math.array">Module: math.array</a><ul>
+<li><a href="#methods-1">Methods</a><ul>
+<li><a href="#average-array-count">average (array [, count])</a></li>
+<li><a href="#weightedaverage-array-weight-count">weightedAverage (array, weight [, count])</a></li>
+<li><a href="#subtract-array1-array2">subtract (array1, array2)</a></li>
+<li><a href="#stddev-array-count">stddev (array [, count])</a></li>
+<li><a href="#shuffle-array-seed">shuffle (array [, seed])</a></li>
+<li><a href="#rotate-array-count">rotate (array, count)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-math.geom.point">Class: math.geom.Point</a><ul>
+<li><a href="#methods-2">Methods</a><ul>
+<li><a href="#new-point-x-y">new Point ([x, y])</a></li>
+<li><a href="#new-point-pt">new Point (pt)</a></li>
+<li><a href="#rotate-radians">rotate (radians)</a></li>
+<li><a href="#translate-x-y">translate (x, y)</a></li>
+<li><a href="#translate-pt">translate (pt)</a></li>
+<li><a href="#subtract-x-y">subtract (x, y)</a></li>
+<li><a href="#subtract-pt">subtract (pt)</a></li>
+<li><a href="#scale-factor">scale (factor)</a></li>
+<li><a href="#normalize">normalize ()</a></li>
+<li><a href="#setmagnitude-mag">setMagnitude (mag)</a></li>
+<li><a href="#addmagnitude-mag">addMagnitude (mag)</a></li>
+<li><a href="#getmagnitude">getMagnitude ()</a></li>
+<li><a href="#getsquaredmagnitude">getSquaredMagnitude ()</a></li>
+<li><a href="#getangle">getAngle ()</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-math.geom.line">Class: math.geom.Line</a><ul>
+<li><a href="#methods-3">Methods</a><ul>
+<li><a href="#new-line-x1-y1-x2-y2">new Line (x1, y1, x2, y2)</a></li>
+<li><a href="#new-line-point-point">new Line (point, point)</a></li>
+<li><a href="#getlength">getLength ()</a></li>
+</ul></li>
+<li><a href="#properties">Properties</a><ul>
+<li><a href="#start-point">start <code>{Point}</code></a></li>
+<li><a href="#end-point">end <code>{Point}</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-math.geom.circle">Class: math.geom.Circle</a><ul>
+<li><a href="#methods-4">Methods</a><ul>
+<li><a href="#new-circle-x-y-radius">new Circle ([x, y, radius])</a></li>
+<li><a href="#new-circle-circle">new Circle (circle)</a></li>
+<li><a href="#scale-factor-1">scale (factor)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-math.geom.rect">Class: math.geom.Rect</a><ul>
+<li><a href="#methods-5">Methods</a><ul>
+<li><a href="#new-rect">new Rect ()</a></li>
+<li><a href="#new-rect-x-y-width-height">new Rect (x, y, width, height)</a></li>
+<li><a href="#new-rect-topleft-width-height">new Rect (topleft, width, height)</a></li>
+<li><a href="#new-rect-topleft-size">new Rect (topleft, size)</a></li>
+<li><a href="#new-rect-rect">new Rect (rect)</a></li>
+<li><a href="#normalize-1">normalize ()</a></li>
+<li><a href="#unionrect-rect2">unionRect (rect2)</a></li>
+<li><a href="#getcenter">getCenter ()</a></li>
+<li><a href="#getcorner-corner">getCorner (corner)</a></li>
+<li><a href="#getside-side">getSide (side)</a></li>
+</ul></li>
+<li><a href="#class-properties">Class Properties</a><ul>
+<li><a href="#rect.corner-object">Rect.CORNER <code>{object}</code></a></li>
+<li><a href="#rect.side-object">Rect.SIDE <code>{object}</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-math.geom.vec2d">Class: math.geom.Vec2D</a><ul>
+<li><a href="#methods-6">Methods</a><ul>
+<li><a href="#new-vec2d-options">new Vec2D (options)</a></li>
+<li><a href="#new-vec2d-options-1">new Vec2D (options)</a></li>
+<li><a href="#addforce-fvec">addForce (fvec)</a></li>
+<li><a href="#getangle-1">getAngle ()</a></li>
+<li><a href="#getmagnitude-1">getMagnitude ()</a></li>
+<li><a href="#getunitvector">getUnitVector ()</a></li>
+<li><a href="#dot-vec2">dot (vec2)</a></li>
+<li><a href="#add-vec2">add (vec2)</a></li>
+<li><a href="#minus-vec2">minus (vec2)</a></li>
+<li><a href="#negate">negate ()</a></li>
+<li><a href="#multiply-scalar">multiply (scalar)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#module-math.geom.angle">Module: math.geom.angle</a><ul>
+<li><a href="#methods-7">Methods</a><ul>
+<li><a href="#average-angle1-angle2-weight">average (angle1, angle2 [, weight])</a></li>
+<li><a href="#normalize-angle">normalize (angle)</a></li>
+<li><a href="#add-angle1-angle2">add (angle1, angle2)</a></li>
+<li><a href="#difference-angle1-angle2">difference (angle1, angle2)</a></li>
+<li><a href="#range-angle1-angle2">range (angle1, angle2)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#module-math.geom.intersect">Module: math.geom.intersect</a><ul>
+<li><a href="#methods-8">Methods</a><ul>
+<li><a href="#pointandrect-point-rect">pointAndRect (point, rect)</a></li>
+<li><a href="#pointandcircle-point-circle">pointAndCircle (point, circle)</a></li>
+<li><a href="#rectandrect-rect1-rect2">rectAndRect (rect1, rect2)</a></li>
+<li><a href="#circleandrect-circle-rect">circleAndRect (circle, rect)</a></li>
+<li><a href="#circleandline-circle-line">circleAndLine (circle, line)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#module-math.geom.intersect.util">Module: math.geom.intersect.util</a><ul>
+<li><a href="#methods-9">Methods</a><ul>
+<li><a href="#util.pointtoline-point-line">util.pointToLine (point, line)</a></li>
+<li><a href="#util.rectandrect-rect1-rect2">util.rectAndRect (rect1, rect2)</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="module-math.util">Module: math.util</h1>
+<p>Math is an important aspect of any game and the modules below provide assistance with many common tasks. Modules are included that provide geometric primitives for representing in game objects and functions to handle collisions between them. For additional convenience, utility functions for numbers, arrays, and angles are provided. <a href="https://github.com/gameclosure/js.io/blob/master/packages/math/util.js">Source code</a></p>
+<pre><code>import math.util as util;</code></pre>
+<h2 id="methods">Methods</h2>
+<h3 id="interpolate-a-b-t">interpolate (a, b, t)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>a {number}</code></li>
+<li><code>b {number}</code></li>
+<li><code>t {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the linear interpolation between values <code>a</code> and <code>b</code> by the amount <code>t</code>. Usually, <code>t</code> is a decimal value that ranges between 0 and 1. The result of the interpolation is <code>a</code> when <code>t = 0</code> and <code>b</code> when <code>t = 1</code>.</p>
+<pre><code>util.interpolate(0,10,0);   //=&gt; 0
+util.interpolate(0,10,0.5); //=&gt; 5
+util.interpolate(0,10,1);   //=&gt; 10</code></pre>
+<h3 id="random-a-b-generator">random (a, b [, generator])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>a {number}</code></li>
+<li><code>b {number}</code></li>
+<li><code>generator {function} = Math.random</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Generate and return a random integer between <code>a</code> to <code>b</code> (excluding <code>b</code>). Note that <code>a</code> and <code>b</code> should be integer values. Optionally, a random generator function can be provided with the same signature as Math.random().</p>
+<pre><code>util.random(0,2);  //=&gt; 0 
+util.random(0,2);  //=&gt; 1  
+util.random(1,10); //=&gt; 3</code></pre>
+<h3 id="clip-n-min-max">clip (n, min, max)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>n {number}</code></li>
+<li><code>min {number}</code></li>
+<li><code>max {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Clips the value <code>n</code> to be within the range <code>min</code> to <code>max</code>. If <code>n</code> is larger than <code>max</code>, then <code>max</code> is returned. If <code>n</code> is smaller than <code>min</code>, then <code>min</code> is returned. Otherwise, <code>n</code> is returned.</p>
+<pre><code>util.clip(10,0,20); //=&gt; 10 
+util.clip(-3,0,20); //=&gt; 0  
+util.clip(55,0,20); //=&gt; 20  </code></pre>
+<h3 id="sign-n">sign (n)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>n {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code> —Possible values are <code>1</code>, <code>-1</code>, or <code>0</code>.</li>
+</ol>
+</dd>
+</dl>
+<p>Returns <code>1</code> if the value for <code>n</code> is positive, and <code>-1</code> if it is negative. If <code>n</code> is zero, return <code>0</code>.</p>
+<pre><code>util.sign(40);  //=&gt; 1
+util.sign(-30); //=&gt; -1  
+util.sign(0);   //=&gt; 0  </code></pre>
+<h1 id="module-math.array">Module: math.array</h1>
+<p>Basic functions for operating on one or more arrays. <a href="https://github.com/gameclosure/js.io/blob/master/packages/math/array.js">Source code</a></p>
+<pre><code>import math.array as array;</code></pre>
+<h2 id="methods-1">Methods</h2>
+<h3 id="average-array-count">average (array [, count])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>array {array}</code></li>
+<li><code>count {number} = array.length</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Compute the average of an array. <code>count</code> is an optional parameter which specifies the number of elements to average. By default, the entire array is averaged.</p>
+<pre><code>array.average([5,4,2,3,1]);   //=&gt; 3
+array.average([5,4,2,3,1],2); //=&gt; 4.5</code></pre>
+<h3 id="weightedaverage-array-weight-count">weightedAverage (array, weight [, count])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>array {array}</code></li>
+<li><code>weight {number}</code></li>
+<li><code>count {number} = array.length</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Compute the average of an array and weighs the result by <code>weight</code>. <code>count</code> is an optional parameter which specifies the number of elements to average. By default, the entire array is averaged.</p>
+<pre><code>array.weightedAverage([5,4,2,3,1],0.5); //=&gt; 1.5
+array.weightedAverage([5,4,2,3,1],4,2); //=&gt; 18</code></pre>
+<h3 id="subtract-array1-array2">subtract (array1, array2)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>array1 {array}</code></li>
+<li><code>array2 {array}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array}</code> —Returns <code>b - a</code>.</li>
+</ol>
+</dd>
+</dl>
+<p>Subtracts the elements in <code>array2</code> from the elements in <code>array1</code> and returns a new array containing the differences. The length of <code>array1</code> should not be longer than the length of <code>array2</code>.</p>
+<pre><code>array.subtract([5,4],[3,2]);     //=&gt; [2,2]  
+array.subtract([3,1],[0.5,2.1]); //=&gt; [2.5,-1.1] </code></pre>
+<h3 id="stddev-array-count">stddev (array [, count])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>array {array}</code></li>
+<li><code>count {number} = array.length</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Compute the sample standard deviation of the values in <code>array</code>. Count is an optional parameter which specifies the number of elements to use in the calculation. By default, the entire array is used.</p>
+<pre><code>array.stddev([1,2,3,4,5]);   //=&gt; 1.5811388300841898
+array.stddev([1,2,3,4,5],2); //=&gt; 0.7071067811865476</code></pre>
+<h3 id="shuffle-array-seed">shuffle (array [, seed])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>array {array}</code></li>
+<li><code>seed {number} = null</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array}</code> —Returns the original array shuffled.</li>
+</ol>
+</dd>
+</dl>
+<p>Randomly shuffles an array in-place, which means that <code>array</code> is modified. The shuffled array is also returned for convenience.</p>
+<pre><code>array.shuffle([2,3,1,5]); //=&gt; [5,3,1,2]
+array.shuffle([2,3,1,5]); //=&gt; [3,5,2,1]</code></pre>
+<h3 id="rotate-array-count">rotate (array, count)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>array {array}</code></li>
+<li><code>count {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Rotates <code>array</code>’s elements left by the amount specified by <code>count</code>. If <code>count</code> is negative, then the elements are rotated to the right. The rotated array is returned as a new array.</p>
+<pre><code>array.rotate([1,2,3,4,5],1);  //=&gt; [2,3,4,5,1]
+array.rotate([1,2,3,4,5],2);  //=&gt; [3,4,5,1,2]
+array.rotate([1,2,3,4,5],-1); //=&gt; [5,1,2,3,4]</code></pre>
+<h1 id="class-math.geom.point">Class: math.geom.Point</h1>
+<p>An object with <code>x</code> and <code>y</code> numeric properties, typically representing coordinates on a Cartesian plane. In many cases it refers to a location on a device’s screen, where the position <code>{x: 0, y: 0}</code> is the top-left corner. <a href="https://github.com/gameclosure/js.io/blob/master/packages/math/geom/Point.js">Source code</a></p>
+<pre><code>import math.geom.Point as Point;</code></pre>
+<h2 id="methods-2">Methods</h2>
+<h3 id="new-point-x-y">new Point ([x, y])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>x {number} = 0</code></li>
+<li><code>y {number} = 0</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a point with the given <code>x</code> and <code>y</code> values. Both values are optional and default to 0.</p>
+<pre><code>var point = new Point(0, 1); //=&gt; {x: 0, y: 1}</code></pre>
+<h3 id="new-point-pt">new Point (pt)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>pt {object}</code>
+<ul>
+<li><code>x {number} = 0</code></li>
+<li><code>y {number} = 0</code></li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a new Point with <code>x</code> and <code>y</code> values equal to those in <code>pt</code>.</p>
+<pre><code>var point = new Point({x: 10, y: 3}); //=&gt; {x: 10, y: 3}</code></pre>
+<h3 id="rotate-radians">rotate (radians)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>radians {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Rotates <code>point</code> around the origin by a value in radians given by <code>radians</code>.</p>
+<pre><code>var point = new Point(0,1);
+point.rotate(3.14159); //=&gt; {x:0, y:-1} 
+point.rotate(1.57079); //=&gt; {x:1, y:0}</code></pre>
+<h3 id="translate-x-y">translate (x, y)</h3>
+<p><em>Alias: <code>add(x, y)</code></em></p>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>x {number}</code></li>
+<li><code>y {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Translates <code>point</code> by the given <code>x</code> and <code>y</code> values. <code>x</code> indicates how much the point should move in the x direction and <code>y</code> indicates how much it should move in the y direction.</p>
+<pre><code>var point = new Point(1,3);
+point.translate(3,5); //=&gt; {x:4, y:8}
+point.translate(0,2); //=&gt; {x:4, y:10}</code></pre>
+<h3 id="translate-pt">translate (pt)</h3>
+<p><em>Alias: <code>add(pt)</code></em></p>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>pt {Point}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Translates <code>point</code> by the given point <code>pt</code>. <code>pt.x</code> indicates how much the point should move in the x direction and <code>pt.y</code> indicates how much it should move in the y direction.</p>
+<pre><code>var point = new Point(1,3);
+point.translate(new Point(3,5)); //=&gt; {x:4, y:8}
+point.translate(new Point(0,2)); //=&gt; {x:0, y:10}</code></pre>
+<h3 id="subtract-x-y">subtract (x, y)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>x {number}</code></li>
+<li><code>y {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Subtract <code>x</code> and <code>y</code> from the x and y values of <code>point</code>.</p>
+<pre><code>var point = new Point();
+point.subtract(4,3); //=&gt; {x: -4, y: -3}
+point.subtract(9,0); //=&gt; {x: -9, y: 0}</code></pre>
+<h3 id="subtract-pt">subtract (pt)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>pt {Point}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Subtract the point <code>pt</code> from <code>point</code>.<code>pt.x</code> is subtracted from from the x value of <code>point</code> and <code>pt.y</code> is subtracted from the y value of <code>point</code>.</p>
+<pre><code>var point = new Point(1,2);
+point.subtract(new Point(3,4)); //=&gt; {x: -2, y: -2}
+point.subtract(new Point(1,5)); //=&gt; {x: -3, y: -7}</code></pre>
+<h3 id="scale-factor">scale (factor)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>factor {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Scale x and y values of point by the given factor.</p>
+<pre><code>(new Point(3,6)).scale(3);   //=&gt; {x: 9, y: 18}
+(new Point(3,6)).scale(1.5); //=&gt; {x: 4.5, y: 9}
+(new Point(3,6)).scale(0);   //=&gt; {x: 0, y: 0}</code></pre>
+<h3 id="normalize">normalize ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Sets the magnitude of <code>point</code> to one, while keeping its direction constant. Magnitude can be thought of as the distance from the point to the origin.</p>
+<pre><code>(new Point(2,2)).normalize();  //=&gt; {x: 0.7071, y: 0.7071}
+(new Point(3,5)).normalize();  //=&gt; {x: 0.51449, y: 0.85749}
+(new Point(0,-5)).normalize(); //=&gt; {x: 0, y: -1}</code></pre>
+<h3 id="setmagnitude-mag">setMagnitude (mag)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>mag {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Set the magnitude of this point, while keeping its direction/angle constant. Magnitude can be thought of as the distance from the point to the origin.</p>
+<pre><code>(new Point(1,2)).setMagnitude(4); //=&gt; {x: 1.78885, y: 3.57770}
+(new Point(3,5)).setMagnitude(2); //=&gt; {x: 1.02899, y: 1.71498}
+(new Point(0,-5)).setMagnitude(0.5); //=&gt; {x: 0, y: -0.5}</code></pre>
+<h3 id="addmagnitude-mag">addMagnitude (mag)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>mag {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Add a magnitude to <code>point</code>, while keeping its direction/angle constant</p>
+<pre><code>(new Point(1,2)).addMagnitude(4); //=&gt; {x: 2.78885, y: 5.57770}
+(new Point(3,5)).addMagnitude(2); //=&gt; {x: 4.028991, y: 6.714985}
+(new Point(0,-5)).addMagnitude(0.5); //=&gt; {x: 0, y: -4.5}</code></pre>
+<h3 id="getmagnitude">getMagnitude ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the magnitude of <code>point</code>. Magnitude can be thought of as the distance from the point to the origin.</p>
+<pre><code>(new Point(1.78885,3.57770)).getMagnitude(); //=&gt; 4
+(new Point(1.02899,1.71498)).getMagnitude(); //=&gt; 2
+(new Point(0,-0.5)).getMagnitude(); //=&gt; 0.5</code></pre>
+<h3 id="getsquaredmagnitude">getSquaredMagnitude ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the magnitude of <code>point</code> squared. Magnitude can be thought of as the distance from the point to the origin.</p>
+<pre><code>(new Point(1.78885,3.57770)).getSquaredMagnitude(); //=&gt; 16
+(new Point(1.02899,1.71498)).getSquaredMagnitude(); //=&gt; 4
+(new Point(0,-0.5)).getSquaredMagnitude(); //=&gt; 0.25</code></pre>
+<h3 id="getangle">getAngle ()</h3>
+<p><em>Alias: <code>getDirection()</code></em></p>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the angle of a point in radians. The angle is measured counter-clockwise from the positive x axis. If <code>point.y</code> is greater than or equal to 0, the angle measurement is positive and ranges from 0 to 3.14159. If <code>point.y</code> is less than 0, the angle measurement is negative and ranges from 0 to -3.14159.</p>
+<pre><code>(new Point(1,0)).getAngle();  //=&gt; 0
+(new Point(-1,0)).getAngle(); //=&gt; 3.14159
+(new Point(0,1)).getAngle();  //=&gt; 1.57079
+(new Point(0,-1)).getAngle(); //=&gt; -1.57079</code></pre>
+<h1 id="class-math.geom.line">Class: math.geom.Line</h1>
+<p>A class for representing a line in a 2D plane. A line consists of a start point and end point. <a href="https://github.com/gameclosure/js.io/blob/master/packages/math/geom/Line.js">Source code</a></p>
+<pre><code>import math.geom.Line as Line;</code></pre>
+<h2 id="methods-3">Methods</h2>
+<h3 id="new-line-x1-y1-x2-y2">new Line (x1, y1, x2, y2)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>x1 {number}</code></li>
+<li><code>y1 {number}</code></li>
+<li><code>x2 {number}</code></li>
+<li><code>y2 {number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a new line that starts from the point at (<code>x1</code>, <code>y1</code>) and ends at (<code>x2</code>, <code>y2</code>).</p>
+<pre><code>var line1 = new Line(0,0,3,4); //=&gt; {start: {x: 0, y: 0}, end: {x: 3, y: 4}}
+
+var line2 = new Line(2,1,0,5); //=&gt; {start: {x: 2, y: 1}, end: {x: 0, y: 5}}</code></pre>
+<h3 id="new-line-point-point">new Line (point, point)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>point1 {Point}</code></li>
+<li><code>point2 {Point}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a new line that starts from the point at <code>point1</code> and ends at <code>point2</code>.</p>
+<pre><code>var line1 = new Line(new Point(3,5),new Point(2,1)); //=&gt; {start: {x: 3, y: 5}, end: {x: 2, y: 1}}
+
+var line2 = new Line(new Point(0,1),new Point(9,4)); //=&gt; {start: {x: 0, y: 1}, end: {x: 9, y: 4}}</code></pre>
+<h3 id="getlength">getLength ()</h3>
+<p><em>Alias: <code>getMagnitude()</code></em></p>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the length of a line.</p>
+<pre><code>var line = new Line(0,0,2,3)
+line.getLength() =&gt; 3.60555</code></pre>
+<h2 id="properties">Properties</h2>
+<h3 id="start-point">start <code>{Point}</code></h3>
+<p>Member variable containing the point of the line</p>
+<pre><code>var line = new Line(0,0,2,3);
+line.start //=&gt; {x: 0, y: 0}</code></pre>
+<h3 id="end-point">end <code>{Point}</code></h3>
+<p>Member variable containing the start point of the line</p>
+<pre><code>var line = new Line(0,0,2,3);
+line.end //=&gt; {x: 2, y: 3}</code></pre>
+<h1 id="class-math.geom.circle">Class: math.geom.Circle</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="#class-math.geom.point">math.geom.Point</a></li>
+</ol>
+</dd>
+</dl>
+<p>Class used for representing circles in a 2D plane. Functions are provided to scale and make copies of the object. <a href="https://github.com/gameclosure/js.io/blob/master/packages/math/geom/Circle.js">Source code</a></p>
+<h2 id="methods-4">Methods</h2>
+<h3 id="new-circle-x-y-radius">new Circle ([x, y, radius])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>x {number} = 0</code></li>
+<li><code>y {number} = 0</code></li>
+<li><code>radius {number} = 0</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a circle centered at the point (<code>x</code>,<code>y</code>) with radius <code>radius</code>.</p>
+<pre><code>import math.geom.Circle as Circle;
+
+new Circle(0,0,10) =&gt; {x: 0, y: 0, radius: 10}</code></pre>
+<h3 id="new-circle-circle">new Circle (circle)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>circle {object}</code>
+<ul>
+<li><code>x {number} = 0</code></li>
+<li><code>y {number} = 0</code></li>
+<li><code>radius {number} = 0</code></li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a copy of the input circle.</p>
+<pre><code>var circle1 = new Circle(1,3,5);
+
+var circle2 = new Circle(circle1); //=&gt; {x: 1, y: 3, radius: 5}</code></pre>
+<h3 id="scale-factor-1">scale (factor)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>factor {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Scales the position <em>and</em> radius of <code>circle</code> by a factor.</p>
+<pre><code>var circle = new Circle(1,3,5);
+circle.scale(3); //=&gt; {x: 3, y: 9, radius: 15}</code></pre>
+<h1 id="class-math.geom.rect">Class: math.geom.Rect</h1>
+<p>Class used to represent rectangles in a 2D plane. Functions are provided to perform unions and other tasks. <a href="https://github.com/gameclosure/js.io/blob/master/packages/math/geom/Rect.js">Source code</a></p>
+<h2 id="methods-5">Methods</h2>
+<h3 id="new-rect">new Rect ()</h3>
+<p>Creates a new rectangle with its top left point at (0,0) with 0 width and height.</p>
+<pre><code>import math.geom.Rect as Rect;
+
+var rect = new Rect(); //=&gt; {x: 0, y: 0, width: 0, height: 0}</code></pre>
+<h3 id="new-rect-x-y-width-height">new Rect (x, y, width, height)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>x {number}</code></li>
+<li><code>y {number}</code></li>
+<li><code>width {number}</code></li>
+<li><code>height {number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a new rectangle with its top left point at (<code>x</code>,<code>y</code>) with width set to <code>width</code> and height set to <code>height</code>.</p>
+<pre><code>var rect1 = new Rect(1,3,5,10); //=&gt; {x: 1, y: 3, width: 5, height: 10}
+var rect2 = new Rect(3,0,5,2);  //=&gt; {x: 3, y: 0, width: 5, height: 2}</code></pre>
+<h3 id="new-rect-topleft-width-height">new Rect (topleft, width, height)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>topleft {Point}</code></li>
+<li><code>width {number}</code></li>
+<li><code>height {number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a new rectangle with its top left point at <code>topleft</code> with width set to <code>width</code> and height set to <code>height</code>.</p>
+<pre><code>var rect = new Rect(new Point(6, 8), 5, 10); //=&gt; {x: 6, y: 8, width: 5, height: 10}</code></pre>
+<h3 id="new-rect-topleft-size">new Rect (topleft, size)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>topleft {Point}</code></li>
+<li><code>size {Point}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a new rectangle with its top left point at <code>topleft</code> with width set to <code>size.x</code> and height set to <code>size.y</code>.</p>
+<pre><code>var rect = new Rect(new Point(2, 3), new Point(4, 7)); //=&gt; {x: 2, y: 3, width: 4, height: 7}</code></pre>
+<h3 id="new-rect-rect">new Rect (rect)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>rect {Rect}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a copy of the input rectangle <code>rect</code>.</p>
+<pre><code>var rect1 = new Rect(2, 3, 4, 7);
+var rect2 = new Rect(rect); //=&gt; {x: 2, y: 3, width: 4, height: 7}</code></pre>
+<h3 id="normalize-1">normalize ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Normalize negative dimensions so that the rectangle is based on the upper left corner with positive dimensions.</p>
+<pre><code>var rect = new Rect(5, 3, -4, 7);
+rect.normalize(); //=&gt; {x: 1, y: 3, width: 4, height: 7}</code></pre>
+<h3 id="unionrect-rect2">unionRect (rect2)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>rect2 {Rect}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Sets <code>rect</code> to be the union with itself another rectangle <code>rect2</code>.</p>
+<pre><code>var rect1 = new Rect(0, 0, 10, 5);
+var rect2 = new Rect(5, 2, 6, 2);
+rect1.unionRect(rect2); //=&gt; {x: 5, y: 2, width: 5, height: 2}</code></pre>
+<h3 id="getcenter">getCenter ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Point}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the center point of the rectangle <code>rect</code>.</p>
+<pre><code>var rect = new Rect(0, 0, 10, 5);
+rect.getCenter(); //=&gt; {x: 5, y: 2.5}</code></pre>
+<h3 id="getcorner-corner">getCorner (corner)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>corner {Rect.CORNER}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Point}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns a point corresponding to the specified corner of the rectangle. Valid options for the corner object is shown in the section below.</p>
+<pre><code>var rect = new Rect(0, 2, 10, 5);
+
+//Enumerable values used to represent the four corners of the rectangle object.
+rect.getCorner(Rect.CORNER.TOP_LEFT); //=&gt; {x: 0, y: 2}
+rect.getCorner(Rect.CORNER.TOP_RIGHT); //=&gt; {x: 10, y: 2}
+rect.getCorner(Rect.CORNER.BOTTOM_LEFT); //=&gt; {x: 0, y: 7}
+rect.getCorner(Rect.CORNER.BOTTOM_RIGHT); //=&gt; {x: 10, y: 7}</code></pre>
+<h3 id="getside-side">getSide (side)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>side {Rect.SIDE}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Line}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns a line corresponding to the specified side of the rectangle. The possible values for side can be found in the section below.</p>
+<pre><code>var rect1 = new Rect(0, 2, 10, 5);
+
+rect.getSide(Rect.SIDE.TOP);    //=&gt; {start: {x: 0, y: 2}, end: {x: 10, y:2}}
+rect.getSide(Rect.SIDE.RIGHT);  //=&gt; {start: {x: 10, y: 2}, end: {x: 10, y:7}}
+rect.getSide(Rect.SIDE.BOTTOM); //=&gt; {start: {x: 10, y: 7}, end: {x: 0, y:7}}
+rect.getSide(Rect.SIDE.LEFT);   //=&gt; {start: {x: 0, y: 7}, end: {x: 0, y:2}}</code></pre>
+<h2 id="class-properties">Class Properties</h2>
+<h3 id="rect.corner-object">Rect.CORNER <code>{object}</code></h3>
+<ul>
+<li><code>TOP_LEFT</code></li>
+<li><code>TOP_RIGHT</code></li>
+<li><code>BOTTOM_LEFT</code></li>
+<li><code>BOTTOM_RIGHT</code></li>
+</ul>
+<h3 id="rect.side-object">Rect.SIDE <code>{object}</code></h3>
+<ul>
+<li><code>TOP</code></li>
+<li><code>RIGHT</code></li>
+<li><code>BOTTOM</code></li>
+<li><code>LEFT</code></li>
+</ul>
+<p>Enumerable values used to represent the four sides of the rectangle object.</p>
+<h1 id="class-math.geom.vec2d">Class: math.geom.Vec2D</h1>
+<p>Model a vector in a 2D plane. A vector consists of an x and y value and is thought of as an arrow from the origin (0,0) to the point (x,y). This means that vectors have both a direction (The angle of this arrow) and a magnitude (The length of the arrow). Vectors are useful for representing position, velocity, and other properties of in game objects. <a href="https://github.com/gameclosure/js.io/blob/master/packages/math/geom/Vec2D.js">Source code</a></p>
+<h2 id="methods-6">Methods</h2>
+<h3 id="new-vec2d-options">new Vec2D (options)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>x {number}</code></li>
+<li><code>y {number}</code></li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a new vector with its x value set to <code>options.x</code> and y value set to <code>options.y</code>.</p>
+<pre><code>import math.geom.Vec2D as Vec2D;
+
+var vec = new Vec2D({x: 1, y: 2}}); //=&gt; {x: 1, y: 2}</code></pre>
+<h3 id="new-vec2d-options-1">new Vec2D (options)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>angle {number}</code></li>
+<li><code>magnitude {number}</code></li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a new vector in the direction given by <code>options.angle</code> and with magnitude given by <code>options.magnitude</code>.</p>
+<pre><code>import math.geom.Vec2D as Vec2D;
+
+var vec = new Vec2D({angle: 3.14159, magnitude: 2}}); //=&gt; {x: -2, y: 0}</code></pre>
+<h3 id="addforce-fvec">addForce (fvec)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>fvec {Vec2D}</code> —Force vector.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Adds x and y components of <code>fvec</code> to <code>vec</code>. <code>vec</code> is modified directly and no new Vec2D object is allocated.</p>
+<pre><code>var v = new Vec2D({x: 2, y: 3});
+var f = new Vec2D({x: 1, y: 5});
+v.addForce(f) =&gt; {x:3, y: 8}</code></pre>
+<h3 id="getangle-1">getAngle ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the angle of <code>vec</code> in radians. The angle is measured counter-clockwise from the positive x axis. If <code>vec.y</code> is greater than or equal to 0, the angle measurement is positive and ranges from 0 to 3.14159. If the <code>vec.y</code> is less than 0, the angle measurement is negative and ranges from 0 to -3.14159.</p>
+<pre><code>(new Vec2D({x: 1, y: 0})).getAngle(); //=&gt; 0
+(new Vec2D({x: 0, y: -1})).getAngle(); //=&gt; -1.57079</code></pre>
+<h3 id="getmagnitude-1">getMagnitude ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the magnitude of <code>vec</code>. Magnitude can be thought of as the distance from the tip of the vector to the origin.</p>
+<pre><code>(new Vec2D({x: 1.78885, y: 3.57770})).getMagnitude(); //=&gt; 4</code></pre>
+<h3 id="getunitvector">getUnitVector ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Vec2D}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a new vector with the same direction as <code>vec</code>, but with a magnitude of 1.</p>
+<pre><code>(new Vec2D({x: 2, y:2})).normalize(); //=&gt; {x: 0.7071, y: 0.7071}</code></pre>
+<h3 id="dot-vec2">dot (vec2)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>vec2 {Vec2D}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the dot product of <code>vec</code> and <code>vec2</code>. The dot product is computed as <code>vec.x * vec2.x + vec.y * vec2.y</code>.</p>
+<pre><code>var v = new Vec2D({x: 2, y: 3});
+var b = new Vec2D({x: 1, y: 5});
+v.dot(b); //=&gt; {x:2, y: 15}</code></pre>
+<h3 id="add-vec2">add (vec2)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>vec2 {Vec2D}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Vec2D}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns a new vector representing the sum of <code>vec</code> and <code>vec2</code>.</p>
+<pre><code>var v = new Vec2D({x: 2, y: 3});
+var b = new Vec2D({x: 1, y: 5});
+v.add(b); //=&gt; {x:3, y: 8}</code></pre>
+<h3 id="minus-vec2">minus (vec2)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>vec2 {Vec2D}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Vec2D}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns a new vector representing <code>vec2</code> minus <code>vec</code>.</p>
+<pre><code>var v = new Vec2D({x: 2, y: 3});
+var b = new Vec2D({x: 1, y: 5});
+v.minus(b); //=&gt; {x:1, y: -2}</code></pre>
+<h3 id="negate">negate ()</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>vec {Vec2D}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Vec2D}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns a new vector with the same magnitude as <code>vec</code>, but with the opposite direction.</p>
+<pre><code>(new Vec2D({x: 2, y: 3})).negate();  //=&gt; {x: -2, y: -3}
+(new Vec2D({x: 4, y: -7})).negate(); //=&gt; {x: -4, y: 7}</code></pre>
+<h3 id="multiply-scalar">multiply (scalar)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>scalar {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Vec2D}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns a new vector with the same direction as <code>vec</code> and the magnitude of <code>vec</code> multiplied by <code>scalar</code>.</p>
+<pre><code>(new Vec2D({x: 2, y: 3})).multiply(2);  //=&gt; {x: 4, y: 6}
+(new Vec2D({x: 4, y: -7})).multiply(3); //=&gt; {x: 12, y: -21}</code></pre>
+<h1 id="module-math.geom.angle">Module: math.geom.angle</h1>
+<p>Class containing functions for working with angles. The functions simplify keeping angles within the range -PI to PI and also assist with calculating angle ranges/differences. <a href="https://github.com/gameclosure/js.io/blob/master/packages/math/geom/angle.js">Source code</a></p>
+<pre><code>import math.geom.angle as angle;</code></pre>
+<h2 id="methods-7">Methods</h2>
+<h3 id="average-angle1-angle2-weight">average (angle1, angle2 [, weight])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>angle1 {number}</code></li>
+<li><code>angle2 {number}</code></li>
+<li><code>weight {number} = 0.5</code> —Float between 0.0 and 1.0</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the weighted average of <code>angle1</code> and <code>angle2</code>. When <code>weight</code> is 0 then the result is <code>angle1</code>. When <code>weight</code> is 1.0 then the result is <code>angle2</code>.</p>
+<pre><code>angle.average(2.0,-2.5);   //=&gt; 2.89156
+angle.average(2.0,-2.5,0); //=&gt; 2.0
+angle.average(2.0,-2.5,1); //=&gt; -2.5</code></pre>
+<h3 id="normalize-angle">normalize (angle)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>angle {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Normalize an angle to be within the range -PI to PI. <em>Does not work with negative angles.</em></p>
+<pre><code>angle.normalize(6);   //=&gt; -0.28318
+angle.normalize(-4);  //=&gt; -4 &lt;-- This is a bug with angle.normalize
+angle.normalize(1.2); //=&gt; 1.2</code></pre>
+<h3 id="add-angle1-angle2">add (angle1, angle2)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>angle1 {number}</code></li>
+<li><code>angle2 {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Compute the sum of <code>angle1</code> and <code>angle2</code>, within the range of -PI to PI. Note that <code>angle1</code> and <code>angle2</code> should be within the range of -PI to PI.</p>
+<pre><code>angle.add(1.5,2.2); //=&gt; -2.58318
+angle.add(-3,3.1);  //=&gt; 0.1
+angle.add(1.5,-2);  //=&gt; -0.5</code></pre>
+<h3 id="difference-angle1-angle2">difference (angle1, angle2)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>angle1 {number}</code></li>
+<li><code>angle2 {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Compute the difference between <code>angle1</code> and <code>angle2</code>, within the range of -PI to PI. The angle returned is the angle with the smallest magnitude. Note that <code>angle1</code> and <code>angle2</code> should be within the range -PI to PI.</p>
+<pre><code>angle.difference(1.5,2.2); //=&gt; 0.7
+angle.difference(-3,3.1);  //=&gt; -0.183185
+angle.difference(1.5,-2);  //=&gt; 2.783185</code></pre>
+<h3 id="range-angle1-angle2">range (angle1, angle2)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>angle1 {number}</code></li>
+<li><code>angle2 {number}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Angular distance measured clockwise from <code>angle1</code> to <code>angle2</code>, in the range of 0 and 2PI. Note that <code>angle1</code> and <code>angle2</code> should be within the range -PI to PI.</p>
+<pre><code>angle.range(1.5,2.2); //=&gt; 0.7
+angle.range(-3,3.1);  //=&gt; 6.1
+angle.range(1.5,-2);  //=&gt; 2.783185</code></pre>
+<h1 id="module-math.geom.intersect">Module: math.geom.intersect</h1>
+<p>The intersect module provides functions for checking intersections between the shape classes defined in the previous sections.</p>
+<pre><code>import math.geom.intersect as intersect;</code></pre>
+<h2 id="methods-8">Methods</h2>
+<h3 id="pointandrect-point-rect">pointAndRect (point, rect)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>point {Point}</code></li>
+<li><code>rect {Rect}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns true if <code>point</code> lies within or on the boundary of the rectangle <code>rect</code> and false otherwise.</p>
+<h3 id="pointandcircle-point-circle">pointAndCircle (point, circle)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>point {Point}</code></li>
+<li><code>circle {Circle}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns true if <code>point</code> lies within or on the boundary of <code>circle</code> and false otherwise.</p>
+<h3 id="rectandrect-rect1-rect2">rectAndRect (rect1, rect2)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>rect1 {Rect}</code></li>
+<li><code>rect2 {Rect}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns true if <code>rect1</code> and <code>rect2</code> overlap and false otherwise.</p>
+<h3 id="circleandrect-circle-rect">circleAndRect (circle, rect)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>circle {Circle}</code></li>
+<li><code>rect {Rect}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns true if <code>circle</code> and <code>rect</code> overlap and false otherwise.</p>
+<h3 id="circleandline-circle-line">circleAndLine (circle, line)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>circle {Circle}</code></li>
+<li><code>line {Line}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns true if <code>circle</code> and <code>line</code> overlap and false otherwise.</p>
+<h1 id="module-math.geom.intersect.util">Module: math.geom.intersect.util</h1>
+<pre><code>import math.geom.intersect.util as util;</code></pre>
+<h2 id="methods-9">Methods</h2>
+<h3 id="util.pointtoline-point-line">util.pointToLine (point, line)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>point {Point}</code></li>
+<li><code>line {Line}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Line}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns a <code>Line</code> from <code>point</code> to the nearest point on <code>line</code>.</p>
+<h3 id="util.rectandrect-rect1-rect2">util.rectAndRect (rect1, rect2)</h3>
+<dl>
+<dt>Paramaters</dt>
+<dd><ol type="1">
+<li><code>rect1 {Rect}</code></li>
+<li><code>rect2 {Rect}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Rect}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the overlap between <code>rect1</code> and <code>rect2</code> as a new rectangle <code>Rect</code>.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

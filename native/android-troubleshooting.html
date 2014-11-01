@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: android-troubleshooting</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#troubleshooting-issues-on-android">Troubleshooting Issues on Android</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#using-android-devices">Using Android Devices</a><ul>
+<li><a href="#uninstalling-games">Uninstalling Games</a></li>
+<li><a href="#force-quitting-games">Force-Quitting Games</a></li>
+</ul></li>
+<li><a href="#watching-javascript-logs">Watching JavaScript Logs</a></li>
+<li><a href="#unable-to-debug-android-device-with-adb">Unable to Debug Android Device with ADB</a></li>
+<li><a href="#javascript-freezes">JavaScript Freezes</a></li>
+<li><a href="#custom-truetype-fonts-not-working">Custom TrueType Fonts Not Working</a></li>
+<li><a href="#device-communication-failures">Device Communication Failures</a></li>
+<li><a href="#emfile-release-build-failures">EMFILE Release Build Failures</a></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="troubleshooting-issues-on-android">Troubleshooting Issues on Android</h1>
+<h2 id="overview">Overview</h2>
+<p>When your game becomes unresponsive it may be due to a JavaScript exception. Check the JavaScript logs (see below) to figure out what caused the problem.</p>
+<h2 id="using-android-devices">Using Android Devices</h2>
+<p>General knowledge of how to use Android devices is helpful while solving game problems:</p>
+<h3 id="uninstalling-games">Uninstalling Games</h3>
+<p>To uninstall a game on Android:</p>
+<ol type="1">
+<li>Open the Settings app.</li>
+<li>Select “Applications”.</li>
+<li>Select “Manage applications”.</li>
+<li>Select your game from the list.</li>
+<li>Tap [Uninstall] and tap OK.</li>
+</ol>
+<h3 id="force-quitting-games">Force-Quitting Games</h3>
+<p>To force-quit a game on Android:</p>
+<ol type="1">
+<li>Open the Settings app.</li>
+<li>Select “Applications”.</li>
+<li>Select “Manage applications”.</li>
+<li>Select your game from the list.</li>
+<li>Tap [Force Quit] and tap OK.</li>
+</ol>
+<h2 id="watching-javascript-logs">Watching JavaScript Logs</h2>
+<p>To watch the JavaScript logs from a mobile device, connect it to your computer via a USB data cable, then use the <code>adb logcat</code> command at a terminal window.</p>
+<p>Normally you will want to pair <code>adb logcat</code> with the standard <code>grep</code> tool to cut out most of the uninteresting log messages. For example <code>$ adb logcat | grep JS</code> will primarily display messages from your game.</p>
+<p>You may then pipe the output to a file with <code>$ adb logcat | grep JS &gt; mylog.txt</code>. Hit CTRL+C to terminate the log capture, and open it with <code>open mylog.txt</code>.</p>
+<h2 id="unable-to-debug-android-device-with-adb">Unable to Debug Android Device with ADB</h2>
+<p>Often times you will need to follow device-specific instructions to enable a USB debug mode in the device settings.</p>
+<p>Another common problem is that some of the Android devices out there are not registered with Android’s default Vendor list. For example the Xiaomi Mi 2[S] phones or the Ouya game console.</p>
+<p>To get them to work with ADB (and the DevKit) on MacOSX you have to go into “About This Mac”, select “More Info” =&gt; “System Report”, select USB on the left so you can see the attached USB devices. On other platforms it is a similar process. Select the device from the list.</p>
+<p>You will see something like this:</p>
+<pre><code>MI 2:
+
+  Product ID:    0x9039
+  Vendor ID:    0x2717
+  Version:     2.28
+  Serial Number:    a5629fa
+  Speed:    Up to 480 Mb/sec
+  Manufacturer:    Xiaomi
+  Location ID:    0xfa120000 / 5
+  Current Available (mA):    500
+  Current Required (mA):    500
+  Capacity:    47.9 MB (47,876,096 bytes)
+  Removable Media:    Yes
+  Detachable Drive:    Yes
+  BSD Name:    disk2
+  Partition Map Type:    Unknown
+  S.M.A.R.T. status:    Not Supported</code></pre>
+<p>The Vendor ID is what we need. Add it to the end of your “~/.android/adb_usb.ini” file like this:</p>
+<pre><code># ANDROID 3RD PARTY USB VENDOR ID LIST -- DO NOT EDIT.
+# USE &#39;android update adb&#39; TO GENERATE.
+# 1 USB VENDOR ID PER LINE.
+0x2717</code></pre>
+<p>Now run <code>adb kill-server</code> and <code>adb start-server</code> to restart ADB.</p>
+<p>If you type <code>adb devices</code> you should now see your device in the list. Also check the screen of the device and accept any access prompts that show up.</p>
+<p><em>Avoid running the <code>android update adb</code> command as it will erase your changes.</em></p>
+<h2 id="javascript-freezes">JavaScript Freezes</h2>
+<p>If your JavaScript game freezes up, it can be due to either an Exception, or a Memory Leak. To figure out which problem it is, follow instructions above to watch the JavaScript logs.</p>
+<p>If you see an exception trace in the log then it will contain information about which source file and line caused the error. You may want to use the <a href="./android-remote-debug.html">remote JS debugger</a> to set a breakpoint a little before the exception line so that you may fully inspect the code state from the comfort of your desktop. You can also turn on break-on-exception to cause the debugger to halt at the line where the exception occurs.</p>
+<p>If you see “JavaScript error out of memory” at the console then you probably have a memory leak. The best way to debug this sort of issue is to back off to using just your browser for development. Chrome has the best heap profiler available, and you can <a href="https://developers.google.com/chrome-developer-tools/docs/heap-profiling">use it</a> to find and fix JavaScript memory leaks.</p>
+<h2 id="custom-truetype-fonts-not-working">Custom TrueType Fonts Not Working</h2>
+<p>On Android, it is crucial that custom .TTF file names match one of the names inside the font file.</p>
+<p>Make sure that you have included the .TTF (TrueType Font) file under <code>./resources/fonts</code> in your game directory. And that under <code>./manifest.json</code> you have a “ttf” section containing the relative path to the file, as in the following example:</p>
+<pre><code>&quot;ttf&quot;: [
+    &quot;resources/fonts/Arial Black.ttf&quot;
+],</code></pre>
+<p>Inside your game you can reference the font by one of the names inside the font file. For best interoperability, the .TTF file name should also match one of the names inside the font file. For example:</p>
+<pre><code>var textview = new TextView({
+    superview: this.view,
+    layout: &quot;box&quot;,
+    text: &quot;Hello, world!&quot;,
+    fontFamily: &quot;Arial Black&quot;,
+    size: 50,
+    verticalAlign: &quot;top&quot;,
+    color: &quot;#00ffff&quot;,
+    width: 500,
+    height: 20,
+    x: 200,
+    y: 100,
+    backgroundColor: &quot;#ff7733&quot;
+});</code></pre>
+<h2 id="device-communication-failures">Device Communication Failures</h2>
+<p>The Android Debug Bridge (ADB) may be used to help debug problems with the Android USB connection. First off, use ADB to list the connected devices at a terminal window:</p>
+<p><code>$ adb devices</code></p>
+<p>If you run into problems getting your device to work, first unplug the USB cable and replug it in. If that does not fix the problem, then try to stop the ADB server on your computer:</p>
+<p><code>$ adb kill-server</code></p>
+<p>Also attempt to reboot the mobile device if communication is still unsuccessful.</p>
+<p>Further references:</p>
+<ul>
+<li><a href="http://developer.android.com/guide/developing/device.html">Using Hardware Devices</a></li>
+<li><a href="http://developer.android.com/guide/developing/tools/adb.html">Android Debug Bridge</a></li>
+</ul>
+<h2 id="emfile-release-build-failures">EMFILE Release Build Failures</h2>
+<p>The release builds open a lot of files during the JavaScript code compression step. If you see “Error: EMFILE, too many open files” in your build log then you should run this command at a console: <code>sudo ulimit -S -n 2048</code> to increase the open file limit.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

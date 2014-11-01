@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: audio</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-audiomanager">Class: AudioManager</a><ul>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#new-audiomanager-options">new AudioManager ([options])</a></li>
+<li><a href="#addsound-name-options">addSound (name [, options])</a></li>
+<li><a href="#play-name-options">play (name [, options])</a></li>
+<li><a href="#pause-name">pause (name)</a></li>
+<li><a href="#stop-name">stop (name)</a></li>
+<li><a href="#ispaused-name">isPaused (name)</a></li>
+<li><a href="#isplaying-name">isPlaying (name)</a></li>
+<li><a href="#setvolume-name-volume">setVolume (name, volume)</a></li>
+<li><a href="#getvolume-name">getVolume (name)</a></li>
+<li><a href="#setmuted-ismuted">setMuted (isMuted)</a></li>
+<li><a href="#getmuted">getMuted ()</a></li>
+<li><a href="#setmusicmuted-ismuted">setMusicMuted (isMuted)</a></li>
+<li><a href="#getmusicmuted">getMusicMuted ()</a></li>
+<li><a href="#seteffectsmuted-areeffectsmuted">setEffectsMuted (areEffectsMuted)</a></li>
+<li><a href="#geteffectsmuted">getEffectsMuted ()</a></li>
+<li><a href="#settime-name-time">setTime (name, time)</a></li>
+<li><a href="#gettime-name">getTime (name)</a></li>
+<li><a href="#getduration-name">getDuration (name)</a></li>
+<li><a href="#setpath-path">setPath (path)</a></li>
+<li><a href="#getpath-name">getPath ([name])</a></li>
+<li><a href="#getext">getExt ()</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-audiomanager">Class: AudioManager</h1>
+<p>A class for creating, managing, and playing sounds. For details about best practices when creating sound files, see the <a href="../guide/audio-assets.html">Creating Audio Assets Guide</a>.</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li><a href="../example/sound-background/">Background Music</a></li>
+<li><a href="../example/sound-effect/">Effects</a></li>
+<li><a href="../example/sound-mute/">Mute Sound</a></li>
+<li><a href="../example/sound-volume/">Adjust Volume</a></li>
+<li><a href="../example/sound-background/">Adjust Background</a></li>
+<li><a href="../example/sound-time/">Get and Set Track Position</a></li>
+</ul>
+<h2 id="methods">Methods</h2>
+<h3 id="new-audiomanager-options">new AudioManager ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>path {string}</code> —Directory path containing audio files.</li>
+<li><code>files {object}</code> —Collection of audio files mapped to their options.</li>
+<li><code>persist {}</code></li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p><code>path</code> is the directory containing a group of audio files, relative to the top-level of a project. <code>files</code> is an object mapping audio files to their options.</p>
+<p>The <code>files</code> options object has the following properties:</p>
+<ul>
+<li><code>sources {}</code></li>
+<li><code>background {boolean}</code> —Background music</li>
+<li><code>loop {boolean}</code></li>
+<li><code>volume {number}</code></li>
+<li><code>path {string}</code> —Add additional path information to the options path.</li>
+</ul>
+<p>Assets flagged as <code>background</code> loop automatically. Also, only one <code>background</code> sound can play at any given time (playing one <code>background</code> sound stops any currently-playing <code>background</code> sound).</p>
+<p>For the examples on this page, we’ll assume the following directory structure of a project:</p>
+<pre><code>project
+.
+├── manifest.json
+├── sdk/ -&gt; /path/to/basil/sdk
+├── build/
+├── resources/
+│   └── sounds/
+│       ├── music/
+│       │   └── levelmusic.mp3
+│       └── effect/
+│           ├── boink.mp3
+│           └── warble.mp3
+└── src/
+    └── Application.js</code></pre>
+<p>And to use these files with your game:</p>
+<pre><code>import AudioManager;
+
+var audiomanager = new AudioManager({
+  path: &#39;resources/sounds&#39;,
+  files: {
+    levelmusic: {
+      path: &#39;music&#39;,
+      volume: 0.5,
+      background: true
+    },
+    boink: {
+      path: &#39;effect&#39;
+    },
+    warble: {
+      path: &#39;effect&#39;,
+      loop: true
+    }
+  }
+});</code></pre>
+<h3 id="addsound-name-options">addSound (name [, options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+<li><code>options {object}</code> —Audio file options described above.</li>
+</ol>
+</dd>
+</dl>
+<p>Add a sound to the sound group.</p>
+<pre><code>audiomanager.addSound(&#39;pop&#39;, {
+  path: &#39;effect&#39;,
+  background: false
+});</code></pre>
+<h3 id="play-name-options">play (name [, options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+<li><code>options {object}</code>
+<ul>
+<li><code>loop {boolean} = false</code></li>
+</ul></li>
+</ol>
+<ul>
+<li><code>time {number}</code></li>
+<li><code>duration {number}</code></li>
+</ul>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code> —Returns <code>true</code> on success, <code>false</code> if not.</li>
+</ol>
+</dd>
+</dl>
+<p>Play a sound. If it has already been preloaded, or is flagged as a <code>background</code> sound, it will play immediately. Otherwise, the AudioManager will load it into memory before playing.</p>
+<p>Use the <code>time</code> and <code>duration</code> options (in seconds) to jump to any point in the track. This is particularly useful when you’re using a “soundsheet”, a single sound file containing multiple sound effects.</p>
+<pre><code>audiomanager.play(&#39;boink&#39;, {loop: true});</code></pre>
+<p>Note that the <code>time</code> option is only available for <code>background</code> sounds.</p>
+<h3 id="pause-name">pause (name)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code> —Returns <code>true</code> on success, <code>false</code> if not.</li>
+</ol>
+</dd>
+</dl>
+<p>Pause a sound. The audio file is stopped at a certain point, and restarted from that point when played again.</p>
+<pre><code>audiomanager.play(&#39;levelmusic&#39;);</code></pre>
+<h3 id="stop-name">stop (name)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code> —Returns <code>true</code> on success, <code>false</code> if not.</li>
+</ol>
+</dd>
+</dl>
+<p>Stop a sound. If a sound is played again, it will restart from the beginning.</p>
+<pre><code>audiomanager.stop(&#39;levelmusic&#39;);</code></pre>
+<h3 id="ispaused-name">isPaused (name)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code> —Returns <code>true</code> or <code>false</code>.</li>
+</ol>
+</dd>
+</dl>
+<p>Returns whether or not a sound is paused.</p>
+<pre><code>audiomanager.isPaused(&#39;levelmusic&#39;);</code></pre>
+<h3 id="isplaying-name">isPlaying (name)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code> —Returns <code>true</code> or <code>false</code>.</li>
+</ol>
+</dd>
+</dl>
+<p>Returns whether or not a sound is playing. This is not the opposite of <code>isPaused</code>, because a sound that already played or hasn’t started yet is neither paused nor playing.</p>
+<pre><code>audiomanager.isPlaying(&#39;levelmusic&#39;);</code></pre>
+<p>Note that this function is only available for <code>background</code> sounds.</p>
+<h3 id="setvolume-name-volume">setVolume (name, volume)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+<li><code>volume {number}</code> —A range between 0 and 1.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code> —Returns <code>true</code> on success, <code>false</code> if not.</li>
+</ol>
+</dd>
+</dl>
+<p>Sets the volume of the sound, with 1 as the maximum, and 0 as silent. A sound’s default volume is 1.</p>
+<pre><code>audiomanager.setVolume(&#39;levelmusic&#39;, 0.8);</code></pre>
+<h3 id="getvolume-name">getVolume (name)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the volume level of the specified sound.</p>
+<pre><code>audiomanager.getVolume(&#39;levelmusic&#39;); //=&gt; 0.8</code></pre>
+<h3 id="setmuted-ismuted">setMuted (isMuted)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>isMuted {boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Mute volume on all sounds.</p>
+<h3 id="getmuted">getMuted ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Check the mute status of all sounds.</p>
+<h3 id="setmusicmuted-ismuted">setMusicMuted (isMuted)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>isMuted {boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Mute volume on music sound.</p>
+<h3 id="getmusicmuted">getMusicMuted ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Check the mute status of the music sound.</p>
+<h3 id="seteffectsmuted-areeffectsmuted">setEffectsMuted (areEffectsMuted)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>areEffectsMuted {}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Mute volume on effects sounds.</p>
+<h3 id="geteffectsmuted">getEffectsMuted ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Check the mute status of the effects sounds.</p>
+<h3 id="settime-name-time">setTime (name, time)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+<li><code>time {number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Sets the current time of the specified sound. Note that this function is only available for <code>background</code> sounds.</p>
+<h3 id="gettime-name">getTime (name)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the current time of the specified sound. Note that this function is only available for <code>background</code> sounds.</p>
+<h3 id="getduration-name">getDuration (name)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the duration of the specified sound. Note that this function is only available for <code>background</code> sounds.</p>
+<h3 id="setpath-path">setPath (path)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>path {string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Set a new path for the sound group.</p>
+<pre><code>audiomanager.setPath(&#39;resources/sounds/music&#39;);</code></pre>
+<h3 id="getpath-name">getPath ([name])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>name {string}</code> —Optional sound name.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol start="2" type="1">
+<li><code>{string}</code></li>
+</ol>
+</dd>
+</dl>
+<pre><code>audiomanager.getPath();        //=&gt; &quot;resources/sounds&quot;
+audiomanager.getPath(&#39;boink&#39;); //=&gt; &quot;resources/sounds/effect&quot;</code></pre>
+<h3 id="getext">getExt ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{string}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the file extension of the sound.</p>
+<pre><code>audiomanager.getExt() //=&gt; &quot;.mp3&quot;</code></pre>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

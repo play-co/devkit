@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: android-plugin</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#android-plugin-system">Android Plugin System</a><ul>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#android-plugin-androidconfig.json">Android Plugin: android/config.json</a></li>
+<li><a href="#android-plugin-code">Android Plugin: Code</a></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="android-plugin-system">Android Plugin System</h1>
+<p>Writing the Android native code for a DevKit plugin is covered in this guide, which uses the <a href="http://github.com/gameclosure/geoloc">Geolocation plugin</a> as an example.</p>
+<p>For an overview of the plugin system, the requisite directory structure, and how to write the JavaScript component of the plugin, please see the <a href="../guide/plugins.html">main plugin development guide</a>.</p>
+<h3 id="usage">Usage</h3>
+<p>First install the plugin with <code>basil install [plugin name]</code>. For example:</p>
+<pre><code>basil install geoloc</code></pre>
+<p>To test plugins you will want to add the required plugins to your game’s manifest.json file:</p>
+<pre><code>&quot;addons&quot;: [
+    &quot;geoloc&quot;
+],</code></pre>
+<p>And do a full build:</p>
+<pre><code>basil debug native-android --clean --open</code></pre>
+<p>This will add the required libraries and code for the plugin to the native stack so that it will be present during runtime.</p>
+<p>Some plugins require additional configuration. Please read the README.md file that comes with the plugin to see what additional steps you should take to use it.</p>
+<p>The Android Test App <em>does not</em> work with native plugins at this time. You will see warnings that look like:</p>
+<pre><code>{plugins} WARNING: Event could not be delivered for plugin: GeolocPlugin</code></pre>
+<h3 id="android-plugin-androidconfig.json">Android Plugin: android/config.json</h3>
+<p>Under <code>addons/geoloc/android/config.json</code> is the configuration used while building Android targets with the GeoLocation plugin.</p>
+<p>It specifies Java code, libraries, JARs, and manifest changes required to build the Android plugin:</p>
+<pre><code>{
+        &quot;copyGameFiles&quot;: [
+            &quot;leadbolt.jar&quot;
+        ],
+        &quot;copyFiles&quot;: [
+            &quot;GeolocPlugin.java&quot;,
+            &quot;res/layout/airpush_notify.xml&quot;
+        ],
+        &quot;libraries&quot;: [
+        ],
+        &quot;jars&quot;: [
+            &quot;leadbolt.jar&quot;
+        ],
+        &quot;injectionXML&quot;: &quot;manifest.xml&quot;,
+        &quot;injectionXSL&quot;: &quot;manifest.xsl&quot;,
+        &quot;injectionSource&quot;: [
+            {
+                &quot;regex&quot;: &quot;LEADBOLT_PACKAGE&quot;,
+                &quot;keyForReplace&quot;: &quot;leadBoltPackage&quot;
+            }
+        ]
+}</code></pre>
+<h5 id="copygamefiles">copyGameFiles</h5>
+<p>Sometimes it’s required to copy a file from the user’s game directory into the final build product. You can accomplish this by adding a string to the “copyGameFiles” array.</p>
+<p>This will copy the given files from the game folder, relative to the game’s <code>manifest.json</code> root directory, into the addon folder’s <code>/android/</code> before performing any of the other build steps.</p>
+<p>For example you can allow each game to specify a <code>leadbolt.jar</code> file that then gets used during building by also adding the .jar file to the “copyGameFiles” and “jars” array.</p>
+<h5 id="copyfiles">copyFiles</h5>
+<h6 id="copyfiles-java-code">copyFiles: Java Code</h6>
+<p>This key should list any Java source code files in the <code>addons/geoloc/android/</code> directory that will be incorporated into the Android build. This includes any .IADL files. The <code>basil</code> build scripts will pull the package name out of the Java files.</p>
+<p>The TeaLeaf Java source code will be built first, and then the Activity for your game will be built. It is in this second build step where your plugin code is built.</p>
+<p>If your package is under <code>com.tealeaf.plugin.plugins</code>, then the file will be copied into the destination build directory under <code>src/com/tealeaf/plugin/plugins</code> and the <code>ant</code> build will incorporate them.</p>
+<h6 id="copyfiles-resources">copyFiles: Resources</h6>
+<p>The <code>copyFiles</code> key can also be used to copy .xml and other resources into the <code>res/</code> directory for the Android build. The way to do this is to create a new “res” directory under your plugin’s “android” directory. Then create subdirectories under “res” for any resources you want to include. For each resource, add it to the <code>copyFiles</code> key.</p>
+<p>For example, the <a href="http://github.com/gameclosure/airpush">Airpush plugin</a> includes an XML layout file. Here is the plugin directory structure:</p>
+<pre><code>.
+├── README.md
+├── android
+│   ├── AirpushPlugin.java
+│   ├── airpush.jar
+│   ├── config.json
+│   ├── manifest.xml
+│   ├── manifest.xsl
+│   └── res
+│       └── layout
+│           └── airpush_notify.xml   &lt;-- note this file location
+├── index.js
+├── ios
+│   └── config.json
+└── js
+    └── airpush.js</code></pre>
+<p>And the android/config.json file has this resource listed under the <code>copyFiles</code> section:</p>
+<pre><code>    &quot;copyFiles&quot;: [
+        &quot;res/layout/airpush_notify.xml&quot;
+    ],</code></pre>
+<h5 id="libraries">libraries</h5>
+<p>A list of .a static library files in the <code>addons/geoloc/android/</code> directory.</p>
+<h5 id="jars">jars</h5>
+<p>A list of .jar files in the <code>addons/geoloc/android/</code> directory.</p>
+<h5 id="injectionxml">injectionXML</h5>
+<p>To add permissions and other AndroidManifest.xml keys, you can edit the <code>manifest.xml</code>.</p>
+<p>For example to add permissions for the GeoLocation plugin, the ACCESS_FINE_LOCATION permission was added:</p>
+<pre><code>    &lt;!--START_PLUGINS_MANIFEST--&gt;
+        &lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot; /&gt;
+    &lt;!--END_PLUGINS_MANIFEST--&gt;
+    &lt;!--START_PLUGINS_ACTIVITY--&gt;
+        &lt;intent-filter&gt;
+            &lt;action android:name=&quot;globosocial.intent.action.LAUNCH&quot; /&gt;
+            &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+        &lt;/intent-filter&gt;
+    &lt;!--END_PLUGINS_ACTIVITY--&gt;
+    &lt;!--START_PLUGINS_APPLICATION--&gt;
+        &lt;meta-data android:name=&quot;tapjoyAppID&quot; android:value=&quot;&quot; /&gt;
+    &lt;!--END_PLUGINS_APPLICATION--&gt;</code></pre>
+<p>Permissions should be added to the <code>PLUGINS_MANIFEST</code> section. Application section changes will go in the <code>PLUGINS_APPLICATION</code> section as shown above.</p>
+<p>The <code>PLUGINS_ACTIVITY</code> section can be used to add intents that the main activity will respond to, which allows third party apps to launch your game.</p>
+<p>Additionally, any game <code>manifest.json</code> “Android” subkeys you would like to have available in your Java code should be added as values under the plugins application section as shown above for “tapjoyAppID.”</p>
+<h5 id="injectionxsl">injectionXSL</h5>
+<p>If you need to use XSLT parsing to modify the AndroidManifest.xml then you can provide a <code>manifest.xsl</code> that gets passed through xslt during the build.</p>
+<p>This is the method you may use to access <code>manifest.json</code> keys. In the following example, “tapjoyAppID” is routed from <code>android:tapjoyAppId</code> in <code>manifest.json</code> to a key that is accessible from the Java code:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;xsl:stylesheet version=&quot;1.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot; xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+
+    &lt;xsl:param name=&quot;tapjoyAppID&quot;&gt;&lt;/xsl:param&gt;
+
+    &lt;xsl:template match=&quot;meta-data[@android:name=&#39;tapjoyAppID&#39;]&quot;&gt;
+        &lt;meta-data android:name=&quot;tapjoyAppID&quot; android:value=&quot;{$tapjoyAppID}&quot;/&gt;
+    &lt;/xsl:template&gt;
+
+    &lt;!--    &lt;xsl:strip-space elements=&quot;*&quot; /&gt;--&gt;
+    &lt;xsl:output indent=&quot;yes&quot; /&gt;
+
+    &lt;xsl:template match=&quot;comment()&quot; /&gt;
+
+    &lt;xsl:template match=&quot;@*|node()&quot;&gt;
+        &lt;xsl:copy&gt;
+            &lt;xsl:apply-templates select=&quot;@*|node()&quot; /&gt;
+        &lt;/xsl:copy&gt;
+    &lt;/xsl:template&gt;
+
+&lt;/xsl:stylesheet&gt;</code></pre>
+<p>Note that <code>manifest.json</code> keys typically follow the convention that the first character is lower-case and word breaks are camel-cased.</p>
+<h5 id="injectionsource">injectionSource</h5>
+<p>The “injectionSource” key is an array of JSON objects with the format:</p>
+<pre><code>    {
+        &quot;regex&quot;: &quot;LEADBOLT_PACKAGE&quot;,
+        &quot;keyForReplace&quot;: &quot;leadBoltPackage&quot;
+    }</code></pre>
+<p>It allows you to replace strings in the plugin Java code before building with strings from the game’s <code>manifest.json</code> file. In the example above, Java code like this:</p>
+<pre><code>private String leadBoltPackage = &quot;LEADBOLT_PACKAGE&quot;;</code></pre>
+<p>Will be replaced with this before building:</p>
+<pre><code>private String leadBoltPackage = &quot;com.mypackage&quot;;</code></pre>
+<p>Assuming that the game’s <code>manifest.json</code> contains the key:</p>
+<pre><code>    &quot;android&quot;: {
+        &quot;leadBoltPackage&quot;: &quot;com.mypackage&quot;
+    }</code></pre>
+<h3 id="android-plugin-code">Android Plugin: Code</h3>
+<p>Your plugin class must be packaged under <code>com.tealeaf.plugin.plugins</code> with a <code>package com.tealeaf.plugin.plugins;</code> line:</p>
+<pre><code>package com.tealeaf.plugin.plugins;</code></pre>
+<p>Your Java code will implement the IPlugin interface that is imported with a <code>import com.tealeaf.plugin.IPlugin;</code> line. There are a number of other useful imports that are worth looking into:</p>
+<pre><code>import com.tealeaf.plugin.IPlugin;
+import com.tealeaf.event.*;
+import com.tealeaf.EventQueue;
+import com.tealeaf.logger;
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;</code></pre>
+<p>The IPlugin interface provides a number of callbacks for common events that occur while running games, which you can react to:</p>
+<pre><code>public interface IPlugin {
+    public void onCreate(Activity activity, Bundle savedInstanceState);
+    public void onCreateApplication(Context applicationContext);
+    public void onResume();
+    public void onStart();
+    public void onPause();
+    public void onStop();
+    public void onDestroy();
+    public void onNewIntent(Intent intent);
+    public void onActivityResult(Integer request, Integer result, Intent data);
+    public void setInstallReferrer(String referrer);
+}</code></pre>
+<h5 id="reading-manifest.json-keys-at-runtime">Reading manifest.json keys at runtime</h5>
+<p>If the keys were routed using the <code>manifest.xsl</code> method shown above, then the keys can be read at runtime like this:</p>
+<pre><code>    HashMap&lt;String, String&gt; manifestKeyMap = new HashMap&lt;String,String&gt;();
+
+    public void onCreate(Activity activity, Bundle savedInstanceState) {
+        PackageManager manager = activity.getBaseContext().getPackageManager();
+        String[] keys = {&quot;tapjoyAppID&quot;, &quot;OtherKey&quot;};
+        try {
+            Bundle meta = manager.getApplicationInfo(activity.getApplicationContext().getPackageName(),
+                    PackageManager.GET_META_DATA).metaData;
+            for (String k : keys) {
+                if (meta.containsKey(k)) {
+                    manifestKeyMap.put(k, meta.get(k).toString());
+                }
+            }
+        } catch (Exception e) {
+            logger.log(&quot;Exception while loading manifest keys:&quot;, e);
+        }
+
+        String tapjoyAppID = manifestKeyMap.get(&quot;tapjoyAppID&quot;);
+    }</code></pre>
+<p>Note here that we are doing <code>meta.get(k).toString()</code>, where <code>k</code> is a manifest.json key under the “Android” section. It is a mistake to do <code>meta.toString(k)</code> because this will cause an exception when the manifest.json key contains integer-like data such as “1234567”.</p>
+<h5 id="handling-javascript-events">Handling JavaScript Events</h5>
+<p>It is important that the JavaScript code specifies the exact plugin class name and method to call. Note that the above class matches the JavaScript name:</p>
+<pre><code>NATIVE.plugins.sendEvent(&quot;GeolocPlugin&quot;, &quot;onRequest&quot;, &#39;{&quot;method&quot;:&quot;getPosition&quot;}&#39;);</code></pre>
+<p>So the corresponding class for this would expose an onRequest function:</p>
+<pre><code>public class GeolocPlugin implements IPlugin {
+    public void onRequest(String jsonData) {
+        try {
+            JSONObject data = new JSONObject(jsonData);
+
+            String method = data.optString(&quot;method&quot;, &quot;getPosition&quot;);
+
+            // Handle getPosition()
+            if (method.equals(&quot;getPosition&quot;)) {
+                logger.debug(&quot;{geoloc} Got position request&quot;);
+            }
+        } catch (Exception e) {
+            logger.log(e);
+        }
+    }
+}</code></pre>
+<h5 id="sending-javascript-events">Sending JavaScript Events</h5>
+<p>To set up an Event that will get passed back to JavaScript write a class that looks like this:</p>
+<pre><code>public class GeolocEvent extends com.tealeaf.event.Event {
+    boolean failed;
+    double longitude, latitude;
+    public GeolocEvent(double longitude, double latitude) {
+        super(&quot;geoloc&quot;); // Choose an event name
+        this.failed = false;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+}</code></pre>
+<p>The Event name is chosen in the constructor. It should be somewhat unique to prevent naming conflicts.</p>
+<p>To pass the event to JavaScript, create a new instance of your Event class and push it onto the <code>EventQueue</code>:</p>
+<pre><code>EventQueue.pushEvent(new GeolocEvent(83.2106, -10.1984));</code></pre>
+<p>The EventQueue will serialize the event for you into a string that can be read from JavaScript in the NATIVE event handler.</p>
+<p>Your JavaScript wrapper can listen for this event by registering for it:</p>
+<pre><code>NATIVE.events.registerHandler(&#39;geoloc&#39;, function(e) {
+    if (!e.failed) {
+        logger.log(&quot;{geoloc} Got response:&quot;, e.longitude, e.latitude);
+    }
+});</code></pre>
+<p>It is a good idea to wrap this message passing code inside your JavaScript wrapper so that the user of your plugin does not need to call any NATIVE functions directly.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ios-plugin</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#ios-plugin-system">iOS Plugin System</a><ul>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#ios-plugin-iosconfig.json">iOS Plugin: ios/config.json</a></li>
+<li><a href="#ios-plugin-code">iOS Plugin: Code</a></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="ios-plugin-system">iOS Plugin System</h1>
+<p>Writing the iOS native code for a DevKit plugin is covered in this guide, which uses the <a href="http://github.com/gameclosure/geoloc">Geolocation plugin</a> as an example.</p>
+<p>For an overview of the plugin system, the requisite directory structure, and how to write the JavaScript component of the plugin, please see the <a href="../guide/plugins.html">main plugin development guide</a>.</p>
+<p>The iOS plugins consist of a <code>config.json</code> file, frameworks, and code.</p>
+<h3 id="usage">Usage</h3>
+<p>First install the plugin with <code>basil install [plugin name]</code>. For example:</p>
+<pre><code>basil install geoloc</code></pre>
+<p>To test plugins you will want to add the required plugins to your game’s manifest.json file:</p>
+<pre><code>&quot;addons&quot;: [
+    &quot;geoloc&quot;
+],</code></pre>
+<p>And do a full build:</p>
+<pre><code>basil debug native-ios --clean</code></pre>
+<p>This will add the required frameworks and code for the plugin to the native stack so that it will be present during runtime.</p>
+<p>Some plugins require additional configuration. Please read the README.md file that comes with the plugin to see what additional steps you should take to use it.</p>
+<p>The iOS Test App <em>does not</em> work with native plugins at this time. You will see warnings that look like:</p>
+<pre><code>{plugins} WARNING: Event could not be delivered for plugin: GeolocPlugin</code></pre>
+<h3 id="ios-plugin-iosconfig.json">iOS Plugin: ios/config.json</h3>
+<p>Under <code>addons/geoloc/ios/config.json</code> is the configuration used while building iOS targets with the GeoLocation plugin.</p>
+<p>It specifies the code and frameworks needed to build the iOS plugin:</p>
+<pre><code>{
+    &quot;resources&quot;: [
+        &quot;libphonenumber.plist&quot;
+    ],
+    &quot;code&quot;: [
+        &quot;GeoLoc.h&quot;,
+        &quot;GeoLoc.mm&quot;
+    ],
+    &quot;userDefined&quot;: [
+        &quot;facebookAppID&quot;,
+        &quot;facebookDisplayName&quot;
+    ],
+    &quot;plist&quot;: {
+        &quot;FacebookAppID&quot;: &quot;$(facebookAppID)&quot;,
+        &quot;FacebookDisplayName&quot;: &quot;$(facebookDisplayName)&quot;,
+        &quot;CFBundleURLTypes.CFBundleURLSchemes&quot;: &quot;fb$(facebookAppID)&quot;
+    },
+    &quot;frameworks&quot;: [
+        &quot;CoreLocation&quot;
+    ]
+}</code></pre>
+<h5 id="resources">Resources</h5>
+<p>Adding files under the “resources” key will cause them to be copied into the <code>resources.bundle</code> alongside the <code>native.js.mp3</code> file containing the JS code for your game. This is an advanced feature for plugins that require extra configuration files present in the resources bundle. As an example, it is useful for using the <a href="https://github.com/me2day/libPhoneNumber-iOS">iOS port of libPhoneNumber</a> since it requires external configuration files like “NBPhoneNumberMetadata.plist” in the resources bundle.</p>
+<h5 id="code">Code</h5>
+<p>The <code>code</code> array files are added to the Xcode project during build.</p>
+<p>The supported file types are:</p>
+<ul>
+<li>C/C++ Header Files: “.h”, “.hpp”</li>
+<li>C/C++ Source Files: “.c”, “.cpp”, “.cc”</li>
+<li>ObjC/ObjC++ Source Files: “.m”, “.mm”</li>
+</ul>
+<p>Source files are automatically added to the build files in the Xcode project. They will be visible under the <code>platforms</code> group in the file view in Xcode.</p>
+<p>Inside the <code>code</code> files you can <code>#import</code> any file in the TeaLeaf Xcode project by the base file name without being concerned by the absolute path. For instance, the <code>GeoLoc.mm</code> file can include the header that is added with <code>#import &quot;GeoLoc.h&quot;</code>. It can also access any other existing files in the project.</p>
+<p>Furthermore these files are referenced instead of being copied. The generated Xcode project contains references back to the addon files, and any changes to these files in Xcode will be preserved in the file system between <code>basil</code> builds. This accelerates plugin development since you can iterate quickly to test new code.</p>
+<h5 id="userdefined">UserDefined</h5>
+<p>The <code>userDefined</code> array specifies a list of keys under the “ios” section of the game’s manifest.json that get set as user-defined keys in the Xcode project generated during iOS builds.</p>
+<p>These user-defined keys are useful for defining <code>plist</code> key values based on data from a game’s manifest.json.</p>
+<p>See for example the following <code>config.json</code> section:</p>
+<pre><code>    &quot;userDefined&quot;: [
+        &quot;facebookAppID&quot;,
+        &quot;facebookDisplayName&quot;
+    ],</code></pre>
+<p>In this example the value of the “android:facebookAppID” key from manifest.json will be stored in an injected <code>$(facebookAppID)</code> user-defined Xcode variable. For the Facebook plugin this is used to set the FacebookAppID Info.plist key to the correct value.</p>
+<h5 id="plist">PList</h5>
+<p>The <code>plist</code> map is useful for injecting or modifying PList keys nearly anywhere in the <code>TeaLeafIOS-Info.plist</code> XML tree used for configuration in the generated Xcode project.</p>
+<p>The key in the <code>plist</code> map is the key that will be added to the PList. This is the “raw” key rather than the one displayed in the Xcode interface, so be sure to look at the file in a text editor to discover the raw key.</p>
+<p>The value is a literal string that can also contain user-defined keys from the game’s manifest.json by referencing them with $(userDefinedKeyName). See the section above on <code>userDefined</code>.</p>
+<p>Take for example the following <code>config.json</code> section:</p>
+<pre><code>    &quot;userDefined&quot;: [
+        &quot;facebookAppID&quot;,
+        &quot;facebookDisplayName&quot;
+    ],
+    &quot;plist&quot;: {
+        &quot;FacebookAppID&quot;: &quot;$(facebookAppID)&quot;,
+        &quot;FacebookDisplayName&quot;: &quot;$(facebookDisplayName)&quot;,
+        &quot;CFBundleURLTypes.CFBundleURLSchemes&quot;: &quot;fb$(facebookAppID)&quot;
+    }</code></pre>
+<p>In this case the key “FacebookAppID” will be added to the <code>Info.Plist</code> file during building. The string value for the key will be taken from <code>ios:facebookAppID</code> in the game’s manifest.json since the <code>userDefined</code> section lists “facebookAppID” as a user-defined key.</p>
+<p>Also note that <code>CFBundleURLTypes.CFBundleURLSchemes</code> references a key that is two-deep in the XML structure of the plist file. By separating the keys with dots, you are able to inject anywhere in the hierarchy. When the final subkey after the last dot is found to be an array, the given string will be added to the array. If the subkey is not found, it will be injected with the given string.</p>
+<h5 id="frameworks">Frameworks</h5>
+<p>Any frameworks your code requires can be added to the <code>frameworks</code> array.</p>
+<p>The supported file types are:</p>
+<ul>
+<li>System frameworks: No extension.</li>
+<li>Static libraries: “.a”</li>
+<li>Custom frameworks: “.framework”</li>
+<li>Custom bundles: “.bundle”</li>
+<li>Custom XIB: “.xib”</li>
+<li>System dylib: “.dylib”</li>
+</ul>
+<p>The extension determines the type of linkage desired:</p>
+<h6 id="frameworks-system-frameworks">Frameworks: System frameworks</h6>
+<p>Pass in unqualified names such as <code>CoreLocation</code> (not <code>CoreLocation.framework</code>) for system frameworks. Be sure to include the header in your plugin code (<code>#import &lt;CoreLocation/CoreLocation.h&gt;</code>).</p>
+<pre><code>...
+    &quot;frameworks&quot;: [
+        &quot;CoreLocation&quot;
+    ]
+...</code></pre>
+<h6 id="frameworks-static-libraries-.a">Frameworks: Static libraries “.a”</h6>
+<p>For static libraries, pass in a file path relative to the <code>ios</code> directory containing the <code>config.json</code> file for iOS. As an example you may add a new static library under <code>addons/geoloc/gcif_reader.a</code> And in this case the <code>ios/config.json</code> file would contain:</p>
+<pre><code>...
+    &quot;frameworks&quot;: [
+        &quot;CoreLocation&quot;,
+        &quot;../gcif_reader.a&quot;
+    ]
+...</code></pre>
+<h6 id="frameworks-custom-frameworks-.framework">Frameworks: Custom frameworks “.framework”</h6>
+<p>For custom frameworks, add <code>MyFramework.framework</code> to the “frameworks” list, with a <code>.framework</code> extension.</p>
+<p>Place the framework file in the <code>ios</code> subdirectory of your plugin.</p>
+<pre><code>...
+    &quot;frameworks&quot;: [
+        &quot;CoreLocation&quot;,
+        &quot;FacebookSDK.framework&quot;
+    ]
+...</code></pre>
+<h6 id="frameworks-custom-bundles-.bundle">Frameworks: Custom bundles “.bundle”</h6>
+<p>For custom bundles, add <code>MyBundle.bundle</code> to the “frameworks” list, with a <code>.bundle</code> extension.</p>
+<p>Place the bundle file in the <code>ios</code> subdirectory of your plugin.</p>
+<pre><code>...
+    &quot;frameworks&quot;: [
+        &quot;CoreLocation&quot;,
+        &quot;./MoPubSDK/Resources/MRAID.bundle&quot;
+    ]
+...</code></pre>
+<h6 id="frameworks-custom-xib-.xib">Frameworks: Custom XIB “.xib”</h6>
+<p>For custom XIB files, add <code>MyXIB.xib</code> to the “frameworks” list, with a <code>.xib</code> extension.</p>
+<p>Place the XIB file in the <code>ios</code> subdirectory of your plugin.</p>
+<pre><code>...
+    &quot;frameworks&quot;: [
+        &quot;CoreLocation&quot;,
+        &quot;./MoPubSDK/Internal/Common/MPAdBrowserController.xib&quot;
+    ]
+...</code></pre>
+<h6 id="frameworks-system-dylib-.dylib">Frameworks: System dylib “.dylib”</h6>
+<p>For system dylib files, add <code>libsqlite3.dylib</code> to the “frameworks” list, with a <code>.dylib</code> extension.</p>
+<pre><code>...
+    &quot;frameworks&quot;: [
+        &quot;Security&quot;,
+        &quot;libsqlite3.dylib&quot;
+    ]
+...</code></pre>
+<h3 id="ios-plugin-code">iOS Plugin: Code</h3>
+<h5 id="gcpluginprotocol">GCPluginProtocol</h5>
+<p>Your plugin class is required to respond to the following selectors in <code>PluginManager.h</code>:</p>
+<pre><code>@protocol GCPluginProtocol
+@required
+- (void) initializeWithManifest:(NSDictionary *)manifest appDelegate:(TeaLeafAppDelegate *)appDelegate;</code></pre>
+<p>And it can optionally respond to these additional selectors for your convenience:</p>
+<pre><code>@optional
+- (void) didFailToRegisterForRemoteNotificationsWithError:(NSError *)error application:(UIApplication *)app;
+- (void) didReceiveRemoteNotification:(NSDictionary *)userInfo application:(UIApplication *)app;
+- (void) didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken application:(UIApplication *)app;
+- (void) didReceiveLocalNotification:(UILocalNotification *)notification application:(UIApplication *)app;
+- (void) applicationDidBecomeActive:(UIApplication *)app;
+- (void) applicationWillTerminate:(UIApplication *)app;
+- (void) handleOpenURL:(NSURL *)url;
+@end</code></pre>
+<p>If you need additional selectors please discuss them with us.</p>
+<h5 id="header">Header</h5>
+<p>The GeoLocation plugin header file describes an <span class="citation" data-cites="interface">@interface</span> class that derives from GCPlugin. Any class deriving from the GCPlugin will be instantiated via Objective C reflection when your game starts, so it is important to <code>#import &quot;PluginManager.h&quot;</code> so that the GCPlugin declaration is visible to the Xcode compiler at build time and your code can compile.</p>
+<pre><code>#import &quot;PluginManager.h&quot;
+#import &lt;CoreLocation/CoreLocation.h&gt;
+
+@interface GeolocPlugin : GCPlugin&lt;CLLocationManagerDelegate&gt;
+@property (nonatomic, retain) CLLocationManager *locationMgr;
+@property (nonatomic, retain) CLLocation *lastLocation;
+@property (nonatomic, assign) bool requested;
+@property (nonatomic, retain) NSDate *lastRequestTimestamp;
+
+- (void)getNewLocation;
+@end</code></pre>
+<p>Note also that the GeolocPlugin derives from GCPlugin and furthermore implements the CLLocationManagerDelegate <span class="citation" data-cites="protocol">@protocol</span> so that it can receive GPS updates.</p>
+<h4 id="source">Source</h4>
+<p>Since the header and source files are added as files to the Xcode project, they need to include any headers required as normal. So the <code>GeoLoc.mm</code> file starts by including its header:</p>
+<pre><code>#import &quot;GeoLoc.h&quot;</code></pre>
+<p>Then the <span class="citation" data-cites="implementation">@implementation</span> for the <span class="citation" data-cites="interface">@interface</span> begins:</p>
+<pre><code>@implementation GeolocPlugin
+
+// The plugin must call super dealloc.
+- (void) dealloc {
+    self.locationMgr = nil;
+    self.lastLocation = nil;
+
+    [super dealloc];
+}
+
+// The plugin must call super init.
+- (id) init {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    self.locationMgr = [[[CLLocationManager alloc] init] autorelease];
+    self.locationMgr.desiredAccuracy = kCLLocationAccuracyBest;
+    self.locationMgr.delegate = self;
+    self.lastLocation = nil;
+
+    return self;
+}</code></pre>
+<p>Your plugin must call <code>[super init]</code> on <code>init</code> as shown above. This step is required so that your plugin will receive events from JavaScript.</p>
+<p>The plugins should also call <code>[super dealloc]</code> on <code>dealloc</code> to avoid leaking memory.</p>
+<p>The GeoLocation plugin responds to the CLLocationManagerDelegate <code>locationManager</code> selector so that it can track GPS position updates.</p>
+<pre><code>- (void) locationManager:(CLLocationManager *)manager
+     didUpdateToLocation:(CLLocation *)newLocation
+            fromLocation:(CLLocation *)oldLocation {
+}</code></pre>
+<p>The GeoLoc plugin also responds to the GCPluginProtocol <code>initializeWithManifest</code> selector as required. It does not have any initialization tasks in this case.</p>
+<p>The <code>manifest</code> NSDictionary object is an ObjC version of the <code>manifest.json</code> file, so you can read any configuration data for your plugin here:</p>
+<pre><code>- (void) initializeWithManifest:(NSDictionary *)manifest appDelegate:(TeaLeafAppDelegate *)appDelegate {
+    NSLOG(@&quot;{geoloc} Initialized with manifest&quot;);
+}</code></pre>
+<h5 id="handling-javascript-events">Handling JavaScript Events</h5>
+<p>To send the event from JavaScript:</p>
+<pre><code>var e = {method:&quot;getPosition&quot;};
+NATIVE.plugins.sendEvent(&quot;GeolocPlugin&quot;, &quot;onRequest&quot;, JSON.stringify(e));</code></pre>
+<p>It is important that the case of the class name matches the case of the event. And it should be the same class name used for the Android version. So “GeolocPlugin” in the above JavaScript code is the same as the <code>GeolocPlugin</code> class name in the native code.</p>
+<p>The <code>onRequest</code> selector for the GeoLoc plugin demonstrates how to respond to events from JavaScript:</p>
+<pre><code>- (void) onRequest:(NSDictionary *)jsonObject {
+    NSString *method = [jsonObject valueForKey:@&quot;method&quot;];
+
+    if ([method isEqualToString:@&quot;getPosition&quot;]) {
+        NSLOG(@&quot;{geoloc} Got request&quot;);
+
+        [[PluginManager get] dispatchJSEvent:[NSDictionary dictionaryWithObjectsAndKeys:
+        @&quot;geoloc&quot;,@&quot;name&quot;, kCFBooleanTrue, @&quot;failed&quot;, nil]];
+    }
+}
+
+@end</code></pre>
+<p>The “onRequest” event name in the JavaScript must match the name of the selector <code>onRequest:</code> used to handle it in the native code.</p>
+<p>If you have multiple events, you can handle each one with a different selector. Or you can multiplex on the JSON object data by providing different <code>method</code> strings as above.</p>
+<h5 id="sending-javascript-events">Sending JavaScript Events</h5>
+<p>The <code>PluginManger</code> singleton has a <code>dispatchJSEvent</code> selector you can use to send NSDictionary objects back to JavaScript. The <code>name</code> field will be the event name that the JavaScript code must register to listen for. Any other data in the returned NSDictionary object will also be visible to JavaScript. You may invoke it like this:</p>
+<pre><code>    [[PluginManager get] dispatchJSEvent:[NSDictionary dictionaryWithObjectsAndKeys:
+    @&quot;geoloc&quot;,@&quot;name&quot;, kCFBooleanTrue, @&quot;failed&quot;, nil]];</code></pre>
+<p>The PluginManager will serialize the event for you into a string that can be read from JavaScript in the NATIVE event handler. In this case the object will look like:</p>
+<pre><code>{
+    name: &quot;geoloc&quot;,
+    failed: true
+}</code></pre>
+<p>The name of the event must be included and should be unique to your plugin. It should match the event name chosen for the Android version of your plugin.</p>
+<p>And the JavaScript wrapper will listen for this event by registering for it:</p>
+<pre><code>NATIVE.events.registerHandler(&#39;geoloc&#39;, function(e) {
+    if (!e.failed) {
+        logger.log(&quot;{geoloc} Got response:&quot;, e.longitude, e.latitude);
+    }
+});</code></pre>
+<p>It is a good idea to wrap this message passing code inside your JavaScript wrapper so that the user of your plugin does not need to call any NATIVE functions directly.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

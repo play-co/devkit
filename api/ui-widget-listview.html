@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: ui-widget-listview</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-ui.widget.listview">Class: ui.widget.ListView</a><ul>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#features">Features</a></li>
+<li><a href="#usage-notes">Usage Notes</a></li>
+<li><a href="#performance-notes">Performance Notes</a></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#new-listview-options">new ListView ([options])</a></li>
+<li><a href="#updateopts-opts">updateOpts (opts)</a></li>
+<li><a href="#getcells">getCells ()</a></li>
+<li><a href="#getselection">getSelection ()</a></li>
+<li><a href="#getselectioncount">getSelectionCount ()</a></li>
+<li><a href="#deselectall">deselectAll ()</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-ui.widget.cellview">Class: ui.widget.CellView</a><ul>
+<li><a href="#cell-selection">Cell Selection</a></li>
+<li><a href="#creating-cells">Creating Cells</a></li>
+<li><a href="#methods-1">Methods</a><ul>
+<li><a href="#new-cellview-options">new CellView ([options])</a></li>
+<li><a href="#getwidth">getWidth ()</a></li>
+<li><a href="#getheight">getHeight ()</a></li>
+<li><a href="#isselected">isSelected()</a></li>
+<li><a href="#select">select()</a></li>
+<li><a href="#deselect">deselect()</a></li>
+</ul></li>
+<li><a href="#events">Events</a><ul>
+<li><a href="#setdata-data">setData (data)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-gcdatasource">Class: GCDataSource</a><ul>
+<li><a href="#methods-2">Methods</a><ul>
+<li><a href="#new-gcdatasource-options">new GCDataSource ([options])</a></li>
+<li><a href="#setsorter-sortfunction">setSorter (sortFunction)</a></li>
+<li><a href="#add-item">add (item)</a></li>
+<li><a href="#remove-key">remove (key)</a></li>
+<li><a href="#clear">clear ()</a></li>
+<li><a href="#contains-key">contains (key)</a></li>
+<li><a href="#get-uid">get (uid)</a></li>
+<li><a href="#getitemforindex-index">getItemForIndex (index)</a></li>
+<li><a href="#foreach-callback-thisarg">forEach (callback [, thisArg])</a></li>
+<li><a href="#getfiltereddatasource-filter">getFilteredDataSource (filter)</a></li>
+<li><a href="#filter-filter">filter (filter)</a></li>
+<li><a href="#keeponly-list">keepOnly (list)</a></li>
+<li><a href="#sort">sort ()</a></li>
+<li><a href="#toarray">toArray ()</a></li>
+<li><a href="#tojson">toJSON ()</a></li>
+<li><a href="#fromjson-data">fromJSON (data)</a></li>
+</ul></li>
+<li><a href="#properties">Properties</a><ul>
+<li><a href="#key-string">key <code>{string}</code></a></li>
+<li><a href="#length-number">length <code>{number}</code></a></li>
+</ul></li>
+<li><a href="#events-1">Events</a><ul>
+<li><a href="#update-callback-key-item">'Update', callback (key, item)</a></li>
+<li><a href="#remove-callback-key-item">'Remove', callback (key, item)</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-ui.widget.listview">Class: ui.widget.ListView</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-scrollview.html">ui.ScrollView</a></li>
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p><code>ListView</code> renders a list of items using a number of optimizations. If you need to display a scrollable list containing a large number of items, consider using <code>ListView</code>. <code>ListView</code> is a subclass of <a href="./ui-scrollview.html">ScrollView</a>, which allows list items to be scrolled vertically.</p>
+<p><code>ListView</code> is visually similar to a <code>ScrollView</code> with a <a href="./ui-view.html#style.layout">linear layout</a>. Both can accomplish the same structure, positioning views in a top-to-bottom layout. However, rendering the <code>ScrollView</code> requires creating and positioning each subview. When the layout contains subviews for dozens of items, this becomes very expensive. <code>ListView</code> targets the case when these subviews all have the same height, implementing several optimizations that make this scenario performant.</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li><a href="../example/ui-list-basic/">Basic ListView</a>.</li>
+</ul>
+<h2 id="features">Features</h2>
+<ul>
+<li><p><strong>Viewport optimization</strong>: Only the items within the visible region of the <code>ScrollView</code> are created, positioned, and rendered.</p></li>
+<li><p><strong>Subview recycling</strong>: <code>ListView</code> manages the creation and deletion of its subviews. Each subview is an instance of a <a href="#class-ui.widget.cellview">CellView</a>. When a new item scrolls onto the screen, rather than initializing a new <code>CellView</code> instance, the <code>ListView</code> will reuse an existing, off-screen <code>CellView</code>.</p></li>
+<li><p><strong>Efficient updating</strong>: Each <code>ListView</code> is backed by a <a href="#class-gcdatasource">GCDataSource</a>, which is a collection of data items. Each item is a JavaScript object that contains all the data necessary to render a single item in the list. When items are added or removed from the data model, the <code>ListView</code> automatically adds or removes <code>CellView</code> to the view hierarchy if those <code>CellViews</code> are on the screen.</p></li>
+</ul>
+<h2 id="usage-notes">Usage Notes</h2>
+<p>When a <code>ListView</code> first attempts to render a cell to the screen, it will invoke the <code>getCell</code> function, which you provide as an <code>opts</code> property to the <code>ListView</code> constructor. Your <code>getCell</code> function must return an instance or subclass of the <a href="#class-ui.widget.cellview">CellView</a> type. If all the cells will be of the same type, you can provide the constructor to the <code>ListView</code> instead using the <code>cellCtor</code> property of the constructor <code>opts</code>.</p>
+<p>Because subviews are recycled, <code>CellView</code> instances must be able to render an arbitrary data item. When an item scrolls out of the visible boundary of the list and the <a href="#class-ui.widget.cellview">CellView</a> instance is recycled, the <code>ListView</code> calls the <code>setData</code> function of the cell with the new data item. By overriding this function, you can update the contents of the <code>CellView</code> to reflect the new item.</p>
+<p>The height of the <code>ListView</code> may be fixed externally, causing the <code>ListView</code> to scroll if necessary. Alternatively, if <code>autoSize</code> is set to <code>true</code>, the <code>ListView</code> sets its own height to the size of its cells, disabling scrolling. This setting does not affect the rendering optimizations.</p>
+<h2 id="performance-notes">Performance Notes</h2>
+<p>By only rendering <code>CellView</code> on the screen, the <code>ListView</code> achieves constant- time layout and rendering (assuming a relatively small number of items can be seen on the screen). By reusing cells, the <code>ListView</code> avoids garbage collection and excessive object allocation during scrolling, creating at most 2x the maximum number of visible views.</p>
+<p>A <code>ListView</code> may also be used with dynamically sized cells by setting <code>isFixedSize</code> to false. However, this disables all relevant rendering optimizations. This can still be useful for rendering a <code>GCDataSource</code> that has frequent item modifications.</p>
+<h2 id="methods">Methods</h2>
+<h3 id="new-listview-options">new ListView ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code></li>
+</ol>
+<ul>
+<li><code>autoSize {boolean} = false</code> —If <code>true</code>, automatically set the height of the <code>ListView</code> to the sum of its cell heights, disabling scrolling.</li>
+<li><code>dataSource {GCDataSource}</code> —The data model. The <a href="#class-gcdatasource">GCDataSource</a> provides the data for each item in the list, tracking adds, removes, and updates.</li>
+<li><code>getCell {function(listItem, itemResource)}</code> —A function that returns a <code>CellView</code> instance given an item from the list.</li>
+<li><code>listItem {object}</code> —An object representing the current list item.</li>
+<li><code>itemResource {object}</code> —The resource object for the current list item.</li>
+<li><code>isFixedSize {boolean} = true</code> —If <code>true</code>, enable optimizations based on the assumption that all cells have the same size. Set to <code>false</code> to allow variable sizes for list cells (hurts rendering performance).</li>
+<li><code>maxSelections {number} = 1</code> —Maximum number of selectable items at a time.</li>
+<li><code>recycle {boolean} = true</code> —If <code>true</code>, reuses <code>CellView</code> objects when scrolling rather than creating a new <code>CellView</code> for each item in the list. Has no affect if <code>isFixedSize</code> is <code>false</code>. (optimization flag)</li>
+<li><code>renderMargin {number} = 0</code> —The vertical margin between list items.</li>
+<li><code>selectable {string} = null</code> —If <code>single</code>, make a single item selectable, if <code>multi</code> allow multiple items to be selectable.</li>
+<li><code>selections {array} = null</code> —If defined, select cells identified by keys in array.</li>
+<li><code>sorter {function(listItem)}</code> —A function that returns a cardinal value (number or string) for the current item to use as the sort key.</li>
+</ul>
+</dd>
+</dl>
+<pre><code>import ui.widget.ListView as ListView;
+
+var listview = new ListView({
+  getCell: function (listItem) {
+    return new CellView(listItem);
+  },
+  sorter: function (listItem) {
+    return listItem.getName();
+  }
+});</code></pre>
+<h3 id="updateopts-opts">updateOpts (opts)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>opts {object}</code> —Allows updating constructor <code>opts</code> after the <code>ListView</code> has been created.</li>
+</ol>
+</dd>
+</dl>
+<pre><code>listview.updateOpts({
+  dataSource: contacts.toDataSource()
+});</code></pre>
+<h3 id="getcells">getCells ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array}</code> —Cell instances which are contained in the list.</li>
+</ol>
+</dd>
+</dl>
+<h3 id="getselection">getSelection ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Object}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Gets the selected items from the list. Returns an object with the keys being the selected items unique ids.</p>
+<h3 id="getselectioncount">getSelectionCount ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code> —Returns the number of selected items.</li>
+</ol>
+</dd>
+</dl>
+<h3 id="deselectall">deselectAll ()</h3>
+<p>Deselect all cells in the list.</p>
+<h1 id="class-ui.widget.cellview">Class: ui.widget.CellView</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./ui-view.html">ui.View</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>The <code>CellView</code> is the basic class for displaying items in a list. The <code>CellView</code> class has functions for selecting, deselecting and keeping track of selecting items.</p>
+<p>When a cell becomes visible in a list, the <code>setData</code> function is called. The reference to data can be stored in the cell for later use.</p>
+<pre><code>this.setData = function (data) {
+  this._data = data; // Store the reference to the data
+  // Apply the data to the cell by updating a color, text, etc....
+};</code></pre>
+<h2 id="cell-selection">Cell Selection</h2>
+<p>The <code>CellView</code> handles most selection logic internally. There are however two functions which have to be implemented to update the view when the cell is selected or deselected: <code>_onSelect</code> and <code>_onDeselect</code>.</p>
+<pre><code>this._onSelect = function () {
+  // Called when the cell is selected
+  // Change something in the cell like the color, text, etc...
+};
+
+this._onDeselect = function () {
+  // Called when the cell is deselected
+  // Change something in the cell like the color, text, etc...
+};</code></pre>
+<h2 id="creating-cells">Creating Cells</h2>
+<p>Cells should only be created in the <code>getCell</code> function, which is invoked by <code>ListView</code> whenever it needs a new cell. Adding and removing cells from the list manually will lead to strange behavior!</p>
+<h2 id="methods-1">Methods</h2>
+<h3 id="new-cellview-options">new CellView ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code></li>
+</ol>
+</dd>
+</dl>
+<pre><code>import ui.widget.CellView as CellView;
+
+var cellview = new CellView();</code></pre>
+<h3 id="getwidth">getWidth ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code> —Returns <code>{number}</code> the width of the <code>CellView</code>.</li>
+</ol>
+</dd>
+</dl>
+<h3 id="getheight">getHeight ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{number}</code> —Returns <code>{number}</code> the height of the <code>CellView</code>.</li>
+</ol>
+</dd>
+</dl>
+<h3 id="isselected">isSelected()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code> —Returns <code>{boolean}</code> if the current cell item has been selected.</li>
+</ol>
+</dd>
+</dl>
+<h3 id="select">select()</h3>
+<p>Select the current cell item.</p>
+<h3 id="deselect">deselect()</h3>
+<p>Deselect the current cell item.</p>
+<h2 id="events">Events</h2>
+<h3 id="setdata-data">setData (data)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>data {object}</code> —Data representing the cell item to set.</li>
+</ol>
+</dd>
+</dl>
+<p>When a list item scrolls into the list’s visible area, the cell instance must be updated with the item’s data so that it displays the correct information. The <code>setData</code> callback function is the mechanism by which this happens. Moreover, if the list items are selectable, it’s important to also update the cell state based on its selected state. The <code>isSelected</code> function is the appropriated way to check selected state.</p>
+<pre><code>this.setData = function (data) {
+  this._data = data; // Save data
+
+  // Update the view, e.g. set the text in a `TextView`
+  // You can call `this.isSelected()` to get the selected state
+};</code></pre>
+<h1 id="class-gcdatasource">Class: GCDataSource</h1>
+<p>A <code>GCDataSource</code> is a collection of items that adheres to the <a href="http://en.wikipedia.org/wiki/Observer_pattern">observable pattern</a>. This means that any time items are added, removed, or updated, the <code>GCDataSource</code> will publish an appropriate event for the item(s) in question (see <a href="#events">below</a> for a list of available events). <code>GCDataSources</code> abstract the connection between UI and data model changes. For example, when you have a UI element (like a <code>ListView</code>) displaying a collection of items, tying the UI to the <code>GCDataSource</code> lets you update individual data items and have those changes automatically propagate to the UI without re-rendering the entire collection. If you implement a UI backed by a <code>GCDataSource</code>, you can update individual UI items based on the events the <code>GCDataSource</code> publishes.</p>
+<h2 id="methods-2">Methods</h2>
+<h3 id="new-gcdatasource-options">new GCDataSource ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>key {string} = 'id'</code> —Key of an item that provides a unique identifier for that item.</li>
+<li><code>ctor {function(data)}</code> —Optional constructor function for casting added items to the same type</li>
+<li><code>reverse {boolean} = false</code> —If <code>true</code>, sort data source in reverse order.</li>
+<li><code>sorter {function(item)}</code> —Function that returns a cardinal value (number or string) for the current item to use as the sort key.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Creates a <code>GCDataSource</code> object. The most important argument is the <code>key</code> parameter, which specifies what property on each item is unique. If you do not specify a key, the <code>GCDataSource</code> will default to the <code>id</code> property of the item.</p>
+<p>You may also specify a sorter function which, when given an item from the <code>GCDataSource</code>, returns the item’s cardinal value. The sort order of the sorting functionality may be specified using the <code>reverse</code> flag.</p>
+<pre><code>import GCDataSource;
+
+var dataSource = new GCDataSource({
+    key: &#39;id&#39;,
+    ctor: function (data) {
+        this.id = data.id;
+        this.name = data.name;
+    },
+    sorter: function (item) {
+        return item.name;
+    }
+});</code></pre>
+<p>In advanced use cases, it is sometimes useful to provide a constructor function (<code>ctor</code>), which will be used to ‘box’ items added using <a href="#datasource.add-item"><code>dataSource.add(items)</code></a> when an added item is not already an instance of the <code>ctor</code>. In these cases, the ‘unboxed’ item will be passed as the first argument, effectively. Both the unboxed and boxed item must be identifiable with the same uid for their key. Consider the following psuedocode:</p>
+<pre><code>dataSource.add:
+    uid = item[dataSource.key]
+    if dataSource does not already contain uid then:
+        if item is not instanceof ctor then:
+            item = new ctor(item)
+            assert(item[dataSource.key] == uid)
+        add item</code></pre>
+<h3 id="setsorter-sortfunction">setSorter (sortFunction)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>sortFunction {function(item)}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Sets the <code>sorter</code> function, which must return a cardinal value (number or string) for the current item, and will be used in the sorting logic.</p>
+<p>For example, to set the sorting order to be based on an item’s name property, you might set the sorter function as follows:</p>
+<pre><code>dataSource.setSorter(function (item) {
+  return item.getName();
+});</code></pre>
+<h3 id="add-item">add (item)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>item {array|object}</code> —Add an item to the data source. Multiple items can be added by combining them in an <code>array</code>.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array|object}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Adds or updates an item in the dataSource. Add multiple items to a dataSource by passing them in an array: <code>dataSource.add([item1, item2, item3])</code>.</p>
+<p>Returns <code>{array|object}</code> the item you passed in. Particular useful if using the <code>ctor</code> option.</p>
+<h3 id="remove-key">remove (key)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>key {string}</code> —The key value of the item to be removed.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{object}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Removes and returns an item from the data source by its key value.</p>
+<h3 id="clear">clear ()</h3>
+<p>Remove all items from the dataSource. Note that this will cause the <code>'Remove'</code> event to be published for all the items currently in the list.</p>
+<h3 id="contains-key">contains (key)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>key {string}</code> —The key value of the item to search for in the datasource.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{boolean}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Return <code>true</code> if an item with the given key is contained within the datasource.</p>
+<h3 id="get-uid">get (uid)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>uid {string}</code> —The unique id of the item to return.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{object}</code> —Returns the item from the list with the given uid if one exists.</li>
+</ol>
+</dd>
+</dl>
+<pre><code>var item = dataSource.get(uid);
+
+assert(item[dataSource.getKey()] === uid);</code></pre>
+<h3 id="getitemforindex-index">getItemForIndex (index)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>index {number}</code> —The index of the item to return.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li>Return: <code>{object}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Return the item with the given index based on the current sort order.</p>
+<h3 id="foreach-callback-thisarg">forEach (callback [, thisArg])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>callback {function (item, index)}</code> —Function invoked for each item in the dataSource</li>
+<li><code>thisArg {object} = undefined</code> —Object to use as <code>this</code> when executing <code>callback</code>.</li>
+</ol>
+</dd>
+</dl>
+<p>Iterator used to execute a function on each item in the dataSource. For example, to log out the name of each item using it’s <code>getItem</code> method:</p>
+<pre><code>dataSource.forEach(function (item) {
+  console.log(&quot;Item name: &quot; + item.getName());
+});</code></pre>
+<h3 id="getfiltereddatasource-filter">getFilteredDataSource (filter)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>filter {function (item)}</code> —Function that tests each item in the dataSource for membership in the filtered <code>GCDataSource</code>.</li>
+</ol>
+</dd>
+</dl>
+<p>Returns <code>{GCDataSource}</code> — a new filtered dataSource with all the items from the original dataSource that the callback function returns <code>true</code> for. The filtered <code>GCDataSource</code> is <em>live</em>, meaning that adding or updating items in the original <code>GCDataSource</code> at any time will execute the <code>filter</code> function to check to see if the new or updated item should be in the filtered <code>GCDataSource</code>. Similarly, if items are removed from the original <code>GCDataSource</code>, they are removed from the filtered <code>GCDataSource</code>.</p>
+<pre><code>var Value = Class(function () {
+  this.init = function (opts) {
+    this.value = opts.value;
+  }
+});
+
+var set = new GCDataSource({
+  key: &#39;value&#39;,
+  ctor: Value
+});
+
+var evenSet = set.getFilteredDataSource(function (item) {
+  return item.value % 2 == 0;
+});
+
+set.add([
+  {value: 1},
+  {value: 2},
+  {value: 3},
+  {value: 4}
+]);
+
+evenSet.toArray().map(function (item) { return item.value; });
+// =&gt; 2, 4, 6, 8, 10
+</code></pre>
+<h3 id="filter-filter">filter (filter)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>filter {object}</code> —Object of strings.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{GCDataSource}</code> —All items that match the filter.</li>
+</ol>
+</dd>
+</dl>
+<p>Performs a basic string filter on the items in a <code>GCDataSource</code>, useful for text searching. The returned <code>GCDataSource</code> is <em>not live</em>. For each key in the <code>filter</code>, if the item contains the key and the corresponding value is a <code>{string}</code>, the value must contain the corresponding filter string.</p>
+<pre><code>dataSource.add([
+  {id: 1, color: &#39;orange&#39;},
+  {id: 2, color: &#39;magenta&#39;},
+  {id: 3, color: &#39;purple&#39;},
+  {id: 4, shape: &#39;circle&#39;},
+  {id: 5, shape: &#39;rectangle&#39;}
+]);
+
+// only matches items with ids 3, 4, and 5
+var filtered = dataSource.filter({color: &#39;le&#39;, shape: &#39;rect&#39;});
+
+filtered.toArray(); //=&gt; [{id: 3, ...}, {id: 4, ...}, {id: 5, ...}]</code></pre>
+<h3 id="keeponly-list">keepOnly (list)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>list {array}</code> —Array of items to include from this data source.</li>
+</ol>
+</dd>
+</dl>
+<p>Remove items from the current datasource not in the given list. This is essential the opposite of <code>datasource.filter</code></p>
+<pre><code>datasource.add([item1, item2, item3, item4]);
+
+datasource.keepOnly([item2, item3]);
+
+datasource.toArray(); //=&gt; [item2, item3]</code></pre>
+<h3 id="sort">sort ()</h3>
+<p>Sorts the array based on the current sorter function.</p>
+<h3 id="toarray">toArray ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{array}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns an array of all the items in the datasource.</p>
+<h3 id="tojson">toJSON ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{object}</code>
+<ul>
+<li><code>key {string}</code> —The key of the datasource.</li>
+<li><code>items {array}</code> —An array representing all items in the datasource.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Returns a JSON object representing the current datasource.</p>
+<h3 id="fromjson-data">fromJSON (data)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>data {object}</code>
+<ul>
+<li><code>key {string}</code> —The key of the datasource.</li>
+<li><code>items {array}</code> —An array representing all items in the datasource.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>Populates the current datasource using the given key and items.</p>
+<h2 id="properties">Properties</h2>
+<h3 id="key-string">key <code>{string}</code></h3>
+<p><em>Alias: <code>getKey()</code></em></p>
+<p>The key used to retrieve a unique id for each item</p>
+<h3 id="length-number">length <code>{number}</code></h3>
+<p><em>Alias: <code>getCount()</code></em></p>
+<p>Return the number of items in the datasource.</p>
+<h2 id="events-1">Events</h2>
+<h3 id="update-callback-key-item">'Update', callback (key, item)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>key {string}</code> —The key value of the item being updated or added.</li>
+<li><code>item {object}</code> —The item being updated or added.</li>
+</ol>
+</dd>
+</dl>
+<p>The <code>Update</code> event is published when an item in the datasource has been added or updated.</p>
+<h3 id="remove-callback-key-item">'Remove', callback (key, item)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>key {string}</code> —The key value of the item being removed.</li>
+<li><code>item {object}</code> —The item being removed.</li>
+</ol>
+</dd>
+</dl>
+<p>The <code>Remove</code> event is published when an item has been removed from the data source.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

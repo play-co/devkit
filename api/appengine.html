@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GC DevKit Docs: appengine</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+    <meta name="description" content="Documentation for the Game Closure DevKit.">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/index.html#quickstart">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="/support.html">Support</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="nav-collapse collapse sub-nav">
+            <ul class="nav pull-right">
+              <li><a href="/api/appengine.html">Game Engine</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-view.html">ui.View</a>
+                    <ul>
+                      <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                      <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                      <li><a href="/api/ui-view.html#input-events">↪ Input Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html">Text</a></li>
+                  <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-text.html#class-ui.texteditview">ui.TextEditView</a>
+                    <ul>
+                      <li><a href="/api/ui-text.html#events-1">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-text.html#class-ui.scoreview">ui.ScoreView</a></li>
+                  <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+                  <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+                  <li><a href="/api/ui-images.html">Images</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+                  <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+                  <li>
+                    <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                    <ul>
+                      <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-gestureview.html">ui.GestureView</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/ui-color.html">ui.Color</a></li>
+                  <li><a href="/api/ui-filter.html">Filters</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+                  <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="/api/ui-stackview.html">ui.StackView</a>
+                    <ul>
+                      <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                    <ul>
+                      <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-viewpool.html">ui.ViewPool</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                      <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+                  <li>
+                    <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                    <ul>
+                      <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+                  <li><a href="/api/ui-widget-toast.html">ui.widget.Toast</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/event.html">Events</a></li>
+                  <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+                  <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+                  <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+                  <li><a href="/api/event.html#drag-events-event.input.drag">Drag Events</a></li>
+                  <li><a href="/api/event.html#rotation-events">Rotation Events</a></li>
+                  <li><a href="/api/event.html#back-button">Back Button</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/device.html">Device</a></li>
+              <li><a href="/api/animate.html">Animation</a></li>
+              <li><a href="/api/audio.html">Audio</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/api/utilities.html">Utilities</a></li>
+                  <li><a href="/api/utilities.html#modules">Modules</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#import">↪ import</a></li>
+                      <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                    <ul>
+                      <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                      <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                      <li><a href="/api/utilities.html#cache">↪ CACHE</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/api/math.html">Math</a></li>
+                  <li><a href="/api/math.html#module-math.util">math.util</a></li>
+                  <li><a href="/api/math.html#module-math.array">math.array</a></li>
+                  <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+                  <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+                  <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+                  <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+                  <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+                  <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+                  <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+                </ul>
+              </li>
+              <!-- <li>
+                <form class="navbar-search">
+                  <input type="text" class="search-query" placeholder="Keyword">
+                </form>
+              </li> -->
+            </ul>
+          </div>
+    </div><!--/navbar-->
+
+    <div class="scrollable-content">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <!--sidebar-->
+          <div class="span2">
+            <div id="toc-well" class="well sidebar-nav span2">
+              <!--Sidebar content-->
+              <nav id="toc"><ul>
+<li><a href="#class-gc.application">Class: GC.Application</a><ul>
+<li><a href="#events">Events</a><ul>
+<li><a href="#initui">initUI ()</a></li>
+<li><a href="#launchui">launchUI ()</a></li>
+<li><a href="#onpause">onPause ()</a></li>
+<li><a href="#onresume">onResume ()</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#singleton-gc.app">Singleton: GC.app</a><ul>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#run">run ()</a></li>
+</ul></li>
+<li><a href="#properties">Properties</a><ul>
+<li><a href="#view-ui.stackview">view <code>{ui.StackView}</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="#class-ui.engine">Class: ui.Engine</a><ul>
+<li><a href="#methods-1">Methods</a><ul>
+<li><a href="#new-engine-options">new Engine ([options])</a></li>
+<li><a href="#class-method-engine.get">Class Method: Engine.get ()</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#singleton-gc.app.engine">Singleton: GC.app.engine</a><ul>
+<li><a href="#methods-2">Methods</a><ul>
+<li><a href="#updateoptions-options">updateOptions (options)</a></li>
+<li><a href="#getevents">getEvents ()</a></li>
+<li><a href="#getcanvas">getCanvas ()</a></li>
+<li><a href="#getview">getView ()</a></li>
+<li><a href="#setview-view">setView (view)</a></li>
+<li><a href="#hide">hide ()</a></li>
+<li><a href="#show">show ()</a></li>
+<li><a href="#pause">pause ()</a></li>
+<li><a href="#resume">resume ()</a></li>
+<li><a href="#stoploop">stopLoop ()</a></li>
+<li><a href="#startloop-dtmin">startLoop ([dtMin])</a></li>
+<li><a href="#render">render ()</a></li>
+<li><a href="#needsrepaint">needsRepaint ()</a></li>
+</ul></li>
+<li><a href="#events-1">Events</a><ul>
+<li><a href="#tick-callback-dt">'Tick', callback (dt)</a></li>
+<li><a href="#render-callback-context">'Render', callback (context)</a></li>
+</ul></li>
+</ul></li>
+</ul></nav>
+            </div><!--/.well -->
+          </div><!--/sidebar-->
+
+          <div class="span10">
+
+            <div class='alert alert-danger'>
+              <h1>Devkit2 - Developer Preview</h1>
+              <p>
+                This documentation is for a developer preview of Devkit2.
+                Devkit2 is a complete replacement for (and vast improvement over)
+                Devkit1. However, while the api is fairly stable, anything can
+                change between now and the official 2.0 release, particularly in
+                the `devkit` setup commands.
+
+                <br/><br/>
+
+                This documentation is currently a work in progress - if you
+                run into any issues, inconsistencies, or other problems, please
+                file an issue at
+
+                <a href="https://github.com/gameclosure/docs2">https://github.com/gameclosure/docs2</a>.
+
+                <br/><br/>
+
+                You can find the original devkit1 docs at
+                <a href="http://docs-v1.gameclosure.com">docs-v1.gameclosure.com</a>.
+              </p>
+            </div>
+
+            <div id="main" class="row-fluid">
+<h1 id="class-gc.application">Class: GC.Application</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>This document contains information on the classes and instances that are initialized when the game engine is created and the scene graph is drawn to the screen.</p>
+<p>If you are just getting started with the DevKit, you should first read our guides, in particular <a href="../guide/hello-world.html">Hello World</a> and the more advanced <a href="../guide/game-walkthrough.html">Game Walk-Through</a>.</p>
+<h2 id="events">Events</h2>
+<h3 id="initui">initUI ()</h3>
+<p>A user defined function that is executed when the game engine is set up and the scene graph is constructed. This is called before the splash screen is removed and the <code>launchUI</code> function is executed. This is where you should put game setup code and construct the view hierarchy.</p>
+<h3 id="launchui">launchUI ()</h3>
+<p>A user defined function that serves as the entry point for applications built on the Game Closure DevKit. This is executed after the scene graph has been constructed, the <code>initUI</code> function is called, and the splash screen has been removed. This is where your game entry point logic should be placed and the game loop set up.</p>
+<h3 id="onpause">onPause ()</h3>
+<p>Executed when the application process is sent to the background.</p>
+<h3 id="onresume">onResume ()</h3>
+<p>Executed when the application resumes from a backgrounded state.</p>
+<h1 id="singleton-gc.app">Singleton: GC.app</h1>
+<p>A reference to the running application. When the application is instantiated, the scene graph hierarchy and rendering engine are created, and the application’s <code>initUI</code> and <code>launchUI</code> methods are called.</p>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li>{project}/src/Application —The user defined application.</li>
+<li><a href="#class-gc.application">GC.Application</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<h2 id="methods">Methods</h2>
+<h3 id="run">run ()</h3>
+<p>Renders the application’s scene graph and starts the animation loop.</p>
+<h2 id="properties">Properties</h2>
+<h3 id="view-ui.stackview">view <code>{ui.StackView}</code></h3>
+<p>The root of the application’s scene graph. All child views attached to this are rendered to the screen.</p>
+<h1 id="class-ui.engine">Class: ui.Engine</h1>
+<p>Manages a view hierarchy by rendering its scene graph and controlling the animation loop. It has native, Canvas, and DOM rendering backends.</p>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<pre><code>import ui.Engine as Engine;</code></pre>
+<h2 id="methods-1">Methods</h2>
+<h3 id="new-engine-options">new Engine ([options])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code>
+<ul>
+<li><code>width {number} = device.width</code> —Used to set the width of the rendering context.</li>
+<li><code>height {number} = device.height</code> —Used to set the height of the rendering context.</li>
+<li><code>alwaysRepaint {boolean} = false</code> —Redraw the screen every animation tick. If the display requires continuous updates, you should set this to <code>true</code>.</li>
+<li><code>clearEachFrame {boolean} = false</code> —Clear the screen on each animation frame. If set to <code>false</code>, the image will be drawn on top of the previous one.</li>
+<li><code>view {ui.View} = null</code> —The root view of the scene graph.</li>
+<li><code>showFPS {boolean} = false</code> —Display the running speed of the animation in frames per second.</li>
+<li><code>dtFixed {number} = 0</code> —Fixed delta time.</li>
+<li><code>dtMinimum {number} = 0</code> —The minimum delta time to use between ticks in the game loop.</li>
+<li><code>keyListenerEnabled {boolean} = true</code> —Enable the listener to detect keyboard events.</li>
+<li><code>continuousInputCheck {boolean} = true</code> —Continually triggers the most recent <code>input:move</code> event on each tick. This allows for more responsive input. On a browser this defaults to <code>true</code>, and <code>false</code> on a mobile device.</li>
+<li><code>repaintOnEvent {boolean} = true</code> —Redraw the screen when a user event occurs, such as touch or click.</li>
+<li><code>mergeMoveEvents {boolean} = false</code> —Multiple move events in an animation frame are merged together by taking the last event.</li>
+<li><code>noReflow {boolean} = false</code> —Disable the reflow manager, can be done to improve performance if the application does not use layout properties like <code>flex</code>.</li>
+<li><code>scaleUI {boolean} = false</code> —If <code>true</code>, scale root view to 576x1024. If <code>scaleUI</code> is an array of two numbers, scale to these dimensions instead.</li>
+</ul></li>
+</ol>
+</dd>
+</dl>
+<p>To tweak any of these parameters from your <code>Application.js</code> file, simply define <code>this._settings</code> as an object with one or more of these options.</p>
+<h3 id="class-method-engine.get">Class Method: Engine.get ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li>Return: <code>{Application}</code></li>
+</ol>
+</dd>
+</dl>
+<p>If a rendering engine has been initialized, return <code>GC.app.engine</code>, otherwise return <code>null</code>.</p>
+<h1 id="singleton-gc.app.engine">Singleton: GC.app.engine</h1>
+<dl>
+<dt>Inherits from</dt>
+<dd><ol type="1">
+<li><a href="#class-ui.engine">ui.Engine</a></li>
+<li><a href="./event.html#class-event.emitter">event.Emitter</a></li>
+</ol>
+</dd>
+</dl>
+<p>The game engine initializes a number of components, including the input and key event listeners, the game loop, the view hierarchy, and rendering the scene graph. A single <code>ui.Engine</code> is instantiated for games at <code>GC.app.engine</code>.</p>
+<h2 id="methods-2">Methods</h2>
+<h3 id="updateoptions-options">updateOptions (options)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>options {object}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Update the options of of the instantiated <code>ui.Engine</code>.</p>
+<h3 id="getevents">getEvents ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Array}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns any events that haven’t been dispatched by the engine yet.</p>
+<h3 id="getcanvas">getCanvas ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{Canvas}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the internal Canvas element used for rendering. If not in a browser, return a Canvas-like object. Not all of the HTML5 API is available across all devices.</p>
+<h3 id="getview">getView ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{View}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Returns the root view of the scene graph.</p>
+<h3 id="setview-view">setView (view)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>view {ui.View}</code></li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li>Return: <code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Sets the root view of the scene graph.</p>
+<h3 id="hide">hide ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Hide the root Canvas element of the scene graph.</p>
+<h3 id="show">show ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Display the Canvas element that contains the scene graph, but only when <code>useDOM</code> is turned off.</p>
+<h3 id="pause">pause ()</h3>
+<p>Pauses the game engine and disable the input listeners.</p>
+<h3 id="resume">resume ()</h3>
+<p>Resumes the game engine and enables the input listeners.</p>
+<h3 id="stoploop">stopLoop ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Stops the engine loop timer.</p>
+<h3 id="startloop-dtmin">startLoop ([dtMin])</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>dtMin {number} = options.dtMinimum</code> —Optional interval to use for the game loop timer.</li>
+</ol>
+</dd>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Starts the engine loop timer.</p>
+<h3 id="render">render ()</h3>
+<p>Renders the entire scene graph by emitting a <code>'Render'</code> event to the rendering context.</p>
+<h3 id="needsrepaint">needsRepaint ()</h3>
+<dl>
+<dt>Returns</dt>
+<dd><ol type="1">
+<li><code>{this}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Explicitly signals to the engine that the scene graph needs to be redrawn.</p>
+<h2 id="events-1">Events</h2>
+<h3 id="tick-callback-dt">'Tick', callback (dt)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>dt {number}</code></li>
+</ol>
+</dd>
+</dl>
+<p>Emitted on each frame of the game render loop.</p>
+<p>For example, to keep track of the amount of frames rendered over an application’s lifetime:</p>
+<pre><code>var frame = 0;
+
+GC.app.engine.on(&#39;Tick&#39;, function (dt) {
+  frame += 1;
+  console.log(frame);
+});</code></pre>
+<h3 id="render-callback-context">'Render', callback (context)</h3>
+<dl>
+<dt>Parameters</dt>
+<dd><ol type="1">
+<li><code>context {Context2D}</code> —The internal canvas context.</li>
+</ol>
+</dd>
+</dl>
+<p>This event is emitted every time the scene graph is drawn.</p>
+            </div><!--/row-->
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <footer>
+          <p><a href="https://github.com/gameclosure/doc">Documentation</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">Creative Commons</a></p>
+        </footer>
+
+      </div><!--/.fluid-container-->
+
+      <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>?</td>
+                <td>Display Help</td>
+              </tr>
+              <tr>
+                <td>/</td>
+                <td>Keyword Search</td>
+              </tr>
+              <tr>
+                <td>E</td>
+                <td>Go to Examples</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/prettify.js"></script>
+    <script src="/include/init.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.5/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.5/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20148148",
+          url:         "https://gcdevkit.zendesk.com",
+          tabID:       "Comments",
+          tabColor:    "#1e4572",
+          tabPosition: "Right"
+        });
+      }
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31868495-1']);
+      _gaq.push(['_setDomainName', 'gameclosure.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
