@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Game Closure SDK Example</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Examples using the Game Closure SDK.">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/docco.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <script>var ADDON_SOCIAL = false;</script>
+    <script src="./runtime.js"></script>
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+              
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/guide/install.html">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="http://support.gameclosure.com/">Support</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+      <div class="nav-collapse collapse sub-nav">
+        <ul class="nav pull-right">
+          <li><a href="/api/appengine.html">Game Engine</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <a href="/api/ui-view.html">ui.View</a>
+                <ul>
+                  <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                  <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/ui-text.html">Text</a></li>
+              <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+              <li>
+                <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                <ul>
+                  <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+              <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+              <li><a href="/api/ui-images.html">Images</a></li>
+              <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+              <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+              <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+              <li>
+                <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                <ul>
+                  <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                </ul>
+              </li>
+              <li class="divider"></li>
+              <li><a href="/api/ui-color.html">ui.Color</a></li>
+              <li><a href="/api/ui-filter.html">Filters</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.positivemaskfilter">ui.filter.PositiveMaskFilter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.negativemaskfilter">ui.filter.NegativeMaskFilter</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <a href="/api/ui-stackview.html">ui.StackView</a>
+                <ul>
+                  <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                <ul>
+                  <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                <ul>
+                  <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                  <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+              <li>
+                <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                <ul>
+                  <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                <ul>
+                  <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="/api/event.html">Events</a></li>
+              <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+              <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+              <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+            </ul>
+          </li>
+          <li><a href="/api/device.html">Device</a></li>
+          <li><a href="/api/animate.html">Animation</a></li>
+          <li><a href="/api/audio.html">Audio</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="/api/utilities.html">Utilities</a></li>
+              <li><a href="/api/utilities.html#modules">Modules</a>
+                <ul>
+                  <li><a href="/api/utilities.html#import">↪ import</a></li>
+                  <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                <ul>
+                  <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                  <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+              <li class="divider"></li>
+              <li><a href="/api/math.html">Math</a></li>
+              <li><a href="/api/math.html#module-math.util">math.util</a></li>
+              <li><a href="/api/math.html#module-math.array">math.array</a></li>
+              <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+              <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+              <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+              <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+              <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+              <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+              <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+            </ul>
+          </li>
+          <!-- <li>
+            <form class="navbar-search">
+              <input type="text" class="search-query" placeholder="Keyword">
+            </form>
+          </li> -->
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div><!--/navbar-->
+    
+    <!-- Modal -->
+    <div id="modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Example Demo" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Example</h3>
+      </div>
+      <div class="modal-body" id="demo-modal-body">
+        <canvas width="320" height="480" id="demo-canvas"></canvas>
+        <!--<textarea id="code-editor"></textarea>-->
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <!--<button class="btn btn-primary">Save changes</button>-->
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div id="background"></div>
+      
+      
+      
+      
+      <table cellpadding="0" cellspacing="0">
+        <thead>
+          <tr>
+            <th class="docs">
+            </th>
+            <th class="code">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          
+             
+             <tr id="section-1">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-1">&#182;</a>
+                 </div>
+                 <h1 id="using-the-billing-plugin-for-in-app-purchases-a-title-view-raw-file-href-https-raw-github-com-gameclosure-examples-master-src-addons-billing-src-application-js-img-src-include-download_icon-png-class-icon-a-">Using the billing plugin for in-app purchases <a title="View raw file" href="https://raw.github.com/gameclosure/examples/master/src/addons/billing/src/Application.js"><img src="../../include/download_icon.png" class="icon"></a></h1>
+<p>This example shows how to use the billing plugin for in-app purchases.</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>
+import ui.TextView as TextView;
+import ui.widget.ButtonView as ButtonView;
+import plugins.billing.install;
+import device;</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-2">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-2">&#182;</a>
+                 </div>
+                 <h2 id="class-application">Class: Application</h2>
+<p>Create an Application.</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>exports = Class(GC.Application, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+	<span class="hljs-keyword">this</span>.makeButton = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(title, onUp)</span> </span>{
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ButtonView({
+			superview: <span class="hljs-keyword">this</span>.view,
+			layout: <span class="hljs-string">"box"</span>,
+			width: device.width/<span class="hljs-number">2</span>,
+			height: device.height/<span class="hljs-number">10</span>,
+			centerX: <span class="hljs-literal">true</span>,
+			images: {
+				up: <span class="hljs-string">"resources/images/white1.png"</span>,
+				down: <span class="hljs-string">"resources/images/white2.png"</span>,
+				disabled: <span class="hljs-string">"resources/images/blue2.png"</span>
+			},
+			scaleMethod: <span class="hljs-string">"9slice"</span>,
+			sourceSlices: {
+				horizontal: {left: <span class="hljs-number">80</span>, center: <span class="hljs-number">116</span>, right: <span class="hljs-number">80</span>},
+				vertical: {top: <span class="hljs-number">10</span>, middle: <span class="hljs-number">80</span>, bottom: <span class="hljs-number">10</span>}
+			},
+			destSlices: {
+				horizontal: {left: <span class="hljs-number">40</span>, right: <span class="hljs-number">40</span>},
+				vertical: {top: <span class="hljs-number">4</span>, bottom: <span class="hljs-number">4</span>}
+			},
+			on: {
+				up: bind(<span class="hljs-keyword">this</span>, onUp)
+			},
+			title: title,
+			text: {
+				color: <span class="hljs-string">"#000044"</span>,
+				size: <span class="hljs-number">16</span>,
+				autoFontSize: <span class="hljs-literal">false</span>,
+				autoSize: <span class="hljs-literal">false</span>
+			}
+		});
+	}
+
+	<span class="hljs-keyword">this</span>.initUI = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+		<span class="hljs-keyword">this</span>.view.style.layout = <span class="hljs-string">"linear"</span>;
+		<span class="hljs-keyword">this</span>.view.style.direction = <span class="hljs-string">"vertical"</span>;</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-3">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-3">&#182;</a>
+                 </div>
+                 <p>Present coin counter</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._coinCount = <span class="hljs-number">0</span>;
+
+		<span class="hljs-keyword">this</span>._coin = <span class="hljs-keyword">new</span> TextView({
+			superview: <span class="hljs-keyword">this</span>.view,
+			layout: <span class="hljs-string">"box"</span>,
+			height: device.height/<span class="hljs-number">10</span>,
+			buffer: <span class="hljs-literal">false</span>,
+			autoFontSize: <span class="hljs-literal">true</span>,
+			text: <span class="hljs-string">"Coin Count = &lt;coin count&gt;"</span>,
+			color: <span class="hljs-string">"#ff88ff"</span>,
+			outlineColor: <span class="hljs-string">"#000000"</span>,
+			verticalPadding: <span class="hljs-number">5</span>,
+			horizontalPadding: <span class="hljs-number">20</span>,
+			backgroundColor: <span class="hljs-string">"#000044"</span>
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-4">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-4">&#182;</a>
+                 </div>
+                 <p>Present disable market toggle button</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">var</span> disabled = <span class="hljs-literal">false</span>;
+
+		<span class="hljs-keyword">this</span>._disable = <span class="hljs-keyword">this</span>.makeButton(<span class="hljs-string">"Purchases: Enabled"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+			disabled = !disabled;
+			<span class="hljs-keyword">var</span> newTitle = disabled ? <span class="hljs-string">"Purchases: Disabled"</span> : <span class="hljs-string">"Purchases: Enabled"</span>;
+			<span class="hljs-keyword">this</span>._disable.setTitle(newTitle);
+
+			<span class="hljs-keyword">if</span> (disabled) {</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-5">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-5">&#182;</a>
+                 </div>
+                 <p>Disable onPurchase callback</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>				billing.onPurchase = <span class="hljs-literal">null</span>;
+				billing.onFailure = <span class="hljs-literal">null</span>;
+			} <span class="hljs-keyword">else</span> {</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-6">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-6">&#182;</a>
+                 </div>
+                 <p>Re-enable onPurchase callback</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>				billing.onPurchase = bind(<span class="hljs-keyword">this</span>, handlePurchase);
+				billing.onFailure = bind(<span class="hljs-keyword">this</span>, handleFailure);
+			}
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-7">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-7">&#182;</a>
+                 </div>
+                 <p>Buy simulation button</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._buy = <span class="hljs-keyword">this</span>.makeButton(<span class="hljs-string">"Buy 5 Coins (good)"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+			billing.purchase(<span class="hljs-string">"fiveCoins"</span>, <span class="hljs-string">"simulate"</span>);
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-8">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-8">&#182;</a>
+                 </div>
+                 <p>Buy cancel button</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._buyCancel = <span class="hljs-keyword">this</span>.makeButton(<span class="hljs-string">"Buy 5 Coins (cancel)"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+			billing.purchase(<span class="hljs-string">"fiveCoins"</span>, <span class="hljs-string">"cancel"</span>);
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-9">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-9">&#182;</a>
+                 </div>
+                 <p>Refund button</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._buyRefund = <span class="hljs-keyword">this</span>.makeButton(<span class="hljs-string">"Refunded item test"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+			billing.purchase(<span class="hljs-string">"fiveCoins"</span>, <span class="hljs-string">"refund"</span>);
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-10">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-10">&#182;</a>
+                 </div>
+                 <p>Unavailable item button</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._buyUnavail = <span class="hljs-keyword">this</span>.makeButton(<span class="hljs-string">"Unavailable item test"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+			billing.purchase(<span class="hljs-string">"fiveCoins"</span>, <span class="hljs-string">"unavailable"</span>);
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-11">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-11">&#182;</a>
+                 </div>
+                 <p>onPurchase result text, tap to clear it</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._purchase = <span class="hljs-keyword">new</span> TextView({
+			superview: <span class="hljs-keyword">this</span>.view,
+			height: device.height/<span class="hljs-number">10</span>,
+			layout: <span class="hljs-string">"box"</span>,
+			buffer: <span class="hljs-literal">false</span>,
+			autoFontSize: <span class="hljs-literal">true</span>,
+			text: <span class="hljs-string">"&lt;last onPurchase result&gt;"</span>,
+			color: <span class="hljs-string">"#88ffff"</span>,
+			outlineColor: <span class="hljs-string">"#000000"</span>,
+			verticalPadding: <span class="hljs-number">5</span>,
+			horizontalPadding: <span class="hljs-number">20</span>,
+			backgroundColor: <span class="hljs-string">"#004400"</span>
+		});
+
+		<span class="hljs-keyword">this</span>._purchase.on(<span class="hljs-string">'InputSelect'</span>, bind(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(evt, pt)</span> </span>{
+			<span class="hljs-keyword">this</span>._purchase.setText(<span class="hljs-string">""</span>);
+		}));</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-12">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-12">&#182;</a>
+                 </div>
+                 <p>onFailure result text, tap to clear it</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._fail = <span class="hljs-keyword">new</span> TextView({
+			superview: <span class="hljs-keyword">this</span>.view,
+			height: device.height/<span class="hljs-number">10</span>,
+			layout: <span class="hljs-string">"box"</span>,
+			buffer: <span class="hljs-literal">false</span>,
+			autoFontSize: <span class="hljs-literal">true</span>,
+			text: <span class="hljs-string">"&lt;last onFailure result&gt;"</span>,
+			color: <span class="hljs-string">"#ffff88"</span>,
+			outlineColor: <span class="hljs-string">"#000000"</span>,
+			verticalPadding: <span class="hljs-number">5</span>,
+			horizontalPadding: <span class="hljs-number">20</span>,
+			backgroundColor: <span class="hljs-string">"#440000"</span>
+		});
+
+		<span class="hljs-keyword">this</span>._fail.on(<span class="hljs-string">'InputSelect'</span>, bind(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(evt, pt)</span> </span>{
+			<span class="hljs-keyword">this</span>._fail.setText(<span class="hljs-string">""</span>);
+		}));</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-13">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-13">&#182;</a>
+                 </div>
+                 <p>isMarketAvailable status</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._avail = <span class="hljs-keyword">new</span> TextView({
+			superview: <span class="hljs-keyword">this</span>.view,
+			height: device.height/<span class="hljs-number">10</span>,
+			layout: <span class="hljs-string">"box"</span>,
+			buffer: <span class="hljs-literal">false</span>,
+			autoFontSize: <span class="hljs-literal">true</span>,
+			text: <span class="hljs-string">"&lt;isMarketAvailable&gt;"</span>,
+			color: <span class="hljs-string">"#ff8888"</span>,
+			outlineColor: <span class="hljs-string">"#000000"</span>,
+			verticalPadding: <span class="hljs-number">5</span>,
+			horizontalPadding: <span class="hljs-number">20</span>,
+			backgroundColor: <span class="hljs-string">"#444400"</span>
+		});
+
+		<span class="hljs-keyword">if</span> (billing.isMarketAvailable) {
+			<span class="hljs-keyword">this</span>._avail.setText(<span class="hljs-string">"Market: Initially Available"</span>);
+		} <span class="hljs-keyword">else</span> {
+			<span class="hljs-keyword">this</span>._avail.setText(<span class="hljs-string">"Market: Initially -Not- Available"</span>);
+		}
+
+		billing.on(<span class="hljs-string">'MarketAvailable'</span>, bind(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(available)</span> </span>{
+			<span class="hljs-keyword">if</span> (available) {
+				<span class="hljs-keyword">this</span>._avail.setText(<span class="hljs-string">"Market: Available"</span>);
+			} <span class="hljs-keyword">else</span> {
+				<span class="hljs-keyword">this</span>._avail.setText(<span class="hljs-string">"Market: -Not- Available"</span>);
+			}
+		}));</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-14">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-14">&#182;</a>
+                 </div>
+                 <p>Initialize the coin counter</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">var</span> coinCount = localStorage.getItem(<span class="hljs-string">"coinCount"</span>) | <span class="hljs-number">0</span>;
+		<span class="hljs-keyword">var</span> _coin = <span class="hljs-keyword">this</span>._coin;
+
+		<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">updateCoinCount</span><span class="hljs-params">(count)</span> </span>{
+			coinCount = count;
+			localStorage.setItem(<span class="hljs-string">"coinCount"</span>, coinCount);
+			_coin.setText(count);
+		}
+
+		updateCoinCount(coinCount);</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-15">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-15">&#182;</a>
+                 </div>
+                 <p>Handle successful coin purchase</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleCoinPurchase</span><span class="hljs-params">()</span> </span>{
+			updateCoinCount.call(<span class="hljs-keyword">this</span>, coinCount + <span class="hljs-number">5</span>);
+		}</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-16">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-16">&#182;</a>
+                 </div>
+                 <p>Handle the android test purchase string also</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">var</span> purchaseHandlers = {
+			<span class="hljs-string">"fiveCoins"</span>: bind(<span class="hljs-keyword">this</span>, handleCoinPurchase),
+			<span class="hljs-string">"android.test.purchased"</span>: bind(<span class="hljs-keyword">this</span>, handleCoinPurchase)
+		};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-17">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-17">&#182;</a>
+                 </div>
+                 <p>onPurchase handler</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handlePurchase</span><span class="hljs-params">(item)</span> </span>{
+			<span class="hljs-keyword">var</span> handler = purchaseHandlers[item];
+			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> handler === <span class="hljs-string">"function"</span>) {
+				handler();
+			}
+
+			<span class="hljs-keyword">this</span>._purchase.setText(<span class="hljs-string">'Purchase Result: "'</span> + item + <span class="hljs-string">'"'</span>);
+		};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-18">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-18">&#182;</a>
+                 </div>
+                 <p>onFailure handler</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleFailure</span><span class="hljs-params">(reason, item)</span> </span>{
+			<span class="hljs-keyword">this</span>._fail.setText(<span class="hljs-string">'Failure Reason: "'</span> + reason + <span class="hljs-string">'", Item: "'</span> + item + <span class="hljs-string">'"'</span>);
+		}
+
+		billing.onPurchase = bind(<span class="hljs-keyword">this</span>, handlePurchase);
+		billing.onFailure = bind(<span class="hljs-keyword">this</span>, handleFailure);
+	};
+
+	<span class="hljs-keyword">this</span>.launchUI = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{};
+});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-19">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-19">&#182;</a>
+                 </div>
+                 <p>The output should look like this screenshot:
+<img src="./doc/screenshot.png" alt="a book screenshot" class="screenshot"></p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre></pre></div>
+               </td>
+             </tr>
+          
+        </tbody>
+      </table>
+      <footer>
+        <p><a href="https://github.com/gameclosure/examples">Examples</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">GPLv3</a></p>
+      </footer>
+    </div> <!-- /container-fluid -->
+
+    <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Shortcut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>?</td>
+              <td>Display Help</td>
+            </tr>
+            <tr>
+              <td>/</td>
+              <td>Keyword Search</td>
+            </tr>
+            <tr>
+              <td>E</td>
+              <td>Go to Examples</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/init.js"></script>
+
+    <script type="text/jsio">
+      function launchDemo () {
+        if (window.example) {
+          example.engine.isRunning()? example.engine.pause() : example.engine.resume();
+        } else {
+          jsio("import .src.Application as Example;");
+          GC.app = window.example = new Example();
+		      GC.buildEngine({view: window.example, canvas: 'demo-canvas'});
+        }
+      }
+
+      $('#launchDemo').click(launchDemo);
+
+    </script>
+  </body>
+</html>

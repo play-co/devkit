@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Game Closure SDK Example</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Examples using the Game Closure SDK.">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/docco.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <script>var ADDON_SOCIAL = false;</script>
+    <script src="./runtime.js"></script>
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+              
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/guide/install.html">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="http://support.gameclosure.com/">Support</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+      <div class="nav-collapse collapse sub-nav">
+        <ul class="nav pull-right">
+          <li><a href="/api/appengine.html">Game Engine</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <a href="/api/ui-view.html">ui.View</a>
+                <ul>
+                  <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                  <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/ui-text.html">Text</a></li>
+              <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+              <li>
+                <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                <ul>
+                  <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+              <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+              <li><a href="/api/ui-images.html">Images</a></li>
+              <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+              <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+              <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+              <li>
+                <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                <ul>
+                  <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                </ul>
+              </li>
+              <li class="divider"></li>
+              <li><a href="/api/ui-color.html">ui.Color</a></li>
+              <li><a href="/api/ui-filter.html">Filters</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.positivemaskfilter">ui.filter.PositiveMaskFilter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.negativemaskfilter">ui.filter.NegativeMaskFilter</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <a href="/api/ui-stackview.html">ui.StackView</a>
+                <ul>
+                  <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                <ul>
+                  <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                <ul>
+                  <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                  <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+              <li>
+                <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                <ul>
+                  <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                <ul>
+                  <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="/api/event.html">Events</a></li>
+              <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+              <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+              <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+            </ul>
+          </li>
+          <li><a href="/api/device.html">Device</a></li>
+          <li><a href="/api/animate.html">Animation</a></li>
+          <li><a href="/api/audio.html">Audio</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="/api/utilities.html">Utilities</a></li>
+              <li><a href="/api/utilities.html#modules">Modules</a>
+                <ul>
+                  <li><a href="/api/utilities.html#import">↪ import</a></li>
+                  <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                <ul>
+                  <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                  <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+              <li class="divider"></li>
+              <li><a href="/api/math.html">Math</a></li>
+              <li><a href="/api/math.html#module-math.util">math.util</a></li>
+              <li><a href="/api/math.html#module-math.array">math.array</a></li>
+              <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+              <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+              <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+              <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+              <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+              <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+              <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+            </ul>
+          </li>
+          <!-- <li>
+            <form class="navbar-search">
+              <input type="text" class="search-query" placeholder="Keyword">
+            </form>
+          </li> -->
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div><!--/navbar-->
+    
+    <!-- Modal -->
+    <div id="modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Example Demo" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Example</h3>
+      </div>
+      <div class="modal-body" id="demo-modal-body">
+        <canvas width="320" height="480" id="demo-canvas"></canvas>
+        <!--<textarea id="code-editor"></textarea>-->
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <!--<button class="btn btn-primary">Save changes</button>-->
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div id="background"></div>
+      
+      
+      
+      
+      <table cellpadding="0" cellspacing="0">
+        <thead>
+          <tr>
+            <th class="docs">
+            </th>
+            <th class="code">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          
+             
+             <tr id="section-1">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-1">&#182;</a>
+                 </div>
+                 
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>import device;
+
+import ui.TextView as TextView;
+
+import isometric.Isometric as Isometric;
+import isometric.models.map.updaters.lineUpdater as lineUpdater;
+
+import menus.views.components.ButtonView as ButtonView;</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-2">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-2">&#182;</a>
+                 </div>
+                 <p>Create group 1 and 2 with 16 images with a width of 150 and a height of 120:</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre><span class="hljs-keyword">var</span> tileSettings = [
+		{group: <span class="hljs-number">1</span>, images: [], width: <span class="hljs-number">150</span>, height: <span class="hljs-number">120</span>},
+		{group: <span class="hljs-number">2</span>, images: [], width: <span class="hljs-number">150</span>, height: <span class="hljs-number">120</span>},
+		{cursorYes: <span class="hljs-string">'resources/images/cursorYes.png'</span>, cursorNo: <span class="hljs-string">'resources/images/cursorNo.png'</span>}
+	];</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-3">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-3">&#182;</a>
+                 </div>
+                 <p>Set the ground tiles, the numbers represent the binary values of a 2x2 grid:</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">16</span>; i++) {
+	tileSettings[<span class="hljs-number">0</span>].images.push({index: i, url: <span class="hljs-string">'resources/images/demoGround'</span> + i + <span class="hljs-string">'.png'</span>});
+}</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-4">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-4">&#182;</a>
+                 </div>
+                 <p>Set the road tiles, the numbers represent the binary values of a 3x3 grid:</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre><span class="hljs-keyword">var</span> roadIndex = [<span class="hljs-number">16</span>, <span class="hljs-number">18</span>, <span class="hljs-number">24</span>, <span class="hljs-number">26</span>, <span class="hljs-number">48</span>, <span class="hljs-number">50</span>, <span class="hljs-number">56</span>, <span class="hljs-number">58</span>, <span class="hljs-number">144</span>, <span class="hljs-number">146</span>, <span class="hljs-number">152</span>, <span class="hljs-number">154</span>, <span class="hljs-number">176</span>, <span class="hljs-number">178</span>, <span class="hljs-number">184</span>, <span class="hljs-number">186</span>]
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; roadIndex.length; i++) {
+	tileSettings[<span class="hljs-number">1</span>].images.push({index: roadIndex[i], url: <span class="hljs-string">'resources/images/demoRoad'</span> + roadIndex[i] + <span class="hljs-string">'.png'</span>});
+}</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-5">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-5">&#182;</a>
+                 </div>
+                 <p>Create a two layers layer with tiles of 150x120:</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre><span class="hljs-keyword">var</span> gridSettings = {tileWidth: <span class="hljs-number">150</span>, tileHeight: <span class="hljs-number">120</span>, layers: [{}, {}]};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-6">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-6">&#182;</a>
+                 </div>
+                 <p>Generate a map, 20 chains of rectangles with 50 rectangles each…</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre><span class="hljs-keyword">var</span> mapSettings = {
+		generatorSteps: [
+			{
+				type: <span class="hljs-string">'rectangles'</span>,
+				repeat: <span class="hljs-number">1000</span>,
+				count: <span class="hljs-number">50</span>,
+				group: <span class="hljs-number">1</span>, <span class="hljs-comment">// The group defined in the tile settings</span>
+				accept: [
+					{</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-7">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-7">&#182;</a>
+                 </div>
+                 <p>Accept tiles 0..15 from group 1 on layer 0:</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>						layer: <span class="hljs-number">0</span>,
+						group: <span class="hljs-number">1</span>,
+						tiles: [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>, <span class="hljs-number">13</span>, <span class="hljs-number">14</span>, <span class="hljs-number">15</span>]
+					}
+				]
+			}
+		]
+	};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-8">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-8">&#182;</a>
+                 </div>
+                 <p>The editor settings define a single “road” tool</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre><span class="hljs-keyword">var</span> editorSettings = {
+	road: {
+		type: <span class="hljs-string">'line'</span>, <span class="hljs-comment">// Use line drawing</span>
+		layer: <span class="hljs-number">1</span>, <span class="hljs-comment">// Render to layer 1</span>
+		group: <span class="hljs-number">2</span>, <span class="hljs-comment">// The group defined in the tile settings</span>
+		tileSet: {
+			horizontal: [<span class="hljs-number">24</span>, <span class="hljs-number">56</span>, <span class="hljs-number">48</span>], <span class="hljs-comment">// These are the bits set for a horizontal line 24 and 48 are the caps, 56 is the center</span>
+			vertical: [<span class="hljs-number">18</span>, <span class="hljs-number">146</span>, <span class="hljs-number">144</span>] <span class="hljs-comment">// These are the bits set for a vertical line 18 and 144 are the caps, 146 is the center</span>
+		},</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-9">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-9">&#182;</a>
+                 </div>
+                 <p>The line updater is used to merge line caps, this function is called when the initial drawing is done…</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		updater: lineUpdater
+	}
+};
+
+exports = Class(GC.Application, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+	<span class="hljs-keyword">this</span>.initUI = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+		<span class="hljs-keyword">this</span>.engine.updateOpts({
+			alwaysRepaint: <span class="hljs-literal">true</span>,
+			clearEachFrame: <span class="hljs-literal">false</span>, <span class="hljs-comment">// Don't clear the isometric tiles always cover the entire screen</span>
+			keyListenerEnabled: <span class="hljs-literal">false</span>,
+			logsEnabled: <span class="hljs-literal">true</span>,
+			noTimestep: <span class="hljs-literal">false</span>,
+			noReflow: <span class="hljs-literal">true</span>, <span class="hljs-comment">// Don't use the reflow manager</span>
+			showFPS: <span class="hljs-literal">false</span>,
+			resizeRootView: <span class="hljs-literal">false</span>,
+			scaleUI: <span class="hljs-literal">true</span>,
+			preload: [<span class="hljs-string">'resources/images'</span>]
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-10">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-10">&#182;</a>
+                 </div>
+                 <p>Create an instance of Isometric, this class wraps the isometric models and views.</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._isometric = <span class="hljs-keyword">new</span> Isometric({
+			superview: <span class="hljs-keyword">this</span>,
+			gridSettings: gridSettings, <span class="hljs-comment">// Core settings: grid size and layers</span>
+			tileSettings: tileSettings, <span class="hljs-comment">// Information about the graphics</span>
+			mapSettings: mapSettings, <span class="hljs-comment">// Define the way the map is generated</span>
+			editorSettings: editorSettings <span class="hljs-comment">// Define the tools</span>
+		}).
+			generate().
+			show();</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-11">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-11">&#182;</a>
+                 </div>
+                 <p>Create the tool buttons:</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._tools = [<span class="hljs-string">'Drag'</span>, <span class="hljs-string">'Road'</span>];
+		<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">2</span>; i++) {
+			<span class="hljs-keyword">new</span> ButtonView({
+				superview: <span class="hljs-keyword">this</span>,
+				x: <span class="hljs-number">20</span> + i * <span class="hljs-number">185</span>,
+				y: -<span class="hljs-number">20</span>,
+				width: <span class="hljs-number">180</span>,
+				height: <span class="hljs-number">90</span>,
+				title: <span class="hljs-keyword">this</span>._tools[i],
+				style: <span class="hljs-string">'BLUE'</span>,
+				on: {
+					up: bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'onTool'</span>, i)
+				}
+			});
+		}</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-12">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-12">&#182;</a>
+                 </div>
+                 <p>Text showing which tool is active:</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._modeText = <span class="hljs-keyword">new</span> TextView({
+			superview: <span class="hljs-keyword">this</span>,
+			x: <span class="hljs-keyword">this</span>.baseWidth - <span class="hljs-number">180</span>,
+			y: <span class="hljs-number">0</span>,
+			width: <span class="hljs-number">150</span>,
+			height: <span class="hljs-number">60</span>,
+			size: <span class="hljs-number">40</span>,
+			color: <span class="hljs-string">'#FFFFFF'</span>,
+			strokeColor: <span class="hljs-string">'#000000'</span>,
+			strokeWidth: <span class="hljs-number">6</span>,
+			horizontalAlign: <span class="hljs-string">'right'</span>,
+			text: <span class="hljs-string">'Drag'</span>,
+			autoFontSize: <span class="hljs-literal">false</span>,
+			autoSize: <span class="hljs-literal">false</span>
+		});
+
+		<span class="hljs-keyword">this</span>._isometric.setTool(<span class="hljs-literal">false</span>);
+	};
+
+	<span class="hljs-keyword">this</span>.tick = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(dt)</span> </span>{
+		<span class="hljs-keyword">this</span>._isometric.tick(dt);
+	};
+
+	<span class="hljs-comment">/**
+	 * Select a tool...
+	 */</span>
+	<span class="hljs-keyword">this</span>.onTool = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(index)</span> </span>{
+		<span class="hljs-keyword">this</span>._isometric.setTool(index ? <span class="hljs-keyword">this</span>._tools[index].toLowerCase() : <span class="hljs-literal">false</span>); <span class="hljs-comment">// Set the tool, setting to false enables dragging...</span>
+		<span class="hljs-keyword">this</span>._modeText.setText(<span class="hljs-keyword">this</span>._tools[index]);	
+	};
+});</pre></div>
+               </td>
+             </tr>
+          
+        </tbody>
+      </table>
+      <footer>
+        <p><a href="https://github.com/gameclosure/examples">Examples</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">GPLv3</a></p>
+      </footer>
+    </div> <!-- /container-fluid -->
+
+    <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Shortcut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>?</td>
+              <td>Display Help</td>
+            </tr>
+            <tr>
+              <td>/</td>
+              <td>Keyword Search</td>
+            </tr>
+            <tr>
+              <td>E</td>
+              <td>Go to Examples</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/init.js"></script>
+
+    <script type="text/jsio">
+      function launchDemo () {
+        if (window.example) {
+          example.engine.isRunning()? example.engine.pause() : example.engine.resume();
+        } else {
+          jsio("import .src.Application as Example;");
+          GC.app = window.example = new Example();
+		      GC.buildEngine({view: window.example, canvas: 'demo-canvas'});
+        }
+      }
+
+      $('#launchDemo').click(launchDemo);
+
+    </script>
+  </body>
+</html>

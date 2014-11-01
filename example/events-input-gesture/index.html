@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Game Closure SDK Example</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Examples using the Game Closure SDK.">
+    <link rel="shortcut icon" href="/include/fav.png">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Puritan:400,700">
+    <link rel="stylesheet" href="/include/bootstrap.min.css">
+    <link rel="stylesheet" href="/include/docco.css">
+    <link rel="stylesheet" href="/include/prettify.css">
+    <link rel="stylesheet" href="/include/style.css">
+    <script>var ADDON_SOCIAL = false;</script>
+    <script src="./runtime.js"></script>
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+
+          <ul class="nav pull-left">
+            <li>
+              <a href="/" id="header-logo-text">
+                <img src="/include/img/logo-text-small.png"> DevKit Docs
+              </a>
+            </li>
+          </ul>
+              
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li><a href="/guide/install.html">Quick Start</a></li>
+              <li><a href="/index.html#guides">Guides</a></li>
+              <li><a href="/index.html#examples">Examples</a></li>
+              <li><a href="/native.html">Native</a></li>
+              <li><a href="/guide/contributors.html">Contributors</a></li>
+              <li><a href="http://support.gameclosure.com/">Support</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+      <div class="nav-collapse collapse sub-nav">
+        <ul class="nav pull-right">
+          <li><a href="/api/appengine.html">Game Engine</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Components<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <a href="/api/ui-view.html">ui.View</a>
+                <ul>
+                  <li><a href="/api/ui-view.html#style-object">↪ Styles</a></li>
+                  <li><a href="/api/ui-view.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/ui-text.html">Text</a></li>
+              <li><a href="/api/ui-text.html#class-ui.textview">ui.TextView</a></li>
+              <li>
+                <a href="/api/ui-text.html#class-ui.textpromptview">ui.TextPromptView</a>
+                <ul>
+                  <li><a href="/api/ui-text.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <!--<li><a href="/api/ui-text.html#class-ui.textinputview">ui.TextInputView</a></li>-->
+              <li><a href="/api/ui-text.html#class-ui.resource.font">ui.resource.Font</a></li>
+              <li><a href="/api/ui-images.html">Images</a></li>
+              <li><a href="/api/ui-images.html#class-ui.imageview">ui.ImageView</a></li>
+              <li><a href="/api/ui-images.html#class-ui.imagescaleview">ui.ImageScaleView</a></li>
+              <li><a href="/api/ui-images.html#class-ui.resource.image">ui.resource.Image</a></li>
+              <li>
+                <a href="/api/ui-spriteview.html">ui.SpriteView</a>
+                <ul>
+                  <li><a href="/api/ui-spriteview.html#class-sprite-groups">↪ Sprite Groups</a></li>
+                </ul>
+              </li>
+              <li class="divider"></li>
+              <li><a href="/api/ui-color.html">ui.Color</a></li>
+              <li><a href="/api/ui-filter.html">Filters</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.filter">ui.filter.Filter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.linearaddfilter">ui.filter.LinearAddFilter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.multiplyfilter">ui.filter.MultiplyFilter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.positivemaskfilter">ui.filter.PositiveMaskFilter</a></li>
+              <li><a href="/api/ui-filter.html#class-ui.filter.negativemaskfilter">ui.filter.NegativeMaskFilter</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">UI Widgets<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <a href="/api/ui-stackview.html">ui.StackView</a>
+                <ul>
+                  <li><a href="/api/ui-stackview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="/api/ui-scrollview.html">ui.ScrollView</a>
+                <ul>
+                  <li><a href="/api/ui-scrollview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="/api/ui-widget-listview.html">ui.widget.ListView</a>
+                <ul>
+                  <li><a href="/api/ui-widget-listview.html#class-ui.widget.cellview">↪ ui.widget.CellView</a></li>
+                  <li><a href="/api/ui-widget-listview.html#class-gcdatasource">↪ GCDataSource</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/ui-widget-gridview.html">ui.widget.GridView</a></li>
+              <li>
+                <a href="/api/ui-widget-buttonview.html">ui.widget.ButtonView</a>
+                <ul>
+                  <li><a href="/api/ui-widget-buttonview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="/api/ui-widget-sliderview.html">ui.widget.SliderView</a>
+                <ul>
+                  <li><a href="/api/ui-widget-sliderview.html#events">↪ Events</a></li>
+                </ul>
+              </li>
+              <!--<li><a href="/api/ui-widget-spinner.html">ui.widget.Spinner</a></li>-->
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Events<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="/api/event.html">Events</a></li>
+              <li><a href="/api/event.html#class-event.emitter">event.Emitter</a></li>
+              <li><a href="/api/event.html#class-event.callback">event.Callback</a></li>
+              <li><a href="/api/event.html#class-event.input.inputevent">event.input.InputEvent</a></li>
+            </ul>
+          </li>
+          <li><a href="/api/device.html">Device</a></li>
+          <li><a href="/api/animate.html">Animation</a></li>
+          <li><a href="/api/audio.html">Audio</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Utilities<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="/api/utilities.html">Utilities</a></li>
+              <li><a href="/api/utilities.html#modules">Modules</a>
+                <ul>
+                  <li><a href="/api/utilities.html#import">↪ import</a></li>
+                  <li><a href="/api/utilities.html#class-name-superconstructor-constructor">↪ Class</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/utilities.html#global-object">GLOBAL</a>
+                <ul>
+                  <li><a href="/api/utilities.html#bind-thisarg-callback-args">↪ bind</a></li>
+                  <li><a href="/api/utilities.html#merge-obj1-obj2-obj3">↪ merge</a></li>
+                </ul>
+              </li>
+              <li><a href="/api/utilities.html#module-util.ajax">util.ajax</a></li>
+              <li class="divider"></li>
+              <li><a href="/api/math.html">Math</a></li>
+              <li><a href="/api/math.html#module-math.util">math.util</a></li>
+              <li><a href="/api/math.html#module-math.array">math.array</a></li>
+              <li><a href="/api/math.html#class-math.geom.point">math.geom.Point</a></li>
+              <li><a href="/api/math.html#class-math.geom.line">math.geom.Line</a></li>
+              <li><a href="/api/math.html#class-math.geom.circle">math.geom.Circle</a></li>
+              <li><a href="/api/math.html#class-math.geom.rect">math.geom.Rect</a></li>
+              <li><a href="/api/math.html#class-math.geom.vec2d">math.geom.Vec2D</a></li>
+              <li><a href="/api/math.html#module-math.geom.angle">math.geom.angle</a></li>
+              <li><a href="/api/math.html#module-math.geom.intersect">math.geom.intersect</a></li>
+            </ul>
+          </li>
+          <!-- <li>
+            <form class="navbar-search">
+              <input type="text" class="search-query" placeholder="Keyword">
+            </form>
+          </li> -->
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div><!--/navbar-->
+    
+    <!-- Modal -->
+    <div id="modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Example Demo" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Example</h3>
+      </div>
+      <div class="modal-body" id="demo-modal-body">
+        <canvas width="320" height="480" id="demo-canvas"></canvas>
+        <!--<textarea id="code-editor"></textarea>-->
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <!--<button class="btn btn-primary">Save changes</button>-->
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div id="background"></div>
+      
+      
+      
+      
+      <table cellpadding="0" cellspacing="0">
+        <thead>
+          <tr>
+            <th class="docs">
+            </th>
+            <th class="code">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          
+             
+             <tr id="section-1">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-1">&#182;</a>
+                 </div>
+                 <h1 id="using-gestures-a-title-view-raw-file-href-https-raw-github-com-gameclosure-examples-master-src-events-input-gesture-src-application-js-img-src-include-download_icon-png-class-icon-a-">Using gestures <a title="View raw file" href="https://raw.github.com/gameclosure/examples/master/src/events/input-gesture/src/Application.js"><img src="../../include/download_icon.png" class="icon"></a></h1>
+<p>This example shows how to use the Swipe, Pinch, Rotate, DragSingle, FingerDown, FingerUp, and ClearMulti events generated by the GestureView.</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>import device;
+import ui.TextView as TextView;
+import ui.GestureView as GestureView;</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-2">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-2">&#182;</a>
+                 </div>
+                 <h2 id="class-application">Class: Application</h2>
+<p>Create an Application.</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>exports = Class(GC.Application, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+	<span class="hljs-keyword">this</span>.initUI = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-3">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-3">&#182;</a>
+                 </div>
+                 <p>Create a GestureView</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">var</span> gview = <span class="hljs-keyword">new</span> GestureView({
+			superview: <span class="hljs-keyword">this</span>.view,
+			layout: <span class="hljs-string">'box'</span>,
+			backgroundColor: <span class="hljs-string">'blue'</span>
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-4">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-4">&#182;</a>
+                 </div>
+                 <p>Subscribe to gesture events: Swipe, Pinch, Rotate, DragSingle, FingerDown, FingerUp, ClearMulti</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		gview.on(<span class="hljs-string">'Swipe'</span>, bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'swipe'</span>));
+		gview.on(<span class="hljs-string">'Pinch'</span>, bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'pinch'</span>));
+		gview.on(<span class="hljs-string">'Rotate'</span>, bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'rotate'</span>));
+		gview.on(<span class="hljs-string">'DragSingle'</span>, bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'drag'</span>));
+		gview.on(<span class="hljs-string">'FingerDown'</span>, bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'fingerDown'</span>));
+		gview.on(<span class="hljs-string">'FingerUp'</span>, bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'fingerUp'</span>));
+		gview.on(<span class="hljs-string">'ClearMulti'</span>, bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'clearMulti'</span>));</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-5">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-5">&#182;</a>
+                 </div>
+                 <p>This view scales, rotates, and moves around
+in response to Pinch, Rotate, and DragSingle events</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>.demoView = <span class="hljs-keyword">new</span> TextView({
+			superview: <span class="hljs-keyword">this</span>.view,
+			layout: <span class="hljs-string">'box'</span>,
+			width: <span class="hljs-number">100</span>,
+			height: <span class="hljs-number">100</span>,
+			x: <span class="hljs-number">100</span>,
+			y: <span class="hljs-number">200</span>,
+			centerAnchor: <span class="hljs-literal">true</span>,
+			canHandleEvents: <span class="hljs-literal">false</span>,
+			blockEvents: <span class="hljs-literal">true</span>,
+			backgroundColor: <span class="hljs-string">'red'</span>,
+			text: <span class="hljs-string">'Pinch Me!'</span>
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-6">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-6">&#182;</a>
+                 </div>
+                 <p>This view logs Swipe events</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>.logView = <span class="hljs-keyword">new</span> TextView({
+			superview: <span class="hljs-keyword">this</span>.view,
+			layout: <span class="hljs-string">'box'</span>,
+			bottom: <span class="hljs-number">50</span>,
+			height: <span class="hljs-number">50</span>,
+			canHandleEvents: <span class="hljs-literal">false</span>,
+			blockEvents: <span class="hljs-literal">true</span>,
+			backgroundColor: <span class="hljs-string">'green'</span>,
+			text: device.isSimulator ? <span class="hljs-string">'test on device for multitouch'</span> : <span class="hljs-string">'swipe, pinch, rotate, drag'</span>
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-7">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-7">&#182;</a>
+                 </div>
+                 <p>This view logs FingerUp and FingerDown events</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>.fingerCountView = <span class="hljs-keyword">new</span> TextView({
+			superview: <span class="hljs-keyword">this</span>.view,
+			layout: <span class="hljs-string">'box'</span>,
+			bottom: <span class="hljs-number">0</span>,
+			height: <span class="hljs-number">50</span>,
+			canHandleEvents: <span class="hljs-literal">false</span>,
+			blockEvents: <span class="hljs-literal">true</span>,
+			backgroundColor: <span class="hljs-string">'yellow'</span>,
+			text: <span class="hljs-string">'Finger count: 0'</span>
+		});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-8">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-8">&#182;</a>
+                 </div>
+                 <p>These values are updated in response to ClearMulti events</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>		<span class="hljs-keyword">this</span>._currentScale = <span class="hljs-number">1</span>;
+		<span class="hljs-keyword">this</span>._currentRotation = <span class="hljs-number">0</span>;
+	};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-9">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-9">&#182;</a>
+                 </div>
+                 <p>update logView in response to Swipe event</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>	<span class="hljs-keyword">this</span>.swipe = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(angle, dir, numberOfFingers)</span> </span>{
+		<span class="hljs-keyword">this</span>.logView.setText(angle + <span class="hljs-string">" "</span> + dir + <span class="hljs-string">" "</span> + numberOfFingers);
+	};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-10">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-10">&#182;</a>
+                 </div>
+                 <p>scale demoView in response to Pinch event</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>	<span class="hljs-keyword">this</span>.pinch = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(d)</span> </span>{
+		<span class="hljs-keyword">this</span>.demoView.style.scale = d * <span class="hljs-keyword">this</span>._currentScale;
+	};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-11">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-11">&#182;</a>
+                 </div>
+                 <p>rotate demoView in response to Rotate event</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>	<span class="hljs-keyword">this</span>.rotate = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(r)</span> </span>{
+		<span class="hljs-keyword">this</span>.demoView.style.r = r + <span class="hljs-keyword">this</span>._currentRotation;
+	};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-12">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-12">&#182;</a>
+                 </div>
+                 <p>reposition demoView in response to DragSingle event</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>	<span class="hljs-keyword">this</span>.drag = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(dx, dy)</span> </span>{
+		<span class="hljs-keyword">this</span>.demoView.style.x += dx;
+		<span class="hljs-keyword">this</span>.demoView.style.y += dy;
+	};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-13">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-13">&#182;</a>
+                 </div>
+                 <p>update logView in response to FingerDown event</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>	<span class="hljs-keyword">this</span>.fingerDown = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fingerCount)</span> </span>{
+		<span class="hljs-keyword">this</span>.fingerCountView.setText(<span class="hljs-string">'FingerDown. New count: '</span> + fingerCount);
+	};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-14">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-14">&#182;</a>
+                 </div>
+                 <p>update logView in response to FingerUp event</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>	<span class="hljs-keyword">this</span>.fingerUp = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fingerCount)</span> </span>{
+		<span class="hljs-keyword">this</span>.fingerCountView.setText(<span class="hljs-string">'FingerUp. New count: '</span> + fingerCount);
+	};</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-15">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-15">&#182;</a>
+                 </div>
+                 <p>save current scale and rotation in response to ClearMulti event</p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre>	<span class="hljs-keyword">this</span>.clearMulti = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+		<span class="hljs-keyword">this</span>._currentScale = <span class="hljs-keyword">this</span>.demoView.style.scale;
+		<span class="hljs-keyword">this</span>._currentRotation = <span class="hljs-keyword">this</span>.demoView.style.r;
+	};
+});</pre></div>
+               </td>
+             </tr>
+          
+             
+             <tr id="section-16">
+               <td class="docs">
+                 <div class="pilwrap">
+                   <a class="pilcrow" href="#section-16">&#182;</a>
+                 </div>
+                 <p>The output should look like this screenshot:
+<img src="./doc/screenshot.png" alt="a book screenshot" class="screenshot"></p>
+
+               </td>
+               <td class="code">
+                 <div class='highlight'><pre></pre></div>
+               </td>
+             </tr>
+          
+        </tbody>
+      </table>
+      <footer>
+        <p><a href="https://github.com/gameclosure/examples">Examples</a> licensed under the <a href="http://doc.gameclosure.com/guide/license.html">GPLv3</a></p>
+      </footer>
+    </div> <!-- /container-fluid -->
+
+    <div id="help-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="help-modal-label" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="help-modal-label">Keyboard Shortcuts</h3>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Shortcut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>?</td>
+              <td>Display Help</td>
+            </tr>
+            <tr>
+              <td>/</td>
+              <td>Keyword Search</td>
+            </tr>
+            <tr>
+              <td>E</td>
+              <td>Go to Examples</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/include/bootstrap.min.js"></script>
+    <script src="/include/init.js"></script>
+
+    <script type="text/jsio">
+      function launchDemo () {
+        if (window.example) {
+          example.engine.isRunning()? example.engine.pause() : example.engine.resume();
+        } else {
+          jsio("import .src.Application as Example;");
+          GC.app = window.example = new Example();
+		      GC.buildEngine({view: window.example, canvas: 'demo-canvas'});
+        }
+      }
+
+      $('#launchDemo').click(launchDemo);
+
+    </script>
+  </body>
+</html>
