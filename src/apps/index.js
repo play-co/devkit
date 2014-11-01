@@ -50,20 +50,6 @@ function isDevkitApp (cwd) {
   return false;
 }
 
-function findNearestApp (dir) {
-  if (!dir) {
-    dir = process.cwd();
-  }
-
-  if (isDevkitApp(dir)) {
-    return dir;
-  } else if (fs.existsSync(path.join(dir, '..'))) {
-    return findNearestApp(path.normalize(path.join(dir, '..')));
-  } else {
-    return null;
-  }
-}
-
 var AppManager = Class(EventEmitter, function () {
   this.init = function () {
     this._apps = {};
