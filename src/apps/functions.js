@@ -24,3 +24,19 @@ function findNearestApp (dir) {
   }
 }
 
+function isDevkitApp (cwd) {
+  var manifestPath = path.join(cwd, 'manifest.json');
+  var manifest;
+  if (fs.existsSync(manifestPath)) {
+    try {
+      manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    } catch (e) {
+      manifest = {};
+    }
+
+    if (manifest.appID) {
+      return true;
+    }
+  }
+  return false;
+}
