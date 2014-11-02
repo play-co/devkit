@@ -118,10 +118,11 @@ function getAPIRouter(opts) {
 
   api.get('/openAppExternal', function (req, res) {
     var platform = os.platform();
-    if (platform == 'darwin') {
+    if (platform == 'darwin' || platform == 'linux') {
       apps.get(req.query.app, {updateLastOpened: false}, function (err, app) {
         if (app) {
-          exec('open ' + app.paths.root);
+          var command = (platform == 'darwin') ? 'open' : 'xdg-open';
+          exec(command + ' ' + app.paths.root);
         }
 
         res.status(200).send();
