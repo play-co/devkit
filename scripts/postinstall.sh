@@ -13,4 +13,4 @@ fi
 command -v java >/dev/null 2>&1 || { echo >&2 "java is required. please install java and try again."; exit 1; }
 
 # print the instructions
-devkit instructions devkit_install
+# devkit instructions devkit_install
