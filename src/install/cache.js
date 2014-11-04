@@ -1,5 +1,6 @@
 var EventEmitter = require('events').EventEmitter;
 var path = require('path');
+var pathExtra = require('path-extra');
 var fs = require('fs');
 var crypto = require('crypto');
 
@@ -16,7 +17,7 @@ function randomName() {
     + crypto.randomBytes(4).readUInt32LE(0);
 }
 
-var MODULE_CACHE = path.join(__dirname, '..', '..', 'cache');
+var MODULE_CACHE = path.join(pathExtra.datadir(process.title), 'cache');
 var DEFAULT_URL = 'https://github.com/gameclosure/';
 
 var ModuleCache = Class(EventEmitter, function () {

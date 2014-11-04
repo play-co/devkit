@@ -4,7 +4,7 @@
   },
   "name": "devkit",
   "description": "HTML 5 game platform for browser and mobile",
-  "version": "2.0.0-beta.8",
+  "version": "2.0.0-beta.9",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
     "url": "https://github.com/gameclosure/devkit2.git"
@@ -26,6 +26,7 @@
     "mkdirp": "0.5.0",
     "nib": "1.x",
     "optimist": "0.6.1",
+    "path-extra": "^0.3.0",
     "printf": "0.2.0",
     "request": "~2.10.0",
     "rimraf": "^2.2.8",
