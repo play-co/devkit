@@ -95,6 +95,8 @@ var InitCommand = Class(BaseCommand, function (supr) {
         'The path you specified (' + err.message + ') already exists.',
         'Aborting.'
       );
+    }).catch(function (err) {
+      console.error(err);
     }).nodeify(cb);
   };
 });

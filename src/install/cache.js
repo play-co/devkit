@@ -1,9 +1,10 @@
 var EventEmitter = require('events').EventEmitter;
 var path = require('path');
+var pathExtra = require('path-extra');
 var fs = require('fs');
 var crypto = require('crypto');
 
-var Rsync = require('rsync'); // cp/rsync -a
+var copy = require('../util/copy');
 var mkdirp = Promise.promisify(require('mkdirp')); // mkdir -p
 
 var gitClient = require('../util/gitClient');
@@ -16,7 +17,7 @@ function randomName() {
     + crypto.randomBytes(4).readUInt32LE(0);
 }
 
-var MODULE_CACHE = path.join(__dirname, '..', '..', 'cache');
+var MODULE_CACHE = path.join(pathExtra.datadir(process.title), 'cache');
 var DEFAULT_URL = 'https://github.com/gameclosure/';
 
 var ModuleCache = Class(EventEmitter, function () {
@@ -167,21 +168,7 @@ var ModuleCache = Class(EventEmitter, function () {
     logger.log('installing', cacheEntry.name, 'at', copyTo);
 
     return mkdirp(copyTo).then(function () {
-
-      return new Promise(function (resolve, reject) {
-        new Rsync()
-        .flags('a')
-        .source(srcPath)
-        .destination(copyTo)
-        .execute(function (err, code, cmd) {
-          if (err) {
-            if (!(err instanceof Error)) { err = new Error(err); }
-            return reject(err);
-          }
-
-          return resolve();
-        });
-      });
+      return copy.path(srcPath, copyTo);
     }).nodeify(cb);
   };
 
