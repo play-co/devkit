@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env sh
+':' //; exec "$(command -v nodejs || command -v node)" "$0" "$@"
 
 /** @license
  * This file is part of the Game Closure SDK.

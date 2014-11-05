@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var Rsync = require('rsync');
+var copy = require('../util/copy');
 
 var Module = require('./Module');
 
@@ -43,7 +43,7 @@ var MANIFEST = 'manifest.json';
 var App = module.exports = Class(function () {
 
   this.init = function (root, manifest, lastOpened) {
-    trace('Instantiating app from', root);
+    trace('Instantiating App with root path:', root);
     this.paths = {
       root: root,
       build: path.join(root, 'build'),
@@ -260,6 +260,7 @@ var App = module.exports = Class(function () {
   }
 
   this.validate = function (opts, cb) {
+    trace('validating application');
     if (typeof opts === 'function') {
       cb = opts;
       opts = {};
@@ -443,11 +444,11 @@ var App = module.exports = Class(function () {
     }
   };
 
-  this.createFromTemplate = function (template, cb) {
+  this.createFromTemplate = function (template) {
 
     if (!template.type) {
       logger.log('Creating app using default template');
-      return this.createFromDefaultTemplate().nodeify(cb);
+      return this.createFromDefaultTemplate();
     }
 
     // if template is local file, copy it
@@ -457,10 +458,10 @@ var App = module.exports = Class(function () {
       if (fs.existsSync(templatePath) &&
           fs.lstatSync(templatePath).isDirectory()) {
         logger.log('Creating app using local template ' + templatePath);
-        return this._copyLocalTemplate(templatePath, cb);
+        return this._copyLocalTemplate(templatePath).nodeify(cb);
       } else {
         logger.warn('Failed to find template ' + templatePath);
-        return this.createFromDefaultTemplate(cb);
+        return this.createFromDefaultTemplate().nodeify(cb);
       }
     } else if (template.type === 'git') {
       // if template is not a local path, attempt to clone it
@@ -478,7 +479,7 @@ var App = module.exports = Class(function () {
         return git('clone', '--depth', '1', template.path, tempPath);
       }).then(function () {
         logger.log('Copying ' + tempPath + ' to ' + this.paths.root);
-        return this._copyLocalTemplate(tempPath, f.wait());
+        return this._copyLocalTemplate(tempPath);
       }).catch(FatalGitError, function (err) {
         logger.error(err.message);
         logger.log('Falling back to default template creation');
@@ -499,34 +500,19 @@ var App = module.exports = Class(function () {
     }
   };
 
-  this.createFromDefaultTemplate = function (cb) {
+  this.createFromDefaultTemplate = function () {
     logger.log('Creating app using default application template');
     var templatePath = path.join(APP_TEMPLATE_ROOT, DEFAULT_TEMPLATE);
-    return this._copyLocalTemplate(templatePath, cb);
+    return this._copyLocalTemplate(templatePath);
   };
 
-  this._copyLocalTemplate = function (templatePath, cb) {
+  this._copyLocalTemplate = function (templatePath) {
+    trace('_copyLocalTemplate');
+
     // read every file/folder in the template
     var projectRoot = this.paths.root;
     var templateFileList = fs.readdirSync(templatePath);
-    return Promise.each(templateFileList, function (child) {
-      // don't copy .git files
-      if (child === '.git') {
-        return;
-      }
-
-      // copy the file/folder recursively to the new app
-      return new Promise(function (resolve, reject) {
-        new Rsync()
-        .flags('r')
-        .source(path.join(templatePath,child))
-        .destination(projectRoot)
-        .execute(function (err, code, cmd) {
-          if (!err) { return resolve(); }
-          reject(new Error('Error during ' + cmd));
-        });
-      });
-    }).nodeify(cb);
+    return copy.path(templatePath, projectRoot);
   };
 
   this.acquireLock = function (cb) {

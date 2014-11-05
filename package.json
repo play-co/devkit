@@ -4,7 +4,7 @@
   },
   "name": "devkit",
   "description": "HTML 5 game platform for browser and mobile",
-  "version": "2.0.0-beta.8",
+  "version": "2.0.0-beta.10",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
     "url": "https://github.com/gameclosure/devkit2.git"
@@ -19,6 +19,7 @@
     "express": "4.x",
     "ff": "0.2.0",
     "filesize": "*",
+    "glob": "^4.0.6",
     "jsio": "2.0.0-beta.2",
     "lockfile": "^1.0.0",
     "mime": "1.2.11",
@@ -26,11 +27,14 @@
     "mkdirp": "0.5.0",
     "nib": "1.x",
     "optimist": "0.6.1",
+<<<<<<< HEAD
     "open": "*",
+=======
+    "path-extra": "^0.3.0",
+>>>>>>> upstream/develop
     "printf": "0.2.0",
     "request": "~2.10.0",
     "rimraf": "^2.2.8",
-    "rsync": "^0.3.0",
     "semver": "^3.0.1",
     "send": "^0.8.1",
     "socket.io": "^1.0.6",
