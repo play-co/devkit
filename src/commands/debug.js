@@ -106,7 +106,9 @@ function getHelpText(target, buildModule) {
 
 function getBuildModules(app) {
   var buildModules = {};
-  app.getModules().forEach(function (module) {
+  var modules = app.getModules();
+  Object.keys(modules).forEach(function (moduleName) {
+    var module = modules[moduleName];
     Object.keys(module.getBuildTargets()).forEach(function (target) {
       buildModules[target] = module.loadBuildTarget(target);
     });
