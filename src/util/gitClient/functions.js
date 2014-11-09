@@ -320,7 +320,7 @@ exports.getHashForRef = function getHashForRef (ref, cb) {
     if (remote) { return remote.hash; }
 
     var local = refs.filter(function (refInfo) {
-      return refInfo.ref === ref;
+      return refInfo.ref.trim() === ref;
     })[0];
 
     trace('local', local);
