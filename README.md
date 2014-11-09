@@ -39,6 +39,15 @@ global `node_modules` folder.
 
     npm install -g devkit
 
+
+### Linux
+Follow the instructions on [the project wiki](https://github.com/gameclosure/devkit2/wiki/Install-Instructions---Linux)
+
+### Windows
+Follow the instructions on [the project wiki](https://github.com/gameclosure/devkit2/wiki/Install-Instructions---Windows)
+
+
+
 ## Creating your first game
 
 You need a `shortname` for your game.  The `shortname` should start with a
