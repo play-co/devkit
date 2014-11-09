@@ -160,8 +160,8 @@ Example commands:
    JSON format
  * `devkit modules`: shows the version of each module in the current app from
    the manifest as well as the current version of the module (if it differs)
- * `dekvit modules --save-current`: updates an app's dependencies in the app
+ * `devkit modules --save-current`: updates an app's dependencies in the app
    manifest to reflect the current git version for each module on the file
    system
- * `dekvit modules devkit-core --save-current`: same as above, but only for the
+ * `devkit modules devkit-core --save-current`: same as above, but only for the
    devkit-core module
