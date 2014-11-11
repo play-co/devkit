@@ -40,7 +40,7 @@
   },
   "main": "src/devkit.js",
   "scripts": {
-    "postinstall": "scripts/postinstall.sh",
+    "postinstall": "sh scripts/postinstall.sh",
     "test": "mocha --reporter spec --recursive -C ./tests"
   },
   "devDependencies": {
