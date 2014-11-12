@@ -38,23 +38,23 @@ var logger = logging.get('devkit');
 
 // Command line invocation.
 if (require.main === module) {
-	main();
+  main();
 }
 
 function main () {
-	var commands = require('./commands');
-	var argv = commands.argv;
-	var args = argv._;
+  var commands = require('./commands');
+  var argv = commands.argv;
+  var args = argv._;
 
-	var name;
-	if (commands.has(args[0])) {
-		name = args.shift();
-	} else if (argv.version) {
-		name = 'version';
-	} else {
-		name = 'help';
-	}
+  var name;
+  if (commands.has(args[0])) {
+    name = args.shift();
+  } else if (argv.version) {
+    name = 'version';
+  } else {
+    name = 'help';
+  }
 
-	var command = commands.get(name);
-	command.exec(args);
+  var command = commands.get(name);
+  command.exec(args);
 }
