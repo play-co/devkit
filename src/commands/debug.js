@@ -29,11 +29,7 @@ var DebugCommand = Class(BaseCommand, function (supr) {
   this.exec = function (args, cb) {
     var argv = this.opts.argv;
     var allArgs = argv._;
-    // Not sure why this is in a conditional at all since the first argument to
-    // a node script will always be the interpreter. Second, The commands
-    // shouldn't need to deal with this level of argument parsing.
-    if (/node/.test(allArgs[0])) { allArgs.shift(); }
-    if (allArgs[1] == 'release') {
+    if (allArgs[1] === 'release') {
       argv.scheme = 'release';
 
       // unless overriden with --debug, debug is false for release builds

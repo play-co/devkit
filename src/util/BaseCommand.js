@@ -24,6 +24,13 @@ exports.BaseCommand = Class(function () {
   this.description = '';
 
   this.init = function () {
+
+    // strip off executable if it matches node|nodejs
+    var executable = path.basename(process.argv[0]);
+    if (executable === 'node' || executable === 'nodejs') {
+      process.argv.shift();
+    }
+
     this.opts = require('optimist')(process.argv);
     this.logger = logging.get(this.name);
   };
