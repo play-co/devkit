@@ -57,7 +57,7 @@ var AppsCommand = Class(BaseCommand, function (supr) {
           manifestPath = app.paths.manifest;
         }
 
-        if (err == apps.APP_NOT_FOUND && fs.existsSync('manifest.json')) {
+        if (err instanceof apps.ApplicationNotFoundError && fs.existsSync('manifest.json')) {
           try {
             manifestPath = 'manifest.json';
             manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
