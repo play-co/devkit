@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var printf = require('printf');
 var os = require('os');
 var exec = require('child_process').exec;
+var open = require('open');
 
 var apps = require('../apps');
 
@@ -117,18 +118,15 @@ function getAPIRouter(opts) {
   });
 
   api.get('/openAppExternal', function (req, res) {
-    var platform = os.platform();
-    if (platform == 'darwin') {
-      apps.get(req.query.app, {updateLastOpened: false}, function (err, app) {
-        if (app) {
-          exec('open ' + app.paths.root);
-        }
+    apps.get(req.query.app, {updateLastOpened: false}, function (err, app) {
+      if (app) {
+        // Used open package to 
+        open(app.paths.root);
+      }
 
-        res.status(200).send();
-      });
-    } else {
-      res.status(500).send();
-    }
+      res.status(200).send();
+    });
+    
   });
 
   api.get('/title', function (req, res) {
