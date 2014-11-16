@@ -2,6 +2,7 @@ var path = require('path');
 var fs = require('fs');
 var color = require('cli-color');
 var spawn = require('child_process').spawn;
+var os = require('os');
 
 var gitClient = require('../util/gitClient');
 var logger = require('../util/logging').get('module');
@@ -212,7 +213,23 @@ Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
     npmArgs.push('--unsafe-perm');
   }
 
-  var npm = spawn('npm', npmArgs, {stdio: 'inherit', cwd: modulePath});
+  var command = 'npm';
+  var options = {stdio: 'inherit', cwd: modulePath};
+
+  // detect windows
+  var windows = (os.platform() === 'win32');
+
+  // on windows, process.spawn can only call executables on the path
+  // this is an ugly workaround to allow calling npm install inside
+  // the module directory. This should be replaced with proper npm
+  // install handling for modules.
+  if (windows) {
+    command = 'cmd.exe';
+    npmArgs = ['/C', 'npm'].concat(npmArgs);
+    options.windowsVerbatimArguments = true;
+  }
+
+  var npm = spawn(command, npmArgs, options);
   return new Promise(function (resolve, reject) {
     npm.on('close', resolve);
   }).nodeify(cb);
