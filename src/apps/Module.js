@@ -208,7 +208,7 @@ Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
   logger.log('running install scripts...');
 
   var npmArgs = ['install'];
-  if (process.getuid() === 0) {
+  if (process.getuid && process.getuid() === 0) {
     npmArgs.push('--unsafe-perm');
   }
 
