@@ -7,6 +7,12 @@ var UnknownGitRevision = errors.UnknownGitRevision;
 var FatalGitError = errors.FatalGitError;
 var UnknownGitOption = errors.UnknownGitOption;
 
+
+// the git commands on windows don't return the OS end of line (\r\n)
+// using this regex for all end of line matching instead of os.EOL
+// when parsing command responses
+var EOL_REGEX = /[\r]?\n/;
+
 /**
  * remove leading / trailing whitespace from a string
  */
@@ -27,7 +33,7 @@ exports.getLatestLocalTag = function getLatestLocalTag (cb) {
     return git('tag', '-l', {extraSilent: true});
   }).then(function (tags) {
     if (tags) {
-      tags = tags.split(os.EOL).filter(semver.valid);
+      tags = tags.split(EOL_REGEX).filter(semver.valid);
       tags.sort(semver.rcompare);
       return tags[0];
     }
@@ -46,7 +52,7 @@ exports.getLocalTags = function getLocalTags (cb) {
   var git = this;
   return git('tag', '-l', {extraSilent: true}).then(function (tags) {
     if (tags) {
-      tags = tags.split(os.EOL).filter(semver.valid);
+      tags = tags.split(EOL_REGEX).filter(semver.valid);
       tags.sort(semver.rcompare);
       return tags;
     }
@@ -278,7 +284,7 @@ exports.validateVersion = function validateVersion (version, cb) {
 
 function parseShowRefOutput (refs) {
   // TODO handle tags
-  return (refs || '').split(os.EOL).filter(function (str) {
+  return (refs || '').split(EOL_REGEX).filter(function (str) {
     return !!str;
   }).map(function (ref) {
     var parts = ref.split(' ');
