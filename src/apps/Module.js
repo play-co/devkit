@@ -166,7 +166,7 @@ Module.setVersion = function (modulePath, version, opts) {
   }).then(function (requestedVersion) {
     trace('input version', version);
     trace('requestedVersion', requestedVersion);
-    this.requestedVersion = requestedVersion;
+    this.requestedVersion = strip(requestedVersion);
 
     // Get information about current head and the requested version
     return [
