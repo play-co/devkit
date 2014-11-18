@@ -154,6 +154,17 @@ exports = Class(squill.Widget, function (supr) {
     this._simulatorMenuItems = [];
     this._port = opts.port || 9201;
     this._debug = true;
+    this._validOrientations = {};
+    this._manifest = this._device.getManifest();
+    this._manifest.supportedOrientations.forEach(function (orientation) {
+      this._validOrientations[orientation] = true;
+    }, this);
+
+    if (this._validOrientations.portrait && this._validOrientations.landscape) {
+      this.btnRotate.show();
+    } else {
+      this.btnRotate.hide();
+    }
 
     this._rotation = opts.rotation || 0;
     this._backgroundProps = {};
@@ -503,28 +514,32 @@ exports = Class(squill.Widget, function (supr) {
 
   this.rotate = function () {
 
-    if (this._canRotate) {
-      ++this._rotation;
-
-      this.setTransitionsEnabled(true);
-      this.hideToolbar();
-      this.contents.style.WebkitTransform = 'rotate(' + (this._rotation % 2 ? 90 : -90) + 'deg)';
-
-      var onRotate = bind(this, function () {
-        this.contents.removeEventListener("webkitTransitionEnd", onRotate);
-        this.setTransitionsEnabled(false);
-
-        this.contents.style.WebkitTransform = '';
-        this.showToolbar();
-        this.update();
-
-        setTimeout(bind(this, 'setTransitionsEnabled', true), 100);
-      });
-
-      this.contents.addEventListener("webkitTransitionEnd", onRotate);
+    var isLandscape = (this._rotation + 1) % 2 == 1;
+    if (!this._canRotate
+          || isLandscape && !('landscape' in this._validOrientations)
+          || !isLandscape && !('portrait' in this._validOrientations))
+    {
+      return;
     }
 
-    return this._rotation;
+    ++this._rotation;
+
+    this.setTransitionsEnabled(true);
+    this.hideToolbar();
+    this.contents.style.WebkitTransform = 'rotate(' + (this._rotation % 2 ? 90 : -90) + 'deg)';
+
+    var onRotate = bind(this, function () {
+      this.contents.removeEventListener("webkitTransitionEnd", onRotate);
+      this.setTransitionsEnabled(false);
+
+      this.contents.style.WebkitTransform = '';
+      this.showToolbar();
+      this.update();
+
+      setTimeout(bind(this, 'setTransitionsEnabled', true), 100);
+    });
+
+    this.contents.addEventListener("webkitTransitionEnd", onRotate);
   };
 
   this.hideToolbar = function () {
@@ -588,9 +603,17 @@ exports = Class(squill.Widget, function (supr) {
     if (!params) { return; }
 
     var parent = this._widgetParent;
+    var canRotatePortrait = ('portrait' in this._validOrientations);
+    var canRotateLandscape = ('landscape' in this._validOrientations);
+
+    if (canRotatePortrait && !canRotateLandscape) {
+      this._rotation = 0;
+    } else if (canRotateLandscape && !canRotatePortrait) {
+      this._rotation = 1;
+    }
+
     this._canRotate = 'canRotate' in params ? !!params.canRotate : true;
     this._isDragEnabled = 'canDrag' in params ? !!params.canDrag : true;
-
     if (!params.canRotate) {
       this._rotation = 0;
     }

@@ -181,8 +181,8 @@ var Device = exports = Class(lib.PubSub, function (supr) {
     return this._conn;
   }
 
-  this.getManifest = function (cb) {
-
+  this.getManifest = function () {
+    return this.controller.getManifest();
   }
 
   this.getAppTitle = function () { return this._appTitle; }

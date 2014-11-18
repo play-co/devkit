@@ -154,6 +154,14 @@ function getAPIRouter(opts) {
     })
   });
 
+  api.get('/manifest', function (req, res) {
+    var appPath = req.query.app;
+    apps.get(appPath, {updateLastOpened: false}, function (err, app) {
+      if (err) { return res.status(404).send(err); }
+      res.send(app.manifest);
+    });
+  });
+
   api.get('/home', function (req, res) {
     res.json({path: process.env.HOME
       || process.env.HOMEPATH
