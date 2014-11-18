@@ -1,11 +1,15 @@
+var fs = require('fs');
 var optimist = require('optimist');
+var path = require('path');
 var printf = require('printf');
 
-var commandNames = [
-  'debug', 'serve', 'help', 'instructions',
-  'version', 'install', 'register', 'init',
-  'upgrade', 'remove', 'which',
-  'apps', 'modules'];
+var commandNames = [];
+fs.readdirSync(__dirname).forEach(function (item) {
+  var extname = path.extname(item);
+  if (extname === '.js' && item !== 'index.js') {
+    commandNames.push(path.basename(item, extname));
+  }
+});
 
 var _usage = [];
 var _commands = {};
