@@ -24,7 +24,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
       .describe('list-versions', 'prints all available versions (does not update anything)')
   }
 
-  this.exec = function (args, cb) {
+  this.exec = function (command, args, cb) {
     var argv = this.opts.argv;
     var moduleName = args.shift();
     var isJSON = argv.json;

@@ -3,8 +3,11 @@ var BaseCommand = require('../util/BaseCommand').BaseCommand;
 var DebugCommand = Class(BaseCommand, function (supr) {
 
   this.name = 'debug';
-  this.alias = ['release'];
-  this.description = 'create a build';
+  this.alias = [{
+    name: 'release',
+    description: "creates a release build"
+  }];
+  this.description = 'creates a debug build';
 
   this.init = function () {
     supr(this, 'init', arguments);
@@ -23,15 +26,13 @@ var DebugCommand = Class(BaseCommand, function (supr) {
     supr(this, 'showHelp', arguments);
 
     process.argv.push('--help');
-    this.exec(args);
+    this.exec(this.name, args);
   }
 
-  this.exec = function (args, cb) {
+  this.exec = function (command, args, cb) {
     var argv = this.opts.argv;
-    var allArgs = argv._;
-    if (allArgs[1] === 'release') {
+    if (command === 'release') {
       argv.scheme = 'release';
-
       // unless overriden with --debug, debug is false for release builds
       if (!('debug' in argv)) {
         argv.debug = false;

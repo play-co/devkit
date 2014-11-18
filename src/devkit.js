@@ -56,5 +56,5 @@ function main () {
   }
 
   var command = commands.get(name);
-  command.exec(args);
+  command.exec(name, args);
 }

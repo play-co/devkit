@@ -7,7 +7,7 @@ var InstructionsCommand = Class(BaseCommand, function (supr) {
   this.name = 'instructions';
   this.description = 'prints some basic getting started instructions';
 
-  this.exec = function (args, cb) {
+  this.exec = function (command, args, cb) {
     var target = args.shift();
 
     // TODO: make context based coloring and remove all of this cruft

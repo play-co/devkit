@@ -20,7 +20,7 @@ var RegisterCommand = Class(BaseCommand, function (supr) {
       .boolean('recursive');
   }
 
-  this.exec = function (args, cb) {
+  this.exec = function (command, args, cb) {
     var logger = this.logger;
     var argv = this.opts.argv;
     var args = argv._;

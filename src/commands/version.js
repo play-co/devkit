@@ -7,7 +7,6 @@ var VersionCommand = Class(BaseCommand, function (supr) {
 
 	this.name = 'version';
 	this.description = 'prints the version of DevKit';
-	this.alias = ['version', 'v'];
 
 	this.exec = function () {
 		var packageJson = path.join(__dirname, '..', '..', 'package.json');

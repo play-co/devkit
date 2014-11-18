@@ -22,7 +22,7 @@ var RemoveCommand = Class(BaseCommand, function (supr) {
       .describe('--cache', 'removes the module from the DevKit module cache');
   }
 
-  this.exec = function (args, cb) {
+  this.exec = function (command, args, cb) {
 
     var argv = this.opts.argv;
     var protocol = argv.ssh ? 'ssh' : 'https';

@@ -41,7 +41,7 @@ exports.BaseCommand = Class(function () {
     this.opts.showHelp();
   };
 
-  this.exec = function (args, cb) {
+  this.exec = function (command, args, cb) {
     // to implement
   };
 });

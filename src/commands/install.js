@@ -28,7 +28,7 @@ function printErrorAndExit (msg, err, code) {
 var InstallCommand = Class(BaseCommand, function (supr) {
 
   this.name = 'install';
-  this.description = 'installs (or updates) devkit dependencies' +
+  this.description = 'installs (or updates) devkit dependencies ' +
     'for an app or a specific dependency if one is provided';
 
   this.init = function () {
@@ -43,7 +43,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       );
   };
 
-  this.exec = function (args, cb) {
+  this.exec = function (command, args, cb) {
 
     var argv = this.opts.argv;
     var protocol = argv.ssh ? 'ssh' : 'https';
