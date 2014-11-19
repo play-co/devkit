@@ -227,9 +227,6 @@ var AppManager = Class(EventEmitter, function () {
 
 module.exports = new AppManager();
 
-// error message when failing to load an app
-module.exports.APP_NOT_FOUND = 'App not found';
-
 /**
  * @reexport ApplicationNotFoundError
  */

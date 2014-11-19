@@ -28,7 +28,7 @@ var RegisterCommand = Class(BaseCommand, function (supr) {
 
     apps.get(appPath, function (err, app) {
       if (err) {
-        if (err !== apps.APP_NOT_FOUND) {
+        if (!(err instanceof apps.ApplicationNotFoundError)) {
           logger.error(err);
         } else if (argv.recursive) {
           recursiveSearch(appPath);
@@ -43,7 +43,7 @@ var RegisterCommand = Class(BaseCommand, function (supr) {
       walk(basePath, {
         onDirectory: function (dir, stat, cb) {
           apps.get(dir, function (err, app) {
-            if (err == apps.APP_NOT_FOUND) {
+            if (err instanceof apps.ApplicationNotFoundError) {
               // app not found, keep recursing
               cb();
             } else {
