@@ -31,7 +31,7 @@ var AppsCommand = Class(BaseCommand, function (supr) {
       .describe('set-config')
   }
 
-  this.exec = function (args) {
+  this.exec = function (name, args) {
     var argv = this.opts.argv;
 
 

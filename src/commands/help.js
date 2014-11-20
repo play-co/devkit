@@ -6,7 +6,7 @@ var HelpCommand = Class(BaseCommand, function (supr) {
   this.name = 'help';
   this.description = 'prints this help message';
 
-  this.exec = function (args, cb) {
+  this.exec = function (command, args, cb) {
     var cmd = args.shift();
 
     if (commands.has(cmd)) {

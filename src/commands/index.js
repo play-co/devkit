@@ -13,32 +13,85 @@ fs.readdirSync(__dirname).forEach(function (item) {
 
 var _usage = [];
 var _commands = {};
+var commandUsages = [];
 
 // get all commands and their descriptions
 commandNames.forEach(function (name) {
   var Command = require('./' + name);
+
+  var aliasNames = [];
+  var aliasUsages = [];
   if (typeof Command == 'function') {
     var cmd = _commands[name] = new Command();
 
     // setup a single or array of aliases (e.g. "--version" and "-v" for the "version" command)
     if (cmd.alias) {
       var isArray = Array.isArray(cmd.alias);
-      var first = isArray ? cmd.alias[0] : cmd.alias;
-      optimist.boolean(first, cmd.description);
-      if (isArray) {
-        cmd.alias.slice(1).forEach(function (alias) {
-          optimist.alias(alias, first);
-        });
+      var aliases = cmd.alias;
+      if (!isArray) {
+        aliases = [aliases];
       }
 
-      if (!_commands[first]) {
-        _commands[first] = cmd;
+      for (var i = 0; i < aliases.length; i++) {
+        var alias = aliases[i];
+
+        // if alias is an object with description, treat as own command
+        if (alias.name && alias.description) {
+          var aliasCommand = alias.name;
+          var description = alias.description;
+          if (!_commands[aliasCommand]) {
+            // add alias as a reference to this command
+            _commands[aliasCommand] = cmd;
+
+            // build usage string and add to alias usage list
+            aliasUsages.push(alias);
+          }
+
+        } else {
+          // add alias for command name
+          optimist.alias(name, alias);
+
+          // add to list of alias names
+          aliasNames.push(alias);
+        }
       }
     }
 
-    _usage.push(printf('  %-10s %s', cmd.name, cmd.description));
+    // create "command name (aliases)" string
+    var commandName = cmd.name;
+    if (aliasNames.length > 0) {
+      commandName += ", " + aliasNames.join(', ');
+    }
+    // create usage data
+    commandUsages.push({name: commandName, description: cmd.description});
+
+    // add alias command usages after the main command
+    if (aliasUsages.length > 0) {
+      commandUsages = commandUsages.concat(aliasUsages);
+    }
   }
+
 });
+
+
+// build usage strings for all the commands
+
+// find the longest command name
+var commandLength = 0;
+for (var i = 0; i < commandUsages.length; i++) {
+  if (commandUsages[i].name.length > commandLength) {
+    commandLength = commandUsages[i].name.length;
+  }
+}
+
+var format = "  %-" + (commandLength + 1) + "s %s";
+for (var i = 0; i < commandUsages.length; i++) {
+  _usage.push(
+    printf(
+      format, commandUsages[i].name, commandUsages[i].description
+    )
+  );
+}
 
 var usageStr = "usage: devkit [--version] [--help] <command> [<args>]\n\n"
   + "available commands:\n" + _usage.join('\n') + "\n\n"

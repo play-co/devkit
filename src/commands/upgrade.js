@@ -17,7 +17,7 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
       .describe('version', 'set a specific version');
   }
 
-  this.exec = function (args, cb) {
+  this.exec = function (command, args, cb) {
     var moduleName = args.shift() || 'devkit-core';
     apps.get('.', bind(this, function (err, app) {
       if (err) { throw err; }

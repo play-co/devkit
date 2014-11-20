@@ -26,7 +26,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
       .describe('git-template', 'path to git repository');
   };
 
-  this.exec = function (args, cb) {
+  this.exec = function (command, args, cb) {
     return Promise.bind(this).then(function () {
       // check the app name
       var appPath = args.shift();
@@ -77,7 +77,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
 
       // change to app root and run install command
       process.chdir(app.paths.root);
-      return commands.get('install').exec([]);
+      return commands.get('install').exec('install', []);
 
     }).then(function () {
 
@@ -87,7 +87,9 @@ var InitCommand = Class(BaseCommand, function (supr) {
       );
 
       return new Promise(function (resolve) {
-        commands.get('instructions').exec(['new_application'], resolve);
+        commands
+          .get('instructions')
+          .exec('instructions', ['new_application'], resolve);
       });
 
     }).catch(DestinationExistsError, function (err) {
