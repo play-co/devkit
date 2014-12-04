@@ -30,11 +30,8 @@ var apps = require('../apps');
 /*
  * returns an object describing an app
  */
-exports.get = function (appPath, cb) {
-  apps.get(appPath, function (err, app) {
-
-    // get the JSON for this app
-    // see toJSON methods for App and Module for API
-    cb && cb(err, app && app.toJSON());
-  });
+exports.get = function (app, cb) {
+  // get the JSON for this app
+  // see toJSON methods for App and Module for API
+  cb && cb(null, app && app.toJSON());
 }
