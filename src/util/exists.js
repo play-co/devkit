@@ -21,8 +21,7 @@ exports.exists = function exists (filePath) {
       if (pathExists) {
         return resolve(pathExists);
       }
-
-      return reject(new IOError('ENOENT -> ' + filepath));
+      return reject(new IOError('ENOENT -> ' + filePath));
     });
   });
 };
