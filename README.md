@@ -1,4 +1,16 @@
-# Install the Game Closure DevKit
+devkit
+======
+
+The Game Closure DevKit is an HTML5 game engine that runs in the browser and
+builds to iOS and Android.
+
+## DEPRECATION NOTICE
+
+All development of the Game Closure DevKit has moved to
+[the devkit2 repository][devkit2]. This repository remains to support those
+still using v1 of devkit. New devkit users should be on devkit2.
+
+## Install the Game Closure DevKit
 
 	  $ git clone git@github.com:gameclosure/devkit.git
 	  $ cd devkit
@@ -242,3 +254,5 @@ projects, and other utilities and services use the remaining ports.
 * 9225 - Native View Inspector
 * 9226 - Native View Inspector
 * 9227-9240 - Unused
+
+[devkit2]: https://github.com/gameclosure/devkit2
