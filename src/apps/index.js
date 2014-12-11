@@ -166,6 +166,10 @@ var AppManager = Class(EventEmitter, function () {
       opts = {};
     }
 
+    if (this._apps[appPath]) {
+      return Promise.resolve(this._apps[appPath]).nodeify(cb);
+    }
+
     if (!opts) { opts = {}; }
 
     appPath = resolveAppPath(appPath);
