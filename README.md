@@ -1,8 +1,10 @@
 The Game Closure DevKit
 =======================
 
-The Game Closure DevKit is an HTML5 game engine that runs in the browser and
-build for mobile with native performance.
+HTML5 JavaScript game development kit. Runs in your browser, builds to iOS and
+Android.
+
+![devkit](https://cloud.githubusercontent.com/assets/4285147/5399582/7ab4683a-8121-11e4-9f15-6f3b1194b2dc.png)
 
 ## Installation
 
