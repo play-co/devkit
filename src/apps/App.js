@@ -7,6 +7,7 @@ var Module = require('./Module');
 var lockFile = require('../util/lockfile');
 var rimraf = require('../util/rimraf');
 var gitClient = require('../util/gitClient');
+var FatalGitError = gitClient.FatalGitError;
 var logger = require('../util/logging').get('apps');
 var stringify = require('../util/stringify');
 
@@ -467,7 +468,7 @@ var App = module.exports = Class(function () {
       // if template is not a local path, attempt to clone it
       var tempPath = path.join(APP_TEMPLATE_ROOT, '_template');
 
-      return exists(tempPath).then(function () {
+      return exists(tempPath).bind(this).then(function () {
         trace('tempPath exists - removing');
         return rimraf(tempPath);
       }).catch(IOError, function (err) {
@@ -488,7 +489,7 @@ var App = module.exports = Class(function () {
         if (fs.existsSync(tempPath)) {
           return rimraf(tempPath);
         }
-      }).nodeify(cb);
+      }).nodeify();
 
     } else if (template.type === 'none') {
       logger.log('Creating application with no template');
