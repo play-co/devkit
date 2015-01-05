@@ -14,6 +14,21 @@ ApplicationNotFoundError.prototype.constructor = ApplicationNotFoundError;
 exports.ApplicationNotFoundError = ApplicationNotFoundError;
 
 /**
+ * @class InvalidManifestError
+ */
+
+function InvalidManifestError (message) {
+  this.message = message;
+  this.name = 'InvalidManifestError';
+  Error.captureStackTrace(this, InvalidManifestError);
+}
+
+InvalidManifestError.prototype = Object.create(Error.prototype);
+InvalidManifestError.prototype.constructor = InvalidManifestError;
+
+exports.InvalidManifestError = InvalidManifestError;
+
+/**
  * @class DestinationExistsError
  */
 
