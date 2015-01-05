@@ -584,8 +584,14 @@ App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
     return Promise.reject(new InvalidManifestError(appPath));
   }).then(function (manifest) {
 
-    // if manifest has no appID, create it and save the manifest
-    if (!manifest.appID) {
+    // if manifest has no appID, assume this isn't a devkit app
+    if ('appID' in manifest === false) {
+      return Promise.reject(new ApplicationNotFoundError(appPath));
+    } else if (manifest.appID) {
+      return Promise.resolve(manifest);
+    } else {
+
+      // if manifest has a blank/false/0 appID, generate one and save manifest
       manifest.appID = createUUID();
       var writeFile = Promise.promisify(fs.writeFile);
       var data = stringify(manifest);
@@ -596,10 +602,8 @@ App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
           return resolve(manifest);
         });
       });
-
-    } else {
-      return Promise.resolve(manifest);
     }
+
   }).then(function (manifest) {
     trace('returning App for appPath', appPath);
     return Promise.resolve(new App(appPath, manifest, lastOpened));
