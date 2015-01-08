@@ -28,7 +28,7 @@ if (icon) {
 
   var ua = navigator.userAgent;
   var src;
-  if (/Safari|AppleWebKit/i.test(ua) && /iPod|iPhone|iPad|Android/i.test(ua) || /testMobile/.test(window.location) || /Mobile/i.test(ua)) {
+  if (window.parent == window && (/Safari|AppleWebKit/i.test(ua) && /iPod|iPhone|iPad|Android/i.test(ua) || /testMobile/.test(window.location) || /Mobile/i.test(ua))) {
     src = ".src.serve.static.simulator.mobileGUI";
   } else {
     src = ".src.serve.static.simulator.GUI";
