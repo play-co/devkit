@@ -15,6 +15,7 @@ var UnknownGitRevision = gitClient.UnknownGitRevision;
 var FatalGitError = gitClient.FatalGitError;
 var UnknownGitOption = gitClient.UnknownGitOption;
 var ApplicationNotFoundError = apps.ApplicationNotFoundError;
+var InvalidManifestError = apps.InvalidManifestError;
 var FileLockerError = lockfile.FileLockerError;
 
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
@@ -114,6 +115,11 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       return printErrorAndExit([
         'Could not find a valid devkit application. Are you in a devkit',
         'application directory?'
+      ], err);
+    }).catch(InvalidManifestError, function (err) {
+      return printErrorAndExit([
+        'Could not parse manifest.json. Are you in a devkit',
+        'application directory? Is your manifest a valid json file?'
       ], err);
     }).catch(FileLockerError, function (err) {
       return printErrorAndExit([

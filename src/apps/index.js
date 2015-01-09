@@ -29,6 +29,7 @@ var resolveAppPath = appFunctions.resolveAppPath;
 var errorTypes = require('./errors');
 
 var ApplicationNotFoundError = errorTypes.ApplicationNotFoundError;
+var InvalidManifestError = errorTypes.InvalidManifestError;
 var DestinationExistsError = errorTypes.DestinationExistsError;
 
 var MANIFEST = 'manifest.json';
@@ -236,6 +237,12 @@ module.exports = new AppManager();
  */
 
 module.exports.ApplicationNotFoundError = ApplicationNotFoundError;
+
+/**
+ * @reexport InvalidManifestError
+ */
+
+module.exports.InvalidManifestError = InvalidManifestError;
 
 /**
  * @reexport DestinationExistsError

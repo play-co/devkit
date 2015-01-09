@@ -1,16 +1,46 @@
 var path = require('path');
+var rimraf = require('rimraf');
+var copy = require(path.join(__src, 'util/copy'));
 
 var App = require(path.join(__src, 'apps', 'App'));
 var AppManager = require(path.join(__src, 'apps'));
 var ApplicationNotFoundError =
   require(path.join(__src, '/apps/errors')).ApplicationNotFoundError;
+var InvalidManifestError =
+  require(path.join(__src, '/apps/errors')).InvalidManifestError;
 
 // Some paths to various applications
 var testApps = path.join(__dirname, '..', 'test-apps');
 var validAppPath = path.join(testApps, 'valid-app');
 var noManifestPath = path.join(testApps, 'no-manifest');
+var invalidManifestPath = path.join(testApps, 'invalid-manifest');
 var randomPath = path.join(testApps, 'arstarstarst');
-var nonDevkitManifest = path.join(testApps, 'invalid-manifest');
+var nonDevkitManifest = path.join(testApps, 'non-devkit-manifest');
+var noAppIDManifest = path.join(testApps, 'no-appid-manifest');
+var noAppIDManifestCopy = path.join(testApps, 'no-appid-manifest-copy');
+
+describe('App', function () {
+  describe('loadFromPath', function () {
+    before(function (done) {
+      // make a copy of noAppID project
+      copy.path(noAppIDManifest, noAppIDManifestCopy).then(done);
+    });
+
+    after(function (done) {
+      // remove copy of noAppID project
+      rimraf(noAppIDManifestCopy, done);
+    });
+
+    it('should generate an appID if an empty one exists', function (done) {
+      App.loadFromPath(noAppIDManifestCopy, null)
+      .then(function (app) {
+        assert.ok(app.manifest.appID);
+      })
+      .then(done)
+      .catch(done);
+    });
+  });
+});
 
 describe('App', function () {
   describe('loadFromPath', function () {
@@ -29,10 +59,10 @@ describe('App', function () {
       });
     });
 
-    it('resolves ApplicationNotFoundError if no manifest', function (done) {
-      App.loadFromPath(noManifestPath, null)
+    it('resolves InvalidManifestError if invalid manifest', function (done) {
+      App.loadFromPath(invalidManifestPath, null)
       .then(done)
-      .catch(ApplicationNotFoundError, function (err) {
+      .catch(InvalidManifestError, function (err) {
         done();
       });
     });
