@@ -2,7 +2,8 @@ var ff = require('ff');
 var path = require('path');
 var color = require('cli-color');
 var printf = require('printf');
-var logger = require('../util/logging').get('build');
+var logging = require('../util/logging');
+var logger = logging.get('build');
 var apps = require('../apps');
 
 exports.build = function (appPath, argv, cb) {
@@ -12,6 +13,7 @@ exports.build = function (appPath, argv, cb) {
   var config;
   var elapsed = 0;
   function onFinish(err, res) {
+    logging.unsetFileTarg();
     cb(err, merge({
       elapsed: elapsed,
       config: config
@@ -46,6 +48,13 @@ exports.build = function (appPath, argv, cb) {
       }
     });
   }, function () {
+    // TODO: do we really not know the build directory here?
+    // This should be the first thing that happens, so we would need the build
+    // path first thing.  Is that possible?
+    appPath = app.paths.root;
+    if (appPath) {
+      logging.setFileTarg(appPath + '/TEST_LOG.log');
+    }
     // app.acquireLock(f());
   }, function () {
     // _hasLock = true;
