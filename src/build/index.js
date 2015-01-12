@@ -18,8 +18,10 @@ exports.build = function (appPath, argv, cb) {
       config: config
     }, res));
 
-    setBuidInfo('active', false);
-    setBuidInfo('timeStopped', Date.now());
+    if (!argv['get-config']) {
+      setBuidInfo('active', false);
+      setBuidInfo('timeStopped', Date.now());
+    }
   }
 
   // TODO: Would be nice to use a lib for mirroring this object on dist instead
@@ -92,17 +94,25 @@ exports.build = function (appPath, argv, cb) {
   }, function (res) {
     config = res;
 
-    // Set up the .buildInfo file
-    // TODO: if there is an error before this point, we fail silently.  This is bad
-    buildInfoPath = config.outputPath + '/.buildInfo';
-    setBuidInfo({
-      timeStarted: startTime,
-      timeStopped: 0,
-      active: true,
-      currentStep: 0,
-      steps: 8,
-      errors: ''
-    });
+    // Skip to success
+    if (argv['get-config']) {
+      // ONLY print config to stdout
+      console.log(config);
+      f.succeed();
+    } else {
+      // Set up the .buildInfo file
+      // TODO: if there is an error before this point, we fail silently.  This is bad
+      buildInfoPath = config.outputPath + '/.buildInfo';
+      // Overwrite old one
+      setBuidInfo({
+        timeStarted: startTime,
+        timeStopped: 0,
+        active: true,
+        currentStep: 0,
+        steps: 8,
+        errors: ''
+      });
+    }
   }, function () {
     require('./steps/buildHooks').getDependencies(app, config, f());
   }, incrementBuildInfoStep, function (deps) {
