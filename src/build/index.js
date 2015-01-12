@@ -39,14 +39,18 @@ exports.build = function (appPath, argv, cb) {
     }
     return buildInfo;
   }
-  /** if no value is set, key is assumed to be whole object */
+  /** if no value is set, key is assumed to be whole object and old object obliterated */
   var setBuildInfo = function(key, value) {
     if (!buildInfoPath) {
       logger.error('Cannot SET build info before buildInfoPath is set');
       return null;
     }
     if (value === undefined) {
-      fs.writeFileSync(buildInfoPath, JSON.stringify(key));
+      if (typeof key == 'object') {
+        fs.writeFileSync(buildInfoPath, JSON.stringify(key));
+      } else {
+        logger.error('Cannot write non object for buildInfo' + key);
+      }
     } else {
       var buildInfo = getBuildInfo();
       buildInfo[key] = value;
