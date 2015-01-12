@@ -1,4 +1,5 @@
 var ff = require('ff');
+var fs = require('fs');
 var path = require('path');
 var color = require('cli-color');
 var printf = require('printf');
@@ -16,6 +17,44 @@ exports.build = function (appPath, argv, cb) {
       elapsed: elapsed,
       config: config
     }, res));
+
+    setBuidInfo('active', false);
+    setBuidInfo('timeStopped', Date.now());
+  }
+
+  // TODO: Would be nice to use a lib for mirroring this object on dist instead
+  // of these custom functions
+  var buildInfoPath;
+  /** key is optional. if no key, return the whole object */
+  var getBuildInfo = function(key) {
+    if (!buildInfoPath) {
+      logger.error('Cannot GET build info before buildInfoPath is set');
+      return null;
+    }
+    var buildInfo = JSON.parse(fs.readFileSync(buildInfoPath));
+    if (key) {
+      return buildInfo[key];
+    }
+    return buildInfo;
+  }
+  /** if no value is set, key is assumed to be whole object */
+  var setBuidInfo = function(key, value) {
+    if (!buildInfoPath) {
+      logger.error('Cannot SET build info before buildInfoPath is set');
+      return null;
+    }
+    if (value === undefined) {
+      fs.writeFileSync(buildInfoPath, JSON.stringify(key));
+    } else {
+      var buildInfo = getBuildInfo();
+      buildInfo[key] = value;
+      fs.writeFileSync(buildInfoPath, JSON.stringify(buildInfo));
+    }
+  }
+  /** Increments currentStep in buildInfo, and then continues f chain */
+  var incrementBuildInfoStep = function() {
+      setBuidInfo('currentStep', getBuildInfo('currentStep') + 1);
+      f(arguments);
   }
 
   var app;
@@ -52,37 +91,53 @@ exports.build = function (appPath, argv, cb) {
     require('./steps/getConfig').getConfig(app, argv, f());
   }, function (res) {
     config = res;
+
+    // Set up the .buildInfo file
+    // TODO: if there is an error before this point, we fail silently.  This is bad
+    buildInfoPath = config.outputPath + '/.buildInfo';
+    setBuidInfo({
+      timeStarted: startTime,
+      timeStopped: 0,
+      active: true,
+      currentStep: 0,
+      steps: 8,
+      errors: ''
+    });
   }, function () {
     require('./steps/buildHooks').getDependencies(app, config, f());
-  }, function (deps) {
+  }, incrementBuildInfoStep, function (deps) {
     // deps is an array of objects, merge them into one object and get all keys with false values
     deps = merge.apply(this, deps);
     var toRemove = Object.keys(deps).filter(function (name) { return deps[name] === false; });
     app.removeModules(toRemove);
-  }, function () {
+  }, incrementBuildInfoStep, function () {
     require('./steps/moduleConfig').getConfig(app, config, f());
-  }, function () {
+  }, incrementBuildInfoStep, function () {
     require('./steps/buildHooks').onBeforeBuild(app, config, f());
-  }, function () {
+  }, incrementBuildInfoStep, function () {
     require('./steps/logConfig').log(app, config, f());
-  }, function () {
+  }, incrementBuildInfoStep, function () {
     require('./steps/createDirectories').createDirectories(app, config, f());
-  }, function () {
+  }, incrementBuildInfoStep, function () {
     require('./steps/executeTargetBuild').build(app, config, f());
-  }, function () {
+  }, incrementBuildInfoStep, function () {
     require('./steps/buildHooks').onAfterBuild(app, config, f());
-  })
+  }, incrementBuildInfoStep)
     .error(function (err) {
       if (err.code == 'EEXIST' && !_hasLock) {
         return logger.error('another build is already in progress');
       }
 
       logger.error("build failed");
+      var errMsg;
       if (err.stack) {
-        logger.error(err.stack);
+        errMsg = err.stack;
       } else {
-        logger.error(err);
+        errMsg = err;
       }
+      logger.error(errMsg);
+
+      setBuidInfo('errors', errMsg);
     })
     .success(function () {
       logger.log("build succeeded");
