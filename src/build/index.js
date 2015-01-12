@@ -19,8 +19,8 @@ exports.build = function (appPath, argv, cb) {
     }, res));
 
     if (!argv['get-config']) {
-      setBuidInfo('active', false);
-      setBuidInfo('timeStopped', Date.now());
+      setBuildInfo('active', false);
+      setBuildInfo('timeStopped', Date.now());
     }
   }
 
@@ -40,7 +40,7 @@ exports.build = function (appPath, argv, cb) {
     return buildInfo;
   }
   /** if no value is set, key is assumed to be whole object */
-  var setBuidInfo = function(key, value) {
+  var setBuildInfo = function(key, value) {
     if (!buildInfoPath) {
       logger.error('Cannot SET build info before buildInfoPath is set');
       return null;
@@ -55,7 +55,7 @@ exports.build = function (appPath, argv, cb) {
   }
   /** Increments currentStep in buildInfo, and then continues f chain */
   var incrementBuildInfoStep = function() {
-      setBuidInfo('currentStep', getBuildInfo('currentStep') + 1);
+      setBuildInfo('currentStep', getBuildInfo('currentStep') + 1);
       f(arguments);
   }
 
@@ -104,7 +104,7 @@ exports.build = function (appPath, argv, cb) {
       // TODO: if there is an error before this point, we fail silently.  This is bad
       buildInfoPath = config.outputPath + '/.buildInfo';
       // Overwrite old one
-      setBuidInfo({
+      setBuildInfo({
         timeStarted: startTime,
         timeStopped: 0,
         active: true,
@@ -147,7 +147,7 @@ exports.build = function (appPath, argv, cb) {
       }
       logger.error(errMsg);
 
-      setBuidInfo('errors', errMsg);
+      setBuildInfo('errors', errMsg);
     })
     .success(function () {
       logger.log("build succeeded");
