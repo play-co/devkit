@@ -33,7 +33,15 @@ exports.build = function (appPath, argv, cb) {
       logger.error('Cannot GET build info before buildInfoPath is set');
       return null;
     }
-    var buildInfo = JSON.parse(fs.readFileSync(buildInfoPath));
+
+    var buildInfo;
+    try {
+      buildInfo = JSON.parse(fs.readFileSync(buildInfoPath));
+    } catch(err) {
+      logger.error('Error while getting build info: ' + err.message);
+      buildInfo = {};
+    }
+
     if (key) {
       return buildInfo[key];
     }
@@ -43,24 +51,32 @@ exports.build = function (appPath, argv, cb) {
   var setBuildInfo = function(key, value) {
     if (!buildInfoPath) {
       logger.error('Cannot SET build info before buildInfoPath is set');
-      return null;
+      return;
     }
-    if (value === undefined) {
-      if (typeof key == 'object') {
-        fs.writeFileSync(buildInfoPath, JSON.stringify(key));
+    try {
+      if (value === undefined) {
+        if (typeof key == 'object') {
+          fs.writeFileSync(buildInfoPath, JSON.stringify(key));
+        } else {
+          logger.error('Cannot write non object for buildInfo' + key);
+          return;
+        }
       } else {
-        logger.error('Cannot write non object for buildInfo' + key);
+        var buildInfo = getBuildInfo();
+        buildInfo[key] = value;
+        fs.writeFileSync(buildInfoPath, JSON.stringify(buildInfo));
       }
-    } else {
-      var buildInfo = getBuildInfo();
-      buildInfo[key] = value;
-      fs.writeFileSync(buildInfoPath, JSON.stringify(buildInfo));
+    } catch(err) {
+      logger.error('Error while setting buildInfo: ' + err.message);
     }
   }
   /** Increments currentStep in buildInfo, and then continues f chain */
   var incrementBuildInfoStep = function() {
-      setBuildInfo('currentStep', getBuildInfo('currentStep') + 1);
-      f(arguments);
+    var currentStep = getBuildInfo('currentStep');
+    if (currentStep !== undefined && currentStep !== null) {
+      setBuildInfo('currentStep', currentStep + 1);
+    }
+    f(arguments);
   }
 
   var app;
