@@ -22,6 +22,7 @@ module.exports = function (basePath) {
 
       stylus(str)
         .set('filename', stylusPath)
+        .set('sourcemap', {inline: true})
         .use(nib())
         .define('theme', req.query.theme ? req.query.theme : 'dark')
         .render(function(err, css) {
