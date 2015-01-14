@@ -36,6 +36,7 @@ large-icon-radius = round(large-icon-size / radius-factor)
   height 100%
 
   display flex
+  pointer-events none
 
   #_center
     position relative
@@ -46,6 +47,7 @@ large-icon-radius = round(large-icon-size / radius-factor)
       position absolute
       width 100%
       height 100%
+      pointer-events auto
 
   &.center-x
     justify-content center
