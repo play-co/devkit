@@ -57,10 +57,9 @@ var MainView = Class(squill.Widget, function (supr) {
 
     new squill.Window().subscribe('ViewportChange', this, 'onViewportChange');
 
-    if (opts.simulatorOnly) {
+    if (opts.simpleUI) {
       this.myIP.hide();
       this.logger.hide();
-      this.addClass('simulator-only');
     }
 
     this._zIndex = 0;
@@ -206,11 +205,12 @@ var MainController = exports = Class(lib.PubSub, function() {
     this._manifest = opts.manifest;
 
     this._devices = {};
+    this._simpleUI = opts.simpleUI;
 
     this.view = new MainView({
       controller: this,
       parent: document.body,
-      simulatorOnly: opts.simulatorOnly
+      simpleUI: opts.simpleUI
     });
 
     // communicate with local simulators
@@ -303,6 +303,8 @@ var MainController = exports = Class(lib.PubSub, function() {
           simulator: {type: 'iphone'}
         };
       }
+
+      device.simulator.simpleUI = this._simpleUI;
     }
 
     if (!device) { return; }
@@ -436,7 +438,7 @@ exports.start = function () {
     return;
   }
 
-  var simulatorOnly = !!uri.hash('simulatorOnly');
+  var simpleUI = !!uri.hash('simpleUI');
 
   // set window/tab title to app title
   util.ajax.get({
@@ -470,7 +472,7 @@ exports.start = function () {
       app: app,
       manifest: manifest,
       modules: modules,
-      simulatorOnly: simulatorOnly
+      simpleUI: simpleUI
     });
 
     _controller.addDevice(uri.hash('device'));

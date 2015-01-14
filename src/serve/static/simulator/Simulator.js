@@ -72,7 +72,12 @@ exports = Class(CenterLayout, function (supr) {
 
     this.toolbar.setSimulator(this);
     this.toolbar.setValidOrientations(this._validOrientations);
-    this.toolbar.show();
+
+    if (opts.simpleUI) {
+      this.toolbar.hide();
+    } else {
+      this.toolbar.show();
+    }
 
     this._rotation = opts.rotation || 0;
     this._backgroundProps = {};
@@ -114,11 +119,11 @@ exports = Class(CenterLayout, function (supr) {
       }
 
       if (e.data == 'devkit:toolbar:hide') {
-        $.addClass(this.toolbar, 'hidden');
+        this.toolbar.hide();
       }
 
       if (e.data == 'devkit:toolbar:show') {
-        $.removeClass(this.toolbar, 'hidden');
+        this.toolbar.show();
       }
     }));
 
