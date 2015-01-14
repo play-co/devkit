@@ -16,6 +16,7 @@ var exists = _exists.exists;
 var IOError = _exists.IOError;
 
 var ApplicationNotFoundError = require('./errors').ApplicationNotFoundError;
+var InvalidManifestError = require('./errors').InvalidManifestError;
 
 var LOCK_FILE = 'devkit.lock';
 
@@ -39,6 +40,12 @@ var readFile = function readFile (path, opts) {
     }
   });
 };
+
+var createUUID = function createUUID (a) {
+  return a ?
+    (a ^ Math.random() * 16 >> a / 4).toString(16) :
+    ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, createUUID);
+}
 
 var MANIFEST = 'manifest.json';
 var App = module.exports = Class(function () {
@@ -232,12 +239,6 @@ var App = module.exports = Class(function () {
   };
 
   /* Manifest */
-
-  function createUUID (a) {
-    return a ?
-      (a ^ Math.random() * 16 >> a / 4).toString(16) :
-      ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, createUUID);
-  }
 
   var DEFAULT_PROTOCOL = 'https';
   var REQUIRED_DEPS = [
@@ -580,13 +581,31 @@ App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
     return manifest;
   }).catch(SyntaxError, function (err) {
     trace('Error parsing manifest in appPath', appPath);
-    return Promise.reject(new ApplicationNotFoundError(appPath));
+    return Promise.reject(new InvalidManifestError(appPath));
   }).then(function (manifest) {
-    if (manifest.appID) {
-      trace('returning App for appPath', appPath);
-      return Promise.resolve(new App(appPath, manifest, lastOpened));
-    } else {
+
+    // if manifest has no appID, assume this isn't a devkit app
+    if ('appID' in manifest === false) {
       return Promise.reject(new ApplicationNotFoundError(appPath));
+    } else if (manifest.appID) {
+      return Promise.resolve(manifest);
+    } else {
+
+      // if manifest has a blank/false/0 appID, generate one and save manifest
+      manifest.appID = createUUID();
+      var writeFile = Promise.promisify(fs.writeFile);
+      var data = stringify(manifest);
+
+      return new Promise(function (resolve, reject) {
+        fs.writeFile(path.join(manifestPath), data, function (err, res) {
+          if (err) { return reject(err); }
+          return resolve(manifest);
+        });
+      });
     }
+
+  }).then(function (manifest) {
+    trace('returning App for appPath', appPath);
+    return Promise.resolve(new App(appPath, manifest, lastOpened));
   });
 };
