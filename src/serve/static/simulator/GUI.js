@@ -30,9 +30,9 @@ import .controllers.Device as Device;
 import .controllers.SimulatorServer as SimulatorServer;
 
 import .components.Logger as Logger;
-import .components.Simulator as Simulator;
 from .components.viewInspector import ViewInspector;
 
+import .Simulator;
 import .util.TargetCuppa;
 
 var MainView = Class(squill.Widget, function (supr) {
@@ -53,7 +53,15 @@ var MainView = Class(squill.Widget, function (supr) {
   };
 
   this.buildWidget = function () {
+    var opts = this._opts;
+
     new squill.Window().subscribe('ViewportChange', this, 'onViewportChange');
+
+    if (opts.simulatorOnly) {
+      this.myIP.hide();
+      this.logger.hide();
+      this.addClass('simulator-only');
+    }
 
     this._zIndex = 0;
     this._simulatorButtons = [];
@@ -199,7 +207,11 @@ var MainController = exports = Class(lib.PubSub, function() {
 
     this._devices = {};
 
-    this.view = new MainView({controller: this, parent: document.body});
+    this.view = new MainView({
+      controller: this,
+      parent: document.body,
+      simulatorOnly: opts.simulatorOnly
+    });
 
     // communicate with local simulators
     this._server = new SimulatorServer();
@@ -424,6 +436,8 @@ exports.start = function () {
     return;
   }
 
+  var simulatorOnly = !!uri.hash('simulatorOnly');
+
   // set window/tab title to app title
   util.ajax.get({
       url: '/api/title',
@@ -455,7 +469,8 @@ exports.start = function () {
     _controller = new MainController({
       app: app,
       manifest: manifest,
-      modules: modules
+      modules: modules,
+      simulatorOnly: simulatorOnly
     });
 
     _controller.addDevice(uri.hash('device'));
