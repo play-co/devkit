@@ -32,7 +32,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
       var appPath = args.shift();
       var errorMessage;
 
-      if (!appPath) {
+      if (typeof(appPath) === 'undefined') {
         // TODO: print usage
         errorMessage = 'No app name provided';
         this.logger.error(errorMessage);
