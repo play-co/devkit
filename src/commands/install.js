@@ -41,6 +41,10 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       .describe(
         'skip-fetch',
         'if version is not specified, server query for the latest version'
+      )
+      .describe(
+        'skip-defaults',
+        'if default dependencies are missing from the manifest, do NOT insert them'
       );
   };
 
@@ -81,7 +85,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       // no module provided, install all dependencies after we ensure we
       // have dependencies
       var deps = app.manifest.dependencies;
-      if (!deps || !deps['devkit-core']) {
+      if ((!deps || !deps['devkit-core']) && !argv['skip-defaults']) {
         // ensure devkit is a dependency
         logger.log('Adding default dependencies to "manifest.json"...');
         return app.validate({protocol: protocol}).return(app);
