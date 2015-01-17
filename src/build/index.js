@@ -68,6 +68,7 @@ exports.build = function (appPath, argv, cb) {
       }
     } catch(err) {
       logger.error('Error while setting buildInfo: ' + err.message);
+      buildInfoPath = null;
     }
   }
   /** Increments currentStep in buildInfo, and then continues f chain */
@@ -117,7 +118,7 @@ exports.build = function (appPath, argv, cb) {
     // Skip to success
     if (argv['get-config']) {
       // ONLY print config to stdout
-      console.log(config);
+      console.log(JSON.stringify(config));
       f.succeed();
     } else {
       // Set up the .buildInfo file
@@ -129,7 +130,7 @@ exports.build = function (appPath, argv, cb) {
         timeStopped: 0,
         active: true,
         currentStep: 0,
-        steps: 8,
+        steps: 8, // Number of times incrementBuildInfoStep will be called
         errors: ''
       });
     }

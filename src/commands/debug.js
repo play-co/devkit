@@ -20,6 +20,7 @@ var DebugCommand = Class(BaseCommand, function (supr) {
       .describe('debug', 'creates a debug build')
       .describe('scheme', 'debug | release')
       .describe('version', 'override the version provided in the manifest')
+      .describe('get-config', 'output ONLY the build configuration to stdout')
   }
 
   this.showHelp = function (args) {
