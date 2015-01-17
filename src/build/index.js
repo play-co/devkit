@@ -114,6 +114,8 @@ exports.build = function (appPath, argv, cb) {
     require('./steps/getConfig').getConfig(app, argv, f());
   }, function (res) {
     config = res;
+    require('./steps/createDirectories').createDirectories(app, config, f());
+  }, function () {
 
     // Skip to success
     if (argv['get-config']) {
@@ -124,6 +126,7 @@ exports.build = function (appPath, argv, cb) {
       // Set up the .buildInfo file
       // TODO: if there is an error before this point, we fail silently.  This is bad
       buildInfoPath = config.outputPath + '/.buildInfo';
+
       // Overwrite old one
       setBuildInfo({
         timeStarted: startTime,
@@ -134,7 +137,7 @@ exports.build = function (appPath, argv, cb) {
         errors: ''
       });
     }
-  }, function () {
+  }, incrementBuildInfoStep, function () {
     require('./steps/buildHooks').getDependencies(app, config, f());
   }, incrementBuildInfoStep, function (deps) {
     // deps is an array of objects, merge them into one object and get all keys with false values
@@ -147,8 +150,6 @@ exports.build = function (appPath, argv, cb) {
     require('./steps/buildHooks').onBeforeBuild(app, config, f());
   }, incrementBuildInfoStep, function () {
     require('./steps/logConfig').log(app, config, f());
-  }, incrementBuildInfoStep, function () {
-    require('./steps/createDirectories').createDirectories(app, config, f());
   }, incrementBuildInfoStep, function () {
     require('./steps/executeTargetBuild').build(app, config, f());
   }, incrementBuildInfoStep, function () {
