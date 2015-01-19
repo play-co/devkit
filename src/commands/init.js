@@ -50,7 +50,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
       this.appName = appName;
 
       if (!/^[a-z][a-z0-9]*$/i.test(appName)) {
-        errorMessage = 'App name must start with a letter and consist only of' +
+        errorMessage = 'App name must start with a letter and consist only of ' +
           'letters and numbers';
         this.logger.error(errorMessage);
         return Promise.reject(new UsageError(errorMessage));
