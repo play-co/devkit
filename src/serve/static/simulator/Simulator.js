@@ -496,7 +496,9 @@ exports = Class(CenterLayout, function (supr) {
     var dpr = this.getDevicePixelRatio();
     var zoom = this._zoom;
     if (!zoom) {
-      var winSize = new Size(window.innerWidth, window.innerHeight);
+      // check for auto-zoom out to fit window
+      var padding = 10;
+      var winSize = new Size(window.innerWidth - padding * 2, window.innerHeight - padding * 2);
       var targetSize = info.getChromeSize(this._rotation % 2 == 1);
       if (winSize.getRatio() < targetSize.getRatio()) {
         zoom = winSize.width / targetSize.width;
