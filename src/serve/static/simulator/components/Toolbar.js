@@ -238,16 +238,14 @@ module.exports = Class(Widget, function () {
   this.hide = function () {
     this.addClass('transition');
     onNextFrame(this, function () {
-      this._el.style.opacity = 0;
-      // supr(this, 'hide');
+      this.addClass('hidden');
     });
   }
 
   this.show = function () {
     this.addClass('transition');
     onNextFrame(this, function () {
-      this._el.style.opacity = 1;
-      // supr(this, 'show');
+      this.removeClass('hidden');
     });
   }
 });
