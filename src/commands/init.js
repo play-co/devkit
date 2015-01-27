@@ -23,7 +23,8 @@ var InitCommand = Class(BaseCommand, function (supr) {
       .boolean('no-template')
       .describe('no-template', 'copy no files other than manifest.json')
       .describe('local-template', 'path to local application template')
-      .describe('git-template', 'path to git repository');
+      .describe('git-template', 'path to git repository')
+      .describe('skip-install', "don't autorun devkit install");
   };
 
   this.exec = function (command, args, cb) {
@@ -75,9 +76,11 @@ var InitCommand = Class(BaseCommand, function (supr) {
       return apps.create(appPath, template);
     }).then(function (app) {
 
-      // change to app root and run install command
-      process.chdir(app.paths.root);
-      return commands.get('install').exec('install', []);
+      if (!this.opts.argv['skip-install']) {
+        // change to app root and run install command
+        process.chdir(app.paths.root);
+        return commands.get('install').exec('install', []);
+      }
 
     }).then(function () {
 
