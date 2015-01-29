@@ -316,7 +316,9 @@ exports.getHashForRef = function getHashForRef (ref, cb) {
   return this('show-ref', ref).bind(this)
   .catch(handleShowRefVerifyError)
   .then(function findMostCurrentRef(refs) {
+    trace('refs', refs);
     refs = parseShowRefOutput(refs);
+
     var remote = refs.filter(function (refInfo) {
       return refInfo.remote && refInfo.ref === ref;
     })[0];
@@ -330,14 +332,15 @@ exports.getHashForRef = function getHashForRef (ref, cb) {
     })[0];
 
     trace('local', local);
+    if (local) { return local.hash; }
 
-    if (!local) {
+    // See if ref is a valid hash
+    return this('rev-parse', ref).then(function isRef(res) {
+      return ref;
+    }).catch(function () {
       return Promise.reject(new UnknownGitRevision(ref));
-    }
+    });
 
-
-    trace('returning local hash');
-    return local.hash;
   }).nodeify(cb);
 };
 
