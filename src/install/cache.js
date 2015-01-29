@@ -46,6 +46,10 @@ var ModuleCache = Class(EventEmitter, function () {
     });
   };
 
+  this.getCacheLocation = function () {
+    return MODULE_CACHE;
+  };
+
   function getCachedModuleInfo (cachePath, cb) {
     var git = gitClient.get(cachePath, {extraSilent: true});
 

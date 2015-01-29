@@ -5,14 +5,19 @@ var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var VersionCommand = Class(BaseCommand, function (supr) {
 
-	this.name = 'version';
-	this.description = 'prints the version of DevKit';
+  this.name = 'version';
+  this.description = 'prints the version of DevKit';
 
-	this.exec = function () {
-		var packageJson = path.join(__dirname, '..', '..', 'package.json');
-		var packageInfo = JSON.parse(fs.readFileSync(packageJson));
-		console.log(packageInfo.version);
-	}
+  this.exec = function () {
+    console.log(this.getVersion());
+  };
+
+  this.getVersion = function () {
+    var packageJson = path.join(__dirname, '..', '..', 'package.json');
+    var packageInfo = JSON.parse(fs.readFileSync(packageJson));
+    return packageInfo.version;
+  };
+
 });
 
 module.exports = VersionCommand;
