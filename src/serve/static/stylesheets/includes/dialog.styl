@@ -1,0 +1,127 @@
+.squill-dialog
+  position: fixed;
+  cursor: default;
+  top: 15px;
+  left: 15px;
+  width: 95%;
+  height: 95%;
+
+  font-size: 13px;
+  color: #DDD;
+  background: #333;
+
+  display flex
+  justify-content stretch
+  flex-direction column
+
+  z-index: 1000000;
+  box-shadow: 0px 10px 80px rgba(0, 0, 0, 0.8), 0px -1px 1px rgba(0, 0, 0, 0.25);
+
+  transition all 0.3s
+  backface-visibility hidden
+  transform scale(1)
+
+  &.pre-transition
+    transform scale(0.7) translate(0px, 50px)
+    opacity 0
+
+  &.post-transition
+    transition all 0.17s
+    transform scale(0.94) translate(0px, 50px)
+    opacity 0
+
+  #_titlebar
+    position: relative;
+    z-index: 100;
+    background: #333;
+    font-size: 14px;
+    color: #EEE;
+    font-weight: bold;
+    height: 46px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15), inset 0px -1px 0px #000;
+
+    #_titlebarText
+      padding: 15px 0px 15px 20px;
+
+  #_header
+    position relative
+    z-index 90
+    padding 20px 30px
+    color #AAA
+    font-weight normal
+    background #444
+    box-shadow 0px 1px 3px rgba(0, 0, 0, 0.15);
+
+    :first-child
+      margin-top 0px
+
+    :last-child
+      margin-bottom 0px
+
+  #_container
+    position relative
+    overflow auto
+    flex 1
+
+  #_footer
+    position relative
+    z-index 100
+    border-top 1px solid #444
+    box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.15);
+
+    button
+      float right
+      min-width: 80px;
+      margin: 20px;
+
+  button:hover
+    background #EFE9E9
+    border-color #A9A9A9
+    color #444
+
+  button.primary
+    background #428BCA
+    color #FFF
+    border-color #357EBD
+
+  button.primary:hover
+  button.primary:focus
+  button.primary:active
+    background-color #3276B1
+    border-color #285E8E
+
+  button.primary:active
+    background-color #285985
+    border-color #0E3455
+
+  button.disabled
+    background transparent
+    color #AAA
+    border-color #BBB
+    pointer-events none
+    cursor disabled
+
+  #_closeBtn
+    float right
+    padding 15px
+    cursor pointer
+
+
+  #_closeBtn:hover
+    color #FFF
+
+
+  #_closeBtnIcon
+    glyphicon('remove', before: true)
+
+  input
+    margin 0px
+    padding 5px
+
+  input[type=text]
+    background #FFF
+    color #444
+    border 1px solid #CECECE
+
+  .squill-label
+    padding 10px

@@ -1,4 +1,5 @@
 @import "icons"
+@import "dialog"
 
 tr, td
   border-spacing 0px !important
@@ -28,3 +29,34 @@ large-icon-radius = round(large-icon-size / radius-factor)
 
 .monospace
   font-family 'Menlo', Monaco, 'Bitstream Vera Sans Mono', 'Lucida Console', Terminal, monospace
+
+.center-layout
+  position absolute
+  width 100%
+  height 100%
+
+  display flex
+  pointer-events none
+
+  #_center
+    position relative
+    width 100%
+    height 100%
+
+    #_corner
+      position absolute
+      width 100%
+      height 100%
+      pointer-events auto
+
+  &.center-x
+    justify-content center
+
+    #_center
+      width 0px
+
+  &.center-y
+    align-items center
+
+    #_center
+      height 0px

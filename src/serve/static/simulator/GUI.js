@@ -30,9 +30,9 @@ import .controllers.Device as Device;
 import .controllers.SimulatorServer as SimulatorServer;
 
 import .components.Logger as Logger;
-import .components.Simulator as Simulator;
 from .components.viewInspector import ViewInspector;
 
+import .Simulator;
 import .util.TargetCuppa;
 
 var MainView = Class(squill.Widget, function (supr) {
@@ -53,7 +53,14 @@ var MainView = Class(squill.Widget, function (supr) {
   };
 
   this.buildWidget = function () {
+    var opts = this._opts;
+
     new squill.Window().subscribe('ViewportChange', this, 'onViewportChange');
+
+    if (opts.simpleUI) {
+      this.myIP.hide();
+      this.logger.hide();
+    }
 
     this._zIndex = 0;
     this._simulatorButtons = [];
@@ -198,8 +205,13 @@ var MainController = exports = Class(lib.PubSub, function() {
     this._manifest = opts.manifest;
 
     this._devices = {};
+    this._simpleUI = opts.simpleUI;
 
-    this.view = new MainView({controller: this, parent: document.body});
+    this.view = new MainView({
+      controller: this,
+      parent: document.body,
+      simpleUI: opts.simpleUI
+    });
 
     // communicate with local simulators
     this._server = new SimulatorServer();
@@ -291,6 +303,8 @@ var MainController = exports = Class(lib.PubSub, function() {
           simulator: {type: 'iphone'}
         };
       }
+
+      device.simulator.simpleUI = this._simpleUI;
     }
 
     if (!device) { return; }
@@ -424,6 +438,8 @@ exports.start = function () {
     return;
   }
 
+  var simpleUI = !!uri.hash('simpleUI');
+
   // set window/tab title to app title
   util.ajax.get({
       url: '/api/title',
@@ -455,7 +471,8 @@ exports.start = function () {
     _controller = new MainController({
       app: app,
       manifest: manifest,
-      modules: modules
+      modules: modules,
+      simpleUI: simpleUI
     });
 
     _controller.addDevice(uri.hash('device'));

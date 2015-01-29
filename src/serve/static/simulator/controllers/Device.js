@@ -21,7 +21,7 @@
  */
 
 import lib.PubSub;
-import ..components.Simulator as Simulator;
+import ..Simulator as Simulator;
 import ..util.resolutions;
 import .LocalController;
 
@@ -125,7 +125,7 @@ var Device = exports = Class(lib.PubSub, function (supr) {
     }
 
     this._type = type;
-    this._simulator.setType(type, opts);
+    this._simulator.setType(opts);
 
     if (this._local) {
       this._local.rebuild();

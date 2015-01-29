@@ -60,7 +60,9 @@ exports.defaults = {
 		name: 'Full Screen',
 		target: 'browser-desktop',
 		canRotate: false,
-		canResize: true
+		canResize: true,
+		centerX: false,
+		centerY: false,
 	},
 	mobile: {
 		name: 'Mobile',
@@ -74,11 +76,11 @@ exports.defaults = {
 			width: 640,
 			height: 1136,
 			offsetX: 0,
-			offsetY: 0,
-			style: {
-				WebkitBoxShadow: '12px 12px 35px rgba(0, 0, 0, 0.5)',
-				borderRadius: '10px'
-			}
+			offsetY: 0
+		},
+		style: {
+			border: '10px solid #555',
+			borderRadius: '5px'
 		}
 	},
 	browser: {
@@ -89,15 +91,14 @@ exports.defaults = {
 		width: 800,
 		height: 600,
 		background: {
-			img: 'browser-chrome.png',
 			width: 820,
 			height: 620,
 			offsetX: 10,
-			offsetY: 10,
-			style: {
-				WebkitBoxShadow: '0px 0px 5px #222',
-				borderRadius: '10px'
-			}
+			offsetY: 10
+		},
+		style: {
+			border: '10px solid #555',
+			borderRadius: '5px'
 		}
 	},
 	facebook: {
@@ -108,12 +109,9 @@ exports.defaults = {
 		canDrag: false,
 		height: 600,
 		width: 760,
-		background: {
-			img: 'facebook-header.png',
-			width: 1002,
-			height: 158,
-			offsetX: 0,
-			offsetY: 70
+		centerY: false,
+		style: {
+			marginTop: '200px'
 		}
 	},
 	ipad: {
@@ -228,6 +226,22 @@ exports.defaults = {
 			offsetY: 238
 		}
 	},
+	'iphone6': {
+		name: 'iPhone 6',
+		target: 'native-ios',
+		devicePixelRatio: 2,
+		canRotate: true,
+		canResize: false,
+		height: 1334,
+		width: 750,
+		background: {
+			img: 'iphone6.png',
+			width: 853,
+			height: 1771,
+			offsetX: 52,
+			offsetY: 217
+		}
+	},
 	'iphone-browser': {
 		name: 'Mobile Safari',
 		target: 'browser-mobile',
@@ -236,7 +250,7 @@ exports.defaults = {
 		canResize: false,
 		width: 320,
 		height: 480,
-		screenSize: [ // override the default width/height to account for browser chrome
+		viewportSize: [ // override the default width/height to account for browser chrome
 			{ width: 320, height: 416 },
 			{ width: 480, height: 268 }
 		],
@@ -271,3 +285,7 @@ exports.defaults = {
 		}
 	}
 };
+
+for (var id in exports.defaults) {
+	exports.defaults[id].id = id;
+}

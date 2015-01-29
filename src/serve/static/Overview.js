@@ -211,7 +211,7 @@ var AppInspector = Class(Widget, function () {
       var url = new std.uri(window.location)
         .setPath('/simulator/')
         .addQuery({app: appPath})
-        .addHash({device: '{"type":"iphone5"}'})
+        .addHash({device: '{"type":"iphone6"}'})
         .toString();
 
       url = friendlyUnescape(url);
