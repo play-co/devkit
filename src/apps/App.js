@@ -414,7 +414,7 @@ var App = module.exports = Class(function () {
       || getIcon(this.manifest.android && this.manifest.android.icons,
                  targetSize)
       || getIcon(this.manifest.ios && this.manifest.ios.icons, targetSize)
-      || '/images/defaultIcon.png';
+      || '/resources/icons/defaultIcon.png';
 
     function getIcon(iconList, targetSize) {
       var sizes = [], closest = null;
