@@ -24,6 +24,8 @@ exports.build = function (appPath, argv, cb) {
     }
   }
 
+  var onlyGetConfig = argv['get-config'];
+
   // TODO: Would be nice to use a lib for mirroring this object on dist instead
   // of these custom functions
   var buildInfoPath;
@@ -49,6 +51,8 @@ exports.build = function (appPath, argv, cb) {
   }
   /** if no value is set, key is assumed to be whole object and old object obliterated */
   var setBuildInfo = function(key, value) {
+    if (onlyGetConfig) { return; }
+
     if (!buildInfoPath) {
       logger.error('Cannot SET build info before buildInfoPath is set');
       return;
@@ -116,27 +120,19 @@ exports.build = function (appPath, argv, cb) {
     config = res;
     require('./steps/createDirectories').createDirectories(app, config, f());
   }, function () {
+    // Set up the .buildInfo file
+    // TODO: if there is an error before this point, we fail silently.  This is bad
+    buildInfoPath = config.outputPath + '/.buildInfo';
 
-    // Skip to success
-    if (argv['get-config']) {
-      // ONLY print config to stdout
-      console.log(JSON.stringify(config));
-      f.succeed();
-    } else {
-      // Set up the .buildInfo file
-      // TODO: if there is an error before this point, we fail silently.  This is bad
-      buildInfoPath = config.outputPath + '/.buildInfo';
-
-      // Overwrite old one
-      setBuildInfo({
-        timeStarted: startTime,
-        timeStopped: 0,
-        active: true,
-        currentStep: 0,
-        steps: 8, // Number of times incrementBuildInfoStep will be called
-        errors: ''
-      });
-    }
+    // Overwrite old one
+    setBuildInfo({
+      timeStarted: startTime,
+      timeStopped: 0,
+      active: true,
+      currentStep: 0,
+      steps: 8, // Number of times incrementBuildInfoStep will be called
+      errors: ''
+    });
   }, incrementBuildInfoStep, function () {
     require('./steps/buildHooks').getDependencies(app, config, f());
   }, incrementBuildInfoStep, function (deps) {
@@ -149,7 +145,14 @@ exports.build = function (appPath, argv, cb) {
   }, incrementBuildInfoStep, function () {
     require('./steps/buildHooks').onBeforeBuild(app, config, f());
   }, incrementBuildInfoStep, function () {
-    require('./steps/logConfig').log(app, config, f());
+    // Skip to success
+    if (onlyGetConfig) {
+      // ONLY print config to stdout
+      console.log(JSON.stringify(merge({title: app.manifest.title}, config)));
+      f.succeed();
+    } else {
+      require('./steps/logConfig').log(app, config, f());
+    }
   }, incrementBuildInfoStep, function () {
     require('./steps/executeTargetBuild').build(app, config, f());
   }, incrementBuildInfoStep, function () {
