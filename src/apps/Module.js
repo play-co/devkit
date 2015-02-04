@@ -1,6 +1,6 @@
 var path = require('path');
 var fs = require('fs');
-var color = require('cli-color');
+var chalk = require('chalk');
 var spawn = require('child_process').spawn;
 var os = require('os');
 
@@ -183,8 +183,8 @@ Module.setVersion = function (modulePath, version, opts) {
     var onRequestedVersion = this.currentHash === this.requestedHash;
     if (!forceInstall && onRequestedVersion) {
       logger.log(
-        color.cyanBright('set version'),
-        color.yellowBright(moduleName + '@' + this.name)
+        chalk.cyan('set version'),
+        chalk.yellow(moduleName + '@' + this.name)
       );
       trace('already on requested version', this.name);
       return this.requestedVersion;
@@ -194,8 +194,8 @@ Module.setVersion = function (modulePath, version, opts) {
         return Module.runInstallScripts(modulePath);
       }).bind(this).then(function () {
         logger.log(
-          color.cyanBright('set version'),
-          color.yellowBright(moduleName + '@' + this.requestedVersion)
+          chalk.cyan('set version'),
+          chalk.yellow(moduleName + '@' + this.requestedVersion)
         );
         return this.requestedVersion;
       });

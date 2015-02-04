@@ -1,6 +1,3 @@
-var fs = require('fs');
-var path = require('path');
-
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var VersionCommand = Class(BaseCommand, function (supr) {
@@ -13,6 +10,7 @@ var VersionCommand = Class(BaseCommand, function (supr) {
   };
 
   this.getLocation = function () {
+    var path = require('path');
     return path.join(__dirname, '..', '..');
   };
 });

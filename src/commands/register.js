@@ -1,9 +1,3 @@
-var fs = require('fs');
-var path = require('path');
-
-var apps = require('../apps');
-var walk = require('../util/walk').walk;
-
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var RegisterCommand = Class(BaseCommand, function (supr) {
@@ -21,6 +15,12 @@ var RegisterCommand = Class(BaseCommand, function (supr) {
   }
 
   this.exec = function (command, args, cb) {
+    var fs = require('fs');
+    var path = require('path');
+
+    var apps = require('../apps');
+    var walk = require('../util/walk').walk;
+
     var logger = this.logger;
     var argv = this.opts.argv;
     var args = argv._;

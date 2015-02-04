@@ -1,12 +1,3 @@
-var fs = require('fs');
-var ff = require('ff');
-
-var path = require('path');
-var rimraf = require('rimraf');
-var cache = require('../install/cache');
-
-var apps = require('../apps');
-
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var RemoveCommand = Class(BaseCommand, function (supr) {
@@ -23,6 +14,14 @@ var RemoveCommand = Class(BaseCommand, function (supr) {
   }
 
   this.exec = function (command, args, cb) {
+    var fs = require('fs');
+    var ff = require('ff');
+
+    var path = require('path');
+    var rimraf = require('rimraf');
+    var cache = require('../install/cache');
+
+    var apps = require('../apps');
 
     var argv = this.opts.argv;
     var protocol = argv.ssh ? 'ssh' : 'https';

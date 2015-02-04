@@ -1,16 +1,5 @@
-var fs = require('fs');
-var ff = require('ff');
-var path = require('path');
-
-var color = require('cli-color');
-
-var commands = require('./index');
-var apps = require('../apps');
 
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
-var UsageError = require('../util/BaseCommand').UsageError;
-
-var DestinationExistsError = apps.DestinationExistsError;
 
 var InitCommand = Class(BaseCommand, function (supr) {
 
@@ -28,6 +17,18 @@ var InitCommand = Class(BaseCommand, function (supr) {
   };
 
   this.exec = function (command, args, cb) {
+    var fs = require('fs');
+    var ff = require('ff');
+    var path = require('path');
+
+    var chalk = require('chalk');
+
+    var commands = require('./index');
+    var apps = require('../apps');
+
+    var UsageError = require('../util/BaseCommand').UsageError;
+    var DestinationExistsError = apps.DestinationExistsError;
+
     return Promise.bind(this).then(function () {
       // check the app name
       var appPath = args.shift();
@@ -86,7 +87,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
 
       // Success message
       this.logger.log(
-        color.cyanBright('created new app'), color.yellowBright(this.appName)
+        chalk.cyan('created new app'), chalk.yellow(this.appName)
       );
 
       return new Promise(function (resolve) {
