@@ -1,6 +1,5 @@
 var fs = require('fs');
 var path = require('path');
-
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var VersionCommand = Class(BaseCommand, function (supr) {
