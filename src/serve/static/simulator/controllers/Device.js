@@ -103,14 +103,6 @@ var Device = exports = Class(lib.PubSub, function (supr) {
     if (opts.simulator.type) {
       this.setType(opts.simulator.type);
     }
-    /*
-          parent: this,
-      manifest: this._manifest,
-      rotation: parseInt(simulatorDef.rotation, 10),
-      deviceName: simulatorDef.device,
-      offsetX: simulatorDef.offsetX,
-      offsetY: simulatorDef.offsetY,
-      name: simulatorDef.name*/
 
     this.api = new DeviceAPI(this);
   };

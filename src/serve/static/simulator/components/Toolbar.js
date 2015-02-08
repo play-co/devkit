@@ -73,20 +73,6 @@ module.exports = Class(Widget, function () {
         }
       },
       {
-        id: 'drag',
-        tooltip: 'lock simulator position',
-        icon: 'move',
-        event: 'change:drag',
-        onChange: function () {
-          var isDragEnabled = simulator.isDragEnabled();
-          this.toggleClass('disabled', !isDragEnabled);
-          this.setTooltip(isDragEnabled ? 'lock simulator position' : 'unlock simulator position');
-        },
-        onClick: function (simulator) {
-          simulator.toggleDragEnabled();
-        }
-      },
-      {
         id: 'rotate',
         tooltip: 'rotate the device',
         icon: 'repeat',
@@ -176,6 +162,21 @@ module.exports = Class(Widget, function () {
               this.setText(isDebugMode ? 'switch to release build' : 'switch to debug build');
             }
           },
+          {
+            id: 'drag',
+            text: 'lock simulator position',
+            icon: 'move',
+            event: 'change:drag',
+            onChange: function () {
+              var isDragEnabled = simulator.isDragEnabled();
+              this.toggleClass('disabled', !isDragEnabled);
+              this.setTooltip(isDragEnabled ? 'lock simulator position' : 'unlock simulator position');
+            },
+            onClick: function (simulator) {
+              simulator.toggleDragEnabled();
+            }
+          },
+
           // {id: 'addSimulator', text: 'add simulator', type: 'button'},
         ]
       }

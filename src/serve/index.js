@@ -1,4 +1,5 @@
 var path = require('path');
+var fs = require('fs');
 var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -6,22 +7,22 @@ var printf = require('printf');
 var os = require('os');
 var exec = require('child_process').exec;
 var open = require('open');
+var YAML = require('js-yaml');
 
 var apps = require('../apps');
+var baseModules = require('../modules').getBaseModules();
 
 var ip = require('../util/ip');
 var logging = require('../util/logging');
 
 var config = require('../config');
 var jvmtools = require('../jvmtools');
-var JsioCompiler = require('../build/jsio_compiler').JsioCompiler;
 
 var stylus = require('./stylus');
+var importMiddleware = require('./import');
 var appRoutes = require('./appRoutes');
 
 var logger = logging.get('serve');
-
-var BASE_PATH = path.join(__dirname, '..', '..');
 
 // launches the web server
 exports.serveWeb = function (opts, cb) {
@@ -48,8 +49,19 @@ exports.serveWeb = function (opts, cb) {
   // serve compiled CSS
   app.use('/', stylus(getPath('static')));
 
+  // serve compiled JS
+  app.use(/^(?!\/apps\/|\/api\/)/, importMiddleware(getPath('static/')));
+
   // serve static files
   app.use('/', express.static(getPath('static')));
+
+  baseModules.forEach(function (module) {
+    var ext = module.loadExtension('simulator');
+    if (ext) {
+      var api = {};
+      ext.init(api);
+    }
+  });
 
   // Serve
   server.listen(basePort, function () {
@@ -92,6 +104,11 @@ function getAPIRouter(opts) {
 
   var api = express();
   var send = require('send');
+  var deviceTypes = require('../util/deviceTypes');
+
+  api.get('/devices', function (req, res) {
+    res.json(deviceTypes);
+  });
 
   api.get('/app', function (req, res) {
     var appPath = req.query.app;
@@ -188,35 +205,7 @@ function getAPIRouter(opts) {
 
   // endpoint to retrive compiled javascript
   api.get('/compile/*', function (req, res) {
-    var compiler = new JsioCompiler({
-      env: 'browser',
-      cwd: BASE_PATH,
 
-      // add a trailing import statement so the JS executes the requested import
-      // immediately when downloaded
-      appendImport: true,
-
-      // path: anything in these folders is importable
-      path: [
-          'node_modules/ff/lib/',
-          'node_modules/printf/lib'
-        ],
-
-      // pathCache: key-value pairs of prefixes that map to folders (eg. prefix
-      // 'squill' handles all 'sqill.*' imports)
-      pathCache: {
-        "squill": 'node_modules/squill/'
-      }
-    });
-
-    compiler.compile([req.params[0], 'preprocessors.import', 'preprocessors.cls'])
-      .on('error', function (err) {
-        res.send(err);
-      })
-      .on('success', function (src) {
-        res.header('Content-Type', 'application/javascript')
-        res.send(src);
-      });
   });
 
   appRoutes.addToAPI(opts, api);

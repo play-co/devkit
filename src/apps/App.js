@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var copy = require('../util/copy');
 
-var Module = require('./Module');
+var Module = require('../modules/Module');
 
 var lockFile = require('../util/lockfile');
 var rimraf = require('../util/rimraf');
@@ -167,22 +167,16 @@ var App = module.exports = Class(function () {
       var item = _queue.shift();
       var modulePath = path.resolve(this.paths.root, item.path);
       var parentPath = path.resolve(this.paths.root, item.parent);
-      var packageFile = path.join(modulePath, 'package.json');
+      var isDependency = (this.paths.root === parentPath);
+      var module = Module.load(modulePath, {
+        parent: parentPath,
+        isDependency: isDependency,
+      });
 
-      if (!fs.existsSync(packageFile)) { continue; }
+      if (!module) { continue; }
 
-      var packageContents;
-      try {
-        packageContents = require(packageFile);
-      } catch (e) {
-        return logger.warn('Module', item.path, 'failed to load');
-      }
-
-      if (!packageContents.devkit) { continue; }
-
-      var existingModule = this._modules[packageContents.name];
-      if (existingModule) {
-        if (existingModule.version !== packageContents.version) {
+      if (module.name in this._modules) {
+        if (this._modules[module.name].version != module.version) {
           throw new Error(
             packageContents.name +
             ' included twice with different versions:\n' +
@@ -190,24 +184,9 @@ var App = module.exports = Class(function () {
             packageContents.version + ': ' + modulePath);
         }
       } else {
-        var name = path.basename(modulePath);
-        var version = null;
-        var isDependency = (this.paths.root === parentPath);
-        if (isDependency && this._dependencies[name]) {
-          version = this._dependencies[name].version;
-        }
-
-        this._modules[name] = new Module({
-          name: name,
-          path: modulePath,
-          parent: parentPath,
-          isDependency: isDependency,
-          version: version,
-          packageContents: packageContents
-        });
+        this._modules[module.name] = module;
+        addToQueue(modulePath);
       }
-
-      addToQueue(modulePath);
     }
   };
 

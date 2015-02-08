@@ -10,10 +10,11 @@
 html, body { margin: 0px; padding: 0px; height: 100%; }
 </style>
 
+<script src="index.js"></script>
 <script>
 var ua = navigator.userAgent;
 var isMobile = window.parent == window && (/Tizen|iPod|iPhone|iPad|Android|BlackBerry/i.test(ua) || /testMobile/.test(window.location));
-document.write('<scr' + 'ipt src="/api/compile/.src.serve.static.' + (isMobile ? 'mobileIndex' : 'index') + '"></scr' + 'ipt>');
+if (isMobile) { location = 'mobileIndex.html'; }
 </script>
 </head>
 <body>

@@ -2,7 +2,7 @@ import squill.Widget as Widget;
 import squill.Dialog as Dialog;
 import squill.Delegate as Delegate;
 
-import ..util.resolutions as resolutions;
+import ..util.DeviceInfo as DeviceInfo;
 
 module.exports = Class(Dialog, function (supr) {
 
@@ -33,16 +33,16 @@ module.exports = Class(Dialog, function (supr) {
     var simulator = this._simulator = this._opts.simulator;
 
     var previewImage = this._opts.loadingImage;
-    for (var type in resolutions.defaults) {
-      var deviceType = resolutions.defaults[type];
+    for (var deviceType in DeviceInfo.allInfo) {
+      var deviceInfo = DeviceInfo.allInfo[deviceType];
       new DeviceCell({
           parent: this.deviceList,
           type: DeviceCell,
-          deviceType: deviceType,
+          deviceInfo: deviceInfo,
           previewImage: previewImage
         })
         .on('Select', bind(this, function (deviceType) {
-          this.emit('select', deviceType);
+          this.emit('select', DeviceInfo.get(deviceType));
         }, deviceType));
     }
 
@@ -102,7 +102,7 @@ var DeviceCell = Class(Widget, function (supr) {
 
   this.buildWidget = function () {
 
-    var def = this._opts.deviceType;
+    var def = this._opts.deviceInfo;
     var w = def.width || 1;
     var h = def.height || 1;
 

@@ -1,7 +1,7 @@
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 var apps = require('../apps');
 var color = require('cli-color');
-var Module = require('../apps/Module');
+var Module = require('../modules/Module');
 var install = require('../install');
 var path = require('path');
 

@@ -1,4 +1,4 @@
-var base = require('jsio.base');
+var base = require('jsio')('jsio.base');
 
 GLOBAL.Class = base.Class;
 GLOBAL.merge = base.merge;

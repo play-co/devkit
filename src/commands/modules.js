@@ -3,7 +3,7 @@ var ff = require('ff');
 var color = require('cli-color');
 
 var apps = require('../apps');
-var Module = require('../apps/Module');
+var Module = require('../modules/Module');
 var install = require('../install');
 
 var stringify = require('../util/stringify');

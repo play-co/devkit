@@ -1,6 +1,7 @@
 var ip = require('../../util/ip');
 var path = require('path');
 var sdkVersion = require('../../../package.json').version;
+var deviceTypes = require('../../util/deviceTypes');
 
 exports.getConfig = function(app, argv, cb) {
   // NOTICE: we don't change the argv object
@@ -25,6 +26,7 @@ exports.getConfig = function(app, argv, cb) {
   config.simulator = {
     deviceId: argv.simulateDeviceId,
     deviceType: argv.simulateDeviceType,
+    deviceInfo: deviceTypes[argv.simulateDeviceType] || {},
     port: argv.port
   };
 

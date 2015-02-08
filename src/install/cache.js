@@ -8,7 +8,7 @@ var copy = require('../util/copy');
 var mkdirp = Promise.promisify(require('mkdirp')); // mkdir -p
 
 var gitClient = require('../util/gitClient');
-var Module = require('../apps/Module');
+var Module = require('../modules/Module');
 var logger = require('../util/logging').get('cache');
 var rimraf = require('../util/rimraf');
 
