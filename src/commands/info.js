@@ -17,7 +17,7 @@ var InfoCommand = Class(BaseCommand, function (supr) {
     console.log(color.cyanBright('Devkit Location: ') +
                 commands.get('which').getLocation());
     console.log(color.cyanBright('Cache Location: ') +
-                cache.getCacheLocation());
+                cache.getPath());
 
 
     cb && cb();

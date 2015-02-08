@@ -46,7 +46,11 @@ var ModuleCache = Class(EventEmitter, function () {
     });
   };
 
-  this.getCacheLocation = function () {
+  this.getPath = function () {
+    if (arguments.length) {
+      return path.join(MODULE_CACHE, path.join.apply(path, arguments));
+    }
+
     return MODULE_CACHE;
   };
 
@@ -227,3 +231,4 @@ function createLink(src, dest, cb) {
 }
 
 module.exports = new ModuleCache();
+module.exports.CACHE_PATH = MODULE_CACHE;
