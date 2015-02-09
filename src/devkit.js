@@ -51,6 +51,8 @@ function main () {
     name = args.shift();
   } else if (argv.version) {
     name = 'version';
+  } else if (argv.info) {
+    name = 'info';
   } else {
     name = 'help';
   }
