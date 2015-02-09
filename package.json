@@ -4,10 +4,10 @@
   },
   "name": "devkit",
   "description": "HTML 5 game platform for browser and mobile",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
-    "url": "https://github.com/gameclosure/devkit2.git"
+    "url": "https://github.com/gameclosure/devkit.git"
   },
   "bin": {
     "devkit": "./src/devkit.js"
