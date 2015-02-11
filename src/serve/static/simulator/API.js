@@ -1,27 +1,19 @@
 import lib.PubSub;
-import .util.Channel as Channel;
+import .util.ChannelAPI as ChannelAPI;
+import .devkitConn;
 
-exports = Class(function () {
+exports = Class(ChannelAPI, function (supr) {
 
   this.init = function (simulator) {
+    supr(this, 'init');
+
     this._simulator = simulator;
-    this._channels = {};
+
+    devkitConn.getTransport().bind(this).then(function (socket) {
+      this.devkit.setTransport(socket);
+    });
   }
 
-  this.getChannel = function (name) {
-    var channel = this._channels[name];
-    if (!channel) {
-      channel = new Channel(name);
-      this._channels[name] = channel;
-    }
+  this.devkit = new ChannelAPI();
 
-    return channel;
-  }
-
-  this.setTransport = function (transport) {
-    for (var name in this._channels) {
-      this._channels[name].setTransport(transport);
-    }
-  }
 });
-

@@ -141,6 +141,8 @@ exports.build = function (appPath, argv, cb) {
     var toRemove = Object.keys(deps).filter(function (name) { return deps[name] === false; });
     app.removeModules(toRemove);
   }, incrementBuildInfoStep, function () {
+    require('./steps/addDebugCode')(app, config, f());
+  }, incrementBuildInfoStep, function () {
     require('./steps/moduleConfig').getConfig(app, config, f());
   }, incrementBuildInfoStep, function () {
     require('./steps/buildHooks').onBeforeBuild(app, config, f());

@@ -225,8 +225,9 @@ module.exports = Class(Widget, function () {
 
   this.setOffset = function (viewport, offset) {
     $.style(this._el, {
-      top: offset.y - 30 + 'px',
+      top: offset.y - 35 + 'px',
       left: offset.x + 'px',
+      width: offset.width + 'px'
     });
 
     var rect = this._el.getBoundingClientRect();

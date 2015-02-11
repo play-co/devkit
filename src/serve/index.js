@@ -35,6 +35,9 @@ exports.serveWeb = function (opts, cb) {
 
   app.io = require('socket.io')(server);
 
+  // var deviceManager = require('./deviceManager').get();
+  // deviceManager.init(app.io);
+
   app.use(function noCacheControl(req, res, next) {
     res.header('Cache-Control', 'no-cache');
     res.header('Expires', '-1');
@@ -137,13 +140,13 @@ function getAPIRouter(opts) {
   api.get('/openAppExternal', function (req, res) {
     apps.get(req.query.app, {updateLastOpened: false}, function (err, app) {
       if (app) {
-        // Used open package to 
+        // Used open package to
         open(app.paths.root);
       }
 
       res.status(200).send();
     });
-    
+
   });
 
   api.get('/title', function (req, res) {

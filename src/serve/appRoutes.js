@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var apps = require('../apps/');
 var jvmtools = require('../jvmtools');
 var logging = require('../util/logging');
+// var liveReload = require('./live-reload');
 
 var logger = logging.get('routes');
 
@@ -167,6 +168,8 @@ exports.addToAPI = function (opts, api) {
 
     var simulatorApp = express();
     simulatorApp.use('/', express.static(outputPath));
+
+    // liveReload.init(appPath, simulatorApp);
 
     // a better js syntax checker
     simulatorApp.use('/api/syntax', bodyParser.urlencoded({extended: true}));

@@ -15,7 +15,7 @@ $.onEvent(document.body, 'dragleave', this, function (evt) { evt.preventDefault(
 $.onEvent(document.body, 'drop', this, function (evt) { evt.preventDefault(); });
 
 // define public API
-var _simulators = [];
+var _simulators = {};
 GLOBAL.devkit = {
   createSimulator: function (app, opts) {
     var params = {app: app};
@@ -38,10 +38,16 @@ GLOBAL.devkit = {
     });
   },
   getSimulator: function (id) {
-    return _simulators[id];
+    if (!id) { for (id in _simulators) { break; } }
+
+    if (!id) { return null; }
+
+    return _simulators[id].api;
   },
   getSimulators: function () {
-    return _simulators;
+    return Object.keys(_simulators).map(function (id) {
+      return _simulators[id].api;
+    });
   },
   connectClient: function () {
 

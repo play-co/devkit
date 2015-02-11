@@ -23,11 +23,15 @@ exports = Class(function () {
     this._app = opts.app;
     this._manifest = opts.manifest;
 
-    this.api = new API(this);
-    this._ui = new ui.Chrome(this);
-
     this._deviceInfo = DeviceInfo.get(this._opts.type)
     this._buildTarget = opts.buildTarget || this._deviceInfo.getTarget();
+
+    // api used by simulator frame
+    this.api = new API(this);
+
+    // DOM simulator
+    this._ui = new ui.Chrome(this);
+
     if (opts.modules) {
       this.loadModules(opts.modules);
     }

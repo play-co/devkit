@@ -17,6 +17,7 @@ exports.getConfig = function(app, argv, cb) {
   config.debug = 'debug' in argv ? !!argv.debug : true;
   config.scheme = argv.scheme || (config.debug ? 'debug' : 'release');
   config.target = argv.target || 'browser-mobile';
+  config.imports = [];
   config.schemePath = path.join('build/', config.scheme);
   config.outputPath = argv.output || path.resolve(config.appPath, path.join('build/', config.scheme, config.target));
   config.jsioPath = Array.isArray(argv.jsioPath) ? argv.jsioPath.slice(0) : [];

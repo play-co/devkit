@@ -27,7 +27,7 @@ import lib.PubSub;
 import ..util.Size as Size;
 import ..util.DeviceInfo as DeviceInfo;
 
-import ..components.SimulatorChrome as SimulatorChrome;
+import ..components.FrameBackground as FrameBackground;
 import ..components.CenterLayout as CenterLayout;
 import ..components.Toolbar as Toolbar;
 import ..components.DeviceDialog as DeviceDialog;
@@ -41,7 +41,7 @@ exports = Class(CenterLayout, function (supr) {
     children: [
       {type: Toolbar},
       {id: 'contents', children: [
-        {id: 'background', type: SimulatorChrome},
+        {id: 'background', type: FrameBackground},
         {id: 'splashImage'},
         {id: 'resizeHandle'},
         {id: 'build-spinner', children: [{id: 'spinner'}]}
@@ -117,6 +117,8 @@ exports = Class(CenterLayout, function (supr) {
     $.onEvent(this.resizeHandle, 'mousedown', this, function () {
         this._resizer.startDrag();
       });
+
+    window.addEventListener('resize', bind(this, 'update'));
 
     window.addEventListener('keydown', bind(this, this._rebuildKeyListener), true);
     window.addEventListener('message', bind(this, function (e) {
