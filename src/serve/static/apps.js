@@ -24,7 +24,8 @@ var f = ff(function () {
 	util.ajax.get('/api/home', f());
 
 	var onCSS = f.wait();
-	squill.cssLoad.get('stylesheets/home.styl', function (err, el) {
+	var prefix = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+	squill.cssLoad.get(prefix + 'stylesheets/home.styl', function (err, el) {
 		if (!err) {
 			onCSS();
 		} else {

@@ -2,20 +2,38 @@
 
 <html>
 <head>
-<title>Game Closure SDK</title>
+<meta name = "viewport" content = "user-scalable=no,width=device-width,initial-scale=1, maximum-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<script>
+var icon = window.location.search.match(/[?&]app=(.*?)(?:&|$)/);
+if (icon) {
+  document.write('<link rel="icon" type="image/png" href="api/icon?app='
+    + icon[1]
+    + '" />');
+}</script>
 
-<meta name = "viewport" content = "user-scalable=no,initial-scale=1, maximum-scale=1" />
-<link rel="icon" type="image/png" href="/favicon.png" />
-<style>
-html, body { margin: 0px; padding: 0px; height: 100%; }
-</style>
+<title>Game Closure SDK</title>
+</head>
+<body></body>
 
 <script>
-var ua = navigator.userAgent;
-var isMobile = window.parent == window && (/Tizen|iPod|iPhone|iPad|Android|BlackBerry/i.test(ua) || /testMobile/.test(window.location));
-document.write('<scr' + 'ipt src="/api/compile/.src.serve.static.' + (isMobile ? 'mobileIndex' : 'index') + '"></scr' + 'ipt>');
+(function () {
+  if (!window.console) {
+    window.console = {};
+    window.console.log = window.console.info = window.console.error = window.console.warn = function () {};
+  }
+
+  var scriptStart = "<scr" + "ipt";
+  var scriptEnd = "</scr" + "ipt>";
+
+  var ua = navigator.userAgent;
+  var src;
+  if (window.parent == window && (/Safari|AppleWebKit/i.test(ua) && /iPod|iPhone|iPad|Android/i.test(ua) || /testMobile/.test(window.location) || /Mobile/i.test(ua))) {
+    src = ".src.serve.static.mobileGUI";
+  } else {
+    src = ".src.serve.static.GUI";
+  }
+  document.write(scriptStart + " src='api/compile/" + src + "'>" + scriptEnd);
+})();
 </script>
-</head>
-<body>
-</body>
 </html>

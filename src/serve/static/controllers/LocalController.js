@@ -15,7 +15,7 @@ exports = Class(function () {
 
     // get or update a simulator port with the following options
     util.ajax.get({
-      url: '/api/simulate/',
+      url: 'api/simulate/',
       query: {
         app: this._app,
         deviceType: this._device.getType(),
@@ -30,9 +30,13 @@ exports = Class(function () {
         cb && cb(err);
       } else {
         var url = res.url;
+        var prefix = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+
         if (!url && res.port) {
           var hostname = location.hostname;
           url = 'http://' + hostname + ':' + res.port + '/';
+        } else {
+          url = prefix + url;
         }
 
         simulator.loadURL(url);
