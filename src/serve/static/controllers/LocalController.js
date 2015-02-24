@@ -36,7 +36,7 @@ exports = Class(function () {
           var hostname = location.hostname;
           url = 'http://' + hostname + ':' + res.port + '/';
         } else {
-          url = prefix + url;
+          url = prefix + url.replace(/^\//, '');
         }
 
         simulator.loadURL(url);
