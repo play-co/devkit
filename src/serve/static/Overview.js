@@ -209,7 +209,7 @@ var AppInspector = Class(Widget, function () {
     on.simulateBtn = function () {
       var appPath = this.getModel().get('paths.root');
       var url = new std.uri(window.location)
-        .setPath('/simulator/')
+        .setPath('/')
         .addQuery({app: appPath})
         .addHash({device: '{"type":"iphone6"}'})
         .toString();

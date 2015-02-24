@@ -71,7 +71,7 @@ var MainView = Class(squill.Widget, function (supr) {
 
     this.controller.on('activeDevice', bind(this, '_onActiveDevice'));
 
-    util.ajax.get({url: '/api/ip', type: 'json'}, bind(this, '_onIP'));
+    util.ajax.get({url: 'api/ip', type: 'json'}, bind(this, '_onIP'));
   }
 
   this._onIP = function(err, response) {
@@ -434,7 +434,7 @@ exports.start = function () {
   var uri = new URI(window.location);
   var app = uri.query('app');
   if (!app) {
-    location = '/';
+    location = '/apps.html';
     return;
   }
 
@@ -442,7 +442,7 @@ exports.start = function () {
 
   // set window/tab title to app title
   util.ajax.get({
-      url: '/api/title',
+      url: 'api/title',
       query: {
         app: app
       }
@@ -454,15 +454,15 @@ exports.start = function () {
 
   // load css, host any modules with simulator extensions
   var f = new ff(function () {
-    squill.cssLoad.get('/stylesheets/simulator.styl', f.wait());
+    squill.cssLoad.get('stylesheets/simulator.styl', f.wait());
     util.ajax.get({
-      url: '/api/hostModules',
+      url: 'api/hostModules',
       query: {
         app: app
       }
     }, f());
     util.ajax.get({
-      url: '/api/manifest',
+      url: 'api/manifest',
       query: {
         app: app
       }
@@ -480,11 +480,12 @@ exports.start = function () {
     var api = _controller.api;
     GLOBAL.devkit = api;
 
+    var prefix = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1) + 'api';
     modules.names.forEach(function (name) {
       $({
         parent: document.body,
         tag: 'iframe',
-        src: '/api' + modules.route + name,
+        src: prefix + modules.route + name + '/',
         className: 'module-frame'
       });
     });
