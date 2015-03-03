@@ -27,22 +27,24 @@ exports = Class(function () {
       simulator.setBuilding(false);
 
       if (err) {
-        cb && cb(err);
-      } else {
-        var url = res.url;
-        var prefix = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-
-        if (!url && res.port) {
-          var hostname = location.hostname;
-          url = 'http://' + hostname + ':' + res.port + '/';
-        } else {
-          url = prefix + url.replace(/^\//, '');
-        }
-
-        simulator.loadURL(url);
-
-        cb && cb(null, res);
+        return cb && cb(err);
       }
+
+      var url = res.url;
+      var prefix = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+
+      if (!url && res.port) {
+        var hostname = location.hostname;
+        url = 'http://' + hostname + ':' + res.port + '/';
+      } else if (url) {
+        url = prefix + url.replace(/^\//, '');
+      } else {
+        return cb && cb(new Error('no URL'));
+      }
+
+      simulator.loadURL(url);
+
+      cb && cb(null, res);
     }));
   };
 });
