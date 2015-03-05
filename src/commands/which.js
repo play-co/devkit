@@ -9,8 +9,12 @@ var VersionCommand = Class(BaseCommand, function (supr) {
   this.description = 'prints the full path to DevKit';
 
   this.exec = function () {
-    console.log(path.join(__dirname, '..', '..'));
-  }
+    console.log(this.getLocation());
+  };
+
+  this.getLocation = function () {
+    return path.join(__dirname, '..', '..');
+  };
 });
 
 module.exports = VersionCommand;

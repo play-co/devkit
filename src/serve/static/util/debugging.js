@@ -10,7 +10,7 @@ var originalSyntax = jsio.__env.checkSyntax.bind(jsio.__env);
 
 jsio.__env.checkSyntax = function (code, filename) {
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/api/syntax', false);
+  xhr.open('POST', 'api/syntax', false);
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   xhr.onreadystatechange = function () {
     if (xhr.readyState != 4) { return; }

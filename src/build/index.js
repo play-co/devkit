@@ -81,7 +81,7 @@ exports.build = function (appPath, argv, cb) {
     if (currentStep !== undefined && currentStep !== null) {
       setBuildInfo('currentStep', currentStep + 1);
     }
-    f(arguments);
+    f.pass.apply(f, arguments);
   }
 
   var app;

@@ -1,46 +1,64 @@
-/** @license
- * This file is part of the Game Closure SDK.
- *
- * The Game Closure SDK is free software: you can redistribute it and/or modify
- * it under the terms of the Mozilla Public License v. 2.0 as published by Mozilla.
-
- * The Game Closure SDK is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * Mozilla Public License v. 2.0 for more details.
-
- * You should have received a copy of the Mozilla Public License v. 2.0
- * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
- */
-
-import ff;
-import squill.cssLoad;
-import util.ajax;
+import std.uri as URI;
 from util.browser import $;
+import .Simulator;
+import .util.bluebird as Promise;
 
-import .Overview;
+GLOBAL.Promise = Promise;
 
-var f = ff(function () {
-	util.ajax.get('/api/home', f());
+import .util.ajax;
+import .util.DeviceInfo as DeviceInfo;
 
-	var onCSS = f.wait();
-	squill.cssLoad.get('stylesheets/home.styl', function (err, el) {
-		if (!err) {
-			onCSS();
-		} else {
-			$({
-				parent: document.body,
-				children: [
-					{tag: 'h3', text: 'CSS Error'},
-					{tag: 'pre', text: err.target.innerText}
-				]
-			});
-			console.log(err);
-		}
-	});
-}, function (homeDirectory) {
-	GLOBAL.overview = new Overview({
-		parent: document.body,
-		homeDirectory: homeDirectory.path
-	});
-});
+// prevent drag/drop
+$.onEvent(document.body, 'dragenter', this, function (evt) { evt.preventDefault(); });
+$.onEvent(document.body, 'dragover', this, function (evt) { evt.preventDefault(); });
+$.onEvent(document.body, 'dragleave', this, function (evt) { evt.preventDefault(); });
+$.onEvent(document.body, 'drop', this, function (evt) { evt.preventDefault(); });
+
+// define public API
+var _simulators = {};
+GLOBAL.devkit = {
+  createSimulator: function (app, opts) {
+    var params = {app: app};
+
+    Promise.all([
+      util.ajax.get({url: '/api/hostModules', query: params}),
+      util.ajax.get({url: '/api/manifest', query: params}),
+      util.ajax.get({url: '/api/devices'}),
+    ]).spread(function (modules, manifest, devices) {
+      DeviceInfo.setInfo(devices[0]);
+
+      var simulator = new Simulator(merge({
+        parent: document.querySelector('#devkit #simulators'),
+        app: app,
+        manifest: manifest[0],
+        modules: modules[0]
+      }, opts));
+
+      _simulators[simulator.id] = simulator;
+    });
+  },
+  getSimulator: function (id) {
+    if (!id) { for (id in _simulators) { break; } }
+
+    if (!id) { return null; }
+
+    return _simulators[id].api;
+  },
+  getSimulators: function () {
+    return Object.keys(_simulators).map(function (id) {
+      return _simulators[id].api;
+    });
+  },
+  connectClient: function () {
+
+  }
+};
+
+// handle initial uri parameters
+var uri = new URI(window.location);
+var app = uri.query('app');
+var simOpts = uri.hash('device');
+if (app && simOpts) {
+  devkit.createSimulator(app, JSON.parse(simOpts));
+}
+

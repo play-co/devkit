@@ -3,11 +3,12 @@
     "name": "Game Closure"
   },
   "name": "devkit",
+  "keywords": "HTML 5 game sdk platform mobile browser javascript ios android",
   "description": "HTML 5 game platform for browser and mobile",
-  "version": "2.0.0",
+  "version": "2.1.1",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
-    "url": "https://github.com/gameclosure/devkit2.git"
+    "url": "https://github.com/gameclosure/devkit.git"
   },
   "bin": {
     "devkit": "./src/devkit.js"
@@ -20,12 +21,12 @@
     "ff": "0.2.0",
     "filesize": "*",
     "js-yaml": "^3.2.5",
-    "jsio": "2.0.0-beta.5",
+    "jsio": "2.0.1",
     "lockfile": "^1.0.0",
     "mime": "1.2.11",
     "mixpanel": "0.0.18",
     "mkdirp": "0.5.0",
-    "ncp": "^1.0.1",
+    "ncp": "https://github.com/gameclosure/ncp/archive/v2.0.0.tar.gz",
     "nib": "1.x",
     "optimist": "0.6.1",
     "open": "0.0.5",

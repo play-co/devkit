@@ -34,7 +34,7 @@ var ModuleCache = Class(EventEmitter, function () {
 
     var entryNames = fs.readdirSync(MODULE_CACHE);
     Promise.bind(this).return(entryNames).map(function (entry) {
-      var cachePath = path.join(MODULE_CACHE, entry);
+      var cachePath = this.getPath(entry);
       return getCachedModuleInfo(cachePath);
     }).reduce(function (entries, entry) {
       entry && entry.name && (entries[entry.name] = entry);
@@ -44,6 +44,14 @@ var ModuleCache = Class(EventEmitter, function () {
       this._isLoaded = true;
       this.emit('loaded');
     });
+  };
+
+  this.getPath = function () {
+    if (arguments.length) {
+      return path.join(MODULE_CACHE, path.join.apply(path, arguments));
+    }
+
+    return MODULE_CACHE;
   };
 
   function getCachedModuleInfo (cachePath, cb) {
@@ -66,8 +74,8 @@ var ModuleCache = Class(EventEmitter, function () {
     }).nodeify(cb);
   }
 
-  function convertTempModulePath (cachePath, moduleName) {
-    var targetPath = path.join(MODULE_CACHE, moduleName);
+  this.convertTempModulePath = function (cachePath, moduleName) {
+    var targetPath = this.getPath(moduleName);
     if (targetPath !== cachePath && !fs.existsSync(targetPath)) {
       fs.renameSync(cachePath, targetPath);
     }
@@ -87,7 +95,7 @@ var ModuleCache = Class(EventEmitter, function () {
   this.add = function (nameOrURL, version, cb) {
     trace('cache.add name:', nameOrURL, 'version:', version);
     var self = this;
-    var tempName = path.join(MODULE_CACHE, randomName());
+    var tempName = this.getPath(randomName());
 
     return Promise.resolve(void 0).bind(this).then(function () {
       if (!this._isLoaded) {
@@ -107,7 +115,7 @@ var ModuleCache = Class(EventEmitter, function () {
         // or the latest version
         return [
           entry,
-          Module.setVersion(path.join(MODULE_CACHE, entry.name), version)
+          Module.setVersion(this.getPath(entry.name), version)
         ];
       }
 
@@ -149,7 +157,7 @@ var ModuleCache = Class(EventEmitter, function () {
       return getCachedModuleInfo(tempName);
     }).then(function (entry) {
       // Move module to correct location
-      convertTempModulePath(tempName, entry.name);
+      this.convertTempModulePath(tempName, entry.name);
       return entry;
     }).finally(function () {
       return rimraf(tempName);
@@ -157,12 +165,11 @@ var ModuleCache = Class(EventEmitter, function () {
   };
 
   this.remove = function (name, cb) {
-    var modulePath = path.join(MODULE_CACHE, name);
-    return rimraf(modulePath, cb);
+    return rimraf(this.getPath(name), cb);
   };
 
   this.copy = function (cacheEntry, destPath, cb) {
-    var srcPath = path.join(MODULE_CACHE, cacheEntry.name) + path.sep;
+    var srcPath = this.getPath(cacheEntry.name) + path.sep;
     var copyTo = path.join(destPath, cacheEntry.name) + path.sep;
 
     logger.log('installing', cacheEntry.name, 'at', copyTo);
@@ -173,7 +180,7 @@ var ModuleCache = Class(EventEmitter, function () {
   };
 
   this.link = function (cacheEntry, destPath, cb) {
-    var src = path.join(MODULE_CACHE, cacheEntry.name);
+    var src = this.getPath(cacheEntry.name);
     var dest = path.join(destPath, cacheEntry.name);
     return createLink(src, dest, cb);
   };
@@ -223,3 +230,4 @@ function createLink(src, dest, cb) {
 }
 
 module.exports = new ModuleCache();
+module.exports.CACHE_PATH = MODULE_CACHE;
