@@ -72,9 +72,15 @@ exports = Class(CenterLayout, function (supr) {
       'Facebook': facebookRenderer
     };
 
-    this._simulator.getManifest().supportedOrientations.forEach(function (orientation) {
-      this._validOrientations[orientation] = true;
-    }, this);
+    var manifest = this._simulator.getManifest();
+    if (manifest.supportedOrientations) {
+      manifest.supportedOrientations.forEach(function (orientation) {
+        this._validOrientations[orientation] = true;
+      }, this);
+    } else {
+      this._validOrientations.portrait = true;
+      this._validOrientations.landscape = true;
+    }
 
     this.toolbar.setSimulator(this);
     this.toolbar.setValidOrientations(this._validOrientations);
@@ -93,7 +99,7 @@ exports = Class(CenterLayout, function (supr) {
     this._offsetY = opts.offsetY || 0;
 
     this._simulatorIndex = opts.index;
-    this._name = opts.name || 'Simulator_' + this._simulatorIndex;
+    this._name = opts.name || 'Simulator';
 
     this._mover = new squill.Drag({threshold: 0})
       .subscribe('DragStart', this, 'onDragStart')
@@ -364,6 +370,27 @@ exports = Class(CenterLayout, function (supr) {
     this.emit('change');
   };
 
+  this.getFrameName = function () {
+    var manifest = this._simulator.getManifest();
+
+    var studio = manifest.studio && manifest.studio.domain;
+    if (!studio) {
+      studio = "my-studio.com";
+    }
+
+    var names = studio.split(/\./g).reverse();
+    names.push(manifest.shortName);
+    var defaultName = names.join('.');
+    var target = this._deviceInfo && this._deviceInfo.getTarget() || '';
+    if (/ios/i.test(target)) {
+      return manifest.ios && manifest.ios.bundleID || defaultName;
+    } else if (/android/i.test(target)) {
+      return manifest.android && manifest.android.packageName || defaultName;
+    } else {
+      return defaultName;
+    }
+  }
+
   this._zoom = 0;
 
   this.getZoom = function () { return this._zoom; }
@@ -386,7 +413,7 @@ exports = Class(CenterLayout, function (supr) {
       tag: 'iframe',
       id: 'frame',
       attrs: {
-        name: this._name
+        name: this.getFrameName()
       },
       src: url,
       className: 'frame'
