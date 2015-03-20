@@ -349,10 +349,7 @@ exports.getHashForRef = function getHashForRef (ref, cb) {
  */
 
 exports.fetch = function fetch (cb) {
-  return Promise.all([
-    this('fetch'),
-    this('fetch', '--tags')
-  ]).nodeify(cb);
+  return this('fetch', '--tags').nodeify(cb);
 };
 
 /**
