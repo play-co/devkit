@@ -47,7 +47,10 @@ function main () {
   var args = argv._;
 
   var name;
-  if (commands.has(args[0])) {
+
+  if (argv.help) {
+    name = 'help';
+  } else if (commands.has(args[0])) {
     name = args.shift();
   } else if (argv.version) {
     name = 'version';
