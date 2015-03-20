@@ -66,7 +66,7 @@ var DebugCommand = Class(BaseCommand, function (supr) {
         cb && cb();
       });
     }
-  }
+  };
 });
 
 
@@ -119,7 +119,8 @@ function getBuildModules(app) {
 
 function getBuildModule(app, target) {
   var modules = app.getModules();
-  for (var i = 0, module; module = modules[i]; ++i) {
+  for (var moduleName in modules) {
+    var module = modules[moduleName];
     var buildModule = module.loadBuildTarget(target);
     if (buildModule) {
       return buildModule;
