@@ -53,8 +53,6 @@ var Module = module.exports = Class(function () {
       for (var target in devkit.buildTargets) {
         this._buildTargets[target] =
           path.resolve(this.path, devkit.buildTargets[target]);
-        logger.log(target);
-        logger.log(this._buildTargets[target]);
       }
     }
 
