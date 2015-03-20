@@ -81,7 +81,6 @@ exports.installModule = function (app, moduleName, opts, cb) {
     version = urlInfo.version;
   }
 
-
   version = resolveRequestedModuleVersion(app, moduleName, version, opts);
 
   var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/;
@@ -105,25 +104,26 @@ exports.installModule = function (app, moduleName, opts, cb) {
   }).then(function () {
     this.hasLock = true;
 
-    if (moduleName && version) {
+    if (moduleName) {
       var modulePath = path.join(app.paths.modules, moduleName);
       if (fs.existsSync(modulePath)) {
         return Module.describeVersion(modulePath);
       }
     }
 
-    return Promise.resolve(void 0);
+    return Promise.resolve();
   }).then(function passOrInstallModule (currentVersion) {
     trace('currentVersion', currentVersion);
-    var onRequestedVersion;
+    var hasRequestedVersion;
     if (!currentVersion) {
-      onRequestedVersion = false;
+      hasRequestedVersion = false;
     } else {
-      onRequestedVersion = currentVersion.hash === version ||
-        currentVersion.tag === version;
+      hasRequestedVersion = !version
+        || currentVersion.hash === version
+        || currentVersion.tag === version;
     }
 
-    if (onRequestedVersion) {
+    if (hasRequestedVersion) {
       return Promise.resolve();
     } else if (isURL) {
       return installModuleFromURL(app, moduleName, url, version, opts);
