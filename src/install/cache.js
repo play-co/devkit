@@ -35,7 +35,13 @@ var ModuleCache = Class(EventEmitter, function () {
     var entryNames = fs.readdirSync(MODULE_CACHE);
     Promise.bind(this).return(entryNames).map(function (entry) {
       var cachePath = this.getPath(entry);
-      return getCachedModuleInfo(cachePath);
+      return getCachedModuleInfo(cachePath)
+        .catch(function () {
+          // errors are not good for the cache, but we should keep going, just
+          // ignore broken cache entries
+          logger.warn('invalid cache entry', cachePath);
+          return null;
+        });
     }).reduce(function (entries, entry) {
       entry && entry.name && (entries[entry.name] = entry);
       return entries;
@@ -79,7 +85,7 @@ var ModuleCache = Class(EventEmitter, function () {
     if (targetPath !== cachePath && !fs.existsSync(targetPath)) {
       fs.renameSync(cachePath, targetPath);
     }
-  }
+  };
 
   var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/;
   var SSH_URL = /.+?\@.+?:.+/;
