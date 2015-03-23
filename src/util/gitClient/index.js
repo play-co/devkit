@@ -79,7 +79,8 @@ function spawnWithLogger(args, opts, cb) {
 
         var cmd = name + ' ' + args.join(' ');
         if (code === 128) {
-          reject(new FatalGitError('during `' + cmd + '`: ' + stderr));
+          var msg = 'during `' + cmd + ' (' + opts.cwd + ')`: ' + stderr;
+          reject(new FatalGitError(msg));
         } else if (code === 129) {
           reject(new UnknownGitOption('during `' + cmd + '`: ' + stderr));
         } else {

@@ -35,7 +35,13 @@ var ModuleCache = Class(EventEmitter, function () {
     var entryNames = fs.readdirSync(MODULE_CACHE);
     Promise.bind(this).return(entryNames).map(function (entry) {
       var cachePath = this.getPath(entry);
-      return getCachedModuleInfo(cachePath);
+      return getCachedModuleInfo(cachePath, true)
+        .catch(function () {
+          // errors are not good for the cache, but we should keep going, just
+          // ignore broken cache entries
+          logger.warn('invalid cache entry', cachePath);
+          return null;
+        });
     }).reduce(function (entries, entry) {
       entry && entry.name && (entries[entry.name] = entry);
       return entries;
@@ -54,11 +60,11 @@ var ModuleCache = Class(EventEmitter, function () {
     return MODULE_CACHE;
   };
 
-  function getCachedModuleInfo (cachePath, cb) {
+  function getCachedModuleInfo (cachePath, skipFetch) {
     var git = gitClient.get(cachePath, {extraSilent: true});
 
     return Promise.all([
-      git.getLatestLocalTag(),
+      git.getLatestLocalTag({skipFetch: !!skipFetch}),
       git.getCurrentHead(),
       git('show', 'HEAD:package.json'),
       Module.getURL(cachePath)
@@ -71,7 +77,7 @@ var ModuleCache = Class(EventEmitter, function () {
         name: data.name,
         version: version
       };
-    }).nodeify(cb);
+    });
   }
 
   this.convertTempModulePath = function (cachePath, moduleName) {
@@ -79,7 +85,7 @@ var ModuleCache = Class(EventEmitter, function () {
     if (targetPath !== cachePath && !fs.existsSync(targetPath)) {
       fs.renameSync(cachePath, targetPath);
     }
-  }
+  };
 
   var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/;
   var SSH_URL = /.+?\@.+?:.+/;
