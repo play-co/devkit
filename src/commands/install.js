@@ -1,22 +1,3 @@
-var fs = require('fs');
-var ff = require('ff');
-
-var path = require('path');
-var apps = require('../apps');
-var install = require('../install');
-var lockfile = require('../util/lockfile');
-var logger = require('../util/logging').get('devkit');
-
-var url = require('url');
-
-var gitClient = require('../util/gitClient');
-
-var UnknownGitRevision = gitClient.UnknownGitRevision;
-var FatalGitError = gitClient.FatalGitError;
-var UnknownGitOption = gitClient.UnknownGitOption;
-var ApplicationNotFoundError = apps.ApplicationNotFoundError;
-var InvalidManifestError = apps.InvalidManifestError;
-var FileLockerError = lockfile.FileLockerError;
 
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
@@ -49,6 +30,25 @@ var InstallCommand = Class(BaseCommand, function (supr) {
   };
 
   this.exec = function (command, args, cb) {
+    var fs = require('fs');
+    var ff = require('ff');
+
+    var path = require('path');
+    var apps = require('../apps');
+    var install = require('../install');
+    var lockfile = require('../util/lockfile');
+    var logger = require('../util/logging').get('devkit');
+
+    var url = require('url');
+
+    var gitClient = require('../util/gitClient');
+
+    var UnknownGitRevision = gitClient.UnknownGitRevision;
+    var FatalGitError = gitClient.FatalGitError;
+    var UnknownGitOption = gitClient.UnknownGitOption;
+    var ApplicationNotFoundError = apps.ApplicationNotFoundError;
+    var InvalidManifestError = apps.InvalidManifestError;
+    var FileLockerError = lockfile.FileLockerError;
 
     var argv = this.opts.argv;
     var protocol = argv.ssh ? 'ssh' : 'https';

@@ -1,5 +1,5 @@
 var fs = require('fs');
-var color = require('cli-color');
+var chalk = require('chalk');
 var path = require('path');
 var logger = require('../util/logging').get('install');
 var gitClient = require('../util/gitClient');
@@ -87,10 +87,10 @@ exports.installModule = function (app, moduleName, opts, cb) {
   var isURL = !!url || moduleName && PROTOCOL.test(moduleName);
 
   logger.log(
-    color.cyanBright('Installing'),
-    color.yellowBright(
+    chalk.cyan('Installing'),
+    chalk.yellow(
       moduleName + (version ? '@' + version : '')
-    ) + color.cyanBright('...')
+    ) + chalk.cyan('...')
   );
 
   trace('[installModule] moduleName:', moduleName);
@@ -132,8 +132,8 @@ exports.installModule = function (app, moduleName, opts, cb) {
     }
   }).tap(function (installedVersion) {
     installedVersion && logger.log(
-      color.yellowBright(moduleName + '@' + installedVersion),
-      color.cyanBright('install completed')
+      chalk.yellow(moduleName + '@' + installedVersion),
+      chalk.cyan('install completed')
     );
   }).finally(function () {
     // Unlock the app for future use
@@ -165,7 +165,7 @@ function installModuleFromName (app, name, version, opts) {
 function installModuleFromURL (app, name, url, version, opts) {
   // we can't silence a clone/fetch in case the user has to enter credentials
   logger.log(
-    color.cyanBright(
+    chalk.cyan(
       'Adding ' + name + (version ? '@' + version : '')
     )
   );
@@ -212,7 +212,7 @@ function installModuleFromURL (app, name, url, version, opts) {
  */
 
 function linkModuleIntoApp (app, cacheEntry) {
-  logger.log(color.cyanBright('Linking ' + app.paths.modules));
+  logger.log(chalk.cyan('Linking ' + app.paths.modules));
   return cache.link(cacheEntry, app.paths.modules);
 }
 
@@ -223,7 +223,7 @@ function linkModuleIntoApp (app, cacheEntry) {
  */
 
 function copyModuleIntoApp (app, cacheEntry) {
-  logger.log(color.cyanBright('Copying ' + app.paths.modules));
+  logger.log(chalk.cyan('Copying ' + app.paths.modules));
   return cache.copy(cacheEntry, app.paths.modules);
 }
 

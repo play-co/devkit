@@ -1,5 +1,5 @@
 var path = require('path');
-var color = require('cli-color');
+var chalk = require('chalk');
 
 exports.errorToString = function (error) {
 	if (!error.stack) {
@@ -51,9 +51,9 @@ exports.errorToString = function (error) {
           out.push(data);
         } else {
           out.push(new Array(i + 1).join(' ') + '└ '
-            + color.green(data.file) + ':' + color.blueBright(data.line)
-            + ' ' + color.whiteBright(data.func)
-            + color.yellowBright(' (' + data.details + ')'));
+            + chalk.green(data.file) + ':' + chalk.blue(data.line)
+            + ' ' + chalk.white(data.func)
+            + chalk.yellow(' (' + data.details + ')'));
         }
       });
 
@@ -63,12 +63,12 @@ exports.errorToString = function (error) {
         var msgLines = msg.join('\n').split('\n');
         var msgText = msgLines.join('\n   ' + indent);
         out.push(indent + '└ '
-          + color.green(lastLine.file) + ':' + color.blueBright(lastLine.line) + ' '
-          + color.redBright(
+          + chalk.green(lastLine.file) + ':' + chalk.blue(lastLine.line) + ' '
+          + chalk.red(
             msgText
             + (msgLines.length > 1 ? '\n' + indent : '')
-            + ' ' + color.whiteBright('at ' + lastLine.func)
-            + color.yellowBright(' (' + lastLine.details + ')')
+            + ' ' + chalk.white('at ' + lastLine.func)
+            + chalk.yellow(' (' + lastLine.details + ')')
           ));
       }
     } catch (e) {

@@ -1,4 +1,4 @@
-var color = require('cli-color');
+var chalk = require('chalk');
 
 var spawn = require('child_process').spawn;
 var logging = require('../logging');
@@ -50,7 +50,7 @@ function spawnWithLogger(args, opts, cb) {
   var logger = logging.get(name, opts.silent, buffers);
 
   if (!opts.extraSilent) {
-    logger.log(color.yellow('-> ' + args.join(' ')));
+    logger.log(chalk.yellow('-> ' + args.join(' ')));
   }
 
   if (!opts.stdio) {

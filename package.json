@@ -16,7 +16,7 @@
   "dependencies": {
     "bluebird": "^2.3.6",
     "body-parser": "1.x",
-    "cli-color": "0.2.3",
+    "chalk": "^0.5.1",
     "express": "4.x",
     "ff": "0.2.0",
     "filesize": "*",

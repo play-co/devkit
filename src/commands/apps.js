@@ -1,21 +1,4 @@
-var fs = require('fs');
-var path = require('path');
-var printf = require('printf');
-var color = require('cli-color');
-
-var apps = require('../apps');
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
-var stringify = require('../util/stringify');
-var obj = require('../util/obj');
-
-var MAX_LENGTH = 120;
-function truncate(str) {
-  if (str.length > MAX_LENGTH) {
-    return str.substring(0, MAX_LENGTH) + ' …';
-  }
-
-  return str;
-}
 
 var AppsCommand = Class(BaseCommand, function (supr) {
 
@@ -34,6 +17,23 @@ var AppsCommand = Class(BaseCommand, function (supr) {
   this.exec = function (name, args) {
     var argv = this.opts.argv;
 
+    var fs = require('fs');
+    var path = require('path');
+    var printf = require('printf');
+    var chalk = require('chalk');
+
+    var apps = require('../apps');
+    var stringify = require('../util/stringify');
+    var obj = require('../util/obj');
+
+    var MAX_LENGTH = 120;
+    function truncate(str) {
+      if (str.length > MAX_LENGTH) {
+        return str.substring(0, MAX_LENGTH) + ' …';
+      }
+
+      return str;
+    }
 
     // sub-commands are for scripting, so set an exit code and exit on
     // completion
@@ -116,24 +116,24 @@ var AppsCommand = Class(BaseCommand, function (supr) {
         };
 
         for (var appPath in apps) {
-          console.log(color.yellowBright(printf('%17s', appPath)));
+          console.log(chalk.yellow(printf('%17s', appPath)));
           var app = apps[appPath].toJSON();
           var map = (argv.short ? shortKeyMap : keyMap);
           for (var key in map) {
             if (key == 'modules') {
-              console.log(color.yellow(printf('%21s', map[key] + ':')));
+              console.log(chalk.yellow(printf('%21s', map[key] + ':')));
               var modules = app.modules;
               for (var name in modules) {
                 if (modules[name].isDependency) {
-                  console.log(color.green(printf('%28s', name + ':')), modules[name].version);
+                  console.log(chalk.green(printf('%28s', name + ':')), modules[name].version);
                 }
               }
             } else if (key == 'lastOpened') {
-              console.log(color.yellow(printf('%21s', map[key] + ':')), d.toLocaleDateString() + ',', d.toLocaleTimeString());
+              console.log(chalk.yellow(printf('%21s', map[key] + ':')), d.toLocaleDateString() + ',', d.toLocaleTimeString());
             } else {
               var d = new Date(app.lastOpened);
               strValue = typeof app[key] == 'object' ? JSON.stringify(app[key]) : '' + app[key];
-              console.log(color.yellow(printf('%21s', map[key] + ':')), truncate(strValue));
+              console.log(chalk.yellow(printf('%21s', map[key] + ':')), truncate(strValue));
             }
           }
         }
