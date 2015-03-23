@@ -173,7 +173,9 @@ function installModuleFromURL (app, name, url, version, opts) {
   var modulePath = path.join(app.paths.modules, name);
 
   return Promise.bind({}).then(function () {
-    return cache.add(url, version);
+    return cache.add(name, version);
+  }).then(function (cacheEntry) {
+    return cacheEntry || cache.add(url, version);
   }).then(function ensureModuleInApp (cacheEntry) {
     this.cacheEntry = cacheEntry;
     name = cacheEntry.name;
