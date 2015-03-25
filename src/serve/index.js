@@ -3,8 +3,6 @@ var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser');
 var printf = require('printf');
-var os = require('os');
-var exec = require('child_process').exec;
 var open = require('open');
 
 var apps = require('../apps');
@@ -26,7 +24,6 @@ var BASE_PATH = path.join(__dirname, '..', '..');
 // launches the web server
 exports.serveWeb = function (opts, cb) {
   var basePort = opts.port;
-  var incrementPorts = !opts.singlePort;
 
   // common.track("BasilServe");
   var app = express();
@@ -53,7 +50,9 @@ exports.serveWeb = function (opts, cb) {
 
   // Serve
   server.listen(basePort, function () {
-    exports.serveTestApp(basePort);
+    if (opts.testApp) {
+      exports.serveTestApp(basePort);
+    }
 
     logger.log(printf('serving at http://localhost:%(port)s/ and http://%(ip)s:%(port)s/', {
       ip: ip.getLocalIP(),
@@ -65,7 +64,7 @@ exports.serveWeb = function (opts, cb) {
     cb && cb();
   }).on('error', function (e) {
     console.log(e);
-    if (e.code == 'EADDRINUSE') {
+    if (e.code === 'EADDRINUSE') {
       cb && cb(e);
       cb = null;
     }
@@ -86,12 +85,11 @@ exports.serveTestApp = function (basePort) {
     }, function (err, stdout, stderr) {
     });
   }
-}
+};
 
 function getAPIRouter(opts) {
 
   var api = express();
-  var send = require('send');
 
   api.get('/app', function (req, res) {
     var appPath = req.query.app;
@@ -120,13 +118,13 @@ function getAPIRouter(opts) {
   api.get('/openAppExternal', function (req, res) {
     apps.get(req.query.app, {updateLastOpened: false}, function (err, app) {
       if (app) {
-        // Used open package to 
+        // Used open package to
         open(app.paths.root);
       }
 
       res.status(200).send();
     });
-    
+
   });
 
   api.get('/title', function (req, res) {
@@ -136,7 +134,7 @@ function getAPIRouter(opts) {
 
       // TODO: localized titles?
       res.status(200).send(app.manifest.title);
-    })
+    });
   });
 
   api.get('/icon', function (req, res) {
@@ -151,7 +149,7 @@ function getAPIRouter(opts) {
           }
         }
       );
-    })
+    });
   });
 
   api.get('/manifest', function (req, res) {
@@ -205,7 +203,7 @@ function getAPIRouter(opts) {
       // pathCache: key-value pairs of prefixes that map to folders (eg. prefix
       // 'squill' handles all 'sqill.*' imports)
       pathCache: {
-        "squill": 'node_modules/squill/'
+        'squill': 'node_modules/squill/'
       }
     });
 
@@ -214,7 +212,7 @@ function getAPIRouter(opts) {
         res.send(err);
       })
       .on('success', function (src) {
-        res.header('Content-Type', 'application/javascript')
+        res.header('Content-Type', 'application/javascript');
         res.send(src);
       });
   });
