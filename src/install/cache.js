@@ -6,6 +6,7 @@ var crypto = require('crypto');
 
 var copy = require('../util/copy');
 var mkdirp = Promise.promisify(require('mkdirp')); // mkdir -p
+var mkdirpSync = require('mkdirp').sync;
 
 var gitClient = require('../util/gitClient');
 var Module = require('../apps/Module');
@@ -26,7 +27,7 @@ var ModuleCache = Class(EventEmitter, function () {
     EventEmitter.call(this);
 
     if (!fs.existsSync(MODULE_CACHE)) {
-      fs.mkdirSync(MODULE_CACHE);
+      mkdirpSync(MODULE_CACHE);
     }
 
     this._isLoaded = false;
