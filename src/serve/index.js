@@ -1,13 +1,9 @@
 var path = require('path');
-var fs = require('fs');
 var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser');
 var printf = require('printf');
-var os = require('os');
-var exec = require('child_process').exec;
 var open = require('open');
-var YAML = require('js-yaml');
 
 var apps = require('../apps');
 var baseModules = require('../modules').getBaseModules();
@@ -27,7 +23,6 @@ var logger = logging.get('serve');
 // launches the web server
 exports.serveWeb = function (opts, cb) {
   var basePort = opts.port;
-  var incrementPorts = !opts.singlePort;
 
   // common.track("BasilServe");
   var app = express();
@@ -68,7 +63,9 @@ exports.serveWeb = function (opts, cb) {
 
   // Serve
   server.listen(basePort, function () {
-    exports.serveTestApp(basePort);
+    if (opts.testApp) {
+      exports.serveTestApp(basePort);
+    }
 
     logger.log(printf('serving at http://localhost:%(port)s/ and http://%(ip)s:%(port)s/', {
       ip: ip.getLocalIP(),
@@ -80,7 +77,7 @@ exports.serveWeb = function (opts, cb) {
     cb && cb();
   }).on('error', function (e) {
     console.log(e);
-    if (e.code == 'EADDRINUSE') {
+    if (e.code === 'EADDRINUSE') {
       cb && cb(e);
       cb = null;
     }
@@ -101,12 +98,11 @@ exports.serveTestApp = function (basePort) {
     }, function (err, stdout, stderr) {
     });
   }
-}
+};
 
 function getAPIRouter(opts) {
 
   var api = express();
-  var send = require('send');
   var deviceTypes = require('../util/deviceTypes');
 
   api.get('/devices', function (req, res) {
@@ -156,7 +152,7 @@ function getAPIRouter(opts) {
 
       // TODO: localized titles?
       res.status(200).send(app.manifest.title);
-    })
+    });
   });
 
   api.get('/icon', function (req, res) {
@@ -171,7 +167,7 @@ function getAPIRouter(opts) {
           }
         }
       );
-    })
+    });
   });
 
   api.get('/manifest', function (req, res) {

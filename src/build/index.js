@@ -1,14 +1,14 @@
 var ff = require('ff');
 var fs = require('fs');
 var path = require('path');
-var color = require('cli-color');
+var chalk = require('chalk');
 var printf = require('printf');
 var logger = require('../util/logging').get('build');
 var apps = require('../apps');
 
 exports.build = function (appPath, argv, cb) {
   var startTime = Date.now();
-  logger.log(color.cyanBright("starting build at", new Date()));
+  logger.log(chalk.cyan("starting build at", new Date()));
 
   var config;
   var elapsed = 0;

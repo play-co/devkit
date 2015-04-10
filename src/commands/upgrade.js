@@ -1,9 +1,4 @@
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
-var apps = require('../apps');
-var color = require('cli-color');
-var Module = require('../modules/Module');
-var install = require('../install');
-var path = require('path');
 
 var UpgradeCommand = Class(BaseCommand, function (supr) {
 
@@ -15,11 +10,15 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
 
     this.opts
       .describe('version', 'set a specific version');
-  }
+  };
 
   this.exec = function (command, args, cb) {
+
+    var apps = require('../apps');
+    var install = require('../install');
+
     var moduleName = args.shift() || 'devkit-core';
-    apps.get('.', bind(this, function (err, app) {
+    apps.get('.', function (err, app) {
       if (err) { throw err; }
 
       var opts = {};
@@ -31,8 +30,8 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
       }
 
       install.installModule(app, moduleName, opts, cb);
-    }));
-  }
+    }.bind(this));
+  };
 
 });
 

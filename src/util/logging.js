@@ -1,5 +1,6 @@
 var printf = require('printf');
-var color = require('cli-color');
+var chalk = require('chalk');
+
 var Writable = require('stream').Writable;
 var errorToString = require('./toString').errorToString;
 
@@ -56,8 +57,8 @@ exports.Logger = Class(Writable, function () {
     return ('' + str)
 
       // add colour to our build logs so that it's easier to see if and where things went wrong.
-      //.replace(/\d*(^|\s|[^a-zA-Z0-9-])error(s|\(s\))?/gi, function (res) { return color.redBright(res); })
-      //.replace(/\d*(^|\s|[^a-zA-Z0-9-])warn(ing)?(s|\(s\))?/gi, function (res) { return color.redBright(res); })
+      //.replace(/\d*(^|\s|[^a-zA-Z0-9-])error(s|\(s\))?/gi, function (res) { return chalk.redBright(res); })
+      //.replace(/\d*(^|\s|[^a-zA-Z0-9-])warn(ing)?(s|\(s\))?/gi, function (res) { return chalk.redBright(res); })
 
       // fix new lines
       //.replace(/\r?\n(?!$)/g, '\n' + this._prefix);
@@ -71,11 +72,11 @@ exports.Logger = Class(Writable, function () {
   }
 
   this.warn = function () {
-    console.error.apply(console, [this._prefix, color.redBright('[warn] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
+    console.error.apply(console, [this._prefix, chalk.red('[warn] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
   }
 
   this.error = function () {
-    console.error.apply(console, [this._prefix, color.redBright('[error] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
+    console.error.apply(console, [this._prefix, chalk.red('[error] ')].concat(Array.prototype.map.call(arguments, this.format, this)));
   }
 
   this._write = function (chunk, encoding, cb) {
@@ -109,6 +110,6 @@ exports.Logger = Class(Writable, function () {
 });
 
 exports.getPrefix = function (tag) {
-  return color.cyanBright(printf('%15s   ', '[' + tag + ']'));
+  return chalk.cyan(printf('%15s   ', '[' + tag + ']'));
 }
 

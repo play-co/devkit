@@ -27,19 +27,24 @@ function strip(str) {
  * @return Promise<string>
  */
 
-exports.getLatestLocalTag = function getLatestLocalTag (cb) {
+exports.getLatestLocalTag = function getLatestLocalTag (opts) {
   var git = this;
-  return git('fetch', '--tags').then(function () {
-    return git('tag', '-l', {extraSilent: true});
-  }).then(function (tags) {
-    if (tags) {
-      tags = tags.split(EOL_REGEX).filter(semver.valid);
-      tags.sort(semver.rcompare);
-      return tags[0];
-    }
 
-    return void 0;
-  }).nodeify(cb);
+  return (opts && opts.skipFetch
+      ? Promise.resolve()
+      : git('fetch', '--tags'))
+    .then(function () {
+      return git('tag', '-l', {extraSilent: true});
+    })
+    .then(function (tags) {
+      if (tags) {
+        tags = tags.split(EOL_REGEX).filter(semver.valid);
+        tags.sort(semver.rcompare);
+        return tags[0];
+      }
+
+      return;
+    });
 };
 
 /**

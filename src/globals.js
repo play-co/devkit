@@ -20,18 +20,19 @@ if (process.env.DEVKIT_TRACE) {
   };
 
   process.env.BLUEBIRD_DEBUG = 1;
+
+  var version = require(__dirname + '/../package.json').version;
+
+  /**
+   * Show devkit trace information
+   */
+  trace('--------------------------------------------------------------------------------');
+  trace('------------------------- GAME CLOSURE DEVKIT TRACE ----------------------------');
+  trace('--------------------------------------------------------------------------------');
+  trace('  VERSION =>', version, '\n\n');
 } else {
   trace = function () {};
 }
 
 Promise = require('bluebird');
-
-/**
- * Show devkit trace information
- */
-var version = require(__dirname + '/../package.json').version;
-trace('--------------------------------------------------------------------------------');
-trace('------------------------- GAME CLOSURE DEVKIT TRACE ----------------------------');
-trace('--------------------------------------------------------------------------------');
-trace('  VERSION =>', version, '\n\n');
 

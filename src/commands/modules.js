@@ -1,12 +1,3 @@
-var path = require('path');
-var ff = require('ff');
-var color = require('cli-color');
-
-var apps = require('../apps');
-var Module = require('../modules/Module');
-var install = require('../install');
-
-var stringify = require('../util/stringify');
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var ModulesCommand = Class(BaseCommand, function (supr) {
@@ -25,6 +16,16 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
   }
 
   this.exec = function (command, args, cb) {
+    var path = require('path');
+    var ff = require('ff');
+    var chalk = require('chalk');
+
+    var apps = require('../apps');
+    var Module = require('../apps/Module');
+    var install = require('../install');
+
+    var stringify = require('../util/stringify');
+
     var argv = this.opts.argv;
     var moduleName = args.shift();
     var isJSON = argv.json;
@@ -32,9 +33,9 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
       if (err) { throw err; }
 
       if (!isJSON) {
-        console.log(color.yellowBright(app.paths.root));
+        console.log(chalk.yellow(app.paths.root));
         if (argv['list-versions']) {
-          console.log(color.cyanBright('showing available versions'), moduleName ? color.cyanBright('for module ') + color.yellowBright(moduleName) : '');
+          console.log(chalk.cyan('showing available versions'), moduleName ? chalk.cyan('for module ') + chalk.yellow(moduleName) : '');
         }
       }
 
@@ -70,7 +71,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
               res[moduleName] = info.versions;
             } else {
               console.log(info.versions.map(function (version) {
-                return version == info.current ? color.yellowBright(version) : version;
+                return version == info.current ? chalk.yellow(version) : version;
               }).join('\t'));
             }
 
@@ -84,7 +85,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
               if (version != currentVersion.tag && version != currentVersion.hash) {
                 // prefer tag names over hashes
                 var name = currentVersion.tag || currentVersion.hash;
-                console.log(color.yellowBright(moduleName) + ':', color.redBright(version), "-->", color.cyanBright(name));
+                console.log(chalk.yellow(moduleName) + ':', chalk.red(version), "-->", chalk.cyan(name));
                 app.addDependency(moduleName, {
                   version: name
                 });
@@ -98,7 +99,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
               } else {
                 var name = currentVersion.tag
                   ? currentVersion.tag + ' (' + currentVersion.hash + ')'
-                  : currentVersion.hash
+                  : currentVersion.hash;
 
                 console.log(moduleName + ':');
                 console.log('\tmanifest version:', version);
@@ -111,7 +112,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
         }
       }
     }));
-  }
+  };
 
 });
 

@@ -12,16 +12,15 @@ var ServeCommand = Class(BaseCommand, function (supr) {
       .describe('port', 'port on which to run the DevKit server')
       .alias('port', 'p').default('port', 9200)
       .describe('single-port', 'host apps on same port as primary web server')
-      .describe('separate-build-process', 'spawn a new process for simulator builds')
+      .describe('separate-build-process',
+                'spawn a new process for simulator builds')
+      .describe('test-app',
+                'broadcasts address using mdns for test app clients')
       .default('single-port', false);
-  }
+  };
 
   this.exec = function () {
-
     var fs = require('fs');
-    var path = require('path');
-    var express = require('express');
-
     if (fs.existsSync('manifest.json')) {
       require('../apps').get('.');
     }
@@ -34,7 +33,7 @@ var ServeCommand = Class(BaseCommand, function (supr) {
       singlePort: !!argv['single-port'],
       separateBuildProcess: !!argv['separate-build-process']
     });
-  }
+  };
 });
 
 module.exports = ServeCommand;
