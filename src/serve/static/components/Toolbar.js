@@ -55,7 +55,7 @@ module.exports = Class(Widget, function () {
     this._buttons = {};
 
     this._el.addEventListener('webkitTransitionEnd', bind(this, 'removeClass', 'transition'));
-  }
+  };
 
   this.setSimulator = function (simulator) {
     // simulator.on('resize', bind(this, 'onResize'));
@@ -220,11 +220,11 @@ module.exports = Class(Widget, function () {
         button.on('Select', bind(button, opts.onClick, simulator));
       }
     }
-  }
+  };
 
   this.getButton = function (id) {
     return this._buttons[id];
-  }
+  };
 
   this.setValidOrientations = function (orientations) {
     var btnRotate = this.getButton('rotate');
@@ -233,7 +233,7 @@ module.exports = Class(Widget, function () {
     } else {
       btnRotate.hide();
     }
-  }
+  };
 
   this.setOffset = function (viewport, offset) {
     $.style(this._el, {

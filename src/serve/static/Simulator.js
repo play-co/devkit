@@ -34,10 +34,10 @@ exports = Class(function () {
 
     this.loadModules(opts.modules);
     this.rebuild();
-  }
+  };
 
-  this.getOpts = function () { return this._opts; }
-  this.getManifest = function () { return this._manifest; }
+  this.getOpts = function () { return this._opts; };
+  this.getManifest = function () { return this._manifest; };
 
   this.loadModules = function (modules) {
     if (!modules) { return; }
@@ -57,7 +57,7 @@ exports = Class(function () {
         }
       });
     }, this);
-  }
+  };
 
   this.rebuild = function (cb) {
     this._ui.setBuilding(true);
@@ -80,9 +80,9 @@ exports = Class(function () {
       logger.error('Unable to simulate', this._app);
       console.error(err);
     }).nodeify(cb);
-  }
+  };
 
   this.setURL = function (url) {
     this._ui.loadURL(url);
-  }
+  };
 });

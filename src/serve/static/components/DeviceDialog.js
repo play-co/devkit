@@ -60,7 +60,7 @@ module.exports = Class(Dialog, function (supr) {
       this._isZoomCustom = !this._isZoomCustom;
       this._isZoomCustom ? this.zoomCustomWrapper.show()
                          : this.zoomCustomWrapper.hide();
-    }
+    };
 
     on.zoom50 = function () { this.zoom.value = 50; this._onZoom(); }
     on.zoom100 = function () { this.zoom.value = 100; this._onZoom(); }
@@ -68,16 +68,16 @@ module.exports = Class(Dialog, function (supr) {
 
     on.retina = function () {
       this._simulator.setRetina(this.retina.isChecked());
-    }
+    };
   });
 
   this._onZoom = function () {
     this._simulator.setZoom(this.zoom.value / 100);
-  }
+  };
 
   this._onZoomChange = function () {
     this.zoomPercent.setText((this._simulator.getZoom() * 100).toFixed(0) + '%');
-  }
+  };
 });
 
 var DeviceCell = Class(Widget, function (supr) {
@@ -97,7 +97,7 @@ var DeviceCell = Class(Widget, function (supr) {
 
   function getScale(w, h) {
     var ratio = w / h;
-    return FIT_TO / (ratio > 1 ? w : h)
+    return FIT_TO / (ratio > 1 ? w : h);
   }
 
   this.buildWidget = function () {
@@ -117,7 +117,7 @@ var DeviceCell = Class(Widget, function (supr) {
     var scale = getScale(w, h);
     if (def.background) {
       var bg = def.background;
-      if (isArray(bg)) {
+      if (Array.isArray(bg)) {
         bg = bg[0];
       }
 
@@ -142,5 +142,5 @@ var DeviceCell = Class(Widget, function (supr) {
         + 'min-height:' + bg.height * scale + 'px;'
         + 'padding:' + bg.offsetY * scale + 'px 0 0 ' + bg.offsetX * scale + 'px;'
     }
-  }
+  };
 });
