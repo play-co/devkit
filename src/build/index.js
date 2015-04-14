@@ -93,6 +93,7 @@ exports.build = function (appPath, argv, cb) {
         errMsg = err;
       }
       logger.error(errMsg);
+      process.exit(1);
     })
     .success(function () {
       logger.log("build succeeded");
