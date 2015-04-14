@@ -179,6 +179,13 @@ else
       animation menuAnimateIn
       animation-duration 0.3s
 
+      #container button
+        display inline-flex
+
+        i
+          order -1
+          margin 1px 10px
+
     .list
       z-index 1
 
@@ -207,7 +214,7 @@ else
     z-index -1
     width 100%
     height 100%
-    -webkit-filter drop-shadow(20px 20px 25px rgba(0,0,0,0.5))
+    // -webkit-filter drop-shadow(20px 20px 25px rgba(0,0,0,0.5))
 
   &.resize #background
     -webkit-filter none
@@ -330,6 +337,7 @@ else
     flex-shrink 0
 
   .device #preview
+    background-color black
     background-size cover
     background-position 50% 50%
     border-radius 1px

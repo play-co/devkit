@@ -80,14 +80,14 @@ module.exports = Class(function () {
 });
 
 module.exports.get = function(id, opts) {
-  var info = exports.allInfo[id];
+  var info = module.exports.allInfo[id];
   if (info) { return new module.exports(info); }
 
   if (!opts) { opts = {}; }
 
   var match;
   function matchResolution (id) {
-    var info = exports.defaults[id];
+    var info = module.exports.defaults[id];
     if (opts.screen.width == info.width && opts.screen.height == info.height) {
       match = copy(info);
     } else if (opts.screen.width == info.height && opts.screen.height == info.width) {
@@ -106,7 +106,7 @@ module.exports.get = function(id, opts) {
   }
 
   if (!match) {
-    match = copy(exports.defaults[fallback]);
+    match = copy(module.exports.defaults[fallback]);
     if (opts.width) { match.width = opts.width; }
     if (opts.height) { match.height = opts.height; }
     if (/^browser-/.test(id)) {
@@ -119,7 +119,7 @@ module.exports.get = function(id, opts) {
 
 module.exports.setInfo = function (allInfo) {
   for (var id in allInfo) {
-    allInfo.id = id;
+    allInfo[id].id = id;
   }
-  exports.allInfo = allInfo;
-}
+  module.exports.allInfo = allInfo;
+};

@@ -6,29 +6,42 @@ from util.browser import $;
 
 var Button = Class(Widget, function(supr) {
   this._def = {
-    tag: 'button'
+    tag: 'button',
+    children: [
+    ]
   };
 
   this.init = function (opts) {
     opts.id = opts.id + 'Button';
     opts.attrs = {tooltip: opts.tooltip || ''};
     opts.className = opts.tooltip ? 'withTooltip' : '';
-    opts.style = {display: 'inline-block'};
+    opts.children = [];
+
+    if (opts.text) {
+      opts.children.push({
+        text: opts.text
+      });
+
+      delete opts.text;
+    }
 
     if (opts.icon) {
-      opts.children = [
-        opts.icon && {id: 'icon', type: Widget, tag: 'i', className: 'glyphicon glyphicon-' + opts.icon}
-      ];
+      opts.children.push({
+        id: 'icon',
+        type: Widget,
+        tag: 'i',
+        className: 'glyphicon glyphicon-' + opts.icon
+      });
     }
 
     supr(this, 'init', arguments);
 
     this.initMouseEvents();
-  }
+  };
 
   this.setTooltip = function (tooltip) {
     this._el.setAttribute('tooltip', tooltip);
-  }
+  };
 });
 
 module.exports = Class(Widget, function () {
@@ -48,14 +61,6 @@ module.exports = Class(Widget, function () {
     // simulator.on('resize', bind(this, 'onResize'));
 
     this._createButtons(simulator, this.buttonContainer, [
-      {
-        id: 'deviceType',
-        tooltip: 'change the device type',
-        icon: 'phone',
-        onClick: function (simulator) {
-          simulator.editDevice();
-        }
-      },
       {
         id: 'reload',
         tooltip: 'reload the game',
@@ -78,36 +83,6 @@ module.exports = Class(Widget, function () {
         icon: 'repeat',
         onClick: function (simulator) {
           simulator.rotate();
-        }
-      },
-      {
-        id: 'nativeBack',
-        tooltip: 'back button (hardware)',
-        icon: 'chevron-left',
-        onClick: function (simulator) {
-          simulator.nativeBackButton();
-        }
-      },
-      {
-        id: 'nativeHome',
-        tooltip: 'home button (hardware)',
-        icon: 'home',
-        event: 'change:home',
-        onChange: function (simulator) {
-          var isHomeScreen = simulator.isHomeScreen();
-          this.setTooltip(isHomeScreen ? 'return to game' : 'home (hardware button)');
-          this.toggleClass('disabled', isHomeScreen);
-        },
-        onClick: function (simulator) {
-          simulator.nativeHomeButton();
-        }
-      },
-      {
-        id: 'screenShot',
-        tooltip: 'take a screenshot',
-        icon: 'picture',
-        onClick: function (simulator) {
-          simulator.takeScreenshot();
         }
       },
       {
@@ -153,15 +128,15 @@ module.exports = Class(Widget, function () {
         tooltip: 'more options',
         icon: 'chevron-down',
         menu: [
-          {
-            id: 'debug',
-            text: 'switch to release build',
-            event: 'change:debug',
-            onChange: function (simulator) {
-              var isDebugMode = simulator.isDebugMode();
-              this.setText(isDebugMode ? 'switch to release build' : 'switch to debug build');
-            }
-          },
+          // {
+          //   id: 'debug',
+          //   text: 'switch to release build',
+          //   event: 'change:debug',
+          //   onChange: function (simulator) {
+          //     var isDebugMode = simulator.isDebugMode();
+          //     this.setText(isDebugMode ? 'switch to release build' : 'switch to debug build');
+          //   }
+          // },
           {
             id: 'drag',
             text: 'lock simulator position',
@@ -176,7 +151,44 @@ module.exports = Class(Widget, function () {
               simulator.toggleDragEnabled();
             }
           },
-
+          {
+            id: 'screenShot',
+            text: 'take a screenshot',
+            icon: 'picture',
+            onClick: function (simulator) {
+              simulator.takeScreenshot();
+            }
+          },
+          {
+            id: 'deviceType',
+            text: 'change the device type',
+            icon: 'phone',
+            onClick: function (simulator) {
+              simulator.editDevice();
+            }
+          },
+          {
+            id: 'nativeBack',
+            text: 'back button (hardware)',
+            icon: 'chevron-left',
+            onClick: function (simulator) {
+              simulator.nativeBackButton();
+            }
+          },
+          {
+            id: 'nativeHome',
+            text: 'home button (hardware)',
+            icon: 'home',
+            event: 'change:home',
+            onChange: function (simulator) {
+              var isHomeScreen = simulator.isHomeScreen();
+              this.setTooltip(isHomeScreen ? 'return to game' : 'home (hardware button)');
+              this.toggleClass('disabled', isHomeScreen);
+            },
+            onClick: function (simulator) {
+              simulator.nativeHomeButton();
+            }
+          },
           // {id: 'addSimulator', text: 'add simulator', type: 'button'},
         ]
       }
