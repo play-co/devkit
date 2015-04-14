@@ -101,7 +101,7 @@ exports.addToAPI = function (opts, api) {
               if (routes.debugger) {
                 routeName = '/' + routeId + '/' + module.name;
                 modulesApp.use(routeName, routes.debugger);
-                debuggerURLs[module.name] = '/modules' + routeName;
+                debuggerURLs[module.name] = '/api/modules' + routeName;
               }
             } catch (e) {
               logger.error('Unable to mount simulator middleware for',

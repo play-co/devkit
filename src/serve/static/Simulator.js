@@ -32,6 +32,7 @@ exports = Class(function () {
     // DOM simulator
     this._ui = new ui.Chrome(this);
 
+    this._modules = {};
     this.loadModules(opts.modules);
     this.rebuild();
   };
@@ -43,6 +44,8 @@ exports = Class(function () {
     if (!modules) { return; }
 
     Object.keys(modules).forEach(function (name) {
+      if (name in this._modules) { return; }
+
       var iframe = $({
         parent: this._opts.parent || defaultParentNode,
         tag: 'iframe',
@@ -56,6 +59,8 @@ exports = Class(function () {
           devkit._init(this.api);
         }
       });
+
+      this._modules[name] = iframe;
     }, this);
   };
 
