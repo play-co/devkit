@@ -32,10 +32,7 @@ exports = Class(function () {
     // DOM simulator
     this._ui = new ui.Chrome(this);
 
-    if (opts.modules) {
-      this.loadModules(opts.modules);
-    }
-
+    this.loadModules(opts.modules);
     this.rebuild();
   }
 
@@ -43,11 +40,13 @@ exports = Class(function () {
   this.getManifest = function () { return this._manifest; }
 
   this.loadModules = function (modules) {
-    modules.names.forEach(function (name) {
+    if (!modules) { return; }
+
+    Object.keys(modules).forEach(function (name) {
       var iframe = $({
         parent: this._opts.parent || defaultParentNode,
         tag: 'iframe',
-        src: '/api' + modules.route + name,
+        src: modules[name],
         className: 'module-frame'
       });
 
@@ -73,8 +72,13 @@ exports = Class(function () {
         target: this._buildTarget
       }
     }).bind(this).then(function (res) {
+      var res = res[0];
       this._ui.setBuilding(false);
-      this.setURL(res[0].url);
+      this.setURL(res.url);
+      this.loadModules(res.debuggerURLs);
+    }, function (err) {
+      logger.error('Unable to simulate', this._app);
+      console.error(err);
     }).nodeify(cb);
   }
 
