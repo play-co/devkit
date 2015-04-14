@@ -6,7 +6,6 @@ var printf = require('printf');
 var open = require('open');
 
 var apps = require('../apps');
-var baseModules = require('../modules').getBaseModules();
 
 var ip = require('../util/ip');
 var logging = require('../util/logging');
@@ -22,7 +21,7 @@ var logger = logging.get('serve');
 
 // launches the web server
 exports.serveWeb = function (opts, cb) {
-  var basePort = opts.port;
+  var port = opts.port;
 
   // common.track("BasilServe");
   var app = express();
@@ -40,7 +39,6 @@ exports.serveWeb = function (opts, cb) {
   });
 
   app.use('/api/', getAPIRouter(merge({
-    simulatorPort: basePort + 1,
     app: app
   }, opts)));
 
@@ -48,29 +46,22 @@ exports.serveWeb = function (opts, cb) {
   app.use('/', stylus(getPath('static')));
 
   // serve compiled JS
-  app.use(/^(?!\/apps\/|\/api\/)/, importMiddleware(getPath('static/')));
+  app.use('/compile/', importMiddleware(getPath('static/')));
 
   // serve static files
   app.use('/', express.static(getPath('static')));
 
-  baseModules.forEach(function (module) {
-    var ext = module.loadExtension('simulator');
-    if (ext) {
-      var api = {};
-      ext.init(api);
-    }
-  });
-
   // Serve
-  server.listen(basePort, function () {
+  server.listen(port, function () {
     if (opts.testApp) {
-      exports.serveTestApp(basePort);
+      exports.serveTestApp(port);
     }
 
-    logger.log(printf('serving at http://localhost:%(port)s/ and http://%(ip)s:%(port)s/', {
-      ip: ip.getLocalIP(),
-      port: basePort
-    }));
+    logger.log(printf('serving at http://localhost:%(port)s/ and '
+      + 'http://%(ip)s:%(port)s/', {
+          ip: ip.getLocalIP(),
+          port: port
+        }));
 
     config.startWatch();
 
@@ -84,7 +75,7 @@ exports.serveWeb = function (opts, cb) {
   });
 };
 
-exports.serveTestApp = function (basePort) {
+exports.serveTestApp = function (port) {
   // Launch multicast server (only on OS X for now)
   var addresses = ip.getLocalIP();
   var address = addresses[0];
@@ -93,7 +84,7 @@ exports.serveTestApp = function (basePort) {
     jvmtools.exec({
       tool: 'jmdns',
       args: [
-        '-rs', hostname, 'devkit._tcp', 'local', basePort
+        '-rs', hostname, 'devkit._tcp', 'local', port
       ]
     }, function (err, stdout, stderr) {
     });
@@ -159,14 +150,9 @@ function getAPIRouter(opts) {
     var appPath = req.query.app;
     apps.get(appPath, {updateLastOpened: false}, function (err, app) {
       if (err) { return res.status(404).send(err); }
-      res.sendFile(
-        path.join(app.paths.root, app.getIcon(req.query.targetSize || 512)),
-        function (err) {
-          if (err) {
-            res.status(err.status).end();
-          }
-        }
-      );
+      var iconFile = app.getIcon(req.query.targetSize || 512);
+      var iconPath = path.join(app.paths.root, iconFile);
+      res.sendFile(iconPath);
     });
   });
 
@@ -202,17 +188,12 @@ function getAPIRouter(opts) {
     });
   });
 
-  // endpoint to retrive compiled javascript
-  api.get('/compile/*', function (req, res) {
-
-  });
-
   appRoutes.addToAPI(opts, api);
 
   return api;
 }
 
-
 function getPath() {
-  return path.join.apply(path, [__dirname].concat(Array.prototype.slice.call(arguments)));
+  var args = [__dirname].concat(Array.prototype.slice.call(arguments));
+  return path.join.apply(path, args);
 }

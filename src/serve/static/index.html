@@ -5,12 +5,18 @@
 <meta name = "viewport" content = "user-scalable=no,width=device-width,initial-scale=1, maximum-scale=1" />
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <script>
-var icon = window.location.search.match(/[?&]app=(.*?)(?:&|$)/);
-if (icon) {
-  document.write('<link rel="icon" type="image/png" href="/api/icon?app='
-    + icon[1]
-    + '" />');
-}</script>
+(function () {
+  var match = window.location.search.match(/[?&]app=(.*?)(?:&|$)/);
+  if (match) {
+    var app = match[1];
+    document.write('<link rel="icon" type="image/png" href="api/icon?app='
+      + app
+      + '" />');
+  } else {
+    location = '/apps.html';
+  }
+})();
+</script>
 
 <link rel="stylesheet" href="/stylesheets/simulator.styl">
 
@@ -32,5 +38,5 @@ if (icon) {
 })();
 </script>
 
-<script src="index.js"></script>
+<script src="/compile/index.js"></script>
 </html>

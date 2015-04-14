@@ -21,21 +21,24 @@ GLOBAL.devkit = {
     var params = {app: app};
 
     Promise.all([
-      util.ajax.get({url: '/api/hostModules', query: params}),
-      util.ajax.get({url: '/api/manifest', query: params}),
-      util.ajax.get({url: '/api/devices'}),
-    ]).spread(function (modules, manifest, devices) {
-      DeviceInfo.setInfo(devices[0]);
+        util.ajax.get({url: '/api/manifest', query: params}),
+        util.ajax.get({url: '/api/devices'}),
+      ])
+      .spread(function (manifest, devices) {
+        DeviceInfo.setInfo(devices[0]);
 
-      var simulator = new Simulator(merge({
-        parent: document.querySelector('#devkit #simulators'),
-        app: app,
-        manifest: manifest[0],
-        modules: modules[0]
-      }, opts));
+        var simulator = new Simulator(merge({
+          parent: document.querySelector('#devkit #simulators'),
+          app: app,
+          manifest: manifest[0]
+        }, opts));
 
-      _simulators[simulator.id] = simulator;
-    });
+        _simulators[simulator.id] = simulator;
+      })
+      .catch(function (e) {
+        logger.error('unable to start simulator');
+        console.error(e);
+      });
   },
   getSimulator: function (id) {
     if (!id) { for (id in _simulators) { break; } }

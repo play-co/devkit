@@ -5,11 +5,10 @@ var JsioCompiler = require('../build/jsio_compiler').JsioCompiler;
 var ROOT_PATH = path.join(__dirname, '..', '..');
 
 module.exports = function (basePath) {
-  console.log(basePath)
+
   return function importMiddleware(req, res, next) {
     if ('GET' != req.method && 'HEAD' != req.method) return next();
     var pathname = req.path;
-    console.log(">>>", req.url)
     if (!/\.js$/.test(pathname)) { return next(); }
 
     var compiler = new JsioCompiler({
@@ -40,8 +39,8 @@ module.exports = function (basePath) {
            .send(err);
       })
       .on('success', function (src) {
-        res.header('Content-Type', 'application/javascript')
+        res.header('Content-Type', 'application/javascript');
         res.send(src);
       });
-  }
-}
+  };
+};
