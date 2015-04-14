@@ -40,11 +40,11 @@ exports.getConfig = function(app, argv, cb) {
     // local for serving
     // use window.location + path to basil server proxy
     serverName = 'local';
+  } else if (config.argv && argv.server) {
+    serverName = config.argv && argv.server;
   } else if (/^browser-/.test(config.target)) {
     // we don't want to set the host:port here - just use window.location
     serverName = 'inherit';
-  } else if (config.argv && argv.server) {
-    serverName = config.argv && argv.server;
   } else if (config.debug) {
     serverName = 'local';
   } else {
