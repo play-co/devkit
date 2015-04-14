@@ -21,6 +21,7 @@ var ServeCommand = Class(BaseCommand, function (supr) {
 
   this.exec = function () {
     var fs = require('fs');
+
     if (fs.existsSync('manifest.json')) {
       require('../apps').get('.');
     }

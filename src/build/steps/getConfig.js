@@ -21,6 +21,7 @@ exports.getConfig = function(app, argv, cb) {
   config.schemePath = path.join('build/', config.scheme);
   config.outputPath = argv.output || path.resolve(config.appPath, path.join('build/', config.scheme, config.target));
   config.jsioPath = Array.isArray(argv.jsioPath) ? argv.jsioPath.slice(0) : [];
+  config.clientPaths = {};
   config.sdkVersion = sdkVersion;
   config.isTestApp = argv.isTestApp;
   config.isSimulated = argv.simulated;
@@ -28,8 +29,11 @@ exports.getConfig = function(app, argv, cb) {
     deviceId: argv.simulateDeviceId,
     deviceType: argv.simulateDeviceType,
     deviceInfo: deviceTypes[argv.simulateDeviceType] || {},
-    port: argv.port
+    port: argv.port,
+    modules: []
   };
+
+  config.spriteImages = true;
 
   var serverName;
   if (config.isSimulated) {
