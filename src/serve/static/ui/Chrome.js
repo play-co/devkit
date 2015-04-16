@@ -129,7 +129,7 @@ exports = Class(CenterLayout, function (supr) {
     window.addEventListener('keydown', bind(this, this._rebuildKeyListener), true);
     window.addEventListener('message', bind(this, function (e) {
       if (e.data == 'devkit:reload') {
-        this._simulator.reload();
+        this._simulator.rebuild();
       }
 
       if (e.data == 'devkit:toolbar:hide') {
