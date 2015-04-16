@@ -1,12 +1,6 @@
 
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
-function printErrorAndExit (msg, err, code) {
-  logger.error.apply(logger, msg);
-  process.env.DEVKIT_TRACE && console.error(err.stack);
-  process.exit(code || 1);
-}
-
 var InstallCommand = Class(BaseCommand, function (supr) {
 
   this.name = 'install';
@@ -54,6 +48,12 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     var protocol = argv.ssh ? 'ssh' : 'https';
     var skipFetch = argv['skip-fetch'];
     var module = args.shift();
+
+    function printErrorAndExit (msg, err, code) {
+      logger.error.apply(logger, msg);
+      process.env.DEVKIT_TRACE && console.error(err.stack);
+      process.exit(code || 1);
+    }
 
     return apps.get('.').then(function (app) {
       // ensure modules directory exists
