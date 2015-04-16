@@ -446,10 +446,10 @@ var App = module.exports = Class(function () {
         // try to prepopulate manifest keys with template manifest
         return exists(this.paths.manifest);
       })
-      .then(function (exists) {
-        if (exists) {
-          return readFile(this.paths.manifest, 'utf8');
-        }
+      .then(function () {
+        return readFile(this.paths.manifest, 'utf8');
+      }, function () {
+        // pass
       })
       .then(function (manifest) {
         if (manifest) {
