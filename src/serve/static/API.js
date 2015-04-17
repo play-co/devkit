@@ -1,4 +1,3 @@
-import lib.PubSub;
 import .util.ChannelAPI as ChannelAPI;
 import .devkitConn;
 
@@ -12,7 +11,7 @@ exports = Class(ChannelAPI, function (supr) {
     devkitConn.getTransport().bind(this).then(function (socket) {
       this.devkit.setTransport(socket);
     });
-  }
+  };
 
   this.devkit = new ChannelAPI();
 

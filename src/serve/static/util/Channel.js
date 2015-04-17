@@ -11,7 +11,7 @@ exports = Class(lib.PubSub, function (supr) {
     this._onTransportConnect = this._onTransportConnect.bind(this);
     this._onTransportDisconnect = this._onTransportDisconnect.bind(this);
     this._onTransportMessage = this._onTransportMessage.bind(this);
-  }
+  };
 
   /**
    * returns a Promise that resolves once the channel is connected to another channel
@@ -24,7 +24,7 @@ exports = Class(lib.PubSub, function (supr) {
         this.once('connect', resolve);
       }
     }.bind(this));
-  }
+  };
 
   this._isConnected = false;
 
@@ -34,7 +34,7 @@ exports = Class(lib.PubSub, function (supr) {
   this.disconnect =
   this.close = function () {
     this._sendInternalMessage('disconnect');
-  }
+  };
 
   // internal: set an underlying transport
   this.setTransport = function (transport) {
@@ -56,16 +56,16 @@ exports = Class(lib.PubSub, function (supr) {
       // start connect handshake
       this._onTransportConnect();
     }
-  }
+  };
 
   this._onTransportConnect = function () {
     // transport connected, start a connect handshake (see if anyone is listening)
     this._sendInternalMessage('connect');
-  }
+  };
 
   this._onTransportDisconnect = function () {
     this._isConnected = false;
-  }
+  };
 
   this._onTransportMessage = function (msg) {
     if (msg.internal) {
@@ -81,13 +81,13 @@ exports = Class(lib.PubSub, function (supr) {
     } else {
       supr(this, 'emit', [msg.name, msg.data]);
     }
-  }
+  };
 
   this._sendInternalMessage = function (name) {
     if (this._transport) {
       this._transport.emit(this._name, {internal: name});
     }
-  }
+  };
 
   this._onInternalMessage = function (msg) {
     // handle internal message protocol, used to determine if the receiver channel is listening to events
@@ -106,26 +106,26 @@ exports = Class(lib.PubSub, function (supr) {
         this._emit('disconnect');
         break;
     }
-  }
+  };
 
   var Response = Class(function () {
     this.init = function (channel, req) {
       this.channel = channel;
       this.req = req;
       this.responded = false;
-    }
+    };
 
     this.error = function (err) {
       if (this.responded) { return; }
       this.responded = true;
       this.channel._send({error: err, res: this.req.id});
-    }
+    };
 
     this.send = function (data) {
       if (this.responded) { return; }
       this.responded = true;
       this.channel._send({data: data, res: this.req.id});
-    }
+    };
   });
 
   this._send = function (data) {
@@ -134,17 +134,17 @@ exports = Class(lib.PubSub, function (supr) {
     } else {
       logger.warn(this._name, 'failed to send', data);
     }
-  }
+  };
 
   // emit an event locally on the channel object
   this._emit = function (name, data) {
     supr(this, 'emit', arguments);
-  }
+  };
 
   // emit an event remotely on the receiver channel object
   this.emit = function (name, data) {
     this._send({name: name, data: data});
-  }
+  };
 
   /**
    * emits
@@ -157,5 +157,5 @@ exports = Class(lib.PubSub, function (supr) {
         this._requests[id] = {resolve: resolve, reject: reject};
       }.bind(this));
     });
-  }
+  };
 });

@@ -25,9 +25,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
 
   this.exec = function (command, args, cb) {
     var fs = require('fs');
-    var ff = require('ff');
 
-    var path = require('path');
     var apps = require('../apps');
     var install = require('../install');
     var lockfile = require('../util/lockfile');

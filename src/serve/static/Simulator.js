@@ -14,7 +14,7 @@ exports = Class(function () {
 
   this.init = function (opts) {
     this._opts = opts;
-    this.id = opts.id || ('sim' + ++_simulatorId);
+    this.id = opts.id || ('sim' + (++_simulatorId));
 
     this._type = opts.type;
     this._screen = opts.screen;
@@ -23,7 +23,7 @@ exports = Class(function () {
     this._app = opts.app;
     this._manifest = opts.manifest;
 
-    this._deviceInfo = DeviceInfo.get(this._opts.type)
+    this._deviceInfo = DeviceInfo.get(this._opts.type);
     this._buildTarget = opts.buildTarget || this._deviceInfo.getTarget();
 
     // api used by simulator frame

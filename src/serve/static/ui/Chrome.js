@@ -13,6 +13,8 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
+/* globals Class, merge, bind, logger */
+
 from util.browser import $;
 
 import squill.Widget;
@@ -21,8 +23,6 @@ import std.uri;
 import squill.Menu;
 import squill.Drag;
 import squill.Delegate;
-
-import lib.PubSub;
 
 import ..util.Size as Size;
 import ..util.DeviceInfo as DeviceInfo;
@@ -59,7 +59,7 @@ exports = Class(CenterLayout, function (supr) {
 
     var opts = simulator.getOpts();
     supr(this, 'init', [opts]);
-  }
+  };
 
   this.buildWidget = function () {
     supr(this, 'buildWidget', arguments);
@@ -154,7 +154,7 @@ exports = Class(CenterLayout, function (supr) {
     if (this._isDragEnabled) {
       this._mover.startDrag();
     }
-  }
+  };
 
   this.setBuilding = function (isBuilding) {
     var spinner = this['build-spinner'];
@@ -174,14 +174,14 @@ exports = Class(CenterLayout, function (supr) {
         this.addClass('building');
       }), 100);
     }
-  }
+  };
 
   this._onMenuOpen = function (menu) {
     $.addClass(this.toolbar, 'menu-open');
     if (menu == this.overflowMenu) {
       // ?
     }
-  }
+  };
 
   this._onConnect = function () {
     // restore mute state when client connects (if necessary)
@@ -190,7 +190,7 @@ exports = Class(CenterLayout, function (supr) {
     }
 
     this.emit(this._isPaused ? 'pause' : 'resume');
-  }
+  };
 
   this._remoteScreenshot = function () {
     this._channel.request('screenshot').then(function (res) {
@@ -200,9 +200,9 @@ exports = Class(CenterLayout, function (supr) {
     }).catch(function (e) {
       logger.log("Error taking screenshot", e);
     });
-  }
+  };
 
-  this.canRotate = function () { return this._canRotate; }
+  this.canRotate = function () { return this._canRotate; };
 
   this.showSplash = function () {
     if (this._deviceInfo.isNativeTarget()) {
@@ -210,7 +210,7 @@ exports = Class(CenterLayout, function (supr) {
       this.splashImage.style.opacity = 1;
       this.splashImage.style.backgroundImage = 'url(' + this.getLoadingImageURL() + ')';
     }
-  }
+  };
 
   this.hideSplash = function () {
     this.splashImage.style.opacity = 0;
@@ -223,7 +223,7 @@ exports = Class(CenterLayout, function (supr) {
     this._isRetina = isRetina;
     this.update();
     this.refresh();
-  }
+  };
 
   this.getFrame = function () { return this._frame; };
 
@@ -237,11 +237,11 @@ exports = Class(CenterLayout, function (supr) {
         dialog.hide();
       }))
       .show();
-  }
+  };
 
   this.toggleDragEnabled = function () {
     this.setDragEnabled(!this._isDragEnabled);
-  }
+  };
 
   this.setDragEnabled = function (isDragEnabled) {
     this._isDragEnabled = !!isDragEnabled;
@@ -250,12 +250,11 @@ exports = Class(CenterLayout, function (supr) {
 
   this.isDragEnabled = function () {
     return this._isDragEnabled;
-  }
+  };
 
   this.isMuted = function () { return this._isMuted; };
-  this.toggleMuted = function () { this.setMuted(!this._isMuted); }
+  this.toggleMuted = function () { this.setMuted(!this._isMuted); };
   this.setMuted = function (isMuted) {
-    var wasMuted = this._isMuted;
     this._isMuted = isMuted;
     if (isMuted) {
       localStorage.setItem('settingMuted', '1');
@@ -266,11 +265,11 @@ exports = Class(CenterLayout, function (supr) {
     this._channel.emit('mute', {shouldMute: isMuted});
     this.emit('change:mute', isMuted);
     this.emit('change');
-  }
+  };
 
   this.getLoadingImageURL = function () {
     var splash;
-    if (this._rotation % 2 == 0) {
+    if (this._rotation % 2 === 0) {
       //even amounts of rotations mean portrait
       splash = "portrait1136";
     } else {
@@ -295,7 +294,7 @@ exports = Class(CenterLayout, function (supr) {
     } else {
       $.addClass(this._el, 'no-transitions');
     }
-  }
+  };
 
   this.setDeviceInfo = function (deviceInfo) {
     this.setTransitionsEnabled(false);
@@ -326,7 +325,7 @@ exports = Class(CenterLayout, function (supr) {
       this.refresh();
     }
 
-    this.emit('change:type')
+    this.emit('change:type');
   };
 
   this.inspect = function () {
@@ -389,17 +388,17 @@ exports = Class(CenterLayout, function (supr) {
     } else {
       return defaultName;
     }
-  }
+  };
 
   this._zoom = 0;
 
-  this.getZoom = function () { return this._zoom; }
+  this.getZoom = function () { return this._zoom; };
   this.setZoom = function (zoom) {
     this._zoom = zoom || 1;
     this.update();
     this.emit('change:zoom', this._zoom);
     this.emit('change');
-  }
+  };
 
   this.loadURL = function (url) {
     this.showSplash();
@@ -420,11 +419,11 @@ exports = Class(CenterLayout, function (supr) {
     });
 
     this.update();
-  }
+  };
 
   this.getDevicePixelRatio = function () {
     return this._deviceInfo.getDevicePixelRatio();
-  }
+  };
 
   function sizeToCSS(size, scale) {
     scale = scale || 1;
@@ -453,7 +452,7 @@ exports = Class(CenterLayout, function (supr) {
 
       $.style(this._frame, style);
     }
-  }
+  };
 
   this._computeRotation = function () {
     var isPortaitValid = ('portrait' in this._validOrientations);
@@ -467,12 +466,12 @@ exports = Class(CenterLayout, function (supr) {
       rotation = 1;
     }
     return rotation;
-  }
+  };
 
   this.reload = function () {
     this._simulator.rebuild();
     // this._frame.contentWindow.reload();
-  }
+  };
 
   this.update = function () {
     var info = this._deviceInfo;
@@ -480,7 +479,6 @@ exports = Class(CenterLayout, function (supr) {
 
     var start = Date.now();
 
-    var parent = this._widgetParent;
     this._rotation = this._computeRotation();
     var size = this._customSize || info.getScreenSize();
     if (this._rotation % 2 == 1) {
@@ -546,13 +544,13 @@ exports = Class(CenterLayout, function (supr) {
   this.onResizeStart = function () {
     this.setTransitionsEnabled(false);
     this.toggleClass('resize', true);
-  }
+  };
 
   this.onResizeStop = function () {
     this.computeOffset();
     this.toggleClass('resize', false);
     this.setTransitionsEnabled(true);
-  }
+  };
 
   this.onDragStop = function () {
     this.computeOffset();
@@ -575,13 +573,13 @@ exports = Class(CenterLayout, function (supr) {
     this._customSize.add(delta.x * 2, delta.y * 2);
 
     this.update();
-  }
+  };
 
   this.refresh = function () {
     if (this._frame) {
       this._frame.src = this._frame.src;
     }
-  }
+  };
 
   this.takeScreenshot = function () {
     var win = window.open('', '', 'width=' + (this._screenWidth + 2) + ',height=' + (this._screenHeight + 2));
@@ -602,29 +600,29 @@ exports = Class(CenterLayout, function (supr) {
     }).catch(function () {
       win.close();
     });
-  }
+  };
 
   this.nativeBackButton = function () {
     this._channel.emit('button:back');
-  }
+  };
 
   this.nativeHomeButton = function () {
     this._channel.emit('button:home');
 
     this._isHomeScreen = !this._isHomeScreen;
     this.emit('change:home', this._isHomeScreen);
-  }
+  };
 
   this.isHomeScreen = function () {
     return this._isHomeScreen;
-  }
+  };
 
-  this.isDebugMode = function () { return this._isDebugMode; }
-  this.toggleDebugMode = function () { this.setDebugMode(!this._isDebugMode); }
+  this.isDebugMode = function () { return this._isDebugMode; };
+  this.toggleDebugMode = function () { this.setDebugMode(!this._isDebugMode); };
   this.setDebugMode = function (isDebugMode) {
     this._isDebugMode = isDebugMode;
     this.rebuild();
-  }
+  };
 
   // this.delegate = new squill.Delegate(function(on) {
   //   on.btnOverflow = function () {
@@ -635,22 +633,18 @@ exports = Class(CenterLayout, function (supr) {
   this.step = function () {
     this.setPaused(true);
     this._channel.emit('step');
-  }
+  };
 
-  this.togglePaused = function () { this.setPaused(!this._isPaused); }
-  this.isPaused = function () { return this._isPaused; }
+  this.togglePaused = function () { this.setPaused(!this._isPaused); };
+  this.isPaused = function () { return this._isPaused; };
   this.setPaused = function (isPaused) {
-    var isPaused = !!isPaused;
+    isPaused = !!isPaused;
     if (this._isPaused == isPaused) { return; }
     this._isPaused = isPaused;
 
     this._channel.emit(isPaused ? 'pause' : 'resume');
     this.emit('change:pause', isPaused);
-  }
-
-  function bound(value, min, max) {
-    return value < min ? min : value > max ? max : value;
-  }
+  };
 
   this.toJSON = function () {
     var data = {
@@ -674,7 +668,7 @@ exports = Class(CenterLayout, function (supr) {
     }
 
     return data;
-  }
+  };
 
   this.fromJSON = function (data) {
     if (data.type) {
@@ -697,5 +691,5 @@ exports = Class(CenterLayout, function (supr) {
     if (data.zoom) {
       this.setZoom(data.zoom);
     }
-  }
+  };
 });
