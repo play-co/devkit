@@ -1,0 +1,9 @@
+{
+  "name": "devkit-simulator-client",
+  "version": "0.0.1",
+  "devkit": {
+    "extensions": {
+      "devkit-simulator": "client"
+    }
+  }
+}

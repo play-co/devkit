@@ -70,14 +70,6 @@ module.exports = Class(Widget, function () {
         }
       },
       {
-        id: 'inspect',
-        tooltip: 'inspect the view hierarchy',
-        icon: 'search',
-        onClick: function (simulator) {
-          simulator.inspect();
-        }
-      },
-      {
         id: 'rotate',
         tooltip: 'rotate the device',
         icon: 'repeat',

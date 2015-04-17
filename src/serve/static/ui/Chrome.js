@@ -328,14 +328,6 @@ exports = Class(CenterLayout, function (supr) {
     this.emit('change:type');
   };
 
-  this.inspect = function () {
-    var device = this._device;
-    var controller = device.controller;
-    var inspector = controller.view.getViewInspector();
-    inspector.setDevice(device);
-    inspector.toggle();
-  }
-
   this.rotate = function () {
 
     var isLandscape = (this._rotation + 1) % 2 == 1;

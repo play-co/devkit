@@ -1,13 +1,27 @@
+/* globals Class, bind, logger */
+
 from util.browser import $;
 import squill.Widget as Widget;
 
 import .DetailsWidget;
 import .ViewNode;
+import .BatchGetView;
+import squill.Button as Button;
 
-exports.ViewInspector = Class(Widget, function(supr) {
+var devkitWindow = window.parent;
+var devkit = devkitWindow.devkit;
+
+var link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = __dirname + 'inspector.css';
+devkitWindow.document.querySelector('head').appendChild(link);
+
+var ViewInspector = Class(Widget, function(supr) {
   this._def = {
+    id: 'devkit-view-inspector',
     style: {
-      width: '650px'
+      width: '650px',
+      display: 'none'
     },
     children: [
       {id: '_tree', children: [
@@ -18,7 +32,7 @@ exports.ViewInspector = Class(Widget, function(supr) {
     ]
   };
 
-  this.init = function(opts) {
+  this.init = function () {
     this._highlight = {timer: 0};
     this._t = 0;
     this._highlighted = {};
@@ -28,92 +42,79 @@ exports.ViewInspector = Class(Widget, function(supr) {
       hash: {}
     };
 
-    this._appID = opts.appID;
-
     // keep a dictionary of all tree nodes for fast highlighting based on view uid
     this._nodeIndex = {};
 
+    var simulator = devkit.getSimulator();
+    var contentArea = simulator.getParent().parentNode;
+
     this._deepTrace = document.createElement("div");
     this._deepTrace.setAttribute("id", "_deepTrace");
-    document.body.appendChild(this._deepTrace);
+    contentArea.appendChild(this._deepTrace);
 
-    supr(this, 'init', arguments); //Widget.init
+    supr(this, 'init', [{parent: contentArea}]);
 
     this._details.setInspector(this);
 
     $.onEvent(this._tree, 'mouseover', this, function () {
       this._disableHighlight = false;
     });
+
+    this.setSimulator(simulator);
+    var getViews = this._channel.request.bind(this._channel, 'getViews');
+    this._batchGetView = new BatchGetView(getViews);
+
+    new Button({
+      id: 'devkit-view-inspector-toggle-button',
+      parent: contentArea,
+      children: [{
+        tagName: 'span',
+        className: 'glyphicon glyphicon-search'
+      }]
+    }).on('Select', bind(this, 'toggleVisibility'));
   };
 
-  this.setDevice = function (device) {
-    if (device == this._device) { return; }
+  this.setSimulator = function (simulator) {
+    this._simulator = simulator;
 
-    if (this._client) { this._client.end(); }
-    this._client = null;
+    this._channel = simulator
+      .getChannel('devkit.debugging.viewInspector')
 
-    this._device = device;
-    var conn = device.getConn();
-    if (conn) {
-      this._setConn(device, conn);
-    } else {
-      device.on('conn', bind(this, '_setConn', device));
-    }
-  }
+      .on('inputMove', bind(this, 'onInputMove'))
+      .on('inputSelect', bind(this, 'onInputSelect'))
+      .on('inputTrace', bind(this, 'onInputTrace'))
+      .on('viewPollData', bind(this, function (data) {
+        if(data.uid === this._highlightUID) {
+          this._highlightPos = data;
+        }
 
-  this._setConn = function (device, conn) {
-    if (device != this._device) { return; }
-
-    var client = conn.getClient('devkit.viewInspector');
-    this._client = client;
-
-    client.onEvent('INPUT_MOVE', bind(this, function (evt) {
-      this.onMouseMove(evt.args);
-    }));
-
-    client.onEvent('INPUT_SELECT', bind(this, function (evt) {
-      this.onMouseSelect(evt.args);
-    }));
-
-    client.onEvent('INPUT_TRACE', bind(this, function (evt) {
-      this.onTrace(evt.args);
-    }));
-
-    client.onEvent('POLL_VIEW_POSITION', bind(this, function (evt) {
-      if(evt.args.uid === this._highlightUID) this._highlightPos = evt.args;
-      if(evt.args.uid === this._selectedUID) this._selectedPos = evt.args;
-    }));
-
-    if (this._isShowing) {
-      this.startDebugging();
-    }
+        if(data.uid === this._selectedUID) {
+          this._selectedPos = data;
+        }
+      }));
   };
 
-  this.getClient = function () { return this._client; }
-
-  this.getViewProps = function (uid, cb) {
-    var client = this._client;
-    if (client && client.isConnected()) {
-      client.sendRequest('GET_VIEW_PROPS', {uid: uid}, cb);
-    }
+  this.getViewProps = function (uid) {
+    return this._channel.request('getViewProps', uid);
   };
 
-  this.setViewProp = function (uid, key, value, cb) {
-    var client = this._client;
-    if (client && client.isConnected()) {
-      client.sendRequest('SET_VIEW_PROP', {uid: uid, key: key, value: value}, cb);
-    }
+  this.setViewProp = function (uid, key, value) {
+    return this._channel.request('setViewProp', {
+        uid: uid,
+        key: key,
+        value: value
+      });
   };
 
-  this.setImage = function (uid, data, cb) {
-    var client = this._client;
-    if (client && client.isConnected()) {
-      client.sendRequest('REPLACE_IMAGE', {uid: uid, imgData: data}, cb);
-    }
+  this.setImage = function (uid, image) {
+    return this._channel.request('replaceImage', {
+        uid: uid,
+        image: image
+      });
   };
 
   this.startDebugging = function () {
-    if (!this._client) { return; }
+    if (!this._simulator) { return; }
 
     if (this._unbindMouseout) {
       this._unbindMouseout();
@@ -123,7 +124,7 @@ exports.ViewInspector = Class(Widget, function(supr) {
     var mouseOut = bind(this, 'onMouseOut');
     var mouseOver = bind(this, 'onMouseOver');
 
-    var frame = this._device.getSimulator().getFrame();
+    var frame = this._simulator.getFrame();
     if (frame) {
       this._unbindMouseout = bind(frame, 'removeEventListener', 'mouseout', mouseOut, true);
       frame.addEventListener('mouseout', mouseOut, true);
@@ -136,15 +137,24 @@ exports.ViewInspector = Class(Widget, function(supr) {
       this._node.destroy();
     }
 
-    this._client.sendRequest('GET_ROOT_UID', bind(this, function (err, res) {
-      this._node = new ViewNode({
-          parent: this._tree,
-          inspector: this,
-          viewUID: res.uid,
-          id: 'rootNode'
-        });
-    }));
-  }
+    this._channel
+      .request('getRootUID')
+      .bind(this)
+      .then(function (uid) {
+        this._node = new ViewNode({
+            parent: this._tree,
+            inspector: this,
+            viewUID: uid,
+            id: 'rootNode'
+          });
+      }, function (e) {
+        logger.warn(e);
+      });
+  };
+
+  this.requestView = function (uid) {
+    return this._batchGetView.request(uid);
+  };
 
   this.startTimer = function() {
     if (!this._timer) {
@@ -159,9 +169,7 @@ exports.ViewInspector = Class(Widget, function(supr) {
     }
   };
 
-  this.buildWidget = function(el) { };
-
-  this.onMouseMove = function (evt) {
+  this.onInputMove = function (evt) {
     if (!this._timer) { return; }
 
     this._trace.hash = {};
@@ -179,7 +187,7 @@ exports.ViewInspector = Class(Widget, function(supr) {
     this.updateTrace();
   };
 
-  this.onMouseSelect = function (evt) {
+  this.onInputSelect = function (evt) {
     if (!this._timer) { return; }
 
     this._trace.hash = {};
@@ -198,11 +206,11 @@ exports.ViewInspector = Class(Widget, function(supr) {
 
   };
 
-  this.onTrace = function (evt) {
+  this.onInputTrace = function (evt) {
     if (!this._timer) { return; }
 
     this.updateDeepTrace(evt);
-  }
+  };
 
   function onOver(e) {
     this._disableHighlight = false;
@@ -231,7 +239,7 @@ exports.ViewInspector = Class(Widget, function(supr) {
     var i = evt.trace.length;
     while (i--) {
       // create the element
-      el = document.createElement("div");
+      var el = document.createElement("div");
       el.innerText = evt.trace[i].tag;
 
       el.setAttribute("data-id", evt.trace[i].uid);
@@ -252,7 +260,7 @@ exports.ViewInspector = Class(Widget, function(supr) {
     // cheap way to remove all children
     this._deepTrace.innerHTML = "";
     this._deepTrace.appendChild(frag);
-  }
+  };
 
   // since expanding a node is async, we need to call updateTrace
   // every time a new node expands so we can highlight the nodes
@@ -292,12 +300,13 @@ exports.ViewInspector = Class(Widget, function(supr) {
 
       this._highlighted = {};
       this.highlightView();
-      //disable any further highlighting until mouse over
+
+      // disable any further highlighting until mouse over
       this._disableHighlight = true;
     }
   };
 
-  //on mouse over, let highlighting happen again
+  // on mouse over, let highlighting happen again
   this.onMouseOver = function () {
     this._disableHighlight = false;
   };
@@ -305,31 +314,26 @@ exports.ViewInspector = Class(Widget, function(supr) {
   this.highlightView = function (viewUID) {
     var highlight = this._highlight;
     highlight.target = viewUID;
-
-    var detailView = viewUID || this._selectedUID;
-
-    //this flag prevents race conditions between mouse out and move
-    if (this._disableHighlight) {
-      detailView = this._selectedUID;
-    }
-
     this._highlightUID = viewUID;
 
-    var client = this._client;
-    if (client && client.isConnected()) {
-      client.sendEvent('SET_HIGHLIGHT', {uid: detailView});
+    // this._disableHighlight flag prevents race conditions between mouse out
+    // and move
+    if (!viewUID || this._disableHighlight) {
+      viewUID = this._selectedUID;
     }
 
-    this._details.showView(detailView);
+    this._channel.emit('highlightView', viewUID);
+    this._details.showView(viewUID);
   };
 
   this.selectView = function (viewUID) {
+    var node;
     if (this._selectedUID) {
-      var node = this._nodeIndex[this._selectedUID];
+      node = this._nodeIndex[this._selectedUID];
       node && node.setSelected(false);
     }
 
-    var node = this._nodeIndex[viewUID];
+    node = this._nodeIndex[viewUID];
     if (!node) {
       return console.error("No node found for", viewUID);
     }
@@ -339,10 +343,7 @@ exports.ViewInspector = Class(Widget, function(supr) {
 
     this._selectedUID = viewUID;
 
-    var client = this._client;
-    if (client && client.isConnected()) {
-      client.sendEvent('SET_SELECTED', {uid: viewUID});
-    }
+    this._channel.emit('selectView', viewUID);
   };
 
   var PERIOD = 8000;
@@ -351,6 +352,7 @@ exports.ViewInspector = Class(Widget, function(supr) {
     if (!this._node) { return; }
 
     this._node.refresh();
+    this._batchGetView.dispatch();
 
     var highlight = this._highlight;
     if (!highlight.target) { return; }
@@ -365,7 +367,7 @@ exports.ViewInspector = Class(Widget, function(supr) {
     }
   };
 
-  this.toggle = function () {
+  this.toggleVisibility = function () {
     this._isShowing = !this._isShowing;
     if (this._isShowing) {
       this.open();
@@ -415,26 +417,24 @@ exports.ViewInspector = Class(Widget, function(supr) {
 
     this._selectedUID = null;
     this._highlightUID = null;
-    this._client.sendEvent('SET_SELECTED', {uid: null});
-    this._client.sendEvent('SET_HIGHLIGHT', {uid: null});
+    this._channel.emit('selectView', {uid: null});
+    this._channel.emit('highlightView', {uid: null});
 
     this.stopTimer();
     this.emit('close');
   };
 
   this._connectMouseEvents = function () {
-    if (this._client && this._client.isConnected()) {
-      this._client.sendRequest('ADD_MOUSE_EVT');
-    }
+    return this._channel.request('enableInputListener');
   };
 
   this._disconnectMouseEvents = function () {
-    if (this._client && this._client.isConnected()) {
-      this._client.sendEvent('POLL_VIEW_POSITION', {uid: null});
-      this._client.sendRequest('REMOVE_MOUSE_EVT');
-    }
+    this._channel.emit('stopPollView');
+    return this._channel.request('disableInputListener');
   };
 
   this._addNode = function(id, node) { this._nodeIndex[id] = node; };
   this._removeNode = function(id) { delete this._nodeIndex[id]; };
 });
+
+module.exports = new ViewInspector();

@@ -1,7 +1,8 @@
 from util.browser import $;
-from util.underscore import _;
 
 import squill.Widget as Widget;
+
+/* globals exports, Class, logger */
 
 var ViewNode = exports = Class(Widget, function(supr) {
 
@@ -92,75 +93,66 @@ var ViewNode = exports = Class(Widget, function(supr) {
     this._viewUID = null;
   };
 
-  var SEND_GET_RATE = 500; //how much in milliseconds the GET_VIEW event should be throttled
   this.refresh = function() {
     if (!this._inspector) return;
-    var client = this._inspector.getClient();
 
-    if (!this.sendGetView) {
-      this.sendGetView = _.throttle(bind(this, function () {
-        if (!client || !client.isConnected() || !this._getChildren || !this._viewUID) { return; }
+    this._inspector
+      .requestView(this._viewUID)
+      .bind(this)
+      .then(function (details) {
+        this._details = details;
 
-        client.sendRequest('GET_VIEW', {uid: this._viewUID}, bind(this, function (err, res) {
-          if (err || !this._inspector) {
-            logger.warn(err);
-            return;
+        // update the view style of the node
+        if (details.tag != this._tag) {
+          this._tag = details.tag;
+          $.setText(this._labelText, details.tag);
+        }
+
+        this._hasChildren = details.subviewIds && (details.subviewIds.length > 0);
+        this.updateToggleText();
+
+        // if toggled, refresh the children
+        if (this._isToggled) {
+          // make a copy of the nodes array
+          var i, n, uid;
+          var uids = {};
+          for (i = 0; n = this._nodes[i]; ++i) {
+            uids[n.getViewUID()] = n;
           }
 
-          var view = this._view = res;
-
-          // update the view style of the node
-          if (view.tag != this._tag) {
-            this._tag = view.tag;
-            $.setText(this._labelText, view.tag);
-          }
-
-          this._hasChildren = view.subviewIDs && (view.subviewIDs.length > 0);
-          this.updateToggleText();
-
-          // if toggled, refresh the children
-          if (this._isToggled) {
-            // make a copy of the nodes
-            var uids = {};
-            for (var i = 0, n; n = this._nodes[i]; ++i) {
-              uids[n.getViewUID()] = n;
-            }
-
-            // refresh the list of nodes, reusing existing nodes
-            this._nodes = [];
-            for (var i = 0, uid; uid = view.subviewIDs[i]; ++i) {
-              if (uid in uids) {
-                // reuse and reorder
-                this._nodes[i] = uids[uid];
-                delete uids[uid];
-                this._nodes[i].refresh();
-                if (i > 0 && this._nodes[i]._el.previousSibling != this._nodes[i - 1]._el) {
-                  this._childNodes.insertBefore(this._nodes[i]._el, this._nodes[i - 1]._el.nextSibling);
-                }
-              } else {
-                // or create a new one
-                this._nodes[i] = new ViewNode({
-                  inspector: this._inspector,
-                  viewUID: uid,
-                  parent: this._childNodes,
-                  indent: this._indent + 1
-                });
+          // refresh the list of nodes, reusing existing nodes
+          this._nodes = [];
+          for (i = 0, uid; uid = details.subviewIds[i]; ++i) {
+            if (uid in uids) {
+              // reuse and reorder
+              this._nodes[i] = uids[uid];
+              delete uids[uid];
+              this._nodes[i].refresh();
+              if (i > 0 && this._nodes[i]._el.previousSibling != this._nodes[i - 1]._el) {
+                this._childNodes.insertBefore(this._nodes[i]._el, this._nodes[i - 1]._el.nextSibling);
               }
+            } else {
+              // or create a new one
+              this._nodes[i] = new ViewNode({
+                inspector: this._inspector,
+                viewUID: uid,
+                parent: this._childNodes,
+                indent: this._indent + 1
+              });
             }
-
-            // destroy any nodes that weren't reused
-            for (var uid in uids) {
-              uids[uid].destroy();
-            }
-
-            // trace is displayed asynchronously
-            this._inspector.updateTrace();
           }
-        }));
-      }), SEND_GET_RATE); //change this if it's too slow
-    }
 
-    this.sendGetView();
+          // destroy any nodes that weren't reused
+          for (uid in uids) {
+            uids[uid].destroy();
+          }
+
+          // trace is displayed asynchronously
+          this._inspector.updateTrace();
+        }
+      }, function (err) {
+        logger.warn(err);
+      });
   };
 
   this.setSelected = function (isSelected) {

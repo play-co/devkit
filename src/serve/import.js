@@ -33,7 +33,7 @@ module.exports = function (basePath) {
     });
 
     var imp = pathname.replace(/\.js$/, '').replace(/\//g, '.');
-    compiler.compile([imp, 'jsio.preprocessors.import', 'jsio.preprocessors.cls', 'jsio.util.syntax'])
+    compiler.compile([imp, 'jsio.preprocessors.inlineSlice', 'jsio.preprocessors.import', 'jsio.preprocessors.cls', 'jsio.util.syntax'])
       .on('error', function (err) {
         res.status(404)
            .send(err);

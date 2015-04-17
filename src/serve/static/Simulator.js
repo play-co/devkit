@@ -37,6 +37,10 @@ exports = Class(function () {
     this.rebuild();
   };
 
+  this.getUI = function () {
+    return this._ui;
+  };
+
   this.getOpts = function () { return this._opts; };
   this.getManifest = function () { return this._manifest; };
 
@@ -46,21 +50,12 @@ exports = Class(function () {
     Object.keys(modules).forEach(function (name) {
       if (name in this._modules) { return; }
 
-      var iframe = $({
+      this._modules[name] = $({
         parent: this._opts.parent || defaultParentNode,
         tag: 'iframe',
         src: modules[name],
         className: 'module-frame'
       });
-
-      iframe.onload = bind(this, function () {
-        var devkit = iframe.contentWindow.devkit;
-        if (devkit && devkit._init) {
-          devkit._init(this.api);
-        }
-      });
-
-      this._modules[name] = iframe;
     }, this);
   };
 

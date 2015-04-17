@@ -77,7 +77,7 @@ exports = Class(lib.PubSub, function (supr) {
         this._requests[msg.res].resolve(msg.data);
       }
     } else if (msg.id) {
-      supr(this, 'emit', [msg.name, new Response(this, msg)]);
+      supr(this, 'emit', [msg.name, msg.data, new Response(this, msg.id)]);
     } else {
       supr(this, 'emit', [msg.name, msg.data]);
     }
@@ -109,22 +109,22 @@ exports = Class(lib.PubSub, function (supr) {
   };
 
   var Response = Class(function () {
-    this.init = function (channel, req) {
+    this.init = function (channel, id) {
       this.channel = channel;
-      this.req = req;
+      this.id = id;
       this.responded = false;
     };
 
     this.error = function (err) {
       if (this.responded) { return; }
       this.responded = true;
-      this.channel._send({error: err, res: this.req.id});
+      this.channel._send({error: err, res: this.id});
     };
 
     this.send = function (data) {
       if (this.responded) { return; }
       this.responded = true;
-      this.channel._send({data: data, res: this.req.id});
+      this.channel._send({data: data, res: this.id});
     };
   });
 

@@ -15,4 +15,11 @@ exports = Class(ChannelAPI, function (supr) {
 
   this.devkit = new ChannelAPI();
 
+  this.getFrame = function () {
+    return this._simulator.getUI().getFrame();
+  };
+
+  this.getParent = function () {
+    return this._simulator.getUI().getParent();
+  };
 });

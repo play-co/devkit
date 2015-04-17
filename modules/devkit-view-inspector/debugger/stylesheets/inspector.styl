@@ -1,14 +1,27 @@
 lightColor = #222
 
-#inspector
+#devkit-view-inspector-toggle-button
+  position fixed
+  bottom 10px
+  left 10px
+  width 60px
+  height 60px
+  padding 10px
+
+  .glyphicon
+    font-size 30px
+    top -1px
+
+#devkit-view-inspector
   border-top 1px solid lightColor
   border-right 1px solid lightColor
   pointer-events none
   z-index 500
   background rgba(0, 0, 0, 0.85)
   color #AAA
+  order -50
+  position relative
 
-  display none
   opacity 0
 
   flex-direction row
