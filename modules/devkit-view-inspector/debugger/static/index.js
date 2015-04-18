@@ -8,7 +8,7 @@ import .ViewNode;
 import .BatchGetView;
 import squill.Button as Button;
 
-var devkitWindow = window.parent;
+var devkitWindow = window;
 var devkit = devkitWindow.devkit;
 
 var link = document.createElement('link');
