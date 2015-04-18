@@ -39,6 +39,12 @@ var Button = Class(Widget, function(supr) {
     this.initMouseEvents();
   };
 
+  this.show = function () {
+    supr(this, 'show', arguments);
+
+    this._el.style.display = 'inline-block';
+  };
+
   this.setTooltip = function (tooltip) {
     this._el.setAttribute('tooltip', tooltip);
   };
