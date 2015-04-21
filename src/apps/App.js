@@ -553,7 +553,7 @@ App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
     .catch(function (err) {
       if (err.code === 'ENOENT' || err.cause.code === 'ENOENT') {
         trace('returning ApplicationNotFoundError');
-        return Promise.reject(new ApplicationNotFoundError(appPath));
+        return Promise.reject(new ApplicationNotFoundError('No application found at ' + appPath));
       }
 
       trace('forwarding unexpected error');
@@ -566,7 +566,7 @@ App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
     })
     .catch(SyntaxError, function (err) {
       trace('Error parsing manifest in appPath', appPath);
-      return Promise.reject(new InvalidManifestError(appPath));
+      return Promise.reject(new InvalidManifestError('Invalid JSON in manifest at ' + manifestPath));
     })
     .then(function (manifest) {
 
