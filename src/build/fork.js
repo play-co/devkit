@@ -1,4 +1,3 @@
-require = require('jsio');
 require('../globals');
 
 var build = require('./index');

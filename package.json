@@ -14,7 +14,7 @@
     "devkit": "./src/devkit.js"
   },
   "dependencies": {
-    "bluebird": "^2.3.6",
+    "bluebird": "^2.9.24",
     "body-parser": "1.x",
     "chalk": "^0.5.1",
     "express": "4.x",
