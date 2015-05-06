@@ -12,8 +12,8 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
       .alias('j', 'json').describe('json', 'print output in json')
       .alias('p', 'project').describe('project', 'location of project (defaults to current directory)')
       .describe('save-current', "save the current versions in the game's manifest")
-      .describe('list-versions', 'prints all available versions (does not update anything)')
-  }
+      .describe('list-versions', 'prints all available versions (does not update anything)');
+  };
 
   this.exec = function (command, args, cb) {
     var path = require('path');
@@ -21,8 +21,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
     var chalk = require('chalk');
 
     var apps = require('../apps');
-    var Module = require('../apps/Module');
-    var install = require('../install');
+    var Module = require('../modules/Module');
 
     var stringify = require('../util/stringify');
 

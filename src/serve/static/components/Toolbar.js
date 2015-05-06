@@ -245,19 +245,19 @@ module.exports = Class(Widget, function () {
       paddingTop: Math.max(0, -rect.top) + 'px',
       paddingLeft: Math.max(0, -rect.left) + 'px'
     });
-  }
+  };
 
   this.hide = function () {
     this.addClass('transition');
     onNextFrame(this, function () {
       this.addClass('hidden');
     });
-  }
+  };
 
   this.show = function () {
     this.addClass('transition');
     onNextFrame(this, function () {
       this.removeClass('hidden');
     });
-  }
+  };
 });
