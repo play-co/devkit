@@ -1,6 +1,7 @@
 var path = require('path');
 var http = require('http');
 var express = require('express');
+var compression = require('compression');
 var bodyParser = require('body-parser');
 var printf = require('printf');
 var open = require('open');
@@ -19,6 +20,8 @@ var appRoutes = require('./appRoutes');
 
 var logger = logging.get('serve');
 
+var Z_BEST_COMPRESSION = 9;
+
 // launches the web server
 exports.serveWeb = function (opts, cb) {
   var port = opts.port;
@@ -31,6 +34,8 @@ exports.serveWeb = function (opts, cb) {
 
   // var deviceManager = require('./deviceManager').get();
   // deviceManager.init(app.io);
+
+  app.use(compression({level: Z_BEST_COMPRESSION}));
 
   app.use(function noCacheControl(req, res, next) {
     res.header('Cache-Control', 'no-cache');
