@@ -123,7 +123,7 @@ Module.load = function (modulePath, /* optional */ opts) {
   try {
     packageContents = require(packageFile);
   } catch (e) {
-    return logger.warn('Module', item.path, 'failed to load');
+    return logger.warn('Module', packageFile, 'failed to load');
   }
 
   if (!packageContents.devkit) { return; }
