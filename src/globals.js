@@ -30,6 +30,9 @@ if (process.env.DEVKIT_TRACE) {
   trace('------------------------- GAME CLOSURE DEVKIT TRACE ----------------------------');
   trace('--------------------------------------------------------------------------------');
   trace('  VERSION =>', version, '\n\n');
+
+  var logging = require('./util/logging');
+  logging.get('git').setLevel(logging.DEBUG);
 } else {
   trace = function () {};
 }

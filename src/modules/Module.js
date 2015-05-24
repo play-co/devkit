@@ -64,7 +64,7 @@ var Module = module.exports = Class(function () {
     }
   };
 
-  this.getClientPaths = function (relativeTo) {
+  this.getClientPaths = function () {
     return this._clientPaths;
   };
 
@@ -78,7 +78,7 @@ var Module = module.exports = Class(function () {
 
   this.getExtension = function (name) {
     return this._extensions[name];
-  }
+  };
 
   this.loadExtension = function (name) {
     var extension = this._extensions[name];
@@ -93,7 +93,7 @@ var Module = module.exports = Class(function () {
   this.setParent = function (parentPath, isDependency) {
     this.parent = parentPath;
     this.isDependency = !!isDependency;
-  }
+  };
 
   // defines the public JSON API for DevKit extensions
   this.toJSON = function () {
@@ -123,7 +123,7 @@ Module.load = function (modulePath, /* optional */ opts) {
   try {
     packageContents = require(packageFile);
   } catch (e) {
-    return logger.warn('Module', packageFile, 'failed to load');
+    return logger.warn('Module', modulePath, 'failed to load, invalid package.json');
   }
 
   if (!packageContents.devkit) { return; }
@@ -140,7 +140,7 @@ Module.load = function (modulePath, /* optional */ opts) {
     version: opts.version,
     packageContents: packageContents
   });
-}
+};
 
 Module.getURL = function (modulePath, cb) {
   var git = gitClient.get(modulePath);
@@ -158,19 +158,22 @@ Module.getURL = function (modulePath, cb) {
 Module.describeVersion = function (modulePath, cb) {
   trace('Module.describeVersion');
   var git = gitClient.get(modulePath);
-  var moduleName = path.basename(modulePath);
 
-  return exists(modulePath).then(function () {
-    return [
-      git.getCurrentTag(),
-      git.getCurrentHead()
-    ];
-  }).all().spread(function (tag, head) {
-    return {
-      tag: tag,
-      hash: head
-    };
-  }).nodeify(cb);
+  return exists(modulePath)
+    .then(function () {
+      return [
+        git.getCurrentTag(),
+        git.getCurrentHead()
+      ];
+    })
+    .all()
+    .spread(function (tag, head) {
+      return {
+        tag: tag,
+        hash: head
+      };
+    })
+    .nodeify(cb);
 };
 
 Module.getVersions = function (modulePath, cb) {
@@ -196,50 +199,103 @@ Module.setVersion = function (modulePath, version, opts) {
   var moduleName = path.basename(modulePath);
   var forceInstall = opts.forceInstall;
 
-  return exists(modulePath).bind({}).then(function () {
-    return git.fetch();
-  }).then(function () {
-    return git.ensureVersion(version);
-  }).then(function (requestedVersion) {
-    trace('input version', version);
-    trace('requestedVersion', requestedVersion);
-    this.requestedVersion = strip(requestedVersion);
+  return exists(modulePath)
+    .bind({})
+    .then(function () {
+      // determine if version is a tag, branch, or hash
+      return git.validateVersion(version);
+    })
+    .spread(function (version, type) {
+      // always fetch if branch
+      if (type == 'branch' && !opts.skipFetch) {
+        return git.fetch().return(version);
+      }
 
-    // Get information about current head and the requested version
-    return [
-      git.getHashForRef(requestedVersion),
-      Module.describeVersion(modulePath)
-    ];
-  }).all().spread(function (requestedVersionHash, currentVersion) {
-    trace('requestedVersionHash', requestedVersionHash);
-    trace('currentVersion', currentVersion);
-    this.currentTag = currentVersion.tag;
-    this.currentHash = currentVersion.hash;
-    this.requestedHash = requestedVersionHash;
-    this.name = this.currentTag || this.currentHash;
+      return version;
+    })
+    .catch(gitClient.UnknownGitRevision, function (e) {
+      // check if version exists locally and try to fetch it if not
+      if (!opts.skipFetch) {
+        return git
+          .fetch()
+          .then(function () {
+            return git.validateVersion(version);
+          })
+          .spread(function (version, type) {
+            return version;
+          });
+      } else {
+        throw e;
+      }
+    })
+    .then(function (requestedVersion) {
+      trace('input version', version);
+      trace('requestedVersion', requestedVersion);
+      this.requestedVersion = strip(requestedVersion);
 
-    var onRequestedVersion = this.currentHash === this.requestedHash;
-    if (!forceInstall && onRequestedVersion) {
-      logger.log(
-        chalk.cyan('set version'),
-        chalk.yellow(moduleName + '@' + this.name)
-      );
-      trace('already on requested version', this.name);
-      return this.requestedVersion;
-    } else {
-      trace('installing requested version', this.requestedVersion);
-      return git.checkoutRef(this.requestedVersion).then(function () {
-        return Module.runInstallScripts(modulePath);
-      }).bind(this).then(function () {
+      // Get information about current head and the requested version
+      return [
+        git.getHashForRef(requestedVersion),
+        Module.describeVersion(modulePath)
+      ];
+    })
+    .all()
+    .spread(function (requestedVersionHash, currentVersion) {
+      trace('requestedVersionHash', requestedVersionHash);
+      trace('currentVersion', currentVersion);
+      this.currentTag = currentVersion.tag;
+      this.currentHash = currentVersion.hash;
+      this.requestedHash = requestedVersionHash;
+      this.name = this.currentTag || this.currentHash;
+
+      var alreadyOnRequestedVersion = (this.currentHash === this.requestedHash);
+      if (alreadyOnRequestedVersion) {
+        trace('already on requested version', this.name);
+      }
+
+      if (!forceInstall && alreadyOnRequestedVersion) {
         logger.log(
           chalk.cyan('set version'),
-          chalk.yellow(moduleName + '@' + this.requestedVersion)
+          chalk.yellow(moduleName + '@' + this.name)
         );
         return this.requestedVersion;
-      });
-    }
-  });
+      } else {
+        trace('installing requested version', this.requestedVersion);
+
+        // check for unstaged changes and untracked files
+        return (alreadyOnRequestedVersion
+            ? Promise.resolve()
+            : checkoutVersion(git, this.requestedVersion, opts))
+          .bind(this)
+          .then(function () {
+            return Module.runInstallScripts(modulePath);
+          })
+          .then(function () {
+            logger.log(
+              chalk.cyan('set version'),
+              chalk.yellow(moduleName + '@' + this.requestedVersion)
+            );
+            return this.requestedVersion;
+          });
+      }
+    });
 };
+
+function checkoutVersion(git, version, opts) {
+  return git
+    .listChanges()
+    .then(function (changes) {
+      if (changes.length && !opts.unsafe) {
+        throw new ModifiedTreeError(git.path, changes);
+      }
+
+      return git
+        .checkoutRef(version)
+        .catch(function (e) {
+          throw new CheckoutError(path.basename(git.path), version, e.stderr);
+        });
+    });
+}
 
 Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
   logger.log('running install scripts...');
@@ -270,3 +326,34 @@ Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
     npm.on('close', resolve);
   }).nodeify(cb);
 };
+
+
+function ModifiedTreeError(modulePath, changes) {
+  this.message = "you have made modifications to the "
+               + "module " + path.basename(modulePath)
+               + " (" + modulePath + ")";
+
+  this.changes = changes;
+  this.name = 'ModifiedTreeError';
+  Error.captureStackTrace(this, ModifiedTreeError);
+}
+
+ModifiedTreeError.prototype = Object.create(Error.prototype);
+ModifiedTreeError.prototype.constructor = ModifiedTreeError;
+
+Module.ModifiedTreeError = ModifiedTreeError;
+
+
+function CheckoutError(name, version, stderr) {
+  this.message = "checkout of module "
+               + name + " at version "
+               + version + " failed.\n\n" + stderr;
+
+  this.name = 'CheckoutError';
+  Error.captureStackTrace(this, CheckoutError);
+}
+
+CheckoutError.prototype = Object.create(Error.prototype);
+CheckoutError.prototype.constructor = CheckoutError;
+
+Module.CheckoutError = CheckoutError;
