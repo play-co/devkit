@@ -169,6 +169,21 @@ function getAPIRouter(opts) {
     });
   });
 
+  api.get('/upgrade', function (req, res) {
+    apps.get(req.query.app, {updateLastOpened: false}, function (err, app) {
+      var module = req.query.module || 'devkit-core';
+      var version = req.query.version || 'latest';
+      require('../install').installModule(app, module, {version: version}, function (err, result) {
+        if (err) {
+          console.log(err.stack);
+          res.status(500).send(err.stack);
+        } else {
+          res.status(200).send(result);
+        }
+      });
+    });
+  });
+
   api.get('/home', function (req, res) {
     res.json({path: process.env.HOME
       || process.env.HOMEPATH

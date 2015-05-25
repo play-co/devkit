@@ -153,6 +153,9 @@ function updateCache(name, url, version) {
  * @return {Promise<string>} resolves with installed version
  */
 function installModuleFromName (app, name, version, opts) {
+  if (name == 'devkit-core') {
+    return installModuleFromURL(app, name, 'git@github:gameclosure/devkit-core', version, opts);
+  }
   // TODO
   return Promise.reject(
     new Error('Installing module by name is not [yet] supported')

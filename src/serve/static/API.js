@@ -13,13 +13,30 @@ exports = Class(ChannelAPI, function (supr) {
     });
   };
 
+  /**
+   * A connection to the inner iframe
+   */
   this.devkit = new ChannelAPI();
 
+  this.getApp = function () {
+    return this._simulator.getApp();
+  };
+
+  /**
+   * @returns {HTMLElement} Iframe for the simulator
+   */
   this.getFrame = function () {
     return this._simulator.getUI().getFrame();
   };
 
+  /**
+   * @returns {HTMLElement} Parent DOM node
+   */
   this.getParent = function () {
     return this._simulator.getUI().getParent();
+  };
+
+  this.prompt = function (opts) {
+    return this._simulator.getUI().showBanner(opts);
   };
 });

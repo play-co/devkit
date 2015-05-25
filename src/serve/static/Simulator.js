@@ -6,6 +6,7 @@ import .util.DeviceInfo as DeviceInfo;
 import .ui.Chrome;
 
 import .API;
+import .util.upgrade;
 
 var defaultParentNode = document.querySelector('devkit') || document.body;
 
@@ -41,6 +42,7 @@ exports = Class(function () {
     return this._ui;
   };
 
+  this.getApp = function () { return this._app; }
   this.getOpts = function () { return this._opts; };
   this.getManifest = function () { return this._manifest; };
 

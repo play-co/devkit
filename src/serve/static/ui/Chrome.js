@@ -156,6 +156,39 @@ exports = Class(CenterLayout, function (supr) {
     }
   };
 
+  this.showBanner = function (opts) {
+    if (!this.banner) {
+      this.banner = this.addWidget({
+        id: 'banner',
+        parent: this.contents,
+        type: 'label'
+      });
+
+      this.bannerAction = this.banner.addWidget({id: 'action', type: 'button'});
+      this.bannerClose = this.banner.addWidget({id: 'closeBtn', type: 'button', className: 'glyphicon glyphicon-remove'});
+    }
+
+    this.banner.setText(opts.text);
+    if (opts.action) {
+      this.bannerAction.setLabel(opts.action);
+      this.bannerAction.show();
+    } else {
+      this.bannerAction.hide();
+    }
+    this.bannerClose[opts.dismissable === false ? 'hide' : 'show']();
+    return new Promise(function (resolve, reject) {
+      this.bannerClose.onClick = function () {
+        this.banner.hide();
+        reject();
+      }.bind(this);
+
+      this.bannerAction.onClick = function () {
+        this.banner.hide();
+        resolve();
+      }.bind(this);
+    }.bind(this));
+  };
+
   this.setBuilding = function (isBuilding) {
     var spinner = this['build-spinner'];
 
