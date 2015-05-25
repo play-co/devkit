@@ -51,7 +51,7 @@ function parseURL (url, protocol) {
 
 function resolveRequestedModuleVersion (app, moduleName, version, opts) {
   if (opts.latest || version === 'latest') {
-    // Undefined version results in latest version getting pulled
+    opts.latest = true;
     return void 0;
   } else if (!version) {
     // Not latest and no version provided, look up in manifest
@@ -112,12 +112,21 @@ exports.installModule = function (app, moduleName, opts, cb) {
     return Promise.resolve();
   }).then(function passOrInstallModule (currentVersion) {
     trace('currentVersion', currentVersion);
+    // if there is no current version, use version from manifest or fetch latest
+    // if there is a current version,
+    //    - if you request latest, version is not defined
+    //    - if you request a version, version is defined
+    //    - if you don't provide a version, version is defined if present in the
+    //      manifest, undefined otherwise
     var hasRequestedVersion;
     if (!currentVersion) {
       hasRequestedVersion = false;
+    } else if (!version && !opts.latest) {
+      // no version provided and latest not requested, then don't do anything
+      hasRequestedVersion = true;
     } else {
-      hasRequestedVersion = !version
-        || currentVersion.hash === version
+      // does requested version match current version?
+      hasRequestedVersion = currentVersion.hash === version
         || currentVersion.tag === version;
     }
 

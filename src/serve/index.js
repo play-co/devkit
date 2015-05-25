@@ -176,7 +176,7 @@ function getAPIRouter(opts) {
       require('../install').installModule(app, module, {version: version}, function (err, result) {
         if (err) {
           console.log(err.stack);
-          res.status(500).send(err.stack);
+          res.status(500).send(err.message);
         } else {
           res.status(200).send(result);
         }

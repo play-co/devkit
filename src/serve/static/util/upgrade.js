@@ -39,11 +39,17 @@ exports.promptUpgrade = function () {
           simulator.getFrame().contentWindow.GC.app.engine.pause();
         } catch (e) {}
 
-        return ajax.get({url: '/api/upgrade', query: {
-          app: simulator.getApp(),
-          module: 'devkit-core',
-          version: 'latest'
-        }});
+        return ajax
+          .get({url: '/api/upgrade', query: {
+            app: simulator.getApp(),
+            module: 'devkit-core',
+            version: 'latest'
+          }})
+          .then(function (res) {
+            simulator.rebuild();
+          }, function (err) {
+            alert("Could not upgrade!\n\n" + err.response);
+          });
       }, function () {
         console.log("ignoring...");
       });

@@ -80,6 +80,12 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         if (moduleUrl.protocol && moduleUrl.host && moduleUrl.href) {
           opts.url = moduleUrl.href;
           opts.protocol = moduleUrl.protocol.replace(':', '');
+        } else {
+          var pieces = module.split(/[@#]/);
+          if (pieces.length == 2) {
+            module = pieces[0];
+            opts.version = pieces[1];
+          }
         }
 
         return install.installModule(app, module, opts).return(app);

@@ -64,24 +64,28 @@ exports = Class(function () {
   this.rebuild = function (cb) {
     this._ui.setBuilding(true);
     // get or update a simulator port with the following options
-    util.ajax.get({
-      url: '/api/simulate/',
-      query: {
-        app: this._app,
-        deviceType: this._type,
-        deviceId: this.id,
-        scheme: 'debug',
-        target: this._buildTarget
-      }
-    }).bind(this).then(function (res) {
-      var res = res[0];
-      this._ui.setBuilding(false);
-      this.setURL(res.url);
-      this.loadModules(res.debuggerURLs);
-    }, function (err) {
-      logger.error('Unable to simulate', this._app);
-      console.error(err);
-    }).nodeify(cb);
+    return util.ajax
+      .get({
+        url: '/api/simulate/',
+        query: {
+          app: this._app,
+          deviceType: this._type,
+          deviceId: this.id,
+          scheme: 'debug',
+          target: this._buildTarget
+        }
+      })
+      .bind(this)
+      .then(function (res) {
+        var res = res[0];
+        this._ui.setBuilding(false);
+        this.setURL(res.url);
+        this.loadModules(res.debuggerURLs);
+      }, function (err) {
+        logger.error('Unable to simulate', this._app);
+        console.error(err);
+      })
+      .nodeify(cb);
   };
 
   this.setURL = function (url) {
