@@ -197,8 +197,8 @@ function installModuleFromURL (app, name, url, version, opts) {
           .bind(this)
           .then(function (cacheEntry) {
             this.cacheEntry = cacheEntry;
-            addModuleToApp(app, cacheEntry, name, opts);
-          })
+            return addModuleToApp(app, cacheEntry, name, opts);
+          });
       }
     })
     .then(function () {
