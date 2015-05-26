@@ -151,6 +151,22 @@ exports.Logger = Class(Writable, function () {
   this.toString = function() {
     return this._buffer.join("\n");
   };
+
+  // deprecated
+  // backwards-compatible logging API
+  Object.defineProperty(this, 'out', {
+    'get': function () {
+      return this.log.bind(this);
+    }
+  });
+
+  // deprecated
+  // backwards-compatible logging API
+  Object.defineProperty(this, 'err', {
+    'get': function () {
+      return this.error.bind(this);
+    }
+  });
 });
 
 exports.getPrefix = function (tag) {
