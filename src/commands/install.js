@@ -98,7 +98,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         // ensure devkit is a dependency
         logger.log('Adding default dependencies to "manifest.json"...');
         return app
-          .validate({protocol: protocol})
+          .validate({protocol: opts.protocol})
           .return(app);
       }
 
