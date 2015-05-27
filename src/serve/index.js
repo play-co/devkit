@@ -1,6 +1,7 @@
 var path = require('path');
 var http = require('http');
 var express = require('express');
+var compression = require('compression');
 var bodyParser = require('body-parser');
 var printf = require('printf');
 var open = require('open');
@@ -12,24 +13,29 @@ var logging = require('../util/logging');
 
 var config = require('../config');
 var jvmtools = require('../jvmtools');
-var JsioCompiler = require('../build/jsio_compiler').JsioCompiler;
 
 var stylus = require('./stylus');
+var importMiddleware = require('./import');
 var appRoutes = require('./appRoutes');
 
 var logger = logging.get('serve');
 
-var BASE_PATH = path.join(__dirname, '..', '..');
+var Z_BEST_COMPRESSION = 9;
 
 // launches the web server
 exports.serveWeb = function (opts, cb) {
-  var basePort = opts.port;
+  var port = opts.port;
 
   // common.track("BasilServe");
   var app = express();
   var server = http.Server(app);
 
   app.io = require('socket.io')(server);
+
+  // var deviceManager = require('./deviceManager').get();
+  // deviceManager.init(app.io);
+
+  app.use(compression({level: Z_BEST_COMPRESSION}));
 
   app.use(function noCacheControl(req, res, next) {
     res.header('Cache-Control', 'no-cache');
@@ -38,26 +44,29 @@ exports.serveWeb = function (opts, cb) {
   });
 
   app.use('/api/', getAPIRouter(merge({
-    simulatorPort: basePort + 1,
     app: app
   }, opts)));
 
   // serve compiled CSS
   app.use('/', stylus(getPath('static')));
 
+  // serve compiled JS
+  app.use('/compile/', importMiddleware(getPath('static/')));
+
   // serve static files
   app.use('/', express.static(getPath('static')));
 
   // Serve
-  server.listen(basePort, function () {
+  server.listen(port, function () {
     if (opts.testApp) {
-      exports.serveTestApp(basePort);
+      exports.serveTestApp(port);
     }
 
-    logger.log(printf('serving at http://localhost:%(port)s/ and http://%(ip)s:%(port)s/', {
-      ip: ip.getLocalIP(),
-      port: basePort
-    }));
+    logger.log(printf('serving at http://localhost:%(port)s/ and '
+      + 'http://%(ip)s:%(port)s/', {
+          ip: ip.getLocalIP(),
+          port: port
+        }));
 
     config.startWatch();
 
@@ -71,7 +80,7 @@ exports.serveWeb = function (opts, cb) {
   });
 };
 
-exports.serveTestApp = function (basePort) {
+exports.serveTestApp = function (port) {
   // Launch multicast server (only on OS X for now)
   var addresses = ip.getLocalIP();
   var address = addresses[0];
@@ -80,7 +89,7 @@ exports.serveTestApp = function (basePort) {
     jvmtools.exec({
       tool: 'jmdns',
       args: [
-        '-rs', hostname, 'devkit._tcp', 'local', basePort
+        '-rs', hostname, 'devkit._tcp', 'local', port
       ]
     }, function (err, stdout, stderr) {
     });
@@ -90,6 +99,11 @@ exports.serveTestApp = function (basePort) {
 function getAPIRouter(opts) {
 
   var api = express();
+  var deviceTypes = require('../util/deviceTypes');
+
+  api.get('/devices', function (req, res) {
+    res.json(deviceTypes);
+  });
 
   api.get('/app', function (req, res) {
     var appPath = req.query.app;
@@ -141,14 +155,9 @@ function getAPIRouter(opts) {
     var appPath = req.query.app;
     apps.get(appPath, {updateLastOpened: false}, function (err, app) {
       if (err) { return res.status(404).send(err); }
-      res.sendFile(
-        path.join(app.paths.root, app.getIcon(req.query.targetSize || 512)),
-        function (err) {
-          if (err) {
-            res.status(err.status).end();
-          }
-        }
-      );
+      var iconFile = app.getIcon(req.query.targetSize || 512);
+      var iconPath = path.join(app.paths.root, iconFile);
+      res.sendFile(iconPath);
     });
   });
 
@@ -157,6 +166,21 @@ function getAPIRouter(opts) {
     apps.get(appPath, {updateLastOpened: false}, function (err, app) {
       if (err) { return res.status(404).send(err); }
       res.send(app.manifest);
+    });
+  });
+
+  api.get('/upgrade', function (req, res) {
+    apps.get(req.query.app, {updateLastOpened: false}, function (err, app) {
+      var module = req.query.module || 'devkit-core';
+      var version = req.query.version || 'latest';
+      require('../install').installModule(app, module, {version: version}, function (err, result) {
+        if (err) {
+          console.log(err.stack);
+          res.status(500).send(err.message);
+        } else {
+          res.status(200).send(result);
+        }
+      });
     });
   });
 
@@ -184,45 +208,12 @@ function getAPIRouter(opts) {
     });
   });
 
-  // endpoint to retrive compiled javascript
-  api.get('/compile/*', function (req, res) {
-    var compiler = new JsioCompiler({
-      env: 'browser',
-      cwd: BASE_PATH,
-
-      // add a trailing import statement so the JS executes the requested import
-      // immediately when downloaded
-      appendImport: true,
-
-      // path: anything in these folders is importable
-      path: [
-          'node_modules/ff/lib/',
-          'node_modules/printf/lib'
-        ],
-
-      // pathCache: key-value pairs of prefixes that map to folders (eg. prefix
-      // 'squill' handles all 'sqill.*' imports)
-      pathCache: {
-        'squill': 'node_modules/squill/'
-      }
-    });
-
-    compiler.compile([req.params[0], 'preprocessors.import', 'preprocessors.cls'])
-      .on('error', function (err) {
-        res.send(err);
-      })
-      .on('success', function (src) {
-        res.header('Content-Type', 'application/javascript');
-        res.send(src);
-      });
-  });
-
   appRoutes.addToAPI(opts, api);
 
   return api;
 }
 
-
 function getPath() {
-  return path.join.apply(path, [__dirname].concat(Array.prototype.slice.call(arguments)));
+  var args = [__dirname].concat(Array.prototype.slice.call(arguments));
+  return path.join.apply(path, args);
 }

@@ -13,7 +13,7 @@ html, body { margin: 0px; padding: 0px; height: 100%; }
 <script>
 var ua = navigator.userAgent;
 var isMobile = window.parent == window && (/Tizen|iPod|iPhone|iPad|Android|BlackBerry/i.test(ua) || /testMobile/.test(window.location));
-document.write('<scr' + 'ipt src="/api/compile/.src.serve.static.' + (isMobile ? 'mobileIndex' : 'apps') + '"></scr' + 'ipt>');
+document.write('<scr' + 'ipt src="/compile/' + (isMobile ? 'mobileIndex' : 'apps') + '.js"></scr' + 'ipt>');
 </script>
 </head>
 <body>

@@ -39,26 +39,13 @@ var Config = Class(EventEmitter, function () {
     try {
       if (fs.existsSync(CONFIG_PATH)) {
         var contents = fs.readFileSync(CONFIG_PATH, 'utf8');
-        this._config = JSON.parse(contents);
-      } else {
-        this._config = {};
-      }
-    } catch (e) {
-      if (e.code !== 'MODULE_NOT_FOUND') {
-        logger.error('Error loading', CONFIG_PATH);
-        if (e instanceof SyntaxError) {
-          if (fs.readFileSync(CONFIG_PATH) === '') {
-            logger.log('setting up config.json...');
-          } else {
-            logger.error('could not read config.json', e);
-            process.exit(1);
-          }
-        } else {
-          logger.error('could not read config.json', e);
+        if (contents) {
+          this._config = JSON.parse(contents);
         }
       }
-
-      this._config = {};
+    } catch (e) {
+      logger.error('error parsing', CONFIG_PATH);
+      logger.log('overwriting config.json...');
     }
 
     if (typeof this._config !== 'object') {

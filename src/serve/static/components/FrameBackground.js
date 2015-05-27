@@ -2,6 +2,11 @@ import squill.Widget as Widget;
 import math2D.Point as Point;
 from util.browser import $;
 
+var SHADOW_OFFSET_X = 20;
+var SHADOW_OFFSET_Y = 20;
+var SHADOW_BLUR = 50;
+var SHADOW_COLOR = 'rgba(0, 0, 0, 0.5)';
+
 module.exports = Class(Widget, function () {
 
   this._def = {tag: 'canvas'};
@@ -44,17 +49,30 @@ module.exports = Class(Widget, function () {
     this._offsetX = -(offsetX || 0) * scale;
     this._offsetY = -(offsetY || 0) * scale;
 
+    var x = this._shadowX = Math.max(0, SHADOW_BLUR - SHADOW_OFFSET_X);
+    var y = this._shadowY = Math.max(0, SHADOW_BLUR - SHADOW_OFFSET_Y);
+
+    var ctx = this._el.getContext('2d');
+    this._fullWidth = this._width + SHADOW_OFFSET_X + SHADOW_BLUR + x;
+    this._fullHeight = this._height + SHADOW_OFFSET_Y + SHADOW_BLUR + y;
+
     $.style(this._el, {
-      left: this._offsetX + 'px',
-      top: this._offsetY + 'px',
-      width: this._width + 'px',
-      height: this._height + 'px'
+      left: this._offsetX - x + 'px',
+      top: this._offsetY - y + 'px',
+      width: this._fullWidth + 'px',
+      height: this._fullHeight + 'px'
     });
 
   }
 
   this.getOffset = function () {
-    return new Point(this._offsetX, this._offsetY);
+    // return offset rectangle excluding shadow size
+    return {
+      x: this._offsetX,
+      y: this._offsetY,
+      width: this._width,
+      height: this._height
+    };
   }
 
   this._render = function (url) {
@@ -92,22 +110,32 @@ module.exports = Class(Widget, function () {
     }
 
     // render the image
+    var x = Math.max(0, SHADOW_BLUR - SHADOW_OFFSET_X);
+    var y = Math.max(0, SHADOW_BLUR - SHADOW_OFFSET_Y);
+
     var ctx = this._el.getContext('2d');
-    this._el.width = this._width;
-    this._el.height = this._height;
+    this._el.width = this._fullWidth;
+    this._el.height = this._fullHeight;
 
     ctx.save();
 
+    ctx.shadowBlur = SHADOW_BLUR;
+    ctx.shadowOffsetX = SHADOW_OFFSET_X;
+    ctx.shadowOffsetY = SHADOW_OFFSET_Y;
+    ctx.shadowColor = SHADOW_COLOR;
+
+    ctx.translate(x, y);
+
     if (this._img) {
       if (this._rotation % 2 == 0) {
-        ctx.drawImage(this._img, 0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.drawImage(this._img, 0, 0, this._width, this._height);
       } else {
         switch (this._rotation % 4) {
           case 3:
           case 1:
             ctx.rotate(90 * Math.PI / 180);
-            ctx.translate(0, -ctx.canvas.width);
-            ctx.drawImage(this._img, 0, 0, ctx.canvas.height, ctx.canvas.width);
+            ctx.translate(0, -this._width);
+            ctx.drawImage(this._img, 0, 0, this._height, this._width);
             break;
         }
       }

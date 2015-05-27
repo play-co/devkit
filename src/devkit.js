@@ -24,13 +24,10 @@ process.title = 'devkit';
  */
 
 /* jshint -W020 */
-require = require('jsio');
+require('jsio');
 /* jshint +W020 */
 
 require('./globals');
-
-var logging = require('./util/logging');
-var logger = logging.get('devkit');
 
 /**
  * Module API.

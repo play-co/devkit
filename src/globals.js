@@ -1,4 +1,4 @@
-var base = require('jsio.base');
+var base = require('jsio')('jsio.base');
 
 GLOBAL.Class = base.Class;
 GLOBAL.merge = base.merge;
@@ -30,6 +30,9 @@ if (process.env.DEVKIT_TRACE) {
   trace('------------------------- GAME CLOSURE DEVKIT TRACE ----------------------------');
   trace('--------------------------------------------------------------------------------');
   trace('  VERSION =>', version, '\n\n');
+
+  var logging = require('./util/logging');
+  logging.get('git').setLevel(logging.DEBUG);
 } else {
   trace = function () {};
 }

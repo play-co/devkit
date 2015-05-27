@@ -38,19 +38,13 @@ function spawnWithLogger(args, opts, cb) {
   opts = merge(opts, {silent: true, buffer: true});
 
   var name = 'git';
-  var buffers;
-  if (opts.buffer || opts.silent) {
-    buffers = {stdout: [], stderr: []};
-  }
-
   if (!args[0]) {
     throw new Error('no git command provided');
   }
 
-  var logger = logging.get(name, opts.silent, buffers);
-
+  var logger = logging.get(name);
   if (!opts.extraSilent) {
-    logger.log(chalk.yellow('-> ' + args.join(' ')));
+    logger.debug(chalk.yellow('-> ' + args.join(' ')));
   }
 
   if (!opts.stdio) {
@@ -63,13 +57,17 @@ function spawnWithLogger(args, opts, cb) {
 
   var ranCallback = false;
   var child = spawn(name, args, {stdio: opts.stdio, cwd: opts.cwd});
-  child.stdout && child.stdout.pipe(logger.stdout, {end: false});
-  child.stderr && child.stderr.pipe(logger.stderr, {end: false});
+  var streams;
+  if (opts.buffer) {
+    streams = logger.createStreams(['stdout', 'stderr'], opts.silent);
+    child.stdout && child.stdout.pipe(streams.stdout, {end: false});
+    child.stderr && child.stderr.pipe(streams.stderr, {end: false});
+  }
 
   return new Promise(function (resolve, reject) {
     child.on('close', function (code) {
-      var stdout = buffers && buffers.stdout.join('');
-      var stderr = buffers && buffers.stderr.join('');
+      var stdout = streams && streams.get('stdout');
+      var stderr = streams && streams.get('stderr');
 
       if (!ranCallback) {
         ranCallback = true;
@@ -133,6 +131,8 @@ exports.get = function (dir, opts) {
     var args = Array.prototype.slice.call(arguments, 0, last);
     return spawnWithLogger(args, singleOpts, cb);
   };
+
+  client.path = dir;
 
   for (var functionName in gitFunctions) {
     client[functionName] = gitFunctions[functionName];

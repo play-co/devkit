@@ -5,35 +5,41 @@
 <meta name = "viewport" content = "user-scalable=no,width=device-width,initial-scale=1, maximum-scale=1" />
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <script>
-var icon = window.location.search.match(/[?&]app=(.*?)(?:&|$)/);
-if (icon) {
-  document.write('<link rel="icon" type="image/png" href="api/icon?app='
-    + icon[1]
-    + '" />');
-}</script>
+(function () {
+  var match = window.location.search.match(/[?&]app=(.*?)(?:&|$)/);
+  if (match) {
+    var app = match[1];
+    document.write('<link rel="icon" type="image/png" href="api/icon?app='
+      + app
+      + '" />');
+  } else {
+    location = '/apps.html';
+  }
+})();
+</script>
+
+<link rel="stylesheet" href="/stylesheets/simulator.styl">
 
 <title>Game Closure SDK</title>
 </head>
-<body></body>
+<body>
+
+<div id="devkit">
+  <div id="myIP"></div>
+  <div id="simulators"></div>
+</div>
+
+</body>
 
 <script>
 (function () {
-  if (!window.console) {
-    window.console = {};
-    window.console.log = window.console.info = window.console.error = window.console.warn = function () {};
-  }
-
-  var scriptStart = "<scr" + "ipt";
-  var scriptEnd = "</scr" + "ipt>";
-
+  // mobile support
   var ua = navigator.userAgent;
-  var src;
   if (window.parent == window && (/Safari|AppleWebKit/i.test(ua) && /iPod|iPhone|iPad|Android/i.test(ua) || /testMobile/.test(window.location) || /Mobile/i.test(ua))) {
-    src = ".src.serve.static.mobileGUI";
-  } else {
-    src = ".src.serve.static.GUI";
+    location = 'mobileIndex.html';
   }
-  document.write(scriptStart + " src='api/compile/" + src + "'>" + scriptEnd);
 })();
 </script>
+
+<script src="/compile/index.js"></script>
 </html>

@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var copy = require('../util/copy');
 
-var Module = require('./Module');
+var Module = require('../modules/Module');
 
 var lockFile = require('../util/lockfile');
 var rimraf = require('../util/rimraf');
@@ -26,26 +26,14 @@ var DEFAULT_TEMPLATE = 'default';
 var appFunctions = require('./functions');
 var resolveAppPath = appFunctions.resolveAppPath;
 
-var readFile = function readFile (path, opts) {
-  return new Promise(function (resolve, reject) {
-    var cb = function readFileHandler (err, res) {
-      if (err) { return reject(err); }
-      return resolve(res);
-    };
-
-    if (!opts) {
-      fs.readFile(path, cb);
-    } else {
-      fs.readFile(path, opts, cb);
-    }
-  });
-};
+var readFile = Promise.promisify(fs.readFile);
+var writeFile = Promise.promisify(fs.writeFile);
 
 var createUUID = function createUUID (a) {
   return a ?
     (a ^ Math.random() * 16 >> a / 4).toString(16) :
     ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, createUUID);
-}
+};
 
 var MANIFEST = 'manifest.json';
 var App = module.exports = Class(function () {
@@ -167,22 +155,16 @@ var App = module.exports = Class(function () {
       var item = _queue.shift();
       var modulePath = path.resolve(this.paths.root, item.path);
       var parentPath = path.resolve(this.paths.root, item.parent);
-      var packageFile = path.join(modulePath, 'package.json');
+      var isDependency = (this.paths.root === parentPath);
+      var module = Module.load(modulePath, {
+        parent: parentPath,
+        isDependency: isDependency,
+      });
 
-      if (!fs.existsSync(packageFile)) { continue; }
+      if (!module) { continue; }
 
-      var packageContents;
-      try {
-        packageContents = require(packageFile);
-      } catch (e) {
-        return logger.warn('Module', item.path, 'failed to load');
-      }
-
-      if (!packageContents.devkit) { continue; }
-
-      var existingModule = this._modules[packageContents.name];
-      if (existingModule) {
-        if (existingModule.version !== packageContents.version) {
+      if (module.name in this._modules) {
+        if (this._modules[module.name].version != module.version) {
           throw new Error(
             packageContents.name +
             ' included twice with different versions:\n' +
@@ -190,24 +172,9 @@ var App = module.exports = Class(function () {
             packageContents.version + ': ' + modulePath);
         }
       } else {
-        var name = path.basename(modulePath);
-        var version = null;
-        var isDependency = (this.paths.root === parentPath);
-        if (isDependency && this._dependencies[name]) {
-          version = this._dependencies[name].version;
-        }
-
-        this._modules[name] = new Module({
-          name: name,
-          path: modulePath,
-          parent: parentPath,
-          isDependency: isDependency,
-          version: version,
-          packageContents: packageContents
-        });
+        this._modules[module.name] = module;
+        addToQueue(modulePath);
       }
-
-      addToQueue(modulePath);
     }
   };
 
@@ -389,7 +356,6 @@ var App = module.exports = Class(function () {
 
   this.saveManifest = function (cb) {
     trace('App#saveManifest');
-    var writeFile = Promise.promisify(fs.writeFile);
     var data = stringify(this.manifest);
     return writeFile(path.join(this.paths.manifest), data).nodeify(cb);
   };
@@ -448,58 +414,50 @@ var App = module.exports = Class(function () {
 
   this.createFromTemplate = function (template) {
 
-    if (!template.type) {
-      logger.log('Creating app using default template');
-      return this.createFromDefaultTemplate();
-    }
-
-    // if template is local file, copy it
-    if (template.type === 'local') {
+    var creator;
+    if (template.type == 'git') {
+      creator = this._createFromGitTemplate(template);
+    } else if (template.type == 'local') {
       // TODO: support expanding user home dir and other shortcuts
-      templatePath = path.normalize(template.path);
+      var templatePath = path.normalize(template.path);
       if (fs.existsSync(templatePath) &&
           fs.lstatSync(templatePath).isDirectory()) {
         logger.log('Creating app using local template ' + templatePath);
-        return this._copyLocalTemplate(templatePath).nodeify(cb);
+        creator = this._copyLocalTemplate(templatePath);
       } else {
         logger.warn('Failed to find template ' + templatePath);
-        return this.createFromDefaultTemplate().nodeify(cb);
       }
-    } else if (template.type === 'git') {
-      // if template is not a local path, attempt to clone it
-      var tempPath = path.join(APP_TEMPLATE_ROOT, '_template');
-
-      return exists(tempPath).bind(this).then(function () {
-        trace('tempPath exists - removing');
-        return rimraf(tempPath);
-      }).catch(IOError, function (err) {
-        trace('tempPath does not exist - OK');
-      }).then(function () {
-        // shallow clone the repository
-        logger.log('Creating app using remote template ' + template.path);
-        var git = gitClient.get(APP_TEMPLATE_ROOT);
-        return git('clone', '--depth', '1', template.path, tempPath);
-      }).then(function () {
-        logger.log('Copying ' + tempPath + ' to ' + this.paths.root);
-        return this._copyLocalTemplate(tempPath);
-      }).catch(FatalGitError, function (err) {
-        logger.error(err.message);
-        logger.log('Falling back to default template creation');
-        return this.createFromDefaultTemplate();
-      }).finally(function () {
-        if (fs.existsSync(tempPath)) {
-          return rimraf(tempPath);
-        }
-      }).nodeify();
-
-    } else if (template.type === 'none') {
+    } else if (template.type == 'none') {
       logger.log('Creating application with no template');
-      return Promise.resolve().nodeify(cb);
+      creator = Promise.resolve();
+    } else if (!template.type) {
+      logger.log('Creating app using default template');
     } else {
-      // create local
       logger.error('Invalid template - using default');
-      return this.createFromDefaultTemplate().nodeify(cb);
     }
+
+    if (!creator) {
+      creator = this.createFromDefaultTemplate();
+    }
+
+    return creator
+      .bind(this)
+      .then(function () {
+        // try to prepopulate manifest keys with template manifest
+        return exists(this.paths.manifest);
+      })
+      .then(function () {
+        return readFile(this.paths.manifest, 'utf8');
+      }, function () {
+        // pass
+      })
+      .then(function (manifest) {
+        if (manifest) {
+          try {
+            this.manifest = JSON.parse(manifest);
+          } catch (e) {}
+        }
+      });
   };
 
   this.createFromDefaultTemplate = function () {
@@ -512,9 +470,41 @@ var App = module.exports = Class(function () {
     trace('_copyLocalTemplate');
 
     // read every file/folder in the template
-    var projectRoot = this.paths.root;
-    var templateFileList = fs.readdirSync(templatePath);
-    return copy.path(templatePath, projectRoot);
+    return copy.path(templatePath, this.paths.root);
+  };
+
+  this._createFromGitTemplate = function (template) {
+    // if template is not a local path, attempt to clone it
+    var tempPath = path.join(APP_TEMPLATE_ROOT, '_template');
+    return exists(tempPath)
+      .bind(this)
+      .then(function () {
+        trace('tempPath exists - removing');
+        return rimraf(tempPath);
+      })
+      .catch(IOError, function (err) {
+        trace('tempPath does not exist - OK');
+      })
+      .then(function () {
+        // shallow clone the repository
+        logger.log('Creating app using remote template ' + template.path);
+        var git = gitClient.get(APP_TEMPLATE_ROOT);
+        return git('clone', '--depth', '1', template.path, tempPath);
+      })
+      .then(function () {
+        logger.log('Copying ' + tempPath + ' to ' + this.paths.root);
+        return this._copyLocalTemplate(tempPath);
+      })
+      .catch(FatalGitError, function (err) {
+        logger.error(err.message);
+        logger.log('Falling back to default template creation');
+        return this.createFromDefaultTemplate();
+      })
+      .finally(function () {
+        if (fs.existsSync(tempPath)) {
+          return rimraf(tempPath);
+        }
+      });
   };
 
   this.acquireLock = function (cb) {
@@ -557,55 +547,52 @@ App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
   appPath = resolveAppPath(appPath);
   var manifestPath = path.join(appPath, MANIFEST);
 
-  return Promise.bind(this).then(function () {
-    trace('trying to read manifest from', manifestPath);
+  trace('trying to read manifest from', manifestPath);
+  return readFile(manifestPath, 'utf8')
+    .bind(this)
+    .catch(function (err) {
+      if (err.code === 'ENOENT' || err.cause.code === 'ENOENT') {
+        trace('returning ApplicationNotFoundError');
+        return Promise.reject(new ApplicationNotFoundError('No application found at ' + appPath));
+      }
 
-    return new Promise(function (resolve, reject) {
-      fs.readFile(manifestPath, 'utf8', function (err, res) {
-        if (err) { return reject(err); }
-        return resolve(res);
-      });
-    });
+      trace('forwarding unexpected error');
+      return Promise.reject(err);
+    })
+    .then(function (contents) {
+      trace('opened manifest');
+      var manifest = JSON.parse(contents);
+      return manifest;
+    })
+    .catch(SyntaxError, function (err) {
+      trace('Error parsing manifest in appPath', appPath);
+      return Promise.reject(new InvalidManifestError('Invalid JSON in manifest at ' + manifestPath));
+    })
+    .then(function (manifest) {
 
-  }).catch(function (err) {
-    if (err.code === 'ENOENT') {
-      trace('returning ApplicationNotFoundError');
-      return Promise.reject(new ApplicationNotFoundError(appPath));
-    }
+      // if manifest has no appID, assume this isn't a devkit app
+      if ('appID' in manifest === false) {
+        return Promise.reject(new ApplicationNotFoundError(appPath));
+      } else if (manifest.appID) {
+        return Promise.resolve(manifest);
+      } else {
 
-    trace('forwarding unexpected error');
-    return Promise.reject(err);
-  }).then(function (contents) {
-    trace('opened manifest');
-    var manifest = JSON.parse(contents);
-    return manifest;
-  }).catch(SyntaxError, function (err) {
-    trace('Error parsing manifest in appPath', appPath);
-    return Promise.reject(new InvalidManifestError(appPath));
-  }).then(function (manifest) {
+        // if manifest has a blank/false/0 appID, generate one and save manifest
+        manifest.appID = createUUID();
+        var writeFile = Promise.promisify(fs.writeFile);
+        var data = stringify(manifest);
 
-    // if manifest has no appID, assume this isn't a devkit app
-    if ('appID' in manifest === false) {
-      return Promise.reject(new ApplicationNotFoundError(appPath));
-    } else if (manifest.appID) {
-      return Promise.resolve(manifest);
-    } else {
-
-      // if manifest has a blank/false/0 appID, generate one and save manifest
-      manifest.appID = createUUID();
-      var writeFile = Promise.promisify(fs.writeFile);
-      var data = stringify(manifest);
-
-      return new Promise(function (resolve, reject) {
-        fs.writeFile(path.join(manifestPath), data, function (err, res) {
-          if (err) { return reject(err); }
-          return resolve(manifest);
+        return new Promise(function (resolve, reject) {
+          fs.writeFile(path.join(manifestPath), data, function (err, res) {
+            if (err) { return reject(err); }
+            return resolve(manifest);
+          });
         });
-      });
-    }
+      }
 
-  }).then(function (manifest) {
-    trace('returning App for appPath', appPath);
-    return Promise.resolve(new App(appPath, manifest, lastOpened));
-  });
+    })
+    .then(function (manifest) {
+      trace('returning App for appPath', appPath);
+      return Promise.resolve(new App(appPath, manifest, lastOpened));
+    });
 };

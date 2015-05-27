@@ -1,12 +1,6 @@
 
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
-function printErrorAndExit (msg, err, code) {
-  logger.error.apply(logger, msg);
-  process.env.DEVKIT_TRACE && console.error(err.stack);
-  process.exit(code || 1);
-}
-
 var InstallCommand = Class(BaseCommand, function (supr) {
 
   this.name = 'install';
@@ -23,6 +17,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         'skip-fetch',
         'if version is not specified, server query for the latest version'
       )
+      .describe('unsafe', 'attempts to switch versions even if there is a potential conflict')
       .describe(
         'skip-defaults',
         'if default dependencies are missing from the manifest, do NOT insert them'
@@ -31,11 +26,11 @@ var InstallCommand = Class(BaseCommand, function (supr) {
 
   this.exec = function (command, args, cb) {
     var fs = require('fs');
-    var ff = require('ff');
+    var chalk = require('chalk');
 
-    var path = require('path');
     var apps = require('../apps');
     var install = require('../install');
+    var Module = require('../modules/Module');
     var lockfile = require('../util/lockfile');
     var logger = require('../util/logging').get('devkit');
 
@@ -51,9 +46,21 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     var FileLockerError = lockfile.FileLockerError;
 
     var argv = this.opts.argv;
-    var protocol = argv.ssh ? 'ssh' : 'https';
-    var skipFetch = argv['skip-fetch'];
     var module = args.shift();
+
+    function printErrorAndExit (msg, err, code) {
+      console.log();
+      logger.error.apply(logger, msg);
+      process.env.DEVKIT_TRACE && console.error(err && err.stack);
+      process.exit(code || 1);
+    }
+
+    var opts = {
+      link: argv.link,
+      protocol: argv.ssh ? 'ssh' : 'https',
+      unsafe: argv.unsafe,
+      skipFetch: argv['skip-fetch']
+    };
 
     return apps.get('.').then(function (app) {
       // ensure modules directory exists
@@ -69,14 +76,16 @@ var InstallCommand = Class(BaseCommand, function (supr) {
 
       if (module) {
         // single module provided, install it
-        var opts = {
-          protocol: protocol
-        };
-
         var moduleUrl = url.parse(module);
         if (moduleUrl.protocol && moduleUrl.host && moduleUrl.href) {
           opts.url = moduleUrl.href;
           opts.protocol = moduleUrl.protocol.replace(':', '');
+        } else {
+          var pieces = module.split(/[@#]/);
+          if (pieces.length == 2) {
+            module = pieces[0];
+            opts.version = pieces[1];
+          }
         }
 
         return install.installModule(app, module, opts).return(app);
@@ -88,7 +97,9 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       if ((!deps || !deps['devkit-core']) && !argv['skip-defaults']) {
         // ensure devkit is a dependency
         logger.log('Adding default dependencies to "manifest.json"...');
-        return app.validate({protocol: protocol}).return(app);
+        return app
+          .validate({protocol: opts.protocol})
+          .return(app);
       }
 
       return app;
@@ -96,9 +107,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       // if we installed a single module, we're done
       if (!module) {
         // otherwise, need to install all dependencies
-        return install.installDependencies(app, {
-          protocol: protocol, link: argv.link
-        });
+        return install.installDependencies(app, opts);
       }
     }).catch(UnknownGitRevision, function (err) {
       return printErrorAndExit([
@@ -107,7 +116,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       ], err);
     }).catch(FatalGitError, function (err) {
       return printErrorAndExit([
-        'Git exitted unexpectedly while installing a module. The',
+        'Git exited unexpectedly while installing a module. The',
         'message from git was', err.message
       ], err);
     }).catch(UnknownGitOption, function (err) {
@@ -130,6 +139,24 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         'Could not get a lock on this app. Is there a build or other devkit',
         'process running?'
       ], err);
+    }).catch(Module.ModifiedTreeError, function (err) {
+      // warn about the possibility that continuing might break your module
+      return printErrorAndExit([
+          chalk.red('Devkit detected changes to the following files:\n\n\t')
+          + err.changes.map(function (change) {
+            var code = {
+              ' M': chalk.yellow(' (modified)'),
+              '??': chalk.green(' (untracked)')
+            }[change.code] || '';
+            return change.filename + code;
+          }).join('\n\t'),
+          '\n\nYou may be unable to switch versions unless you undo these',
+          'changes first. To try anyway, run with ',
+          chalk.red('--unsafe.')
+        ]);
+    }).catch(Module.CheckoutError, function (err) {
+      // checkout failed, error message contains git stderr
+      return printErrorAndExit([err.message]);
     }).catch(function installErrorHandler (err) {
       console.error('Unexpected error');
       console.error(err && err.stack || err);

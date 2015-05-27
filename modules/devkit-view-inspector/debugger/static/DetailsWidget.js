@@ -1,3 +1,5 @@
+/* globals Class, bind, logger */
+
 from util.browser import $;
 import squill.Widget as Widget;
 import .InputWidget;
@@ -28,7 +30,7 @@ var PropRow = Class(Widget, function (supr) {
     supr(this, 'init', arguments);
 
     this.props = props;
-  }
+  };
 });
 
 exports = Class(Widget, function (supr) {
@@ -110,7 +112,7 @@ exports = Class(Widget, function (supr) {
     if (key == '_closeBtn') {
       this._inspector.close();
     }
-  }
+  };
 
   this._onValueChange = function (key) {
     if (this._viewUID) {
@@ -125,41 +127,46 @@ exports = Class(Widget, function (supr) {
 
   this.imageView = function (uid, node) {
     // get the view properties
-    this._inspector.getViewProps(uid, bind(this, function (err, res) {
-      if (err) return;
+    this._inspector
+      .getViewProps({uid: uid})
+      .bind(this)
+      .then(function (res) {
+        // show the drop area
+        this.dropArea.style.display = res.isImageView ? "block" : "none";
 
-      // show the drop area
-      this.dropArea.style.display = res.isImageView ? "block" : "none";
-
-      //if already data set, show save button
-      if (!node.currentImage || !node.currentImage.data) {
-        this.saveImg.style.display = "none";
-      } else {
-        this.saveImg.style.display = "block";
-      }
-
-      if (res.isImageView) {
-        //create the object if not set
-        if (!node.currentImage) {
-          node.currentImage = {};
+        // if already data set, show save button
+        if (!node.currentImage || !node.currentImage.data) {
+          this.saveImg.style.display = "none";
+        } else {
+          this.saveImg.style.display = "block";
         }
 
-        //update the uid and path
-        node.currentImage.uid = uid;
-        node.currentImage.path = res.imagePath;
-      } else {
-        //delete the property
-        delete node['currentImage'];
-      }
-    }));
-  }
+        if (res.isImageView) {
+          // create the object if not set
+          if (!node.currentImage) {
+            node.currentImage = {};
+          }
+
+          // update the uid and path
+          node.currentImage.uid = uid;
+          node.currentImage.path = res.imagePath;
+        } else {
+          // delete the property
+          delete node.currentImage;
+        }
+      }, function (e) {
+        logger.warn(e);
+      });
+  };
 
   this.showView = function (uid) {
     this._viewUID = uid;
 
     if (uid) {
-      this._inspector.getViewProps(uid, bind(this, function (err, res) {
-        if (res) {
+      this._inspector
+        .getViewProps({uid: uid})
+        .bind(this)
+        .then(function (res) {
           this.viewDetails.setText(res.description);
           if (res.layout == 'linear') {
             $.show(this.linearProps);
@@ -172,8 +179,9 @@ exports = Class(Widget, function (supr) {
               this[key].setValue(res[key]);
             }
           }
-        }
-      }));
+        }, function (e) {
+          logger.warn(e);
+        });
     }
   };
 
@@ -181,13 +189,13 @@ exports = Class(Widget, function (supr) {
     for (var i = 0, p; p = arguments[i]; ++i) {
       $.hide(this['_row' + p]);
     }
-  }
+  };
 
   this.showProps = function () {
     for (var i = 0, p; p = arguments[i]; ++i) {
       $.show(this['_row' + p]);
     }
-  }
+  };
 
   this.init = function() {
     supr(this, "init", arguments);
@@ -198,7 +206,7 @@ exports = Class(Widget, function (supr) {
       return noop(e);
     }), false);
 
-    //modify the styles
+    // modify the styles
     this.dropArea.addEventListener("dragover", bind(this, function(e) {
       this.dropArea.className = "over";
       return noop(e);
@@ -220,7 +228,7 @@ exports = Class(Widget, function (supr) {
 
     var reader = new FileReader();
     reader.onload = bind(this, function(evt) {
-      //set the preview
+      // set the preview
       if (!currentNode || !currentNode.currentImage) return;
 
       this._inspector.setImage(currentNode.currentImage.uid, evt.target.result);
@@ -232,7 +240,7 @@ exports = Class(Widget, function (supr) {
     this.saveImg.style.display = "block";
     return noop(e);
   }
-
+;
   this.saveImage = function() {
     var img = currentNode && currentNode.currentImage;
     if (!img) return;
@@ -251,5 +259,5 @@ exports = Class(Widget, function (supr) {
         this.saveImg.style.display = "none";
       }
     }));
-  }
+  };
 });

@@ -1,6 +1,7 @@
 var ip = require('../../util/ip');
 var path = require('path');
 var sdkVersion = require('../../../package.json').version;
+var deviceTypes = require('../../util/deviceTypes');
 
 exports.getConfig = function(app, argv, cb) {
   // NOTICE: we don't change the argv object
@@ -16,28 +17,34 @@ exports.getConfig = function(app, argv, cb) {
   config.debug = 'debug' in argv ? !!argv.debug : true;
   config.scheme = argv.scheme || (config.debug ? 'debug' : 'release');
   config.target = argv.target || 'browser-mobile';
+  config.imports = [];
   config.schemePath = path.join('build/', config.scheme);
   config.outputPath = argv.output || path.resolve(config.appPath, path.join('build/', config.scheme, config.target));
   config.jsioPath = Array.isArray(argv.jsioPath) ? argv.jsioPath.slice(0) : [];
+  config.clientPaths = {};
   config.sdkVersion = sdkVersion;
   config.isTestApp = argv.isTestApp;
   config.isSimulated = argv.simulated;
   config.simulator = {
     deviceId: argv.simulateDeviceId,
     deviceType: argv.simulateDeviceType,
-    port: argv.port
+    deviceInfo: deviceTypes[argv.simulateDeviceType] || {},
+    port: argv.port,
+    modules: []
   };
+
+  config.spriteImages = true;
 
   var serverName;
   if (config.isSimulated) {
     // local for serving
     // use window.location + path to basil server proxy
     serverName = 'local';
+  } else if (config.argv && argv.server) {
+    serverName = config.argv && argv.server;
   } else if (/^browser-/.test(config.target)) {
     // we don't want to set the host:port here - just use window.location
     serverName = 'inherit';
-  } else if (config.argv && argv.server) {
-    serverName = config.argv && argv.server;
   } else if (config.debug) {
     serverName = 'local';
   } else {

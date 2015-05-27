@@ -3,7 +3,7 @@ var chalk = require('chalk');
 var path = require('path');
 var logger = require('../util/logging').get('install');
 var gitClient = require('../util/gitClient');
-var Module = require('../apps/Module');
+var Module = require('../modules/Module');
 
 var cache = require('./cache');
 var FileLockerError = require('../util/lockfile').FileLockerError;
@@ -14,11 +14,9 @@ exports.installDependencies = function (app, opts, cb) {
   var index = 0;
   var names = Object.keys(deps);
   return Promise.map(names, function (name) {
-    if (name) {
+    if (name && name !== 'devkit') {
       var installOpts = merge({url: deps[name]}, opts);
       return exports.installModule(app, name, installOpts);
-    } else {
-      return Promise.resolve();
     }
   }, {concurrency: 1});
 };
@@ -52,8 +50,8 @@ function parseURL (url, protocol) {
  */
 
 function resolveRequestedModuleVersion (app, moduleName, version, opts) {
-  if (opts.latest) {
-    // Undefined version results in latest version getting pulled
+  if (opts.latest || version === 'latest') {
+    opts.latest = true;
     return void 0;
   } else if (!version) {
     // Not latest and no version provided, look up in manifest
@@ -114,12 +112,21 @@ exports.installModule = function (app, moduleName, opts, cb) {
     return Promise.resolve();
   }).then(function passOrInstallModule (currentVersion) {
     trace('currentVersion', currentVersion);
+    // if there is no current version, use version from manifest or fetch latest
+    // if there is a current version,
+    //    - if you request latest, version is not defined
+    //    - if you request a version, version is defined
+    //    - if you don't provide a version, version is defined if present in the
+    //      manifest, undefined otherwise
     var hasRequestedVersion;
     if (!currentVersion) {
       hasRequestedVersion = false;
+    } else if (!version && !opts.latest) {
+      // no version provided and latest not requested, then don't do anything
+      hasRequestedVersion = true;
     } else {
-      hasRequestedVersion = !version
-        || currentVersion.hash === version
+      // does requested version match current version?
+      hasRequestedVersion = currentVersion.hash === version
         || currentVersion.tag === version;
     }
 
@@ -143,13 +150,21 @@ exports.installModule = function (app, moduleName, opts, cb) {
   }).nodeify(cb);
 };
 
+function updateCache(name, url, version) {
+  return cache.has(name)
+    ? cache.add(name, version)
+    : cache.add(url, version);
+}
+
 /**
  * Lookup URL for module by name then defer to installModuleFromURL
  *
  * @return {Promise<string>} resolves with installed version
  */
-
 function installModuleFromName (app, name, version, opts) {
+  if (name == 'devkit-core') {
+    return installModuleFromURL(app, name, 'git@github:gameclosure/devkit-core', version, opts);
+  }
   // TODO
   return Promise.reject(
     new Error('Installing module by name is not [yet] supported')
@@ -161,7 +176,6 @@ function installModuleFromName (app, name, version, opts) {
  *
  * @return {Promise<string>} resolves with installed version
  */
-
 function installModuleFromURL (app, name, url, version, opts) {
   // we can't silence a clone/fetch in case the user has to enter credentials
   logger.log(
@@ -171,38 +185,43 @@ function installModuleFromURL (app, name, url, version, opts) {
   );
 
   var modulePath = path.join(app.paths.modules, name);
+  var exists = fs.existsSync(modulePath);
 
-  return Promise.bind({}).then(function () {
-    return cache.add(name, version);
-  }).then(function (cacheEntry) {
-    return cacheEntry || cache.add(url, version);
-  }).then(function ensureModuleInApp (cacheEntry) {
-    this.cacheEntry = cacheEntry;
-    name = cacheEntry.name;
-    modulePath = path.join(app.paths.modules, name);
+  return Promise
+    .bind({})
+    .then(function () {
+      if (!exists) {
+        // if destination path doesn't exist, add module to cache then add
+        // module to app
+        return updateCache(name, url, version)
+          .bind(this)
+          .then(function (cacheEntry) {
+            this.cacheEntry = cacheEntry;
+            return addModuleToApp(app, cacheEntry, name, opts);
+          });
+      }
+    })
+    .then(function () {
+      if (opts.link) { displayLinkWarning(app, modulePath); }
 
-    if (!fs.existsSync(modulePath)) {
-      return addModuleToApp(app, cacheEntry, name, opts);
-    } else {
-      return Promise.resolve();
-    }
-  }).bind({}).then(function () {
-    if (opts.link) { displayLinkWarning(app, modulePath); }
-    return Module.setVersion(modulePath, version, {
-      forceInstall: true
+      return Module.setVersion(modulePath, version, {
+        forceInstall: true,
+        unsafe: opts.unsafe
+      });
+    })
+    .then(function (installedVersion) {
+      this.installedVersion = installedVersion;
+
+      app.reloadModules(); // synchronous
+      return app.addDependency(name, {
+        url: this.cacheEntry && this.cacheEntry.url,
+        version: this.installedVersion
+      });
+    })
+    .then(function () {
+      // Return value for installModuleFromURL
+      return this.installedVersion;
     });
-  }).then(function (installedVersion) {
-    this.installedVersion = installedVersion;
-
-    app.reloadModules(); // synchronous
-    return app.addDependency(name, {
-      url: this.cacheEntry && this.cacheEntry.url,
-      version: this.installedVersion
-    });
-  }).then(function () {
-    // Return value for installModuleFromURL
-    return this.installedVersion;
-  });
 }
 
 /**

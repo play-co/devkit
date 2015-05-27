@@ -6,29 +6,48 @@ from util.browser import $;
 
 var Button = Class(Widget, function(supr) {
   this._def = {
-    tag: 'button'
+    tag: 'button',
+    children: [
+    ]
   };
 
   this.init = function (opts) {
     opts.id = opts.id + 'Button';
     opts.attrs = {tooltip: opts.tooltip || ''};
     opts.className = opts.tooltip ? 'withTooltip' : '';
-    opts.style = {display: 'inline-block'};
+    opts.children = [];
+
+    if (opts.text) {
+      opts.children.push({
+        text: opts.text
+      });
+
+      delete opts.text;
+    }
 
     if (opts.icon) {
-      opts.children = [
-        opts.icon && {id: 'icon', type: Widget, tag: 'i', className: 'glyphicon glyphicon-' + opts.icon}
-      ];
+      opts.children.push({
+        id: 'icon',
+        type: Widget,
+        tag: 'i',
+        className: 'glyphicon glyphicon-' + opts.icon
+      });
     }
 
     supr(this, 'init', arguments);
 
     this.initMouseEvents();
-  }
+  };
+
+  this.show = function () {
+    supr(this, 'show', arguments);
+
+    this._el.style.display = 'inline-block';
+  };
 
   this.setTooltip = function (tooltip) {
     this._el.setAttribute('tooltip', tooltip);
-  }
+  };
 });
 
 module.exports = Class(Widget, function () {
@@ -42,20 +61,12 @@ module.exports = Class(Widget, function () {
     this._buttons = {};
 
     this._el.addEventListener('webkitTransitionEnd', bind(this, 'removeClass', 'transition'));
-  }
+  };
 
   this.setSimulator = function (simulator) {
     // simulator.on('resize', bind(this, 'onResize'));
 
     this._createButtons(simulator, this.buttonContainer, [
-      {
-        id: 'deviceType',
-        tooltip: 'change the device type',
-        icon: 'phone',
-        onClick: function (simulator) {
-          simulator.editDevice();
-        }
-      },
       {
         id: 'reload',
         tooltip: 'reload the game',
@@ -65,63 +76,11 @@ module.exports = Class(Widget, function () {
         }
       },
       {
-        id: 'inspect',
-        tooltip: 'inspect the view hierarchy',
-        icon: 'search',
-        onClick: function (simulator) {
-          simulator.inspect();
-        }
-      },
-      {
-        id: 'drag',
-        tooltip: 'lock simulator position',
-        icon: 'move',
-        event: 'change:drag',
-        onChange: function () {
-          var isDragEnabled = simulator.isDragEnabled();
-          this.toggleClass('disabled', !isDragEnabled);
-          this.setTooltip(isDragEnabled ? 'lock simulator position' : 'unlock simulator position');
-        },
-        onClick: function (simulator) {
-          simulator.toggleDragEnabled();
-        }
-      },
-      {
         id: 'rotate',
         tooltip: 'rotate the device',
         icon: 'repeat',
         onClick: function (simulator) {
           simulator.rotate();
-        }
-      },
-      {
-        id: 'nativeBack',
-        tooltip: 'back button (hardware)',
-        icon: 'chevron-left',
-        onClick: function (simulator) {
-          simulator.nativeBackButton();
-        }
-      },
-      {
-        id: 'nativeHome',
-        tooltip: 'home button (hardware)',
-        icon: 'home',
-        event: 'change:home',
-        onChange: function (simulator) {
-          var isHomeScreen = simulator.isHomeScreen();
-          this.setTooltip(isHomeScreen ? 'return to game' : 'home (hardware button)');
-          this.toggleClass('disabled', isHomeScreen);
-        },
-        onClick: function (simulator) {
-          simulator.nativeHomeButton();
-        }
-      },
-      {
-        id: 'screenShot',
-        tooltip: 'take a screenshot',
-        icon: 'picture',
-        onClick: function (simulator) {
-          simulator.takeScreenshot();
         }
       },
       {
@@ -167,13 +126,65 @@ module.exports = Class(Widget, function () {
         tooltip: 'more options',
         icon: 'chevron-down',
         menu: [
+          // {
+          //   id: 'debug',
+          //   text: 'switch to release build',
+          //   event: 'change:debug',
+          //   onChange: function (simulator) {
+          //     var isDebugMode = simulator.isDebugMode();
+          //     this.setText(isDebugMode ? 'switch to release build' : 'switch to debug build');
+          //   }
+          // },
           {
-            id: 'debug',
-            text: 'switch to release build',
-            event: 'change:debug',
+            id: 'drag',
+            text: 'lock simulator position',
+            icon: 'move',
+            event: 'change:drag',
+            onChange: function () {
+              var isDragEnabled = simulator.isDragEnabled();
+              this.toggleClass('disabled', !isDragEnabled);
+              this.setTooltip(isDragEnabled ? 'lock simulator position' : 'unlock simulator position');
+            },
+            onClick: function (simulator) {
+              simulator.toggleDragEnabled();
+            }
+          },
+          {
+            id: 'screenShot',
+            text: 'take a screenshot',
+            icon: 'picture',
+            onClick: function (simulator) {
+              simulator.takeScreenshot();
+            }
+          },
+          {
+            id: 'deviceType',
+            text: 'change the device type',
+            icon: 'phone',
+            onClick: function (simulator) {
+              simulator.editDevice();
+            }
+          },
+          {
+            id: 'nativeBack',
+            text: 'back button (hardware)',
+            icon: 'chevron-left',
+            onClick: function (simulator) {
+              simulator.nativeBackButton();
+            }
+          },
+          {
+            id: 'nativeHome',
+            text: 'home button (hardware)',
+            icon: 'home',
+            event: 'change:home',
             onChange: function (simulator) {
-              var isDebugMode = simulator.isDebugMode();
-              this.setText(isDebugMode ? 'switch to release build' : 'switch to debug build');
+              var isHomeScreen = simulator.isHomeScreen();
+              this.setTooltip(isHomeScreen ? 'return to game' : 'home (hardware button)');
+              this.toggleClass('disabled', isHomeScreen);
+            },
+            onClick: function (simulator) {
+              simulator.nativeHomeButton();
             }
           },
           // {id: 'addSimulator', text: 'add simulator', type: 'button'},
@@ -207,11 +218,11 @@ module.exports = Class(Widget, function () {
         button.on('Select', bind(button, opts.onClick, simulator));
       }
     }
-  }
+  };
 
   this.getButton = function (id) {
     return this._buttons[id];
-  }
+  };
 
   this.setValidOrientations = function (orientations) {
     var btnRotate = this.getButton('rotate');
@@ -220,12 +231,13 @@ module.exports = Class(Widget, function () {
     } else {
       btnRotate.hide();
     }
-  }
+  };
 
   this.setOffset = function (viewport, offset) {
     $.style(this._el, {
-      top: offset.y - 30 + 'px',
+      top: offset.y - 35 + 'px',
       left: offset.x + 'px',
+      width: offset.width + 'px'
     });
 
     var rect = this._el.getBoundingClientRect();
@@ -233,19 +245,19 @@ module.exports = Class(Widget, function () {
       paddingTop: Math.max(0, -rect.top) + 'px',
       paddingLeft: Math.max(0, -rect.left) + 'px'
     });
-  }
+  };
 
   this.hide = function () {
     this.addClass('transition');
     onNextFrame(this, function () {
       this.addClass('hidden');
     });
-  }
+  };
 
   this.show = function () {
     this.addClass('transition');
     onNextFrame(this, function () {
       this.removeClass('hidden');
     });
-  }
+  };
 });

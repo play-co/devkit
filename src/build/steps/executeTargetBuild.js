@@ -22,4 +22,4 @@ exports.build = function (app, config, cb) {
     // execute the build module
     buildModule.build(api, appJSON, config, cb);
   });
-}
+};
