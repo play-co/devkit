@@ -70,7 +70,7 @@ exports.build = function (appPath, argv, cb) {
     // Skip to success
     if (onlyGetConfig) {
       // ONLY print config to stdout
-      console.log(JSON.stringify(merge({title: app.manifest.title}, config)));
+      process.stdout.write(JSON.stringify(merge({title: app.manifest.title}, config)));
       process.exit(0);
     } else {
       require('./steps/logConfig').log(app, config, f());

@@ -161,7 +161,8 @@ exports.Logger = Class(Writable, function () {
     while (true) {
       var splitAt = buffer.indexOf('\n');
       if (splitAt >= 0) {
-        exports.log(this._getRenderPrefix(), this.format(buffer.substring(0, splitAt)));
+        // stderr
+        exports.error(this._getRenderPrefix(), this.format(buffer.substring(0, splitAt)));
         this._buffer = buffer = buffer.substring(splitAt + 1);
       } else {
         break;
