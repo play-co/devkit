@@ -579,15 +579,9 @@ App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
 
         // if manifest has a blank/false/0 appID, generate one and save manifest
         manifest.appID = createUUID();
-        var writeFile = Promise.promisify(fs.writeFile);
         var data = stringify(manifest);
-
-        return new Promise(function (resolve, reject) {
-          fs.writeFile(path.join(manifestPath), data, function (err, res) {
-            if (err) { return reject(err); }
-            return resolve(manifest);
-          });
-        });
+        return writeFile(manifestPath, data)
+          .return(manifest);
       }
 
     })
