@@ -99,6 +99,14 @@ module.exports = Class(Widget, function () {
         }
       },
       {
+        id: 'restart',
+        tooltip: 'restart',
+        icon: 'fast-backward',
+        onClick: function (simulator) {
+          simulator.restart();
+        }
+      },
+      {
         id: 'pause',
         tooltip: 'pause game timer',
         icon: 'pause',

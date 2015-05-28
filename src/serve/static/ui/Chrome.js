@@ -600,6 +600,8 @@ exports = Class(CenterLayout, function (supr) {
     this.update();
   };
 
+  // restart without rebuilding
+  this.restart =
   this.refresh = function () {
     if (this._frame) {
       this._frame.src = this._frame.src;
