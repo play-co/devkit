@@ -85,14 +85,7 @@ exports.build = function (appPath, argv, cb) {
         return logger.error('another build is already in progress');
       }
 
-      logger.error("build failed");
-      var errMsg;
-      if (err.stack) {
-        errMsg = err.stack;
-      } else {
-        errMsg = err;
-      }
-      logger.error(errMsg);
+      logger.log(err, chalk.red('\nbuild failed'));
       process.exit(1);
     })
     .success(function () {
