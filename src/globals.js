@@ -1,3 +1,8 @@
+
+var logging = require('./util/logging');
+var logger = logging.get('devkit');
+console.log = logger.log.bind(logger);
+
 var base = require('jsio')('jsio.base');
 
 GLOBAL.Class = base.Class;

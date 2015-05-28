@@ -4,6 +4,11 @@ var chalk = require('chalk');
 var Writable = require('stream').Writable;
 var errorToString = require('./toString').errorToString;
 
+// save the current console values in case we overwrite them later
+exports.console = console;
+exports.log = console.log;
+exports.error = console.error;
+
 exports.DEBUG = 1;
 exports.LOG = 2;
 exports.INFO = 3;
@@ -11,9 +16,12 @@ exports.WARN = 4;
 exports.ERROR = 5;
 exports.NONE = 10;
 
+var Class = require('jsio')('jsio.base').Class;
+
 /*
- * The formatter takes a tag and stdout/err streams and prints them nicely. used by things that log.
- * note: always print to stderr. stdout is for passing stuff between our processes.
+ * The formatter takes a tag and stdout/err streams and prints them nicely. used
+ * by things that log. Note: always print to stderr. stdout is for passing stuff
+ * between our processes.
  */
 var _loggers = {};
 exports.get = function (name, isSilent, buffers) {
@@ -24,6 +32,8 @@ exports.get = function (name, isSilent, buffers) {
 
   return logger;
 };
+
+var _lastPrefix;
 
 exports.Logger = Class(Writable, function () {
   this._outHadNewLine = true;
@@ -99,14 +109,9 @@ exports.Logger = Class(Writable, function () {
       return str;
     }
 
-    return ('' + str);
-
-      // add colour to our build logs so that it's easier to see if and where things went wrong.
-      //.replace(/\d*(^|\s|[^a-zA-Z0-9-])error(s|\(s\))?/gi, function (res) { return chalk.redBright(res); })
-      //.replace(/\d*(^|\s|[^a-zA-Z0-9-])warn(ing)?(s|\(s\))?/gi, function (res) { return chalk.redBright(res); })
-
-      // fix new lines
-      //.replace(/\r?\n(?!$)/g, '\n' + this._prefix);
+    return ('' + str)
+      .split('\n')
+      .join('\n' + exports.nullPrefix);
   };
 
   this.setLevel = function (level) {
@@ -127,22 +132,42 @@ exports.Logger = Class(Writable, function () {
   };
 
   this.warn = function () {
-    this._level <= exports.WARN && this._log(chalk.yellow('[warn] '), arguments);
+    this._level <= exports.WARN && this._log(exports.warnPrefix, arguments);
   };
 
   this.error = function () {
-    this._level <= exports.ERROR && this._log(chalk.red('[error] '), arguments);
+    this._level <= exports.ERROR && this._log(exports.errorPrefix, arguments);
   };
 
   this._log = function (prefix, args) {
     args = Array.prototype.map.call(args, this.format, this);
     prefix && args.unshift(prefix);
-    args.unshift(this._prefix);
-    console.error.apply(console, args);
+    args.unshift(this._getRenderPrefix());
+    exports.error.apply(exports.console, args);
+  };
+
+  this._getRenderPrefix = function () {
+    if (_lastPrefix == this._prefix) {
+      return exports.nullPrefix;
+    } else {
+      _lastPrefix = this._prefix;
+      return this._prefix;
+    }
   };
 
   this._write = function (chunk, encoding, cb) {
-    this._log(undefined, chunk.toString());
+    var buffer = this._buffer || (this._buffer = '');
+    buffer += chunk.toString();
+    while (true) {
+      var splitAt = buffer.indexOf('\n');
+      if (splitAt >= 0) {
+        exports.log(this._getRenderPrefix(), this.format(buffer.substring(0, splitAt)));
+        this._buffer = buffer = buffer.substring(splitAt + 1);
+      } else {
+        break;
+      }
+    }
+
     cb && cb();
   };
 
@@ -169,7 +194,10 @@ exports.Logger = Class(Writable, function () {
   });
 });
 
-exports.getPrefix = function (tag) {
-  return chalk.cyan(printf('%15s   ', '[' + tag + ']'));
-};
+exports.nullPrefix = printf('%15s   ', '');
+exports.warnPrefix = chalk.yellow('[warn] ');
+exports.errorPrefix = chalk.red('[error] ');
 
+exports.getPrefix = function (tag) {
+  return chalk.cyan(printf('%15s   ', tag && '[' + tag + ']' || ''));
+};
