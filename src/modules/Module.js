@@ -1,6 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var chalk = require('chalk');
+var printf = require('printf');
 var spawn = require('child_process').spawn;
 var os = require('os');
 
@@ -285,7 +286,29 @@ function checkoutVersion(git, version, opts) {
   return git
     .listChanges()
     .then(function (changes) {
-      if (changes.length && !opts.unsafe) {
+      var untracked = changes.filter(function (change) {
+        return change.code === '??';
+      });
+
+      if (untracked.length) {
+        logger.warn('Your module has files we don\'t recognize in it. This',
+          'is normally ok, but in some cases it can prevent devkit from',
+          'updating your module. If an error occurs, you should consider',
+          'removing these files and then running this command again:\n'
+          + untracked
+            .map(function (change) {
+              return change.filename;
+            })
+            .join('\n\t'),
+          '\n(' + git.path + ')');
+      }
+
+      // ignore untracked files
+      var modified = changes.filter(function (change) {
+        return change.code !== '??';
+      });
+
+      if (modified.length && !opts.unsafe) {
         throw new ModifiedTreeError(git.path, changes);
       }
 
@@ -327,12 +350,14 @@ Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
   }).nodeify(cb);
 };
 
-
 function ModifiedTreeError(modulePath, changes) {
-  this.message = "you have made modifications to the "
-               + "module " + path.basename(modulePath)
-               + " (" + modulePath + ")";
+  var msg = 'you have made modifications to the module %(name)s (%(path)s)';
+  this.message = printf(msg, {
+                   name: path.basename(modulePath),
+                   path: modulePath
+                 });
 
+  this.modulePath = modulePath;
   this.changes = changes;
   this.name = 'ModifiedTreeError';
   Error.captureStackTrace(this, ModifiedTreeError);
@@ -345,9 +370,13 @@ Module.ModifiedTreeError = ModifiedTreeError;
 
 
 function CheckoutError(name, version, stderr) {
-  this.message = "checkout of module "
-               + name + " at version "
-               + version + " failed.\n\n" + stderr;
+  var msg = 'checkout of module %(name)s at version %(version)s failed.'
+          + '\n\n%(stderr)';
+  this.message = printf(msg, {
+                   name: name,
+                   version: version,
+                   stderr: stderr
+                 });
 
   this.name = 'CheckoutError';
   Error.captureStackTrace(this, CheckoutError);

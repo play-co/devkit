@@ -487,8 +487,9 @@ exports.listChanges = function () {
 
   return Promise
     .all([
-      this('status', '--porcelain'),
-      this('submodule', 'foreach', '--quiet', 'echo "' + prefix + '" $path && git status --porcelain')
+      this('status', '--porcelain', '--ignore-submodules=untracked'),
+      this('submodule', 'foreach', '--quiet',
+           'echo "' + prefix + '" $path && git status --porcelain')
     ])
     .bind(this)
     .spread(function (local, submodules) {

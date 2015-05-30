@@ -142,7 +142,8 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     }).catch(Module.ModifiedTreeError, function (err) {
       // warn about the possibility that continuing might break your module
       return printErrorAndExit([
-          chalk.red('Devkit detected changes to the following files:\n\n\t')
+          chalk.red('Devkit detected changes to the following files in '
+            + err.modulePath + ':\n\n\t')
           + err.changes.map(function (change) {
             var code = {
               ' M': chalk.yellow(' (modified)'),
@@ -150,6 +151,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
             }[change.code] || '';
             return change.filename + code;
           }).join('\n\t'),
+
           '\n\nYou may be unable to switch versions unless you undo these',
           'changes first. To try anyway, run with ',
           chalk.red('--unsafe.')

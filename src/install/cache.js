@@ -7,6 +7,7 @@ var crypto = require('crypto');
 var copy = require('../util/copy');
 var mkdirp = Promise.promisify(require('mkdirp')); // mkdir -p
 var mkdirpSync = require('mkdirp').sync;
+var readdir = Promise.promisify(fs.readdir);
 
 var gitClient = require('../util/gitClient');
 var Module = require('../modules/Module');
@@ -16,6 +17,10 @@ var rimraf = require('../util/rimraf');
 function randomName() {
   return '' + crypto.randomBytes(4).readUInt32LE(0)
     + crypto.randomBytes(4).readUInt32LE(0);
+}
+
+function isRandomName(name) {
+  return /^\d+$/.test(name);
 }
 
 var MODULE_CACHE = path.join(pathExtra.datadir(process.title), 'cache');
@@ -33,24 +38,32 @@ var ModuleCache = Class(EventEmitter, function () {
     this._isLoaded = false;
     this._entries = {};
 
-    var entryNames = fs.readdirSync(MODULE_CACHE);
-    Promise.bind(this).return(entryNames).map(function (entry) {
-      var cachePath = this.getPath(entry);
-      return getCachedModuleInfo(cachePath, true)
-        .catch(function () {
-          // errors are not good for the cache, but we should keep going, just
-          // ignore broken cache entries
-          logger.warn('invalid cache entry', cachePath);
-          return null;
-        });
-    }).reduce(function (entries, entry) {
-      entry && entry.name && (entries[entry.name] = entry);
-      return entries;
-    }, {}).then(function (entries) {
-      this._entries = entries;
-      this._isLoaded = true;
-      this.emit('loaded');
-    });
+    readdir(MODULE_CACHE)
+      .bind(this)
+      .map(function (entry) {
+        var cachePath = this.getPath(entry);
+        return getCachedModuleInfo(cachePath, true)
+          .catch(function () {
+            // errors are not good for the cache, but we should keep going, just
+            // ignore broken cache entries
+            logger.warn('invalid cache entry', cachePath);
+            return null;
+          });
+      })
+      .reduce(function (entries, entry) {
+        // skip broken cache entries - if the cache entry was created
+        // successfully, the name should match the remote name
+        var basename = path.basename(entry.cachePath);
+        if (basename === entry.name) {
+          entry && entry.name && (entries[entry.name] = entry);
+        }
+        return entries;
+      }, {})
+      .then(function (entries) {
+        this._entries = entries;
+        this._isLoaded = true;
+        this.emit('loaded');
+      });
   };
 
   this.getPath = function () {
@@ -72,11 +85,11 @@ var ModuleCache = Class(EventEmitter, function () {
     ]).all().spread(function (tag, head, pkg, url) {
       var version = tag || head;
       var data = JSON.parse(pkg);
-
       return {
         url: url,
         name: data.name,
-        version: version
+        version: version,
+        cachePath: cachePath
       };
     });
   }
@@ -117,12 +130,12 @@ var ModuleCache = Class(EventEmitter, function () {
       trace('module cache loaded');
       var entry = this._get(nameOrURL);
       if (entry) {
-        trace('have entry, returning [entry, Promise for setVersion]');
+        trace('have entry, returning', entry);
         // if we already have the repo cloned, just set the requested version
         // or the latest version
         return [
           entry,
-          Module.setVersion(this.getPath(entry.name), version)
+          Module.setVersion(this.getPath(entry.name), version, {unsafe: true})
         ];
       }
 
