@@ -53,10 +53,13 @@ var ModuleCache = Class(EventEmitter, function () {
       .reduce(function (entries, entry) {
         // skip broken cache entries - if the cache entry was created
         // successfully, the name should match the remote name
-        var basename = path.basename(entry.cachePath);
-        if (basename === entry.name) {
-          entry && entry.name && (entries[entry.name] = entry);
+        if (entry) {
+          var basename = path.basename(entry.cachePath);
+          if (basename && (basename === entry.name)) {
+            entries[entry.name] = entry;
+          }
         }
+
         return entries;
       }, {})
       .then(function (entries) {
