@@ -143,6 +143,8 @@ exports = Class(lib.PubSub, function (supr) {
 
   // emit an event remotely on the receiver channel object
   this.emit = function (name, data) {
+    if (name == 'newListener') { return this._emit(name, data); }
+
     this._send({name: name, data: data});
   };
 
