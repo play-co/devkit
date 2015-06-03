@@ -346,9 +346,21 @@ Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
 
   var npm = spawn(command, npmArgs, options);
   return new Promise(function (resolve, reject) {
-    npm.on('close', resolve);
+    npm.on('close', function (code) {
+      if (code) {
+        reject(new NpmInstallError(modulePath, code));
+      } else {
+        resolve();
+      }
+    });
   }).nodeify(cb);
 };
+
+function createError(cls) {
+  cls.prototype = Object.create(Error.prototype);
+  cls.prototype.constructor = cls;
+  return cls;
+}
 
 function ModifiedTreeError(modulePath, changes) {
   var msg = 'you have made modifications to the module %(name)s (%(path)s)';
@@ -363,11 +375,7 @@ function ModifiedTreeError(modulePath, changes) {
   Error.captureStackTrace(this, ModifiedTreeError);
 }
 
-ModifiedTreeError.prototype = Object.create(Error.prototype);
-ModifiedTreeError.prototype.constructor = ModifiedTreeError;
-
-Module.ModifiedTreeError = ModifiedTreeError;
-
+Module.ModifiedTreeError = createError(ModifiedTreeError);
 
 function CheckoutError(name, version, stderr) {
   var msg = 'checkout of module %(name)s at version %(version)s failed.'
@@ -382,7 +390,18 @@ function CheckoutError(name, version, stderr) {
   Error.captureStackTrace(this, CheckoutError);
 }
 
-CheckoutError.prototype = Object.create(Error.prototype);
-CheckoutError.prototype.constructor = CheckoutError;
+Module.CheckoutError = createError(CheckoutError);
 
-Module.CheckoutError = CheckoutError;
+function NpmInstallError(modulePath, code) {
+  var msg = 'npm install for module %(module)s failed (exit code %(code)s).';
+
+  this.message = printf(msg, {
+                   module: path.basename(modulePath),
+                   code: code
+                 });
+
+  this.name = 'NpmInstallError';
+  Error.captureStackTrace(this, NpmInstallError);
+}
+
+Module.CheckoutError = createError(NpmInstallError);
