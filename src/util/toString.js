@@ -1,5 +1,6 @@
 var path = require('path');
 var chalk = require('chalk');
+var printf = require('printf');
 
 exports.errorToString = function (error) {
   if (!error.stack) {
@@ -47,26 +48,35 @@ exports.errorToString = function (error) {
     });
 
     var n = data.length;
-    data.map(function (data, i) {
-      if (typeof data == 'string') {
-        out.push(data);
-      } else {
-        out.push(new Array(i + 1).join(' ')
-          + '\u2937  ' + chalk.white(data.func)
-          + ' (' + (data.fullPath || data.details) + ')');
-      }
-    });
+    if (n) {
+      data.map(function (data, i) {
+        if (typeof data == 'string') {
+          out.push(data);
+        } else {
+          out.push(new Array(i + 1).join(' ')
+            + '\u2937  ' + chalk.white(data.func)
+            + ' (' + (data.fullPath || data.details) + ')');
+        }
+      });
 
-    var lastLine = data[n - 1];
-    if (lastLine) {
-      var indent = new Array(n).join(' ');
-      var msgLines = msg.join('\n').split('\n');
-      var msgText = msgLines.join('\n   ' + indent);
-      out.push(indent
-        + chalk.red(
-          msgText
-          + (msgLines.length > 1 ? '\n' + indent : '')
-        ));
+      var lastLine = data[n - 1];
+      if (lastLine) {
+        var indent = new Array(n).join(' ');
+        var msgLines = msg.join('\n').split('\n');
+        var msgText = msgLines.join('\n   ' + indent);
+        out.push(indent
+          + chalk.red(
+            msgText
+            + (msgLines.length > 1 ? '\n' + indent : '')
+          ));
+      }
+    } else {
+      out.push(error.stack);
+      if (error.cause && typeof error.cause == 'object') {
+        Object.keys(error.cause).forEach(function (key) {
+          out.push(printf(chalk.yellow('%15s') + ': %s', key, error.cause[key]));
+        });
+      }
     }
   } catch (e) {
     out.push(e.stack);
