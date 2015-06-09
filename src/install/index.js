@@ -178,11 +178,7 @@ function installModuleFromName (app, name, version, opts) {
  */
 function installModuleFromURL (app, name, url, version, opts) {
   // we can't silence a clone/fetch in case the user has to enter credentials
-  logger.log(
-    chalk.cyan(
-      'Adding ' + name + (version ? '@' + version : '')
-    )
-  );
+  logger.log(chalk.cyan('Adding ' + name + (version ? '@' + version : '')));
 
   var modulePath = path.join(app.paths.modules, name);
   var exists = fs.existsSync(modulePath);
@@ -202,6 +198,13 @@ function installModuleFromURL (app, name, url, version, opts) {
       }
     })
     .then(function () {
+      // modulePath may be invalid if name is a URL, use the cacheEntry for the
+      // latest values
+      if (this.cacheEntry) {
+        name = this.cacheEntry.name;
+        modulePath = path.join(app.paths.modules, this.cacheEntry.name);
+      }
+
       if (opts.link) { displayLinkWarning(app, modulePath); }
 
       return Module.setVersion(modulePath, version, {
