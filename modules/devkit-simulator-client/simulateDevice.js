@@ -28,14 +28,8 @@ exports.simulate = function (params) {
   window.devicePixelRatio = params.devicePixelRatio || 1;
 
   import device;
-
-  var deviceName = params.name.toLowerCase();
-
-  var isNative = params.target == "native-android" || params.target == "native-ios";
-  var isMobileBrowser = params.target == "browser-desktop" || params.target == "browser-mobile";
-
+  var isMobileBrowser = (params.target === 'browser-mobile');
   if (isMobileBrowser) {
     device.isMobileBrowser = true;
-    // device.setUseDOM(true);
   }
 };

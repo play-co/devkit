@@ -5,5 +5,10 @@
     "extensions": {
       "devkit-simulator": "client"
     }
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "nib": "^1.1.0",
+    "stylus": "^0.51.1"
   }
 }

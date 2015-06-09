@@ -1,0 +1,48 @@
+@import "includes/icons.styl";
+@import "nib"
+
+defineIconFonts("../../");
+
+#devkit-debug-menu
+  display none
+  position absolute
+  align-items center
+  justify-content center
+  z-index 2000
+  transition 0.5s opacity
+  top 0px
+  left 0px
+  background rgba(0, 0, 0, 0.5)
+
+  &.disabled
+    .devkit-debug-menu-btn
+      background #aaa
+      color #888
+
+#devkit-debug-menu.show
+  display flex
+
+#devkit-debug-menu-content
+  width 400px
+  height 170px
+  border-radius 10px
+  box-shadow 0px 0px 10px rgba(0, 0, 0, 0.3)
+  background rgba(225, 225, 225, 0.8)
+  padding 25px
+
+  .devkit-debug-menu-btn
+    background white
+    transition 1s background
+    opacity 0.8
+    border-radius 100px
+    padding 10px 18px
+    font-size 30px
+    padding 25px
+    margin 18px
+
+  .devkit-debug-menu-spin
+      animation spin 1s linear infinite
+
+@keyframes spin
+  100%
+    transform rotate(360deg)

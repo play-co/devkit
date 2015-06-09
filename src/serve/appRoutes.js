@@ -1,4 +1,8 @@
 var path = require('path');
+var fs = require('fs');
+var Promise = require('bluebird');
+var readFile = Promise.promisify(fs.readFile);
+
 var express = require('express');
 var bodyParser = require('body-parser');
 
@@ -26,25 +30,86 @@ exports.addToAPI = function (opts, api) {
   // Rebuilds the app for a requested target (e.g. browser-mobile) and scheme
   // (debug/release). Returns the url where the app is hosted.
   api.get('/simulate', function (req, res) {
+    var opts;
+    if (req.query.mobile == 'true') {
+      // from the mobile site
+      opts = {
+        app: req.query.app,
+        target: 'browser-mobile',
+        scheme: 'debug'
+      };
+    } else {
+      opts = {
+        app: req.query.app,
+        target: req.query.target,
+        scheme: req.query.scheme,
+        deviceId: req.query.deviceId,
+        deviceType: req.query.deviceType
+      };
+    }
 
-    var appPath = req.query.app.replace(/^~[\/\\]/, HOME + path.sep);
-    var outputPath = path.join(appPath, 'build', 'debug', 'simulator');
-    var buildOpts = {
-          target: req.query.target,
-          scheme: req.query.scheme,
-          simulated: true,
-          simulateDeviceId: req.query.deviceId,
-          simulateDeviceType: req.query.deviceType,
-          output: outputPath
-        };
-
-    mountApp(appPath, outputPath)
+    buildFromRequest(opts)
       .then(function (mountInfo) {
+        res.json(mountInfo);
+      })
+      .catch(function (e) {
+        res.status(500).send({
+          message: e.message,
+          stack: e.stack
+        });
+      });
+  });
+
+  function mountAppFromRequest(opts) {
+    var appPath = opts.app.replace(/^~[\/\\]/, HOME + path.sep);
+    var buildPath = path.join(appPath, 'build', 'debug', 'simulator');
+    return mountApp(appPath, buildPath);
+  }
+
+  function buildFromRequest(opts) {
+    return mountAppFromRequest(opts)
+      .then(function (mountInfo) {
+        var buildOpts = {
+              target: opts.target,
+              scheme: opts.scheme,
+              simulated: true,
+              simulateDeviceId: opts.deviceId,
+              simulateDeviceType: opts.deviceType,
+              output: mountInfo.buildPath
+            };
+
         return buildQueue
-          .add(appPath, buildOpts)
-          .then(function () {
-            res.json(mountInfo);
-          })
+          .add(mountInfo.appPath, buildOpts)
+          .return(mountInfo);
+      });
+  }
+
+  function simulateMobileHTML(html, baseURL) {
+    var baseTag = '<base href="'
+                  // escape $ for safe regex replace
+                  + baseURL.replace(/\$/g, '%24')
+                  // escape " for safe usage as an html attribute value
+                           .replace(/"/, '%22') + '">';
+
+    html = html.replace(/(<head.*?>)/, '$1' + baseTag);
+    // html += '<script src="/compile/mobile/simulator.js"></script>';
+
+    return html;
+  }
+
+  api.get('/mobileIndex', function (req, res) {
+    mountAppFromRequest({
+      app: req.query.app
+    })
+      .bind({})
+      .then(function (mountInfo) {
+        this.mountInfo = mountInfo;
+        var filePath = mountInfo.buildPath;
+        return readFile(path.join(filePath, 'index.html'), 'utf8');
+      })
+      .then(function (html) {
+        var baseURL = this.mountInfo.url;
+        res.send(simulateMobileHTML(html, baseURL));
       })
       .catch(function (e) {
         res.status(500).send({
@@ -69,7 +134,7 @@ exports.addToAPI = function (opts, api) {
   }
 
   var _mountedApps = {};
-  function mountApp(appPath, outputPath) {
+  function mountApp(appPath, buildPath) {
     if (!_mountedApps[appPath]) {
       _mountedApps[appPath] = apps.get(appPath)
         .then(function mountExtensions(app) {
@@ -77,7 +142,7 @@ exports.addToAPI = function (opts, api) {
           var simulatorApp = express();
           baseApp.use('/apps/' + routeId, simulatorApp);
 
-          simulatorApp.use('/', express.static(outputPath));
+          simulatorApp.use('/', express.static(buildPath));
           addSimulatorAPI(simulatorApp);
 
           var modules = app.getModules();
@@ -119,6 +184,8 @@ exports.addToAPI = function (opts, api) {
           return {
               id: routeId,
               url: '/apps/' + routeId + '/',
+              appPath: appPath,
+              buildPath: buildPath,
               simulatorURLs: simulatorURLs,
               debuggerURLs: debuggerURLs
             };

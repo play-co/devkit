@@ -68,6 +68,9 @@ exports.onLaunch = function () {
   logger.log('waiting for devkit simulator client...');
 
   import device;
+  if (device.isMobileBrowser) {
+    import .mobileUI;
+  }
 
   return channel.connect()
     .timeout(1000)
