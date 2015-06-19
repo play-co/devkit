@@ -20,11 +20,11 @@ import util.ajax;
  */
 
 window.onload = function () {
-  var background = document.body.appendChild(document.createElement('div'));
+  // var background = document.body.appendChild(document.createElement('div'));
   var content = document.body.appendChild(document.createElement('div'));
 
-  background.style.cssText = "position: fixed; z-index: -1; width: 100%; background: -webkit-linear-gradient(rgb(53, 82, 113), rgb(19, 29, 57)); top: 0px; bottom: -120px;";
-  document.body.style.cssText = "height: 100%; font: 30px Helvetica; color: white; height: 100%";
+  // background.style.cssText = "position: fixed; z-index: -1; width: 100%; background: -webkit-linear-gradient(rgb(53, 82, 113), rgb(19, 29, 57)); top: 0px; bottom: -120px;";
+  document.body.style.cssText = "height: 100%; font: 30px Helvetica; color: #888; height: 100%";
 
   util.ajax.get({
     url: 'api/apps',
@@ -70,7 +70,7 @@ window.onload = function () {
 
     function createLink(appId) {
       var link = document.createElement('div');
-      link.style.cssText = 'font-size: 12px; white-space: nowrap; text-overflow: ellipsis; color: white; width: 60px; overflow: hidden; text-decoration: none; display: inline-block; margin: 10px; text-align: center;';
+      link.style.cssText = 'font-size: 12px; white-space: nowrap; text-overflow: ellipsis; width: 60px; overflow: hidden; text-decoration: none; display: inline-block; margin: 10px; text-align: center;';
       link.innerHTML = "<br>" + response[appId].title;
       link.addEventListener('click', function () {
         util.ajax.get({

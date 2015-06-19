@@ -1,22 +1,20 @@
 /* from bootstrap: */
 
 /*!
- * Bootstrap v3.1.1 (http://getbootstrap.com)
- * Copyright 2011-2014 Twitter, Inc.
+ * Bootstrap v3.3.4 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- *
- * Glyphicons from http://glyphicons.com/
  */
 
 defineIconFonts(path="../")
   @font-face
     font-family 'Glyphicons Halflings'
-
-    src url(path + 'fonts/glyphicons-halflings-regular.eot')
+    src: url(path + 'fonts/glyphicons-halflings-regular.eot');
     src: url(path + 'fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
-      url(path + 'fonts/glyphicons-halflings-regular.woff') format('woff'),
-      url(path + 'fonts/glyphicons-halflings-regular.ttf') format('truetype'),
-      url(path + 'fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg')
+         url(path + 'fonts/glyphicons-halflings-regular.woff2') format('woff2'),
+         url(path + 'fonts/glyphicons-halflings-regular.woff') format('woff'),
+         url(path + 'fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+         url(path + 'fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 
 // glyphicon(icon, position, before): adds an icon to an element
 //
@@ -58,6 +56,7 @@ get(hash, key)
 iconsHash = (asterisk '\2a'),
   (plus '\2b'),
   (euro '\20ac'),
+  (eur '\20ac'),
   (minus '\2212'),
   (cloud '\2601'),
   (envelope '\2709'),
@@ -254,7 +253,69 @@ iconsHash = (asterisk '\2a'),
   (cloud-download '\e197'),
   (cloud-upload '\e198'),
   (tree-conifer '\e199'),
-  (tree-deciduous '\e200')
+  (tree-deciduous '\e200'),
+  (cd '\e201'),
+  (save-file '\e202'),
+  (open-file '\e203'),
+  (level-up '\e204'),
+  (copy '\e205'),
+  (paste '\e206'),
+  (alert '\e209'),
+  (equalizer '\e210'),
+  (king '\e211'),
+  (queen '\e212'),
+  (pawn '\e213'),
+  (bishop '\e214'),
+  (knight '\e215'),
+  (baby-formula '\e216'),
+  (tent '\26fa'),
+  (blackboard '\e218'),
+  (bed '\e219'),
+  (apple '\f8ff'),
+  (erase '\e221'),
+  (hourglass '\231b'),
+  (lamp '\e223'),
+  (duplicate '\e224'),
+  (piggy-bank '\e225'),
+  (scissors '\e226'),
+  (bitcoin '\e227'),
+  (btc '\e227'),
+  (xbt '\e227'),
+  (yen '\00a5'),
+  (jpy '\00a5'),
+  (ruble '\20bd'),
+  (rub '\20bd'),
+  (scale '\e230'),
+  (ice-lolly '\e231'),
+  (ice-lolly-tasted '\e232'),
+  (education '\e233'),
+  (option-horizontal '\e234'),
+  (option-vertical '\e235'),
+  (menu-hamburger '\e236'),
+  (modal-window '\e237'),
+  (oil '\e238'),
+  (grain '\e239'),
+  (sunglasses '\e240'),
+  (text-size '\e241'),
+  (text-color '\e242'),
+  (text-background '\e243'),
+  (object-align-top '\e244'),
+  (object-align-bottom '\e245'),
+  (object-align-horizontal '\e246'),
+  (object-align-left '\e247'),
+  (object-align-vertical '\e248'),
+  (object-align-right '\e249'),
+  (triangle-right '\e250'),
+  (triangle-left '\e251'),
+  (triangle-bottom '\e252'),
+  (triangle-top '\e253'),
+  (console '\e254'),
+  (superscript '\e255'),
+  (subscript '\e256'),
+  (menu-left '\e257'),
+  (menu-right '\e258'),
+  (menu-down '\e259'),
+  (menu-up '\e260')
 
 .glyphicon
   glyphicon()
@@ -265,7 +326,8 @@ iconsHash = (asterisk '\2a'),
 .glyphicon-plus:before
   content "\2b"
 
-.glyphicon-euro:before
+.glyphicon-euro:before,
+.glyphicon-eur:before
   content "\20ac"
 
 .glyphicon-minus:before
@@ -859,3 +921,188 @@ iconsHash = (asterisk '\2a'),
 .glyphicon-tree-deciduous:before
   content "\e200"
 
+.glyphicon-cd:before
+  content "\e201"
+
+.glyphicon-save-file:before
+  content "\e202"
+
+.glyphicon-open-file:before
+  content "\e203"
+
+.glyphicon-level-up:before
+  content "\e204"
+
+.glyphicon-copy:before
+  content "\e205"
+
+.glyphicon-paste:before
+  content "\e206"
+
+.glyphicon-alert:before
+  content "\e209"
+
+.glyphicon-equalizer:before
+  content "\e210"
+
+.glyphicon-king:before
+  content "\e211"
+
+.glyphicon-queen:before
+  content "\e212"
+
+.glyphicon-pawn:before
+  content "\e213"
+
+.glyphicon-bishop:before
+  content "\e214"
+
+.glyphicon-knight:before
+  content "\e215"
+
+.glyphicon-baby-formula:before
+  content "\e216"
+
+.glyphicon-tent:before
+  content "\26fa"
+
+.glyphicon-blackboard:before
+  content "\e218"
+
+.glyphicon-bed:before
+  content "\e219"
+
+.glyphicon-apple:before
+  content "\f8ff"
+
+.glyphicon-erase:before
+  content "\e221"
+
+.glyphicon-hourglass:before
+  content "\231b"
+
+.glyphicon-lamp:before
+  content "\e223"
+
+.glyphicon-duplicate:before
+  content "\e224"
+
+.glyphicon-piggy-bank:before
+  content "\e225"
+
+.glyphicon-scissors:before
+  content "\e226"
+
+.glyphicon-bitcoin:before
+  content "\e227"
+
+.glyphicon-btc:before
+  content "\e227"
+
+.glyphicon-xbt:before
+  content "\e227"
+
+.glyphicon-yen:before
+  content "\00a5"
+
+.glyphicon-jpy:before
+  content "\00a5"
+
+.glyphicon-ruble:before
+  content "\20bd"
+
+.glyphicon-rub:before
+  content "\20bd"
+
+.glyphicon-scale:before
+  content "\e230"
+
+.glyphicon-ice-lolly:before
+  content "\e231"
+
+.glyphicon-ice-lolly-tasted:before
+  content "\e232"
+
+.glyphicon-education:before
+  content "\e233"
+
+.glyphicon-option-horizontal:before
+  content "\e234"
+
+.glyphicon-option-vertical:before
+  content "\e235"
+
+.glyphicon-menu-hamburger:before
+  content "\e236"
+
+.glyphicon-modal-window:before
+  content "\e237"
+
+.glyphicon-oil:before
+  content "\e238"
+
+.glyphicon-grain:before
+  content "\e239"
+
+.glyphicon-sunglasses:before
+  content "\e240"
+
+.glyphicon-text-size:before
+  content "\e241"
+
+.glyphicon-text-color:before
+  content "\e242"
+
+.glyphicon-text-background:before
+  content "\e243"
+
+.glyphicon-object-align-top:before
+  content "\e244"
+
+.glyphicon-object-align-bottom:before
+  content "\e245"
+
+.glyphicon-object-align-horizontal:before
+  content "\e246"
+
+.glyphicon-object-align-left:before
+  content "\e247"
+
+.glyphicon-object-align-vertical:before
+  content "\e248"
+
+.glyphicon-object-align-right:before
+  content "\e249"
+
+.glyphicon-triangle-right:before
+  content "\e250"
+
+.glyphicon-triangle-left:before
+  content "\e251"
+
+.glyphicon-triangle-bottom:before
+  content "\e252"
+
+.glyphicon-triangle-top:before
+  content "\e253"
+
+.glyphicon-console:before
+  content "\e254"
+
+.glyphicon-superscript:before
+  content "\e255"
+
+.glyphicon-subscript:before
+  content "\e256"
+
+.glyphicon-menu-left:before
+  content "\e257"
+
+.glyphicon-menu-right:before
+  content "\e258"
+
+.glyphicon-menu-down:before
+  content "\e259"
+
+.glyphicon-menu-up:before
+  content "\e260"

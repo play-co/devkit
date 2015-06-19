@@ -30,6 +30,7 @@ gulp.task('dist', function (cb) {
     stylus(res)
       .set('filename', filename)
       .set('sourcemap', sourcemaps ? {inline: true} : false)
+      .set('compress', compress)
       .set('paths', [path.join(devkit, 'stylesheets')])
       .use(nib())
       .render(function (err, css) {

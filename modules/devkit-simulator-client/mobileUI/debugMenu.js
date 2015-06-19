@@ -40,6 +40,12 @@ var buttons = [
       $.removeClass(this, 'glyphicon-play');
       $.addClass(this, 'glyphicon-pause');
     }
+  }},
+  {icon: 'erase', onClick: function () {
+    window.addEventListener('unload', function () {
+      localStorage.clear();
+    });
+    location.reload();
   }}
 ].map(function (def) {
   def.className = 'devkit-debug-menu-btn glyphicon glyphicon-' + def.icon;
