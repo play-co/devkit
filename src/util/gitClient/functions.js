@@ -159,17 +159,12 @@ exports.isHashValidRef = function isHashValidRef (hash, cb) {
 
   return this('log', '--pretty=format:%H', '-n', '1', hash)
     .return(true)
-    .catch(function (err) {
-      // How did we get here without err being set?
-      if (!err) { return Promise.reject(); }
-
-      // Return false if couldn't find ref
-      if (err.code === 128 && /bad object/.test(err.stderr)) {
+    .catch(FatalGitError, function (err) {
+      if (/bad object/.test(err.message)) {
         return false;
       }
 
-      // Unexpected error
-      return Promise.reject(err);
+      throw err;
     })
     .nodeify(cb);
 };
