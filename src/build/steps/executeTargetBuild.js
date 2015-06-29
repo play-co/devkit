@@ -5,7 +5,14 @@ exports.build = function (app, config, cb) {
   // find the build module
   var buildModule;
   var modules = app.getModules();
-  Object.keys(modules).forEach(function (moduleName) {
+  var moduleKeys = Object.keys(modules);
+
+  if (!moduleKeys.length) {
+    throw new Error("Your project has no modules!  Have you tried running 'devkit install'?");
+  }
+
+  moduleKeys.forEach(function (moduleName) {
+    console.log(moduleName)
     if (!buildModule) {
       var module = modules[moduleName];
       buildModule = module.loadBuildTarget(config.target);
