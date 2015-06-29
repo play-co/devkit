@@ -33,9 +33,6 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
 
       if (!isJSON) {
         console.log(chalk.yellow(app.paths.root));
-        if (argv['list-versions']) {
-          console.log(chalk.cyan('showing available versions'), moduleName ? chalk.cyan('for module ') + chalk.yellow(moduleName) : '');
-        }
       }
 
       var modules = app.getModules();
@@ -61,6 +58,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
       }).cb(cb);
 
       function handleModule(module, cb) {
+
         var moduleName = module.name;
         var version = module.version;
         if (argv['list-versions']) {
@@ -69,6 +67,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
             if (isJSON) {
               res[moduleName] = info.versions;
             } else {
+              console.log(chalk.cyan('available versions'), moduleName ? chalk.cyan('for module ') + chalk.yellow(moduleName) : '');
               console.log(info.versions.map(function (version) {
                 return version == info.current ? chalk.yellow(version) : version;
               }).join('\t'));

@@ -111,6 +111,7 @@ var Module = module.exports = Class(function () {
 });
 
 function strip(str) {
+  str = str || '';
   return str.replace(/^\s+|\s+$/g, '');
 }
 
@@ -182,7 +183,7 @@ Module.getVersions = function (modulePath, cb) {
   return Promise.all([
     git.getLocalTags(),
     git('describe', '--tags', {extraSilent: true})
-  ]).then(function (versions, currentVersion) {
+  ]).spread(function (versions, currentVersion) {
     return {
       current: strip(currentVersion),
       versions: versions
