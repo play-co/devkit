@@ -244,14 +244,13 @@ exports.getPrimaryBranchName = function getPrimaryBranchName (cb) {
   //return this('rev-parse', '--symbolic-full-name', 'HEAD').then(function () {
   return this(
     'rev-parse', '--symbolic-full-name', 'origin/HEAD'
-  ).catch(function (err) {
+  ).catch(FatalGitError, function (err) {
     // Couldn't find a HEAD pointer for origin
-    if (err.code === 128 && /unknown revision/.test(err.stderr)) {
+    if (/unknown revision/.test(err.message)) {
       return this('rev-parse', '--symbolic-full-name', 'HEAD');
     }
 
-    // Unexpected error occurred
-    return Promise.reject(err);
+    throw err;
   }).then(function (ref) {
     // Return just the branch name
     return ref.split('/').pop();
