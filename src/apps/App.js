@@ -1,5 +1,8 @@
 var fs = require('fs');
 var path = require('path');
+var semver = require('semver');
+var chalk = require('chalk');
+
 var copy = require('../util/copy');
 
 var Module = require('../modules/Module');
@@ -149,13 +152,15 @@ var App = module.exports = Class(function () {
       _queue.push.apply(_queue, scanDir(path.join(parentPath, 'node_modules')));
     }
 
-    addToQueue(this.paths.root);
+    var rootPath = this.paths.root;
+
+    addToQueue(rootPath);
 
     while (_queue[0]) {
       var item = _queue.shift();
-      var modulePath = path.resolve(this.paths.root, item.path);
-      var parentPath = path.resolve(this.paths.root, item.parent);
-      var isDependency = (this.paths.root === parentPath);
+      var modulePath = path.resolve(rootPath, item.path);
+      var parentPath = path.resolve(rootPath, item.parent);
+      var isDependency = (rootPath === parentPath);
       var module = Module.load(modulePath, {
         parent: parentPath,
         isDependency: isDependency,
@@ -165,11 +170,23 @@ var App = module.exports = Class(function () {
 
       if (module.name in this._modules) {
         if (this._modules[module.name].version != module.version) {
-          throw new Error(
-            packageContents.name +
-            ' included twice with different versions:\n' +
-            existingModule.version + ': ' + existingModule.path + '\n' +
-            packageContents.version + ': ' + modulePath);
+          var existingModule = this._modules[module.name];
+          logger.warn(chalk.red(
+            module.name +
+            ' included twice with different versions:\n\t') +
+            existingModule.name + '@' + existingModule.version + ' from '
+              + path.relative(rootPath, existingModule.path) + '\n\t' +
+            module.name + '@' + module.version + ' from '
+              + path.relative(rootPath, modulePath));
+
+          if (semver.gt(module.version, existingModule.version)) {
+            this._modules[module.name] = module;
+            addToQueue(modulePath);
+          } else {
+            module = existingModule;
+          }
+
+          logger.warn(chalk.red('using ' + module.name + '@' + module.version));
         }
       } else {
         this._modules[module.name] = module;
