@@ -142,7 +142,12 @@ exports.addToAPI = function (opts, api) {
           var simulatorApp = express();
           baseApp.use('/apps/' + routeId, simulatorApp);
 
+          // Special case src directories
+          simulatorApp.use('/modules', express.static(path.join(appPath, 'modules')));
+          simulatorApp.use('/src', express.static(path.join(appPath, 'src')));
+          // Static serve builds
           simulatorApp.use('/', express.static(buildPath));
+
           addSimulatorAPI(simulatorApp);
 
           var modules = app.getModules();
