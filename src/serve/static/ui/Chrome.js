@@ -54,6 +54,7 @@ exports = Class(CenterLayout, function (supr) {
   this.init = function (simulator) {
     this._simulator = simulator;
     this._channel = simulator.api.getChannel('devkit-simulator');
+    this._channel.connect();
     this._channel.on('hideSplash', bind(this, 'hideSplash'));
     this._channel.on('connect', bind(this, '_onConnect'));
 
@@ -494,7 +495,7 @@ exports = Class(CenterLayout, function (supr) {
   };
 
   this.reload = function () {
-    this._simulator.rebuild();
+    this._simulator.rebuild(null, true);
     // this._frame.contentWindow.reload();
   };
 
@@ -606,6 +607,10 @@ exports = Class(CenterLayout, function (supr) {
     if (this._frame) {
       this._frame.src = this._frame.src;
     }
+  };
+
+  this.softReload = function() {
+    this._channel.emit('reload');
   };
 
   this.takeScreenshot = function () {

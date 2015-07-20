@@ -54,6 +54,8 @@ exports.serveWeb = function (opts, cb) {
   app.use('/compile/', importMiddleware(getPath('static/')));
 
   // serve static files
+  var devkitPath = path.resolve(__dirname, '..', '..');
+  app.use('/devkit/', express.static(devkitPath));
   app.use('/', express.static(getPath('static')));
 
   // Serve

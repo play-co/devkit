@@ -61,8 +61,11 @@ exports = Class(function () {
     }, this);
   };
 
-  this.rebuild = function (cb) {
+  this.rebuild = function (cb, softReload) {
     this._ui.setBuilding(true);
+    // This will cause the iframe to reload. jsio will wait for the all clear before initilizing the app
+    // this.setURL(res.url);
+
     // get or update a simulator port with the following options
     return util.ajax
       .get({
@@ -79,7 +82,13 @@ exports = Class(function () {
       .then(function (res) {
         var res = res[0];
         this._ui.setBuilding(false);
-        this.setURL(res.url);
+        // if (softReload) {
+          // This will tell jsio that it should reload the javascript it has, using the old url resolutions (if possible)
+          // this._ui.softReload();
+        // } else {
+          // This will cause the iframe to reload
+          this.setURL(res.url);
+        // }
         this.loadModules(res.debuggerURLs);
       }, function (err) {
         logger.error('Unable to simulate', this._app);

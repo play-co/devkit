@@ -45,6 +45,10 @@ exports.onLaunch = function () {
     GLOBAL.NATIVE.onBackButton && GLOBAL.NATIVE.onBackButton(evt);
   });
 
+  channel.on('reload', function (evt) {
+    debugger
+  });
+
   channel.on('screenshot', function (data, req) {
     devkit.debugging.screenshot(function (err, res) {
       if (err) {

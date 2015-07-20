@@ -9,6 +9,7 @@ exports = Class(ChannelAPI, function (supr) {
     this._simulator = simulator;
 
     devkitConn.getTransport().bind(this).then(function (socket) {
+      debugger
       this.devkit.setTransport(socket);
     });
   };

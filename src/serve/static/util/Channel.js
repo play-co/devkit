@@ -38,7 +38,6 @@ exports = Class(lib.PubSub, function (supr) {
 
   // internal: set an underlying transport
   this.setTransport = function (transport) {
-
     if (this._transport && this._transport != transport) {
       // tear-down an old transport
       this._transport
@@ -94,14 +93,16 @@ exports = Class(lib.PubSub, function (supr) {
     switch (msg) {
       case 'connect':
         // complete the channel connection
+        console.log('Channel connected:', this._name);
         this._sendInternalMessage('connectConfirmed');
-
         // fall-through
       case 'connectConfirmed':
+        console.log('Channel connection confirmed:', this._name);
         this._isConnected = true;
         this._emit('connect');
         break;
       case 'disconnect':
+        console.log('Channel disconnect:', this._name);
         this._isConnected = false;
         this._emit('disconnect');
         break;
@@ -132,7 +133,7 @@ exports = Class(lib.PubSub, function (supr) {
     if (this._transport) {
       this._transport.emit(this._name, data);
     } else {
-      logger.warn(this._name, 'failed to send', data);
+      logger.warn(this._name, 'transport not set, failed to send', data);
     }
   };
 
