@@ -45,8 +45,28 @@ exports.onLaunch = function () {
     GLOBAL.NATIVE.onBackButton && GLOBAL.NATIVE.onBackButton(evt);
   });
 
-  channel.on('reload', function (evt) {
-    debugger
+  /** Puts preserveCache on localStorage so that jsio knows to preserve (and then request)
+  suggestions next load.  Optionally also sets partialLoad, which causes jsio to wait for
+  a partialLoadContinue signal to actually load the app, after preloading suggestions. */
+  channel.on('reload', function (data, req) {
+    localStorage.setItem(jsio.__env.getNamespace('preserveCache'), true);
+
+    if (data) {
+      if (data.partialLoad) {
+        localStorage.setItem(jsio.__env.getNamespace('partialLoad'), true);
+      }
+    }
+
+    req.send(true);
+  });
+
+  /** partialLoadContinue is to be used in conjunction with partialLoad */
+  channel.on('partialLoadContinue', function (data, req) {
+    var def = window._continueLoadDefer;
+    if (def) {
+      def.resolve();
+    }
+    req.send(true);
   });
 
   channel.on('screenshot', function (data, req) {

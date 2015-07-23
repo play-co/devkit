@@ -44,58 +44,6 @@ function connect(namespace) {
   });
 }
 
-/*
-exports = Class(function () {
-  this.init = function (controller) {
-    this._controller = controller;
-
-    connect('/devkit-simulator/', bind(this, '_onSocket'));
-  }
-
-  this._onSocket = function (err, socket) {
-    socket.emit('request:devices');
-    socket.on('device', function (info) {
-      this._controller.onDeviceConn({
-        isLocal: false,
-        deviceId: info.deviceId,
-        type: info.deviceType,
-        userAgent: info.userAgent,
-        screen: info.screen,
-        conn: new ConnectionWrapper(info.deviceId, socket),
-      });
-    });
-
-    socket.on('liveedit', function (data) {
-      console.log(data);
-    });
-  }
-});
-*/
-
 exports.getTransport = function (namespace) {
   return connect(namespace);
 }
-
-// multiplex TargetCuppa into a single socket.io connection
-// all instances can share the same socket, split by deviceId
-// var ConnectionWrapper = Class(TargetCuppa, function () {
-//   this.init = function (deviceId, socket) {
-//     supr(this, 'init');
-
-//     // handle write calls
-//     this.transport = {
-//       write: function (data) {
-//         socket.emit('send', {
-//           deviceId: deviceId
-//         });
-//       },
-//       close: function () {}
-//     };
-
-//     // handle read calls
-//     socket.on('device:' + deviceId, bind(this, 'dataReceived'));
-
-//     // notify protocol of connection
-//     this.connectionMade();
-//   }
-// });

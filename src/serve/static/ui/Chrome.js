@@ -444,7 +444,22 @@ exports = Class(CenterLayout, function (supr) {
       className: 'frame'
     });
 
+    var def = this._newIframeLoadDefer();
+
+    // Listen for bootstrapping
+    // TODO: use the proper channel stuff for this
+    window.addEventListener('message', function(event) {
+      if (event.data === 'bootstrapping') {
+        if (this._iframeLoadDefer) {
+          this._iframeLoadDefer.resolve();
+          this._iframeLoadDefer = undefined;
+        }
+      }
+    }.bind(this));
+
     this.update();
+
+    return def.promise;
   };
 
   this.getDevicePixelRatio = function () {
@@ -601,17 +616,40 @@ exports = Class(CenterLayout, function (supr) {
     this.update();
   };
 
+  /** Reject any old deferred, make a new one. */
+  this._newIframeLoadDefer = function() {
+    if (this._iframeLoadDefer) {
+      this._iframeLoadDefer.reject('another load has been called');
+    }
+    var def = Promise.defer();
+    this._iframeLoadDefer = def;
+    return def;
+  };
+
   // restart without rebuilding
   this.restart =
   this.refresh = function () {
     if (this._frame) {
+      var def = this._newIframeLoadDefer();
       this._frame.src = this._frame.src;
+      return def.promise;
     }
+    return Promise.resolve();
   };
 
   this.softReload = function() {
-    this._channel.emit('reload');
+    return this._channel.request('reload', { partialLoad: true });
   };
+
+  /** Send a partialLoadContinue signal to the inner window, return the promise */
+  this.continueLoad = function() {
+    if (this._frame) {
+      this._frame.contentWindow.postMessage('partialLoadContinue', '*');
+      return Promise.resolve();
+    }
+    return Promise.reject('no iframe set');
+    // return this._channel.request('partialLoadContinue');
+  }
 
   this.takeScreenshot = function () {
     var win = window.open('', '', 'width=' + (this._screenWidth + 2) + ',height=' + (this._screenHeight + 2));

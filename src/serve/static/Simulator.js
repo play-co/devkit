@@ -62,13 +62,24 @@ exports = Class(function () {
   };
 
   this.rebuild = function (cb, softReload) {
-    this._ui.setBuilding(true);
-    // This will cause the iframe to reload. jsio will wait for the all clear before initilizing the app
-    // this.setURL(res.url);
+    var ui = this._ui;
+    var tasks = [];
+
+    ui.setBuilding(true);
+
+    if (softReload) {
+      tasks.push(ui.softReload()
+        .then(ui.refresh.bind(ui))
+        .catch(function (e) {
+          logger.log("Error with soft reload", e);
+        })
+      );
+    }
+    // else {
 
     // get or update a simulator port with the following options
-    return util.ajax
-      .get({
+    tasks.push(
+      util.ajax.get({
         url: '/api/simulate/',
         query: {
           app: this._app,
@@ -76,25 +87,30 @@ exports = Class(function () {
           deviceId: this.id,
           scheme: 'debug',
           target: this._buildTarget
-        }
+        },
+        async: true
       })
       .bind(this)
       .then(function (res) {
         var res = res[0];
-        this._ui.setBuilding(false);
-        // if (softReload) {
-          // This will tell jsio that it should reload the javascript it has, using the old url resolutions (if possible)
-          // this._ui.softReload();
-        // } else {
-          // This will cause the iframe to reload
+        if (!softReload) {
           this.setURL(res.url);
-        // }
+        }
         this.loadModules(res.debuggerURLs);
       }, function (err) {
         logger.error('Unable to simulate', this._app);
         console.error(err);
       })
-      .nodeify(cb);
+    );
+// }
+
+    // Some final clean up
+    var promise = Promise.all(tasks);
+    if (softReload) {
+      promise = promise.then(ui.continueLoad.bind(ui));
+    }
+    prommise = promise.then(function() { setTimeout(function() { ui.setBuilding(false); }, 200); });
+    return promise.nodeify(cb);
   };
 
   this.setURL = function (url) {
