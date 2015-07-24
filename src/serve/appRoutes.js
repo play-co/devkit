@@ -70,13 +70,13 @@ exports.addToAPI = function (opts, api) {
     return mountAppFromRequest(opts)
       .then(function (mountInfo) {
         var buildOpts = {
-              target: opts.target,
-              scheme: opts.scheme,
-              simulated: true,
-              simulateDeviceId: opts.deviceId,
-              simulateDeviceType: opts.deviceType,
-              output: mountInfo.buildPath
-            };
+          target: opts.target,
+          scheme: opts.scheme,
+          simulated: true,
+          simulateDeviceId: opts.deviceId,
+          simulateDeviceType: opts.deviceType,
+          output: mountInfo.buildPath
+        };
 
         return buildQueue
           .add(mountInfo.appPath, buildOpts)
@@ -133,14 +133,27 @@ exports.addToAPI = function (opts, api) {
     });
   }
 
+  // Promises that resolve with mount info once ready
   var _mountedApps = {};
+  // Map of appId -> app
+  var _availableSimulatorApps = {};
+
+  baseApp.use('/apps/:appId', function(req, res, next) {
+    var app = _availableSimulatorApps[req.params.appId];
+    if (app) {
+      app(req, res, next);
+    } else {
+      next();
+    }
+  });
+
   function mountApp(appPath, buildPath) {
+    var routeId = generateRouteId(appPath);
+
     if (!_mountedApps[appPath]) {
       _mountedApps[appPath] = apps.get(appPath)
         .then(function mountExtensions(app) {
-          var routeId = generateRouteId(appPath);
           var simulatorApp = express();
-          baseApp.use('/apps/' + routeId, simulatorApp);
 
           // Special case src directories
           simulatorApp.use(
@@ -213,6 +226,8 @@ exports.addToAPI = function (opts, api) {
 
           baseModules.forEach(function (module) { loadExtension(module); });
 
+          // Add to available routes, return info
+          _availableSimulatorApps[routeId] = simulatorApp;
           return {
               id: routeId,
               url: '/apps/' + routeId + '/',
@@ -224,7 +239,29 @@ exports.addToAPI = function (opts, api) {
         });
     }
 
-    return Promise.resolve(_mountedApps[appPath]);
+    // Remove and clean up the routes after a bit of inactivity
+    var mountedApp = _mountedApps[appPath];
+    // remove the old timeout
+    if (mountedApp.cleanupTimeout) {
+      clearTimeout(mountedApp.cleanupTimeout);
+    }
+    mountedApp.cleanupTimeout = setTimeout(
+      unmountApp.bind(null, appPath, routeId),
+      15 * 60 * 1000
+    );
+
+    return Promise.resolve(mountedApp);
+  }
+
+  function unmountApp(appPath, routeId) {
+    logger.info('Shutting down route for: ' + appPath + ' (' + routeId + ')');
+
+    // Remove watchers
+    // ....
+
+    // Remove app routes
+    delete _availableSimulatorApps[routeId];
+    delete _mountedApps[appPath];
   }
 
   // tracks used route uuids
