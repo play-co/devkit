@@ -72,9 +72,8 @@ exports.build = function (appPath, argv, cb) {
       // ONLY print config to stdout
       process.stdout.write(JSON.stringify(merge({title: app.manifest.title}, config)));
       process.exit(0);
-    } else {
-      require('./steps/logConfig').log(app, config, f());
     }
+    require('./steps/logConfig').log(app, config, f());
   }, function () {
     require('./steps/executeTargetBuild').build(app, config, f());
   }, function () {

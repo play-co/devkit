@@ -75,7 +75,6 @@ exports = Class(function () {
         })
       );
     }
-    // else {
 
     // get or update a simulator port with the following options
     tasks.push(
@@ -102,14 +101,13 @@ exports = Class(function () {
         console.error(err);
       })
     );
-// }
 
     // Some final clean up
     var promise = Promise.all(tasks);
     if (softReload) {
       promise = promise.then(ui.continueLoad.bind(ui));
     }
-    prommise = promise.then(function() { setTimeout(function() { ui.setBuilding(false); }, 200); });
+    prommise = promise.then(function() { ui.setBuilding(false); });
     return promise.nodeify(cb);
   };
 

@@ -143,12 +143,19 @@ exports.addToAPI = function (opts, api) {
           baseApp.use('/apps/' + routeId, simulatorApp);
 
           // Special case src directories
-          simulatorApp.use('/modules',
-                           express.static(path.join(appPath, 'modules'))
-                           );
-          simulatorApp.use('/src',
-                           express.static(path.join(appPath, 'src'))
-                           );
+          simulatorApp.use(
+            '/modules',
+            express.static(path.join(appPath, 'modules'))
+          );
+          simulatorApp.use(
+            '/src',
+            express.static(path.join(appPath, 'src'))
+          );
+          simulatorApp.use(
+            '/resources',
+            express.static(path.join(appPath, 'resources'))
+          );
+
           // Static serve builds
           simulatorApp.use('/', express.static(buildPath));
 
@@ -158,8 +165,24 @@ exports.addToAPI = function (opts, api) {
           var debuggerURLs = {};
           var simulatorURLs = {};
           var loadExtension = function (module) {
+            // All modules get a chance to add "resources" routes
+            var buildExtension = module.loadExtension('build');
+            if (buildExtension) {
+              var resources = buildExtension.getResourceDirectories();
+              if (resources) {
+                var prefix = '/modules/' + module.name;
+                resources.forEach(function(resource) {
+                  simulatorApp.use(
+                    path.join(prefix, resource.target),
+                    express.static(resource.src)
+                  );
+                });
+              }
+            }
+
             var extension = module.loadExtension('debugger');
             if (!extension || !extension.getMiddleware) { return; }
+
             try {
               var routes = extension.getMiddleware(require('../api'), app);
               if (!routes) { return; }
