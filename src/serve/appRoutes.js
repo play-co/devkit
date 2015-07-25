@@ -13,11 +13,14 @@ var jvmtools = require('../jvmtools');
 var logging = require('../util/logging');
 var buildQueue = require('./buildQueue');
 
+var chokidar = require('chokidar');
+
 var logger = logging.get('routes');
 
 var HOME = process.env.HOME
       || process.env.HOMEPATH
       || process.env.USERPROFILE;
+var ROUTE_INACTIVE_TIME_LIMIT = 30 * 60 * 1000;
 
 exports.addToAPI = function (opts, api) {
 
@@ -53,6 +56,7 @@ exports.addToAPI = function (opts, api) {
         res.json(mountInfo);
       })
       .catch(function (e) {
+        logger.error('Error mounting app', e.stack);
         res.status(500).send({
           message: e.message,
           stack: e.stack
@@ -137,6 +141,15 @@ exports.addToAPI = function (opts, api) {
   var _mountedApps = {};
   // Map of appId -> app
   var _availableSimulatorApps = {};
+  var getAppByPath = function(appPath) {
+    for (var appId in _availableSimulatorApps) {
+      var app = _availableSimulatorApps[appId];
+      if (app.appPath === appPath) {
+        return app;
+      }
+    }
+    return null;
+  };
 
   baseApp.use('/apps/:appId', function(req, res, next) {
     var app = _availableSimulatorApps[req.params.appId];
@@ -145,6 +158,23 @@ exports.addToAPI = function (opts, api) {
     } else {
       next();
     }
+  });
+
+  baseApp.io.on('connection', function(socket) {
+    logger.info('socket connected');
+
+    socket.on('watch', function(appPath) {
+      // Add this socket to the app
+      var app = getAppByPath(appPath);
+      if (app) {
+        app.sockets.push(socket);
+      }
+    });
+
+    socket.on('disconnect', function() {
+      logger.info('socket disconnect');
+    });
+
   });
 
   function mountApp(appPath, buildPath) {
@@ -226,6 +256,33 @@ exports.addToAPI = function (opts, api) {
 
           baseModules.forEach(function (module) { loadExtension(module); });
 
+          // Add socket connection
+          simulatorApp.sockets = [];
+          simulatorApp.socketEmit = function(name, data) {
+            simulatorApp.sockets.forEach(function(socket) {
+              socket.emit(name, data);
+            });
+          };
+
+          // Everything is set, add some file watchers
+          simulatorApp.watchers = [];
+          simulatorApp.watchers.push(
+            chokidar.watch(
+              [
+                path.join(appPath, 'manifest.json'),
+                path.join(appPath, 'src'),
+                path.join(appPath, 'resources')
+              ],
+              { recursive: true, followSymLinks: false, persistent: true, ignoreInitial: true }
+            ).on('all', function(event, path) {
+              logger.info(routeId + ': changed ' + path);
+              simulatorApp.socketEmit('watch:changed', path);
+            })
+          );
+
+          // Meta data
+          simulatorApp.appPath = appPath;
+
           // Add to available routes, return info
           _availableSimulatorApps[routeId] = simulatorApp;
           return {
@@ -247,7 +304,7 @@ exports.addToAPI = function (opts, api) {
     }
     mountedApp.cleanupTimeout = setTimeout(
       unmountApp.bind(null, appPath, routeId),
-      15 * 60 * 1000
+      ROUTE_INACTIVE_TIME_LIMIT
     );
 
     return Promise.resolve(mountedApp);
@@ -256,8 +313,17 @@ exports.addToAPI = function (opts, api) {
   function unmountApp(appPath, routeId) {
     logger.info('Shutting down route for: ' + appPath + ' (' + routeId + ')');
 
+    var app = _availableSimulatorApps[routeId];
+
+    // Close sockets
+    app.sockets.forEach(function(socket) {
+      socket.disconnect();
+    });
+
     // Remove watchers
-    // ....
+    app.watchers.forEach(function(watcher) {
+      watcher.close();
+    });
 
     // Remove app routes
     delete _availableSimulatorApps[routeId];

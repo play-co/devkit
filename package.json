@@ -17,6 +17,7 @@
     "bluebird": "^2.9.24",
     "body-parser": "1.x",
     "chalk": "^1.0.0",
+    "chokidar": "^1.0.5",
     "compression": "^1.4.3",
     "express": "4.x",
     "ff": "^0.2.1",
