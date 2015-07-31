@@ -93,16 +93,13 @@ exports = Class(lib.PubSub, function (supr) {
     switch (msg) {
       case 'connect':
         // complete the channel connection
-        console.log('Channel connected:', this._name);
         this._sendInternalMessage('connectConfirmed');
         // fall-through
       case 'connectConfirmed':
-        console.log('Channel connection confirmed:', this._name);
         this._isConnected = true;
         this._emit('connect');
         break;
       case 'disconnect':
-        console.log('Channel disconnect:', this._name);
         this._isConnected = false;
         this._emit('disconnect');
         break;
