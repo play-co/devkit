@@ -62,9 +62,9 @@ exports.onLaunch = function () {
 
   /** partialLoadContinue is to be used in conjunction with partialLoad */
   channel.on('partialLoadContinue', function (data, req) {
-    var def = window._continueLoadDefer;
-    if (def) {
-      def.resolve();
+    var cb = window._continueLoadCallback;
+    if (cb) {
+      cb();
     }
     req.send(true);
   });
