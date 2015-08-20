@@ -107,7 +107,7 @@ var BuildItem = Class(function () {
       this.error = msg.err;
       this._reject(this.error);
     } else {
-      this._resolve();
+      this._resolve(msg.res);
     }
 
     checkQueue();
