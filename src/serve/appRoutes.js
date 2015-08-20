@@ -49,7 +49,7 @@ exports.addToAPI = function (opts, api) {
     }
 
     buildFromRequest(opts)
-      .then(function (mountInfo) {
+      .spread(function (mountInfo, buildResult) {
         res.json(mountInfo);
       })
       .catch(function (e) {
@@ -78,9 +78,10 @@ exports.addToAPI = function (opts, api) {
               output: mountInfo.buildPath
             };
 
-        return buildQueue
-          .add(mountInfo.appPath, buildOpts)
-          .return(mountInfo);
+        return buildQueue.add(mountInfo.appPath, buildOpts)
+          .then(function (buildResult) {
+            return [mountInfo, buildResult];
+          });
       });
   }
 
