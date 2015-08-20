@@ -152,7 +152,9 @@ exports.addToAPI = function (opts, api) {
             var extension = module.loadExtension('debugger');
             if (!extension || !extension.getMiddleware) { return; }
             try {
-              var routes = extension.getMiddleware(require('../api'), app);
+              var api = require('../api');
+              var appAPI = app.toJSON();
+              var routes = extension.getMiddleware(api, appAPI);
               if (!routes) { return; }
 
               var routeName;
