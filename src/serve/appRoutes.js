@@ -54,6 +54,17 @@ exports.addToAPI = function (opts, api) {
     buildFromRequest(opts)
       .spread(function (mountInfo, buildResult) {
         res.json(mountInfo);
+        // Finally, add all of the resource routes (some are dynamically added at build by devkit modules)
+        var simulatorApp = getAppByPath(mountInfo.appPath);
+        if (!simulatorApp._areResourcesMounted) {
+          simulatorApp._areResourcesMounted = true;
+          buildResult.config.directories.forEach(function(resource) {
+            simulatorApp.use(
+              resource.target,
+              express.static(resource.src)
+            );
+          });
+        }
       })
       .catch(function (e) {
         logger.error('Error mounting app', e.stack);
@@ -195,10 +206,7 @@ exports.addToAPI = function (opts, api) {
             '/src',
             express.static(path.join(appPath, 'src'))
           );
-          simulatorApp.use(
-            '/resources',
-            express.static(path.join(appPath, 'resources'))
-          );
+          simulatorApp._areResourcesMounted = false;
 
           // Static serve builds
           simulatorApp.use('/', express.static(buildPath));
@@ -209,21 +217,6 @@ exports.addToAPI = function (opts, api) {
           var debuggerURLs = {};
           var simulatorURLs = {};
           var loadExtension = function (module) {
-            // All modules get a chance to add "resources" routes
-            var buildExtension = module.loadExtension('build');
-            if (buildExtension) {
-              var resources = buildExtension.getResourceDirectories();
-              if (resources) {
-                var prefix = '/modules/' + module.name;
-                resources.forEach(function(resource) {
-                  simulatorApp.use(
-                    path.join(prefix, resource.target),
-                    express.static(resource.src)
-                  );
-                });
-              }
-            }
-
             var extension = module.loadExtension('debugger');
             if (!extension || !extension.getMiddleware) { return; }
 
