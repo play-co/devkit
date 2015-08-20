@@ -60,7 +60,7 @@ exports.addToAPI = function (opts, api) {
           simulatorApp._areResourcesMounted = true;
           buildResult.config.directories.forEach(function(resource) {
             simulatorApp.use(
-              resource.target,
+              path.join('/' + resource.target),
               express.static(resource.src)
             );
           });
@@ -206,6 +206,11 @@ exports.addToAPI = function (opts, api) {
             '/src',
             express.static(path.join(appPath, 'src'))
           );
+          simulatorApp.use(
+            '/lib',
+            express.static(path.join(appPath, 'lib'))
+          );
+
           simulatorApp._areResourcesMounted = false;
 
           // Static serve builds
