@@ -12,7 +12,6 @@ exports.build = function (app, config, cb) {
   }
 
   moduleKeys.forEach(function (moduleName) {
-    console.log(moduleName)
     if (!buildModule) {
       var module = modules[moduleName];
       buildModule = module.loadBuildTarget(config.target);

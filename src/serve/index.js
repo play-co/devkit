@@ -26,14 +26,10 @@ var Z_BEST_COMPRESSION = 9;
 exports.serveWeb = function (opts, cb) {
   var port = opts.port;
 
-  // common.track("BasilServe");
   var app = express();
   var server = http.Server(app);
 
   app.io = require('socket.io')(server);
-
-  // var deviceManager = require('./deviceManager').get();
-  // deviceManager.init(app.io);
 
   app.use(compression({level: Z_BEST_COMPRESSION}));
 
@@ -54,6 +50,8 @@ exports.serveWeb = function (opts, cb) {
   app.use('/compile/', importMiddleware(getPath('static/')));
 
   // serve static files
+  var devkitPath = path.resolve(__dirname, '..', '..');
+  app.use('/devkit/', express.static(devkitPath));
   app.use('/', express.static(getPath('static')));
 
   // Serve
