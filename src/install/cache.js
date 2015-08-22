@@ -19,10 +19,6 @@ function randomName() {
     + crypto.randomBytes(4).readUInt32LE(0);
 }
 
-function isRandomName(name) {
-  return /^\d+$/.test(name);
-}
-
 var MODULE_CACHE = path.join(pathExtra.datadir(process.title), 'cache');
 var DEFAULT_URL = 'https://github.com/gameclosure/';
 
