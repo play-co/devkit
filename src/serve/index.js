@@ -5,6 +5,7 @@ var compression = require('compression');
 var bodyParser = require('body-parser');
 var printf = require('printf');
 var open = require('open');
+var events = require('events');
 
 var apps = require('../apps');
 
@@ -20,6 +21,8 @@ var appRoutes = require('./appRoutes');
 
 var logger = logging.get('serve');
 
+var companionMonitor = require('./companionMonitor');
+
 var Z_BEST_COMPRESSION = 9;
 
 // launches the web server
@@ -31,6 +34,50 @@ exports.serveWeb = function (opts, cb) {
   var server = http.Server(app);
 
   app.io = require('socket.io')(server);
+  var companionMonitorPort = 6001;
+  var debuggerProxyPort = 6000;
+  var companionMonitorServer = new companionMonitor.Server(port, companionMonitorPort, debuggerProxyPort);
+
+  var ee = new events.EventEmitter();
+
+  companionMonitorServer.on('connect', function() {
+    logger.log('client connected');
+    if (socket != null) {
+      socket.emit('message', {type: 'clientConnected'});
+    }
+  });
+  companionMonitorServer.on('disconnect', function() {
+    logger.log('client disconnected');
+    if (socket != null) {
+      socket.emit('message', {type: 'clientDisconnected'});
+    }
+  });
+
+  var socket;
+  app.io.on('connection', function(s){
+    socket = s;
+    logger.log('got a ws connection');
+    socket.on('disconnect', function() {
+      logger.log('a client disconnected');
+    });
+    socket.on('message', function(message) {
+      console.log('message', message);
+      if (message.type === 'run') {
+        ee.emit('run', message.shortName, message.route);
+        socket.emit('run', {
+          status: 'ok'
+        });
+      } else if (message.type === 'generate') {
+        console.log('generate');
+        var myIp = ip.getLocalIP()[0];
+        socket.emit('message', {type: 'generate', host: myIp, port: companionMonitorPort, secret: message.app});
+      }
+    });
+
+    if (companionMonitorServer.isClientConnected()) {
+      socket.emit('message', {type: 'clientConnected'});
+    };
+  });
 
   // var deviceManager = require('./deviceManager').get();
   // deviceManager.init(app.io);
@@ -78,6 +125,8 @@ exports.serveWeb = function (opts, cb) {
       cb = null;
     }
   });
+
+  companionMonitorServer.start(ee);
 };
 
 exports.serveTestApp = function (port) {
