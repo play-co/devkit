@@ -1,0 +1,52 @@
+@import "nib"
+
+@import "includes/ui"
+@import "includes/base"
+
+if theme is "light"
+  @import "includes/light"
+else
+  @import "includes/dark"
+
+pixelated()
+  image-rendering optimizeSpeed             /* Legal fallback */
+  image-rendering -moz-crisp-edges          /* Firefox        */
+  image-rendering -o-crisp-edges            /* Opera          */
+  image-rendering -webkit-optimize-contrast /* Safari         */
+  image-rendering optimize-contrast         /* CSS3 Proposed  */
+  image-rendering crisp-edges               /* CSS4 Proposed  */
+  image-rendering pixelated                 /* CSS4 Proposed  */
+  -ms-interpolation-mode nearest-neighbor   /* IE8+           */
+
+#devkit
+  display flex
+  align-items stretch
+  flex-direction row
+  height 100%
+  width 100%
+  overflow hidden
+
+  #remote
+    flex 1
+    position relative
+
+    #contents
+      display flex
+      align-items center
+      justify-content space-between
+      flex-direction column
+
+      #qrcode
+        flex 1
+
+        #qr
+          display flex
+          justify-content center
+
+          img
+            pixelated()
+
+      #run
+        flex 2
+        position relative
+        width 100px

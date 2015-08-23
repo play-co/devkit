@@ -28,10 +28,8 @@ exports = Class(CenterLayout, function (supr) {
   this._def = {
     children: [
       {id: 'contents', children: [
-        {id: 'qrcode', type: QRCode, qrOpts: {
-          width: 500,
-          height: 500
-        }},
+        {id: 'header', text: 'Device'},
+        {id: 'qrcode', type: QRCode},
         {
           id: 'run',
           tag: 'button',
