@@ -17,10 +17,11 @@
 
 from util.browser import $;
 
-import squill.Widget;
+import squill.Widget as Widget;
 import squill.Button as Button;
 import std.uri;
 
+import ..components.FrameBackground as FrameBackground;
 import ..components.CenterLayout as CenterLayout;
 import ..components.QRCode as QRCode;
 
@@ -30,21 +31,32 @@ exports = Class(CenterLayout, function (supr) {
     children: [
       {id: 'contents', children: [
         {id: 'header', text: 'Device'},
-        {id: 'qrcode', type: QRCode},
-        {
-          id: 'run',
-          type: Button,
-          text: 'Run'
-        }
+        {id: 'notConnectedEl', children: [
+          {id: 'qrcode', type: QRCode, qrOpts: {
+            colorLight: '#2A2828',
+            colorDark: '#AAAAAA'
+          }},
+        ]},
+        {id: 'connectedEl', children: [
+          {id: 'deviceImage', tag: 'img'},
+
+          {
+            id: 'run',
+            type: Button,
+            text: 'Run'
+          },
+          {
+            id: 'connectUri'
+          },
+
+        ]},
+        {id: 'build-spinner', children: [{id: 'spinner'}]},
       ]}
     ]
   };
 
   this.init = function (remote) {
     this._remote = remote;
-    // this._channel = remote.api.getChannel('devkit-simulator');
-    // this._channel.on('hideSplash', bind(this, 'hideSplash'));
-    // this._channel.on('connect', bind(this, '_onConnect'));
     this._isConnected = false;
 
     var opts = remote.getOpts();
@@ -57,20 +69,55 @@ exports = Class(CenterLayout, function (supr) {
 
   this.buildWidget = function () {
     supr(this, 'buildWidget', arguments);
-    console.log(this.run);
-    if (this._isConnected) {
-      this.run.hide();
-    }
+    this.setConnected(this._isConnected);
+    this.updateDeviceImage();
     this.run.on('Select', bind(this, function() {
       this._remote.run();
     }));
   };
 
-  this.setBuilding = function() {
-
+  this.setBuilding = function(isBuilding) {
+    var spinner = this['build-spinner'];
+    if (!isBuilding) {
+      setTimeout(bind(this, function () {
+        $.hide(this['build-spinner']);
+        this.removeClass('building');
+      }), 1000);
+      spinner.style.opacity = 0;
+      spinner.style.pointerEvents = 'none';
+    } else {
+      spinner.style.display = 'block';
+      setTimeout(bind(this, function () {
+        spinner.style.opacity = 0.5;
+        this.addClass('building');
+      }), 100);
+      spinner.style.pointerEvents = 'auto';
+    }
   };
 
   this.setConnected = function(isConnected) {
+    if (isConnected) {
+      this._isConnected = true;
+      this.notConnectedEl.style.display = 'none';
+      this.connectedEl.style.display = 'flex';
+    } else {
+      this._isConnected = false;
+      this.notConnectedEl.style.display = 'flex';
+      this.connectedEl.style.display = 'none';
+    }
+  };
 
+  this.setQRCodeText = function(text) {
+    this.qrcode.updateText(text);
+  };
+
+
+  this.setDebuggerConnectUri = function(debuggerPort) {
+    this.connectUri.textContent = 'Connect your debugger client to ' + location.host + ':' + debuggerPort;
+  };
+
+  this.updateDeviceImage = function() {
+    var device = this._remote._deviceInfo.getBackground(0);
+    this.deviceImage.src = '/images/' + device.img;
   };
 });

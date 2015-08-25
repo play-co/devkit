@@ -22,29 +22,30 @@ exports = Class(function () {
     this._app = opts.app;
     this._manifest = opts.manifest;
 
-    this._deviceInfo = DeviceInfo.get(this._opts.type);
-    this._buildTarget = 'native-archive';
+    this._deviceInfo = DeviceInfo.get('iphone6');
 
     this._ui = new RemoteUi(this);
 
-    var origin = window.location.origin;
-    this._socket = io.connect(origin);
-    this._socket.on('message', bind(this, function(message) {
-      console.log('message', message);
-      if (message.type === 'generate') {
-        console.log(message);
-        var text = origin + ',' + message.port + ',' + message.secret;
-        this._ui.qrcode.updateText(text);
-      }
+    // connect to the custom namespace '/remote' to avoid any collisions
+    this._socket = io(window.location.origin + '/remote');
+
+    this._socket.on('init', bind(this, function(message) {
+      var text = location.protocol + '//' + location.host + ',' + message.companionPort + ',' + message.secret;
+      this._ui.setQRCodeText(text);
+      this._ui.setDebuggerConnectUri(message.debuggerPort);
     }));
+
+    this._socket.on('clientConnected', bind(this, function() {
+      this._ui.setConnected(true);
+    }));
+
+    this._socket.on('clientDisconnected', bind(this, function() {
+      this._ui.setConnected(false);
+    }))
+
     this._socket.on('connect', bind(this, function() {
-      console.log('connect');
-      // debugger;
-      this._socket.emit('message', {type: 'generate', app: this._app});
+      this._socket.emit('init', {app: this._app});
     }));
-
-    // DOM simulator
-
   };
 
   this.getUI = function () {
@@ -55,28 +56,31 @@ exports = Class(function () {
   this.getOpts = function () { return this._opts; };
   this.getManifest = function () { return this._manifest; };
 
-  this.run = function() {
+  this.run = function(cb) {
+    console.log('run');
+    this._ui.setBuilding(true);
     return util.ajax
       .get({
         url: '/api/simulate/',
         query: {
           app: this._app,
-          deviceType: this._type,
-          deviceId: this.id,
-          scheme: 'debug',
-          target: this._buildTarget
+          remote: true
         }
       })
       .bind(this)
       .then(function (res) {
-        console.log(res);
+        this._ui.setBuilding(false);
         var res = res[0];
-        this._socket.emit('message', {type: 'run', route: res.id, shortName: this._manifest.shortName, hostname: location.host});
+        this._socket.emit('run', {
+          route: res.id,
+          shortName: this._manifest.shortName,
+          hostname: location.host
+        });
       }, function (err) {
-        logger.error('Unable to simulate', this._app);
+        this._ui.setBuilding(false);
+        logger.error('Unable to build for remote', this._app);
         console.error(err);
       })
       .nodeify(cb);
-
   };
 });

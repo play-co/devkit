@@ -18,7 +18,7 @@ $.onEvent(document.body, 'drop', this, function (evt) { evt.preventDefault(); })
 // define public API
 var _remote;
 GLOBAL.devkit = {
-  createRemote: function (app, opts) {
+  createRemote: function (app) {
     var params = {app: app};
 
     Promise.all([
@@ -27,11 +27,11 @@ GLOBAL.devkit = {
       ])
       .spread(function (manifest, devices) {
         DeviceInfo.setInfo(devices[0]);
-        var remote = new Remote(merge({
+        var remote = new Remote({
           parent: document.querySelector('#devkit #remote'),
           app: app,
           manifest: manifest[0]
-        }, opts));
+        });
 
         _remote = remote;
       })
@@ -48,7 +48,6 @@ GLOBAL.devkit = {
 // handle initial uri parameters
 var uri = new URI(window.location);
 var app = uri.query('app');
-var simOpts = uri.hash('device');
 if (app) {
-  devkit.createRemote(app, JSON.parse(simOpts));
+  devkit.createRemote(app);
 }

@@ -38,6 +38,12 @@ exports.addToAPI = function (opts, api) {
         target: 'browser-mobile',
         scheme: 'debug'
       };
+    } else if (req.query.remote == 'true') {
+      opts = {
+        app: req.query.app,
+        target: 'native-archive',
+        scheme: 'debug'
+      };
     } else {
       opts = {
         app: req.query.app,

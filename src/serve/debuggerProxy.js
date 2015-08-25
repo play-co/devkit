@@ -8,6 +8,7 @@ function ClientConnection(socket){
 
   events.EventEmitter.call(this);
   this.socket = socket;
+  this.socket.setKeepAlive(true);
   this.socket.on('data', this.onData.bind(this));
   this.socket.on('close', this.onClose.bind(this));
 }
@@ -39,12 +40,12 @@ function Server(port) {
 exports.Server = Server;
 
 Server.prototype.start = function() {
-  logger.log('Starting server on port ' + this.port);
+  logger.log('Starting debugger server on port ' + this.port);
   net.createServer(this.onClient.bind(this)).listen(this.port);
 }
 
 Server.prototype.onClient = function(socket) {
-  logger.log('Got a connection');
+  logger.log('Got a debugger client connection');
   var client = new ClientConnection(socket);
   this.clients.push(client);
   client.on('serverConnected', this.serverConnected.bind(this));
@@ -56,7 +57,7 @@ Server.prototype.onClient = function(socket) {
 }
 
 Server.prototype.serverConnected = function(client) {
-  logger.log('Got a server connection');
+  logger.log('Upgrading debugger client to server');
   this.server = client;
 }
 
