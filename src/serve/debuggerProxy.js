@@ -28,7 +28,7 @@ ClientConnection.prototype.send = function(data) {
 };
 
 ClientConnection.prototype.onClose = function() {
-  this.emit('close');
+  this.emit('close', this);
 };
 
 function Server(port) {
@@ -48,6 +48,7 @@ Server.prototype.onClient = function(socket) {
   var client = new ClientConnection(socket);
   this.clients.push(client);
   client.on('serverConnected', this.serverConnected.bind(this));
+  client.on('close', this.onClose.bind(this));
   if (this.server != null) {
     this.client = client;
     this.startDebugging();
@@ -79,3 +80,14 @@ Server.prototype.endDebugging = function() {
     this.client = null;
   }
 }
+
+Server.prototype.onClose = function(connection) {
+  logger.log('connection ended, cleaning up');
+  if (connection === this.server) {
+    this.server = null;
+  }
+  if (connection === this.client) {
+    this.client = null;
+  };
+  connection.socket.destroy();
+};

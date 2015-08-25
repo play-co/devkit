@@ -30,7 +30,6 @@ ClientConnection.prototype.onData = function(data){
 }
 
 ClientConnection.prototype.onMessage = function(message) {
-  console.log(message);
   switch (message.type) {
     case 'authenticate':
       var secret = message.secret;
@@ -92,18 +91,16 @@ Server.prototype.onClient = function(socket) {
   this.emit('connect');
 }
 
-Server.prototype.onRun = function(shortName, route) {
+Server.prototype.onRun = function(shortName, route, hostname) {
   if (this.client != null) {
     logger.log('sending run info to client');
-    var j = {
+    this.client.send(JSON.stringify({
       type: 'loadApp',
-      path: 'http://' + ip.getLocalIP()[0] + ':' + this.devkitPort + '/apps/' + route,
+      path: 'http://' + hostname + '/apps/' + route,
       shortName: shortName,
-      debuggerHost: ip.getLocalIP()[0],
+      debuggerHost: hostname,
       debuggerPort: this.debuggerPort
-    };
-    console.log(j);
-    this.client.send(JSON.stringify(j));
+    }));
   }
 }
 

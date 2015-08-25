@@ -43,7 +43,7 @@ exports.serveWeb = function (opts, cb) {
   companionMonitorServer.on('connect', function() {
     logger.log('client connected');
     if (socket != null) {
-      socket.emit('message', {type: 'clientConnected'});
+      socket.emit('message', {type: 'clientConnected', debuggerPort: debuggerProxyPort});
     }
   });
   companionMonitorServer.on('disconnect', function() {
@@ -63,14 +63,13 @@ exports.serveWeb = function (opts, cb) {
     socket.on('message', function(message) {
       console.log('message', message);
       if (message.type === 'run') {
-        ee.emit('run', message.shortName, message.route);
+        ee.emit('run', message.shortName, message.route, message.hostname);
         socket.emit('run', {
-          status: 'ok'
+          status: 'ok',
         });
       } else if (message.type === 'generate') {
         console.log('generate');
-        var myIp = ip.getLocalIP()[0];
-        socket.emit('message', {type: 'generate', host: myIp, port: companionMonitorPort, secret: message.app});
+        socket.emit('message', {type: 'generate', port: companionMonitorPort, secret: message.app});
       }
     });
 

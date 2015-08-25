@@ -18,6 +18,7 @@
 from util.browser import $;
 
 import squill.Widget;
+import squill.Button as Button;
 import std.uri;
 
 import ..components.CenterLayout as CenterLayout;
@@ -32,7 +33,7 @@ exports = Class(CenterLayout, function (supr) {
         {id: 'qrcode', type: QRCode},
         {
           id: 'run',
-          tag: 'button',
+          type: Button,
           text: 'Run'
         }
       ]}
@@ -44,15 +45,32 @@ exports = Class(CenterLayout, function (supr) {
     // this._channel = remote.api.getChannel('devkit-simulator');
     // this._channel.on('hideSplash', bind(this, 'hideSplash'));
     // this._channel.on('connect', bind(this, '_onConnect'));
+    this._isConnected = false;
 
     var opts = remote.getOpts();
     supr(this, 'init', [opts]);
   };
 
+  this.isConnected = function() {
+    return this._isConnected;
+  };
+
   this.buildWidget = function () {
     supr(this, 'buildWidget', arguments);
-    this.run.addEventListener('click', bind(this, function() {
+    console.log(this.run);
+    if (this._isConnected) {
+      this.run.hide();
+    }
+    this.run.on('Select', bind(this, function() {
       this._remote.run();
     }));
+  };
+
+  this.setBuilding = function() {
+
+  };
+
+  this.setConnected = function(isConnected) {
+
   };
 });

@@ -25,13 +25,15 @@ exports = Class(function () {
     this._deviceInfo = DeviceInfo.get(this._opts.type);
     this._buildTarget = 'native-archive';
 
+    this._ui = new RemoteUi(this);
 
-    this._socket = io.connect(window.location.origin);
+    var origin = window.location.origin;
+    this._socket = io.connect(origin);
     this._socket.on('message', bind(this, function(message) {
       console.log('message', message);
       if (message.type === 'generate') {
         console.log(message);
-        var text = message.host + ',' + message.port + ',' + message.secret;
+        var text = origin + ',' + message.port + ',' + message.secret;
         this._ui.qrcode.updateText(text);
       }
     }));
@@ -42,7 +44,7 @@ exports = Class(function () {
     }));
 
     // DOM simulator
-    this._ui = new RemoteUi(this);
+
   };
 
   this.getUI = function () {
@@ -69,7 +71,7 @@ exports = Class(function () {
       .then(function (res) {
         console.log(res);
         var res = res[0];
-        this._socket.emit('message', {type: 'run', route: res.id, shortName: this._manifest.shortName});
+        this._socket.emit('message', {type: 'run', route: res.id, shortName: this._manifest.shortName, hostname: location.host});
       }, function (err) {
         logger.error('Unable to simulate', this._app);
         console.error(err);
