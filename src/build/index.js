@@ -1,11 +1,14 @@
 var ff = require('ff');
 var chalk = require('chalk');
-var logger = require('../util/logging').get('build');
+var logging = require('../util/logging');
+var logger = logging.get('build');
 var apps = require('../apps');
 
 exports.build = function (appPath, argv, cb) {
   var startTime = Date.now();
   logger.log(chalk.cyan("starting build at", new Date()));
+
+  logging.install();
 
   var config;
   var elapsed = 0;
@@ -101,7 +104,8 @@ exports.build = function (appPath, argv, cb) {
         return logger.error('another build is already in progress');
       }
 
-      logger.log(err, chalk.red('\nbuild failed'));
+      logger.error(err);
+      logger.log('build failed');
       process.exit(1);
     })
     .success(function () {

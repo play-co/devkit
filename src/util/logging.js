@@ -33,6 +33,11 @@ exports.get = function (name, isSilent, buffers) {
   return logger;
 };
 
+exports.install = function () {
+  var logger = exports.get('devkit');
+  console.log = logger.log.bind(logger);
+};
+
 var _lastPrefix;
 
 exports.Logger = Class(Writable, function () {
@@ -57,9 +62,8 @@ exports.Logger = Class(Writable, function () {
   var LoggerStream = Class(function () {
     this.init = function (logger, buffers, isSilent) {
       this._logger = logger;
-      this._isSilent = isSilent || false;
+      this._isSilent = isSilent === undefined ? false : isSilent;
       this._buffers = {};
-      this._hadNewLine = {};
 
       buffers.forEach(function (name) {
         if (!this[name]) {
@@ -81,12 +85,7 @@ exports.Logger = Class(Writable, function () {
       }
 
       if (!this._isSilent) {
-        if (this._hadNewLine[buffer]) {
-          process.stderr.write(this._prefix);
-        }
-
-        process.stderr.write(this.format(data));
-        this._hadNewLine[buffer] = /\n$/.test(data);
+        this._logger._write(data);
       }
 
       cb && cb();
@@ -102,7 +101,11 @@ exports.Logger = Class(Writable, function () {
 
   this.format = function (str) {
     if (str instanceof Error) {
-      return '\n' + errorToString(str);
+      if (str.showStack === false) {
+        return str.toString();
+      } else {
+        return '\n' + errorToString(str);
+      }
     }
 
     if (typeof str == 'object') {
@@ -111,7 +114,7 @@ exports.Logger = Class(Writable, function () {
 
     return ('' + str)
       .split('\n')
-      .join('\n' + exports.nullPrefix);
+      .join('\n ' + exports.nullPrefix);
   };
 
   this.setLevel = function (level) {
@@ -162,12 +165,14 @@ exports.Logger = Class(Writable, function () {
       var splitAt = buffer.indexOf('\n');
       if (splitAt >= 0) {
         // stderr
-        exports.error(this._getRenderPrefix(), this.format(buffer.substring(0, splitAt)));
-        this._buffer = buffer = buffer.substring(splitAt + 1);
+        exports.error(this._getRenderPrefix() + ' ' + this.format(buffer.substring(0, splitAt)));
+        buffer = buffer.substring(splitAt + 1);
       } else {
         break;
       }
     }
+
+    this._buffer = buffer;
 
     cb && cb();
   };
@@ -195,10 +200,10 @@ exports.Logger = Class(Writable, function () {
   });
 });
 
-exports.nullPrefix = printf('%15s   ', '');
+exports.nullPrefix = printf('%18s ', '');
 exports.warnPrefix = chalk.yellow('[warn] ');
 exports.errorPrefix = chalk.red('[error] ');
 
 exports.getPrefix = function (tag) {
-  return chalk.cyan(printf('%15s   ', tag && '[' + tag + ']' || ''));
+  return chalk.cyan(printf('%18s ', tag && '[' + tag + ']' || ''));
 };
