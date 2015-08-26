@@ -34,6 +34,13 @@ exports = Class(ChannelAPI, function (supr) {
   };
 
   /**
+   * @returns {float} device's device pixel ratio
+   */
+  this.getDevicePixelRatio = function () {
+    return this._simulator.getUI().getDevicePixelRatio();
+  };
+
+  /**
    * @returns {HTMLElement} Parent DOM node
    */
   this.getParent = function () {

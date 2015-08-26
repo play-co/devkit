@@ -5,6 +5,7 @@ var compression = require('compression');
 var bodyParser = require('body-parser');
 var printf = require('printf');
 var open = require('open');
+var events = require('events');
 
 var apps = require('../apps');
 
@@ -20,6 +21,8 @@ var appRoutes = require('./appRoutes');
 
 var logger = logging.get('serve');
 
+var companionMonitor = require('./companionMonitor');
+
 var Z_BEST_COMPRESSION = 9;
 
 // launches the web server
@@ -30,6 +33,8 @@ exports.serveWeb = function (opts, cb) {
   var server = http.Server(app);
 
   app.io = require('socket.io')(server);
+  var companionMonitorServer = new companionMonitor.Server();
+  companionMonitorServer.start(app.io);
 
   app.use(compression({level: Z_BEST_COMPRESSION}));
 
@@ -76,6 +81,8 @@ exports.serveWeb = function (opts, cb) {
       cb = null;
     }
   });
+
+
 };
 
 exports.serveTestApp = function (port) {

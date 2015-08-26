@@ -227,7 +227,7 @@ var ViewInspector = Class(Widget, function(supr) {
   var indent = 15; //indentation in pixel
 
   this.updateDeepTrace = function (evt) {
-    var simulator = this._device.getSimulator();
+    var simulator = this._simulator;
     var offset = simulator.getFrame().getBoundingClientRect();
     var ratio = simulator.getDevicePixelRatio();
     this._deepTrace.style.display = "block";
