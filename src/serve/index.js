@@ -12,7 +12,6 @@ var ip = require('../util/ip');
 var logging = require('../util/logging');
 
 var config = require('../config');
-var jvmtools = require('../jvmtools');
 
 var appRoutes = require('./appRoutes');
 
@@ -50,10 +49,6 @@ exports.serveWeb = function (opts, cb) {
 
   // Serve
   server.listen(port, function () {
-    if (opts.testApp) {
-      exports.serveTestApp(port);
-    }
-
     logger.log(printf('serving at http://localhost:%(port)s/ and '
       + 'http://%(ip)s:%(port)s/', {
           ip: ip.getLocalIP(),
@@ -70,22 +65,6 @@ exports.serveWeb = function (opts, cb) {
       cb = null;
     }
   });
-};
-
-exports.serveTestApp = function (port) {
-  // Launch multicast server (only on OS X for now)
-  var addresses = ip.getLocalIP();
-  var address = addresses[0];
-  if (address) {
-    var hostname = require('os').hostname();
-    jvmtools.exec({
-      tool: 'jmdns',
-      args: [
-        '-rs', hostname, 'devkit._tcp', 'local', port
-      ]
-    }, function (err, stdout, stderr) {
-    });
-  }
 };
 
 function getAPIRouter(opts) {
@@ -186,18 +165,6 @@ function getAPIRouter(opts) {
   // usage: make a GET request to /api/ip
   api.get('/ip', function (req, res) {
     res.json({ip: ip.getLocalIP()});
-  });
-
-  // a better js syntax checker
-  api.use('/syntax', bodyParser.urlencoded({extended: true}));
-  api.post('/syntax', function(req, res) {
-    jvmtools.checkSyntax(req.body.javascript, function (err, syntaxErrors) {
-      if (err) {
-        res.send([false, err]);
-      } else {
-        res.send([true, syntaxErrors]);
-      }
-    });
   });
 
   appRoutes.addToAPI(opts, api);
