@@ -9,6 +9,7 @@ import .API;
 import .util.upgrade;
 
 var defaultParentNode = document.querySelector('devkit') || document.body;
+var head = document.getElementsByTagName('head')[0];
 
 exports = Class(function () {
   var _simulatorId = 0;
@@ -42,9 +43,12 @@ exports = Class(function () {
     return this._ui;
   };
 
-  this.getApp = function () { return this._app; }
+  this.getApp = function () { return this._app; };
   this.getOpts = function () { return this._opts; };
   this.getManifest = function () { return this._manifest; };
+  this.getModules = function () {
+    return this._modules;
+  };
 
   this.loadModules = function (modules) {
     if (!modules) { return; }
@@ -52,12 +56,27 @@ exports = Class(function () {
     Object.keys(modules).forEach(function (name) {
       if (name in this._modules) { return; }
 
-      this._modules[name] = $({
-        parent: this._opts.parent || defaultParentNode,
-        tag: 'iframe',
-        src: modules[name],
-        className: 'module-frame'
-      });
+      var src = modules[name];
+      var el;
+      if (/\.js$/.test(src)) {
+        el = $({
+          parent: head,
+          tag: 'script',
+          src: src
+        });
+      } else {
+        el = $({
+          parent: this._opts.parent || defaultParentNode,
+          tag: 'iframe',
+          src: src,
+          className: 'module-frame'
+        });
+      }
+
+      this._modules[name] = {
+        path: src,
+        el: el
+      };
     }, this);
   };
 
@@ -77,7 +96,7 @@ exports = Class(function () {
       })
       .bind(this)
       .then(function (res) {
-        var res = res[0];
+        res = res[0];
         this._ui.setBuilding(false);
         this.setURL(res.url);
         this.loadModules(res.debuggerURLs);

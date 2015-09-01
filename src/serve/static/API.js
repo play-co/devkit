@@ -18,6 +18,10 @@ exports = Class(ChannelAPI, function (supr) {
    */
   this.devkit = new ChannelAPI();
 
+  this.getModules = function () {
+    return this._simulator.getModules();
+  };
+
   this.rebuild = function () {
     return this._simulator.rebuild();
   };

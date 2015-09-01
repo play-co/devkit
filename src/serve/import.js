@@ -9,7 +9,13 @@ module.exports = function (basePath) {
   return function importMiddleware(req, res, next) {
     if ('GET' != req.method && 'HEAD' != req.method) return next();
     var pathname = req.path;
-    if (!/\.js$/.test(pathname)) { return next(); }
+    if (!/\.js$/.test(pathname)) {
+      if (/\.js$/.test(req.originalUrl)) {
+        pathname = path.basename(req.originalUrl);
+      } else {
+        return next();
+      }
+    }
 
     var compiler = new JsioCompiler({
       env: 'browser',
