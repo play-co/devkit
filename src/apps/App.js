@@ -1,22 +1,17 @@
-var fs = require('fs');
+/* globals trace */
+var fs = require('../util/fs');
+var printf = require('printf');
 var path = require('path');
 var semver = require('semver');
 var chalk = require('chalk');
 
-var copy = require('../util/copy');
-
 var Module = require('../modules/Module');
 
 var lockFile = require('../util/lockfile');
-var rimraf = require('../util/rimraf');
 var gitClient = require('../util/gitClient');
 var FatalGitError = gitClient.FatalGitError;
 var logger = require('../util/logging').get('apps');
 var stringify = require('../util/stringify');
-
-var _exists = require('../util/exists');
-var exists = _exists.exists;
-var IOError = _exists.IOError;
 
 var ApplicationNotFoundError = require('./errors').ApplicationNotFoundError;
 var InvalidManifestError = require('./errors').InvalidManifestError;
@@ -28,9 +23,6 @@ var DEFAULT_TEMPLATE = 'default';
 
 var appFunctions = require('./functions');
 var resolveAppPath = appFunctions.resolveAppPath;
-
-var readFile = Promise.promisify(fs.readFile);
-var writeFile = Promise.promisify(fs.writeFile);
 
 var createUUID = function createUUID (a) {
   return a ?
@@ -224,7 +216,6 @@ var App = module.exports = Class(function () {
 
   /* Manifest */
 
-  var DEFAULT_PROTOCOL = 'https';
   var REQUIRED_DEPS = [
     {
       name: 'devkit-core',
@@ -365,7 +356,7 @@ var App = module.exports = Class(function () {
     var modulePath = path.join(this.paths.modules, name);
     if (fs.existsSync(modulePath)) {
       logger.log('removing module directory...');
-      promises.push(rimraf(modulePath));
+      promises.push(fs.removeAsync(modulePath));
     }
 
     return Promise.all(promises).nodeify(cb);
@@ -374,7 +365,7 @@ var App = module.exports = Class(function () {
   this.saveManifest = function (cb) {
     trace('App#saveManifest');
     var data = stringify(this.manifest);
-    return writeFile(path.join(this.paths.manifest), data).nodeify(cb);
+    return fs.writeFileAsync(path.join(this.paths.manifest), data).nodeify(cb);
   };
 
   this.getPackageName = function() {
@@ -400,7 +391,7 @@ var App = module.exports = Class(function () {
       || '/resources/icons/defaultIcon.png';
 
     function getIcon(iconList, targetSize) {
-      var sizes = [], closest = null;
+      var sizes = [];
 
       if (iconList) {
         for (var size in iconList) {
@@ -460,20 +451,17 @@ var App = module.exports = Class(function () {
     return creator
       .bind(this)
       .then(function () {
-        // try to prepopulate manifest keys with template manifest
-        return exists(this.paths.manifest);
-      })
-      .then(function () {
-        return readFile(this.paths.manifest, 'utf8');
-      }, function () {
-        // pass
+        return fs.readFileAsync(this.paths.manifest, 'utf8');
       })
       .then(function (manifest) {
+        // try to prepopulate manifest keys with template manifest
         if (manifest) {
           try {
             this.manifest = JSON.parse(manifest);
           } catch (e) {}
         }
+      }, function () {
+        // template did not have a manifest probably, ignore
       });
   };
 
@@ -487,21 +475,14 @@ var App = module.exports = Class(function () {
     trace('_copyLocalTemplate');
 
     // read every file/folder in the template
-    return copy.path(templatePath, this.paths.root);
+    return fs.copyAsync(templatePath, this.paths.root);
   };
 
   this._createFromGitTemplate = function (template) {
     // if template is not a local path, attempt to clone it
     var tempPath = path.join(APP_TEMPLATE_ROOT, '_template');
-    return exists(tempPath)
+    return fs.removeAsync(tempPath)
       .bind(this)
-      .then(function () {
-        trace('tempPath exists - removing');
-        return rimraf(tempPath);
-      })
-      .catch(IOError, function (err) {
-        trace('tempPath does not exist - OK');
-      })
       .then(function () {
         // shallow clone the repository
         logger.log('Creating app using remote template ' + template.path);
@@ -518,9 +499,7 @@ var App = module.exports = Class(function () {
         return this.createFromDefaultTemplate();
       })
       .finally(function () {
-        if (fs.existsSync(tempPath)) {
-          return rimraf(tempPath);
-        }
+        return fs.removeAsync(tempPath);
       });
   };
 
@@ -565,7 +544,7 @@ App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
   var manifestPath = path.join(appPath, MANIFEST);
 
   trace('trying to read manifest from', manifestPath);
-  return readFile(manifestPath, 'utf8')
+  return fs.readFileAsync(manifestPath, 'utf8')
     .bind(this)
     .catch(function (err) {
       if (err.code === 'ENOENT' || err.cause.code === 'ENOENT') {
@@ -597,7 +576,7 @@ App.loadFromPath = function loadAppFromPath (appPath, lastOpened) {
         // if manifest has a blank/false/0 appID, generate one and save manifest
         manifest.appID = createUUID();
         var data = stringify(manifest);
-        return writeFile(manifestPath, data)
+        return fs.writeFileAsync(manifestPath, data)
           .return(manifest);
       }
 

@@ -1,11 +1,9 @@
 var EventEmitter = require('events').EventEmitter;
-var util = require('util');
-var fs = require('fs');
+var fs = require('./util/fs');
 var path = require('path');
 var logging = require('./util/logging');
 var stringify = require('./util/stringify');
 var pathExtra = require('path-extra');
-var mkdirp = require('mkdirp');
 
 /**
  * Make sure the directory and file for the config.json exists
@@ -15,7 +13,7 @@ function ensureConfigExists (configPath) {
   if (!fs.existsSync(configPath)) {
     var dirname = path.dirname(configPath);
     if (!fs.existsSync(dirname)) {
-      mkdirp.sync(dirname);
+      fs.ensureDirSync(dirname);
     }
 
     fs.writeFileSync(configPath, '{}', 'utf8');

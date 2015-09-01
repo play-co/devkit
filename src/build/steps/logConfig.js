@@ -27,18 +27,17 @@ exports.log = function (app, config, cb) {
     var strValue;
     if (typeof value == 'object') {
       console.log(chalk.yellow(printf('%25s', key + ':')));
-      for (var key in value) {
+      for (key in value) {
         strValue = typeof value[key] == 'object' ? JSON.stringify(value[key]) : '' + value[key];
         console.log(chalk.yellow(printf('%29s', key + ':')), truncate(strValue));
       }
     } else {
       strValue = '' + value;
+      console.log(chalk.yellow(printf('%29s', key + ':')), truncate(strValue));
     }
-
-    console.log(chalk.yellow(printf('%29s', key + ':')), truncate(strValue));
   }
 
   console.log(chalk.white(" --- end config ---"));
 
   cb && cb();
-}
+};

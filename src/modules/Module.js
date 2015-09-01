@@ -60,7 +60,12 @@ var Module = module.exports = Class(function () {
     this._extensions = {};
     if (devkit.extensions) {
       for (var name in devkit.extensions) {
-        this._extensions[name] = path.join(this.path, devkit.extensions[name]);
+        var extInfo = devkit.extensions[name];
+        if (typeof extInfo == 'string') {
+          extInfo = path.join(this.path, devkit.extensions[name]);
+        }
+
+        this._extensions[name] = extInfo;
       }
     }
   };

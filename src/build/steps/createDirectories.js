@@ -1,5 +1,6 @@
-var mkdirp = require('mkdirp');
+var fs = require('../../util/fs');
 
 exports.createDirectories = function (app, config, cb) {
-  mkdirp(config.outputPath, cb);
-}
+  return fs.ensureDirAsync(config.outputPath)
+    .nodeify(cb);
+};
