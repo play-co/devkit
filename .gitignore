@@ -1,4 +1,5 @@
 node_modules/
-config.json
 .DS_Store
-cache/
+
+# these are the generated result of gulp
+src/serve/static/

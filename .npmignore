@@ -1,0 +1,10 @@
+# these source files are compiled with gulp to src/serve/static/
+src/web/
+gulpfile.js
+
+# don't publish tests
+.travis.yml
+tests/
+
+# don't publish docs
+docs/

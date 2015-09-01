@@ -14,8 +14,6 @@ var logging = require('../util/logging');
 var config = require('../config');
 var jvmtools = require('../jvmtools');
 
-var stylus = require('./stylus');
-var importMiddleware = require('./import');
 var appRoutes = require('./appRoutes');
 
 var logger = logging.get('serve');
@@ -46,12 +44,6 @@ exports.serveWeb = function (opts, cb) {
   app.use('/api/', getAPIRouter(merge({
     app: app
   }, opts)));
-
-  // serve compiled CSS
-  app.use('/', stylus(getPath('static')));
-
-  // serve compiled JS
-  app.use('/compile/', importMiddleware(getPath('static/')));
 
   // serve static files
   app.use('/', express.static(getPath('static')));

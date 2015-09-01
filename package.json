@@ -37,10 +37,21 @@
   "main": "src/devkit.js",
   "scripts": {
     "postinstall": "sh scripts/postinstall.sh",
-    "test": "mocha --reporter spec --recursive -C ./tests"
+    "test": "mocha --reporter spec --recursive -C ./tests",
+    "prepublish": "npm test && gulp publish"
   },
   "devDependencies": {
     "express-debug": "^1.1.0",
-    "mocha": "^2.0.1"
+    "gulp": "^3.9.0",
+    "gulp-debug": "^2.1.0",
+    "gulp-filter": "^3.0.1",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sequence": "^0.4.1",
+    "gulp-stylus": "^2.0.6",
+    "mocha": "^2.0.1",
+    "nib": "^1.1.0",
+    "stylus": "^0.51.1",
+    "uglify-js": "^2.4.24"
   }
 }

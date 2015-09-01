@@ -18,7 +18,7 @@
 })();
 </script>
 
-<link rel="stylesheet" href="/stylesheets/simulator.styl">
+<link rel="stylesheet" href="simulator.css">
 
 <title>Game Closure SDK</title>
 </head>
@@ -31,15 +31,5 @@
 
 </body>
 
-<script>
-(function () {
-  // mobile support
-  var ua = navigator.userAgent;
-  if (window.parent == window && (/Safari|AppleWebKit/i.test(ua) && /iPod|iPhone|iPad|Android/i.test(ua) || /testMobile/.test(window.location) || /Mobile/i.test(ua))) {
-    location = 'mobileIndex.html';
-  }
-})();
-</script>
-
-<script src="/compile/index.js"></script>
+<script src="index.js"></script>
 </html>

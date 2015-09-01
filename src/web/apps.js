@@ -13,35 +13,21 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-import ff;
-import squill.cssLoad;
 import util.ajax;
-from util.browser import $;
-
 import .Overview;
 
-var f = ff(function () {
-	util.ajax.get('/api/home', f());
+var link = document.createElement('link');
+link.rel = "stylesheet";
+link.href = "home.css";
+document.querySelector('head').appendChild(link);
 
-	var onCSS = f.wait();
-	var prefix = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	squill.cssLoad.get(prefix + 'stylesheets/home.styl', function (err, el) {
-		if (!err) {
-			onCSS();
-		} else {
-			$({
-				parent: document.body,
-				children: [
-					{tag: 'h3', text: 'CSS Error'},
-					{tag: 'pre', text: err.target.innerText}
-				]
-			});
-			console.log(err);
-		}
-	});
-}, function (homeDirectory) {
-	GLOBAL.overview = new Overview({
-		parent: document.body,
-		homeDirectory: homeDirectory.path
-	});
+util.ajax.get('/api/home', function (err, homeDirectory) {
+  if (err) {
+    logger.error(err);
+  } else {
+    GLOBAL.overview = new Overview({
+      parent: document.body,
+      homeDirectory: homeDirectory.path
+    });
+  }
 });
