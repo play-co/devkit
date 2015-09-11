@@ -28,7 +28,7 @@ GLOBAL.devkit = {
       .spread(function (manifest, devices) {
         DeviceInfo.setInfo(devices[0]);
         var remote = new Remote({
-          parent: document.querySelector('#devkit #remote'),
+          parent: document.querySelector('body'),
           app: app,
           manifest: manifest[0]
         });

@@ -8,6 +8,17 @@ if theme is "light"
 else
   @import "includes/dark"
 
+remote-bg-color = #252f3b
+remote-color = #A3ABB3
+remote-link-color = #2c6cd7
+
+device-name-color = #e1e7ed
+
+remote-btn-color = #CBD0D6
+remote-btn-bgcolor-hover = #313D4C
+remote-btn-disabled-bgcolor = #384350
+remote-btn-disabled-color = #82868C
+
 pixelated()
   image-rendering optimizeSpeed             /* Legal fallback */
   image-rendering -moz-crisp-edges          /* Firefox        */
@@ -18,99 +29,146 @@ pixelated()
   image-rendering pixelated                 /* CSS4 Proposed  */
   -ms-interpolation-mode nearest-neighbor   /* IE8+           */
 
-#devkit
+center()
+  position absolute
+  left 50%
+  top 50%
+  transform translate(-50%, -50%)
+  text-align center
+
+#remote
   height 100%
   width 100%
-  overflow hidden
+  color remote-color
+  background-color remote-bg-color
+  display flex
+  align-items center
+  flex-direction column
+  position relative
+  font-size 20px
 
-  #remote
-    height 100%
-    width 100%
-    overflow hidden
+  a
+    text-decoration none
+    color remote-link-color
 
-    #contents
-      height 100%
-      width 100%
-      display flex
-      align-items center
-      flex-direction column
+  button
+    cursor pointer
+
+  .bold
+    font-weight 500
+
+  #_corner
+    padding 40px
+
+  #header
+    font-size 30px
+    font-weight 300
+    margin-bottom 15px
+    text-align center
+
+  #notConnectedEl
+    position relative
+    display flex
+    flex-direction column
+    align-items center
+
+    #instructions
+      font-size 18px
+      font-weight 300
+      margin-top 20px
+
+    #qrcode
+      padding 20px
+      background-color #fff
+
+      #qr
+        img
+          pixelated()
+
+    .instructions
+      text-align left
+
+  #connectedEl
+    display flex
+    align-items center
+    flex-direction column
+
+    &>*
+      margin-top 30px
+
+    #device
       position relative
+      #deviceImage
+        width 125px
+      #dimensions
+        center()
+    #deviceName
+      text-align center
+      color device-name-color
 
-      #header
-        font-size 30px
-        font-weight 300
-        margin 40px
+    #btnContainer
+      >*
+        margin-top 30px
 
-      #notConnectedEl
-        position relative
+    .btn
+      display block
+      box-sizing border-box
+      background-color remote-bg-color
+      color remote-btn-color
+      padding 12px 40px
+      border 1px solid remote-btn-color
+      border-radius 40px
+      cursor pointer
+      font-weight 400
+      font-size 18px
+      width 225px
+      transition background-color 0.1s
 
-        #qrcode
-          flex 1
+      &.disabled
+        background-color remote-btn-disabled-bgcolor
+        color remote-btn-disabled-color
+        cursor default
 
-          #qr
-            display flex
-            justify-content center
+      &:not(.disabled):hover
+        background-color remote-btn-bgcolor-hover
 
-            img
-              pixelated()
+    #connectUri
+      font-size 25px
+      font-weight 300
+      text-align: center
+      margin 20px
+      flex 3
+      user-select auto
 
-      #connectedEl
-        position relative
-        display flex
-        align-items center
-        flex-direction column
+  #build-spinner
+    position absolute
+    top 0px
+    left 0px
+    width 100%
+    height 100%
+    opacity 0
+    z-index 100
+    background rgba(0, 0, 0, 0.6)
+    pointer-events none
+    transition opacity 0.25s
 
-        #deviceImage
-          flex 1
-          margin 20px
-          width 200px
+    display flex
+    justify-content center
+    align-items center
 
-        #run
-          flex 2
-          position relative
-          width 100px
+    #spinner
+      width 40px
+      height 40px
+      pointer-events none
+      background url(../icons/spinner.png)
+      background-size 40px 40px
+      background-repeat no-repeat
 
-        #connectUri
-          font-size 25px
-          font-weight 300
-          text-align: center
-          margin 20px
-          flex 3
-          user-select auto
-
-      #build-spinner
-        position absolute
-        top 0px
-        left 0px
-        width 100%
-        height 100%
-        opacity 0
-        transition all 0.5s
-        background rgba(0, 0, 0, 0.8)
-        pointer-events none
-
-        display flex
-        align-items center
-        justify-content center
-
-        #spinner
-          transition all 0.5s
-          width 40px
-          height 40px
-          opacity 0
-          pointer-events none
-          background url(../icons/spinner.png)
-          background-size 40px 40px
-          background-repeat no-repeat
-
-      &.building
-        #build-spinner
-          opacity 1
-
-          #spinner
-            opacity 1
-            animation spin 0.5s linear infinite
-
+  &.building
+    #build-spinner
+      opacity 1
+      #spinner
+        animation spin 0.5s linear infinite
 
 
 @keyframes spin

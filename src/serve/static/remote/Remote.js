@@ -19,6 +19,8 @@ exports = Class(function () {
     this._screen = opts.screen;
     this._userAgent = opts.userAgent;
 
+    this.host = location.host.split(':')[0];
+
     this._app = opts.app;
     this._manifest = opts.manifest;
 
@@ -32,7 +34,7 @@ exports = Class(function () {
     this._socket.on('init', bind(this, function(message) {
       var text = location.protocol + '//' + location.host + ',' + message.companionPort + ',' + message.secret;
       this._ui.setQRCodeText(text);
-      this._ui.setDebuggerConnectUri(message.debuggerPort);
+      this._ui.updateDevtoolsLink(message.debuggerPort);
     }));
 
     this._socket.on('clientConnected', bind(this, function() {
@@ -71,10 +73,11 @@ exports = Class(function () {
       .then(function (res) {
         this._ui.setBuilding(false);
         var res = res[0];
+        // TODO: specify the http port (otherwise it doesnt know to add 9200 for local runs)
         this._socket.emit('run', {
           route: res.id,
           shortName: this._manifest.shortName,
-          hostname: location.host
+          hostname: this.host
         });
       }, function (err) {
         this._ui.setBuilding(false);

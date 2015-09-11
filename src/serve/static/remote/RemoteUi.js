@@ -25,35 +25,49 @@ import ..components.FrameBackground as FrameBackground;
 import ..components.CenterLayout as CenterLayout;
 import ..components.QRCode as QRCode;
 
+var QR_SIZE = 225;
+
 exports = Class(CenterLayout, function (supr) {
 
-  this._def = {
-    children: [
-      {id: 'contents', children: [
-        {id: 'header', text: 'Device'},
-        {id: 'notConnectedEl', children: [
-          {id: 'qrcode', type: QRCode, qrOpts: {
-            colorLight: '#2A2828',
-            colorDark: '#AAAAAA'
-          }},
-        ]},
-        {id: 'connectedEl', children: [
-          {id: 'deviceImage', tag: 'img'},
+  this._def = {id: 'remote', children: [
+    {id: 'header', text: 'Remote Device'},
 
-          {
-            id: 'run',
-            type: Button,
-            text: 'Run'
-          },
-          {
-            id: 'connectUri'
-          },
-
+    {id: 'notConnectedEl', children: [
+      {id: 'qrcode', type: QRCode, qrOpts: {
+        colorLight: '#fff',
+        colorDark: '#000',
+        width: QR_SIZE,
+        height: QR_SIZE
+      }},
+      {id: 'instructions', children: [
+        {tag: 'p', class: 'bold', text: 'Instructions:'},
+        {tag: 'p', text: '1. Download and Install the ', children:[
+          {tag: 'a', text: 'js.io Companion App', attrs:{
+            href:'https://builds.js.io', target: '_blank'
+          }}
         ]},
-        {id: 'build-spinner', children: [{id: 'spinner'}]},
+        {tag: 'p', text: '2. Open the companion app and scan this QR code'}
       ]}
-    ]
-  };
+    ]},
+
+    {id: 'connectedEl', children: [
+      {children: [
+        {id: 'device', children: [
+          {id: 'deviceImage', tag: 'img'},
+          {id: 'dimensions', text: 'WWW x HHH'}
+        ]},
+        {id: 'deviceName', text: 'My Device'},
+      ]},
+      {id: 'btnContainer', children: [
+        {id: 'run', class: 'btn', type: Button, text: 'Run'},
+        {id: 'devtoolsLink', class: 'btn', tag: 'a', text: 'Open Dev Tools'},
+      ]}
+    ]},
+
+    {id: 'build-spinner', children: [
+      {id: 'spinner'}
+    ]}
+  ]};
 
   this.init = function (remote) {
     this._remote = remote;
@@ -79,19 +93,15 @@ exports = Class(CenterLayout, function (supr) {
   this.setBuilding = function(isBuilding) {
     var spinner = this['build-spinner'];
     if (!isBuilding) {
-      setTimeout(bind(this, function () {
-        $.hide(this['build-spinner']);
-        this.removeClass('building');
-      }), 1000);
-      spinner.style.opacity = 0;
-      spinner.style.pointerEvents = 'none';
+      this.removeClass('building');
+      setTimeout(function () {
+        spinner.style.visibility = 'hidden';
+      }, 250);
+      spinner.style.pointerEvents = 'none'; // ?
     } else {
-      spinner.style.display = 'block';
-      setTimeout(bind(this, function () {
-        spinner.style.opacity = 0.5;
-        this.addClass('building');
-      }), 100);
-      spinner.style.pointerEvents = 'auto';
+      this.addClass('building');
+      spinner.style.visibility = 'visible';
+      spinner.style.pointerEvents = 'auto'; // ?
     }
   };
 
@@ -107,13 +117,14 @@ exports = Class(CenterLayout, function (supr) {
     }
   };
 
-  this.setQRCodeText = function(text) {
-    this.qrcode.updateText(text);
+  this.updateDevtoolsLink = function() {
+    // this.devtoolsLink.href = '';
+    this.devtoolsLink.removeAttribute('href');
+    $.addClass(this.devtoolsLink, 'disabled');
   };
 
-
-  this.setDebuggerConnectUri = function(debuggerPort) {
-    this.connectUri.textContent = 'Connect your debugger client to ' + location.host + ':' + debuggerPort;
+  this.setQRCodeText = function(text) {
+    this.qrcode.updateText(text);
   };
 
   this.updateDeviceImage = function() {
