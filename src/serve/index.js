@@ -21,7 +21,7 @@ var appRoutes = require('./appRoutes');
 
 var logger = logging.get('serve');
 
-var companionMonitor = require('./companionMonitor');
+var CompanionMonitorServer = require('./companion/CompanionMonitorServer');
 
 var Z_BEST_COMPRESSION = 9;
 
@@ -33,7 +33,10 @@ exports.serveWeb = function (opts, cb) {
   var server = http.Server(app);
 
   app.io = require('socket.io')(server);
-  var companionMonitorServer = new companionMonitor.Server();
+
+  // TODO: only run this with a specific cli arg
+  // This is what the companion app connects to
+  var companionMonitorServer = new CompanionMonitorServer();
   companionMonitorServer.start(app.io);
 
   app.use(compression({level: Z_BEST_COMPRESSION}));

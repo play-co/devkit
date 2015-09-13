@@ -27,26 +27,38 @@ exports = Class(function () {
     this._deviceInfo = DeviceInfo.get('iphone6');
 
     this._ui = new RemoteUi(this);
+    this._ui.setConnected(false);
 
     // connect to the custom namespace '/remote' to avoid any collisions
     this._socket = io(window.location.origin + '/remote');
 
-    this._socket.on('init', bind(this, function(message) {
-      var text = location.protocol + '//' + location.host + ',' + message.companionPort + ',' + message.secret;
+    this._socket.on('initBrowserResponse', bind(this, function(message) {
+      var text = this.host + ',' + message.companionPort + ',' + message.secret;
       this._ui.setQRCodeText(text);
-      this._ui.updateDevtoolsLink(message.debuggerPort);
+      this._ui.updateDevtoolsLink(null);
     }));
 
-    this._socket.on('clientConnected', bind(this, function() {
-      this._ui.setConnected(true);
+    this._socket.on('clientConnected', bind(this, function(isConnected) {
+      this._ui.setPhoneConnected(isConnected);
     }));
-
-    this._socket.on('clientDisconnected', bind(this, function() {
-      this._ui.setConnected(false);
-    }))
 
     this._socket.on('connect', bind(this, function() {
-      this._socket.emit('init', {app: this._app});
+      this._ui.setConnected(true);
+      this._socket.emit('initBrowserRequest', {app: this._app});
+    }));
+
+    // This is called frequently to sync serverside data with this client
+    this._socket.on('browserData', bind(this, function(data) {
+      this._ui.updateDevtoolsLink(data);
+    }));
+
+    // Connection status
+    this._socket.on('disconnect', bind(this, function(data) {
+      this._ui.setConnected(false);
+    }));
+
+    this._socket.on('reconnect', bind(this, function(data) {
+      this._ui.setConnected(true);
     }));
   };
 
@@ -73,11 +85,11 @@ exports = Class(function () {
       .then(function (res) {
         this._ui.setBuilding(false);
         var res = res[0];
-        // TODO: specify the http port (otherwise it doesnt know to add 9200 for local runs)
         this._socket.emit('run', {
           route: res.id,
           shortName: this._manifest.shortName,
-          hostname: this.host
+          host: location.host,
+          hostname: location.hostname
         });
       }, function (err) {
         this._ui.setBuilding(false);

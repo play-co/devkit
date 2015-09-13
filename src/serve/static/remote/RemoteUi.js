@@ -60,12 +60,19 @@ exports = Class(CenterLayout, function (supr) {
       ]},
       {id: 'btnContainer', children: [
         {id: 'run', class: 'btn', type: Button, text: 'Run'},
-        {id: 'devtoolsLink', class: 'btn', tag: 'a', text: 'Open Dev Tools'},
+        {id: 'devtoolsLink', class: 'btn', tag: 'a', text: 'Open Dev Tools', attrs:{
+          target: '_blank'
+        }},
       ]}
     ]},
 
-    {id: 'build-spinner', children: [
-      {id: 'spinner'}
+    {id: 'build-spinner', class: 'spinnerContainer', children: [
+      {class: 'spinner'},
+      {tag: 'p', text: 'Building app'}
+    ]},
+    {id: 'connLostContainer', class: 'spinnerContainer', children: [
+      {class: 'spinner'},
+      {tag: 'p', text: 'Connection lost to devkit'}
     ]}
   ]};
 
@@ -83,7 +90,7 @@ exports = Class(CenterLayout, function (supr) {
 
   this.buildWidget = function () {
     supr(this, 'buildWidget', arguments);
-    this.setConnected(this._isConnected);
+    this.setPhoneConnected(this._isConnected);
     this.updateDeviceImage();
     this.run.on('Select', bind(this, function() {
       this._remote.run();
@@ -95,18 +102,26 @@ exports = Class(CenterLayout, function (supr) {
     if (!isBuilding) {
       this.removeClass('building');
       setTimeout(function () {
-        spinner.style.visibility = 'hidden';
+        $.removeClass(spinner, 'visible');
       }, 250);
       spinner.style.pointerEvents = 'none'; // ?
     } else {
       this.addClass('building');
-      spinner.style.visibility = 'visible';
+      $.addClass(spinner, 'visible');
       spinner.style.pointerEvents = 'auto'; // ?
     }
   };
 
   this.setConnected = function(isConnected) {
     if (isConnected) {
+      $.removeClass(this.connLostContainer, 'visible');
+    } else {
+      $.addClass(this.connLostContainer, 'visible');
+    }
+  };
+
+  this.setPhoneConnected = function(isPhoneConnected) {
+    if (isPhoneConnected) {
       this._isConnected = true;
       this.notConnectedEl.style.display = 'none';
       this.connectedEl.style.display = 'flex';
@@ -117,10 +132,14 @@ exports = Class(CenterLayout, function (supr) {
     }
   };
 
-  this.updateDevtoolsLink = function() {
-    // this.devtoolsLink.href = '';
-    this.devtoolsLink.removeAttribute('href');
-    $.addClass(this.devtoolsLink, 'disabled');
+  this.updateDevtoolsLink = function(data) {
+    if (data && data.devtoolsWsId) {
+      this.devtoolsLink.href = '//devtools.js.io/v1/front_end/?ws=' + data.devtoolsWsHost + ':9223/devtools/page/' + data.devtoolsWsId;
+      $.removeClass(this.devtoolsLink, 'disabled');
+    } else {
+      this.devtoolsLink.removeAttribute('href');
+      $.addClass(this.devtoolsLink, 'disabled');
+    }
   };
 
   this.setQRCodeText = function(text) {
