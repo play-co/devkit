@@ -97,13 +97,11 @@ Server.prototype.onBrowserConnection = function (socket){
  * Send all relevant state to the browser socket
  */
 Server.prototype.sendBrowserData = function() {
-  console.log('SEND BROWSER DATA');
   if (this.browserSocket === null) {
     return;
   }
 
   // Send connected client
-  console.log('SENDING CLIENT CONNECTED');
   this.browserSocket.emit('clientConnected', this.isClientConnected());
   // Send devtools url
   this.browserSocket.emit('browserData', this.browserData);
