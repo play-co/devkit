@@ -105,17 +105,22 @@ gulp.task('js', function (cb) {
               });
             },
             compress: function (filename, src, opts, cb) {
-              var result = UglifyJS.minify(src, {
-                fromString: true,
-                compress: {
-                  global_defs: {
-                    DEBUG: false
-                  }
+              // grab some UglifyJS tool refs
+              var parser = UglifyJS.parser;
+              var uglify = UglifyJS.uglify;
+              // parse an Abstract Syntax Tree
+              var ast = parser.parse(src);
+              // get a new AST with mangled variable names
+              ast = uglify.ast_mangle(ast, {
+                defines: {
+                  DEBUG: ['name', 'false']
                 }
               });
-
-              // console.log(filename, '-->', result.code)
-              cb(result.code);
+              // get a new AST with compression optimizations
+              ast = uglify.ast_squeeze(ast);
+              // get compressed code out of the AST
+              var result = uglify.gen_code(ast);
+              cb(result);
             }
           }
         });
