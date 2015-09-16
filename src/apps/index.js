@@ -151,25 +151,6 @@ var AppManager = Class(EventEmitter, function () {
     }
   };
 
-  this.getFromShortName = function(shortName, cb) {
-    this.getApps(function(err, apps) {
-      if (err) {
-        cb(err);
-        return;
-      }
-
-      for (var path in apps) {
-        var app = apps[path];
-        if (app.manifest.shortName === shortName) {
-          cb(null, app);
-          return;
-        }
-      }
-
-      cb(new Error('unknown shortName: ' + shortName));
-    });
-  };
-
   this.has = function (appPath, cb) {
     trace('AppManager#has');
     appPath = resolveAppPath(appPath);

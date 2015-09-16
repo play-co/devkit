@@ -16,6 +16,8 @@ var ServeCommand = Class(BaseCommand, function (supr) {
                 'spawn a new process for simulator builds')
       .describe('test-app',
                 'broadcasts address using mdns for test app clients')
+      .describe('remote-debugging',
+                'starts the built in remote debugging proxy. See https://github.com/gameclosure/devkit-remote-debugger-server')
       .default('single-port', false);
   };
 
@@ -32,7 +34,8 @@ var ServeCommand = Class(BaseCommand, function (supr) {
     serve.serveWeb({
       port: argv.port,
       singlePort: !!argv['single-port'],
-      separateBuildProcess: !!argv['separate-build-process']
+      separateBuildProcess: !!argv['separate-build-process'],
+      remoteDebugging: !!argv['remote-debugging']
     });
   };
 });

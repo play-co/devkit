@@ -3,6 +3,7 @@ var net = require('net');
 var events = require('events');
 var util = require('util');
 var http = require('http');
+var express = require('express');
 
 var Promise = require('bluebird');
 var request = require('request');
@@ -10,23 +11,25 @@ var randomstring = require("randomstring");
 
 var apps = require('../../apps');
 var ip = require('../../util/ip');
+var buildQueue = require('../buildQueue');
 var logging = require('../../util/logging');
+
+var routeIdGenerator = require('../routeIdGenerator');
+var getAppPathByRouteId = Promise.promisify(routeIdGenerator.getAppPathByRouteId.bind(routeIdGenerator));
+
 var logger = logging.get('CompanionMonitorServer');
 
-var RemoteDebuggingProxy = require('jsio-remote-debugger-server');
-
-var CompanionMonitorClient = require('./CompanionMonitorClient');
+var RemoteDebuggingProxy = require('devkit-remote-debugger-server');
 
 var Server = function(companionMonitorPort) {
   events.EventEmitter.call(this);
-  this.companionMonitorPort = companionMonitorPort || 6005;
   this.debuggerClientPort = 6000;
 
   this.browserSocket = null;
-  this.companionClient = null;
 
   // This is a random string sent to the phone to verify its identity
   this.secret = null;
+  this._staticPaths = {};
 
   // Object shared across any incomming browser socket
   this.browserData = null;
@@ -38,21 +41,108 @@ util.inherits(Server, events.EventEmitter);
 
 Server.prototype._resetBrowserData = function() {
   this.browserData = {
-    devtoolsWsHost: null,
     devtoolsWsId: null
   };
 };
 
-Server.prototype.start = function(io) {
+Server.prototype.start = function(httpServer, ioServer) {
   logger.log('Starting server on port ' + this.companionMonitorPort);
   // connect to the custom namespace '/remote' to avoid any collisions
-  io.of('/remote').on('connection', this.onBrowserConnection.bind(this));
-  // the companion app will try to make a websocket connection to this server
-  net.createServer(this.onClient.bind(this)).listen(this.companionMonitorPort);
+  ioServer.of('/remote').on('connection', this.onBrowserConnection.bind(this));
+
+  this.httpServer = httpServer;
+
+  // Set up the companion rest endpoints
+  httpServer.get('/companion/info', function(req, res) {
+    if (!this.isSecretValid(req.query.secret)) {
+      res.send({ success: false, message: 'invalid secret' });
+      return;
+    }
+
+    var routeId = req.query.routeId;
+    var appPath = null;
+
+    getAppPathByRouteId(routeId)
+      .then(function(_appPath) {
+        appPath = _appPath;
+        logger.info('info: ' + appPath);
+        return Promise.promisify(apps.get.bind(apps))(appPath);
+      })
+      .then(function(app) {
+        res.send({
+          success: true,
+          name: app.manifest.title,
+          icon: '' // TODO:
+        });
+      }.bind(this))
+      .catch(function(err) {
+        logger.error('error while getting info', err);
+        res.send({ success: false, error: err.toString() });
+      });
+  }.bind(this));
+
+  httpServer.get('/companion/build', function(req, res) {
+    // Check the secret
+    if (!this.isSecretValid(req.query.secret)) {
+      res.send({ success: false, message: 'invalid secret' });
+      return;
+    }
+
+    var routeId = req.query.routeId;
+    var appPath = null;
+    logger.info('build: ' + appPath);
+
+    getAppPathByRouteId(routeId)
+      .then(function(_appPath) {
+        appPath = _appPath;
+        logger.info('info: ' + appPath);
+        return Promise.promisify(apps.get.bind(apps))(appPath);
+      })
+      .then(function(app) {
+        // TODO: dont hardcode this path
+        var buildPath = path.join(appPath, 'debug', 'native-archive');
+        var routeId = routeIdGenerator.get(appPath);
+        var buildOpts = {
+          target: 'native-archive',
+          scheme: 'debug',
+          simulated: true,
+          output: buildPath
+        };
+
+        return buildQueue.add(appPath, buildOpts)
+          .then(function() {
+            // verify that there is a route to the bundle
+            this.verifyHasRoute(app.manifest.shortName, appPath, buildPath);
+          }.bind(this))
+          .then(function(buildResult) {
+            // Build is done, update the proxy with the new native.js
+            return this.remoteDebuggingProxy.onRun(buildPath);
+          }.bind(this))
+          .then(function () {
+            res.send({
+              success: true,
+              route: routeId,
+              shortName: app.manifest.shortName,
+              debuggerPort: 6000
+              // hostname // for the http request
+            });
+          });
+      }.bind(this))
+      .catch(function(err) {
+        logger.error('error while building', err);
+        res.send({ success: false, error: err.toString() });
+      });
+  }.bind(this))
 
   // update the secret
   this.updateSecret();
   this._resetBrowserData();
+
+  this.remoteDebuggingProxy.on('adaptor.reset', function() {
+    logger.log('devtoolsWsId being nulled, adaptor reset');
+    this._resetBrowserData();
+    this.sendBrowserData();
+  }.bind(this));
 
   this.remoteDebuggingProxy.on('adaptor.ready', function(jsonUrl) {
     logger.log('getting devtools id from: ' + jsonUrl);
@@ -61,7 +151,7 @@ Server.prototype.start = function(io) {
     request(jsonUrl, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         var data = JSON.parse(body);
-        var devtoolsId = data[0].id;
+        var devtoolsId = data[data.length - 1].id;
 
         logger.log('devtoolsWsId determined: ' + devtoolsId);
         this.browserData.devtoolsWsId = devtoolsId;
@@ -73,6 +163,17 @@ Server.prototype.start = function(io) {
   this.remoteDebuggingProxy.start({
     clientPort: this.debuggerClientPort
   });
+};
+
+/** Make sure that there is a /bundle/latest route to that app */
+Server.prototype.verifyHasRoute = function(shortName, appPath, buildPath) {
+  var routeId = routeIdGenerator.get(appPath);
+  if (this._staticPaths[routeId]) return;
+
+  this._staticPaths[routeId] = this.httpServer.use(
+    '/companion/app/' + routeId + '/bundle/latest',
+    express.static(path.join(buildPath, shortName + '.zip'))
+  );
 };
 
 Server.prototype.onBrowserConnection = function (socket){
@@ -89,7 +190,6 @@ Server.prototype.onBrowserConnection = function (socket){
     logger.log('Browser disconnected');
   });
 
-  socket.on('run', this.onRun.bind(this));
   socket.on('initBrowserRequest', this.initBrowser.bind(this));
 };
 
@@ -101,14 +201,13 @@ Server.prototype.sendBrowserData = function() {
     return;
   }
 
-  // Send connected client
-  this.browserSocket.emit('clientConnected', this.isClientConnected());
   // Send devtools url
   this.browserSocket.emit('browserData', this.browserData);
 };
 
 Server.prototype.updateSecret = function() {
-  this.secret = randomstring.generate(16);
+  this.secret = 'SECRETSES';//randomstring.generate(16);
+  logger.info('companion secret is: ' + this.secret);
   return this.secret;
 };
 
@@ -121,86 +220,10 @@ Server.prototype.isSecretValid = function(testSecret) {
  */
 Server.prototype.initBrowser = function(message) {
   this.browserSocket.emit('initBrowserResponse', {
-    companionPort: this.companionMonitorPort,
+    routeId: routeIdGenerator.get(message.app),
     secret: this.secret
   });
   this.sendBrowserData();
-};
-
-Server.prototype.onClient = function(socket) {
-  logger.log('Companion connected');
-
-  var companionClient = new CompanionMonitorClient(this, socket);
-};
-
-Server.prototype.authenticateClient = function(companionClient, secret) {
-  var success = this.isSecretValid(secret);
-  companionClient.send({
-    type: 'authenticate',
-    status: success ? 'success' : 'failure' // TODO: change this to a boolean
-  });
-
-  if (success) {
-    logger.log('Companion auth success');
-    // Disconnect any old ones
-    if (this.companionClient !== null) {
-      logger.log('Cleaning old companion connection')
-      this.companionClient.close();
-      return;
-    }
-    // Set the current client to the recently connected one
-    this.companionClient = companionClient;
-    companionClient.on('close', this.onCompanionClose.bind(this));
-    // inform browser of new client
-    this.sendBrowserData();
-  } else {
-    companionClient.close();
-  }
-};
-
-Server.prototype.onRun = function(message) {
-  logger.log('onRun');
-  if (this.isClientConnected()) {
-    logger.log('Getting App for: ' + message.shortName);
-    Promise.promisify(apps.getFromShortName.bind(apps))(message.shortName)
-      .then(function(app) {
-        logger.log('-> remoteDebuggingProxy onRun');
-        // TODO: dont hardcode this path
-        var buildPath = path.join(app.paths.build, 'debug', 'simulator');
-        return this.remoteDebuggingProxy.onRun(buildPath);
-      }.bind(this))
-      .then(function() {
-        logger.log('Sending run info to client');
-
-        this.browserData.devtoolsWsHost = message.hostname;
-
-        var runInfo = {
-          type: 'loadApp',
-          path: 'http://' + message.host + '/apps/' + message.route,
-          shortName: message.shortName,
-          debuggerHost: message.hostname,
-          debuggerPort: this.debuggerClientPort
-        };
-        logger.log('run info: ', runInfo);
-        this.companionClient.send(JSON.stringify(runInfo));
-        if (this.isBrowserConnected()) {
-          this.browserSocket.emit('run', {
-            status: 'ok',
-          });
-        };
-      }.bind(this))
-  }
-};
-
-Server.prototype.onCompanionClose = function() {
-  logger.log('Companion disconnected');
-  this.companionClient = null;
-  this._resetBrowserData();
-  this.sendBrowserData();
-};
-
-Server.prototype.isClientConnected = function() {
-  return this.companionClient !== null;
 };
 
 Server.prototype.isBrowserConnected = function() {

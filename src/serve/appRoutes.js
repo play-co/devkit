@@ -12,6 +12,7 @@ var baseModules = require('../modules').getBaseModules();
 var jvmtools = require('../jvmtools');
 var logging = require('../util/logging');
 var buildQueue = require('./buildQueue');
+var routeIdGenerator = require('./routeIdGenerator');
 
 var chokidar = require('chokidar');
 
@@ -196,7 +197,7 @@ exports.addToAPI = function (opts, api) {
   });
 
   function mountApp(appPath, buildPath) {
-    var routeId = generateRouteId(appPath);
+    var routeId = routeIdGenerator.get(appPath);
 
     if (!_mountedApps[appPath]) {
       _mountedApps[appPath] = apps.get(appPath)
@@ -333,33 +334,5 @@ exports.addToAPI = function (opts, api) {
     // Remove app routes
     delete _availableSimulatorApps[routeId];
     delete _mountedApps[appPath];
-  }
-
-  // tracks used route uuids
-  var _routes = {};
-  var _routeMap = {};
-
-  // create a unique route hash from the app path
-  function generateRouteId(appPath) {
-    if (appPath in _routeMap) {
-      return _routeMap[appPath];
-    }
-
-    // compute a hash
-    var hash = 5381;
-    var i = appPath.length;
-    while(i) {
-      hash = (hash * 33) ^ appPath.charCodeAt(--i);
-    }
-    hash >>> 0;
-
-    // increase until unique
-    var routeId;
-    do {
-      routeId = hash.toString(36);
-    } while ((routeId in _routes) && ++hash);
-    _routes[routeId] = true;
-    _routeMap[appPath] = routeId;
-    return routeId;
   }
 };

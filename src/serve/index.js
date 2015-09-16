@@ -34,10 +34,11 @@ exports.serveWeb = function (opts, cb) {
 
   app.io = require('socket.io')(server);
 
-  // TODO: only run this with a specific cli arg
   // This is what the companion app connects to
-  var companionMonitorServer = new CompanionMonitorServer();
-  companionMonitorServer.start(app.io);
+  if (opts.remoteDebugging) {
+    var companionMonitorServer = new CompanionMonitorServer();
+    companionMonitorServer.start(app, app.io);
+  }
 
   app.use(compression({level: Z_BEST_COMPRESSION}));
 

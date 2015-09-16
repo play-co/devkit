@@ -25,7 +25,7 @@ import ..components.FrameBackground as FrameBackground;
 import ..components.CenterLayout as CenterLayout;
 import ..components.QRCode as QRCode;
 
-var QR_SIZE = 225;
+var QR_SIZE = 250;
 
 exports = Class(CenterLayout, function (supr) {
 
@@ -59,7 +59,6 @@ exports = Class(CenterLayout, function (supr) {
         {id: 'deviceName', text: 'My Device'},
       ]},
       {id: 'btnContainer', children: [
-        {id: 'run', class: 'btn', type: Button, text: 'Run'},
         {id: 'devtoolsLink', class: 'btn', tag: 'a', text: 'Open Dev Tools', attrs:{
           target: '_blank'
         }},
@@ -92,9 +91,6 @@ exports = Class(CenterLayout, function (supr) {
     supr(this, 'buildWidget', arguments);
     this.setPhoneConnected(this._isConnected);
     this.updateDeviceImage();
-    this.run.on('Select', bind(this, function() {
-      this._remote.run();
-    }));
   };
 
   this.setBuilding = function(isBuilding) {
@@ -104,11 +100,9 @@ exports = Class(CenterLayout, function (supr) {
       setTimeout(function () {
         $.removeClass(spinner, 'visible');
       }, 250);
-      spinner.style.pointerEvents = 'none'; // ?
     } else {
       this.addClass('building');
       $.addClass(spinner, 'visible');
-      spinner.style.pointerEvents = 'auto'; // ?
     }
   };
 
@@ -134,7 +128,7 @@ exports = Class(CenterLayout, function (supr) {
 
   this.updateDevtoolsLink = function(data) {
     if (data && data.devtoolsWsId) {
-      this.devtoolsLink.href = '//devtools.js.io/v1/front_end/?ws=' + data.devtoolsWsHost + ':9223/devtools/page/' + data.devtoolsWsId;
+      this.devtoolsLink.href = '//devtools.js.io/v1/front_end/?ws=' + location.hostname + ':9223/devtools/page/' + data.devtoolsWsId;
       $.removeClass(this.devtoolsLink, 'disabled');
     } else {
       this.devtoolsLink.removeAttribute('href');
