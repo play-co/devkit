@@ -21,9 +21,11 @@ var logger = logging.get('CompanionMonitorServer');
 
 var RemoteDebuggingProxy = require('devkit-remote-debugger-server');
 
-var Server = function(companionMonitorPort) {
+var Server = function(opts) {
   events.EventEmitter.call(this);
-  this.debuggerClientPort = 6000;
+  // Optionally override some of the defaults
+  this.debuggerClientPort = opts.remoteDebuggingPort;
+  this.debuggerHostOverride = opts.remoteDebuggingHost || null;
 
   this.browserSocket = null;
 
@@ -45,15 +47,18 @@ Server.prototype._resetBrowserData = function() {
   };
 };
 
-Server.prototype.start = function(httpServer, ioServer) {
-  logger.log('Starting server on port ' + this.companionMonitorPort);
-  // connect to the custom namespace '/remote' to avoid any collisions
-  ioServer.of('/remote').on('connection', this.onBrowserConnection.bind(this));
+/**
+ * @param  app - express app with .io
+ */
+Server.prototype.start = function(app) {
+  this.app = app;
 
-  this.httpServer = httpServer;
+  // connect to the custom namespace '/remote' to avoid any collisions
+  logger.log('Starting server on port ' + this.companionMonitorPort);
+  this.app.io.of('/companion/remote').on('connection', this.onBrowserConnection.bind(this));
 
   // Set up the companion rest endpoints
-  httpServer.get('/companion/info', function(req, res) {
+  app.get('/info', function(req, res) {
     if (!this.isSecretValid(req.query.secret)) {
       res.send({ success: false, message: 'invalid secret' });
       return;
@@ -81,7 +86,7 @@ Server.prototype.start = function(httpServer, ioServer) {
       });
   }.bind(this));
 
-  httpServer.get('/companion/build', function(req, res) {
+  app.get('/build', function(req, res) {
     // Check the secret
     if (!this.isSecretValid(req.query.secret)) {
       res.send({ success: false, message: 'invalid secret' });
@@ -123,10 +128,10 @@ Server.prototype.start = function(httpServer, ioServer) {
               success: true,
               route: routeId,
               shortName: app.manifest.shortName,
-              debuggerPort: 6000
-              // hostname // for the http request
+              debuggerPort: this.debuggerClientPort,
+              debuggerHost: this.debuggerHostOverride
             });
-          });
+          }.bind(this));
       }.bind(this))
       .catch(function(err) {
         logger.error('error while building', err);
@@ -160,9 +165,12 @@ Server.prototype.start = function(httpServer, ioServer) {
     }.bind(this));
   }.bind(this));
 
-  this.remoteDebuggingProxy.start({
-    clientPort: this.debuggerClientPort
-  });
+
+  logger.info('starting debugger server');
+  logger.info('  listening for phones on client path', '/remotedebugger');
+
+  this.app.ws('/remotedebugger', this.remoteDebuggingProxy.onClientConnection.bind(this.remoteDebuggingProxy));
+  this.remoteDebuggingProxy.start();
 };
 
 /** Make sure that there is a /bundle/latest route to that app */
@@ -170,13 +178,13 @@ Server.prototype.verifyHasRoute = function(shortName, appPath, buildPath) {
   var routeId = routeIdGenerator.get(appPath);
   if (this._staticPaths[routeId]) return;
 
-  this._staticPaths[routeId] = this.httpServer.use(
+  this._staticPaths[routeId] = this.app.use(
     '/companion/app/' + routeId + '/bundle/latest',
     express.static(path.join(buildPath, shortName + '.zip'))
   );
 };
 
-Server.prototype.onBrowserConnection = function (socket){
+Server.prototype.onBrowserConnection = function (socket) {
   logger.log('Browser connected');
   // Disconnect any old ones
   if (this.browserSocket) {

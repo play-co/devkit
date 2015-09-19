@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var printf = require('printf');
 var open = require('open');
 var events = require('events');
+var socketio = require('socket.io');
 
 var apps = require('../apps');
 
@@ -30,14 +31,22 @@ exports.serveWeb = function (opts, cb) {
   var port = opts.port;
 
   var app = express();
-  var server = http.Server(app);
-
-  app.io = require('socket.io')(server);
+  app.httpServer = http.Server(app);
+  // attach socket io
+  app.io = socketio(app.httpServer);
 
   // This is what the companion app connects to
   if (opts.remoteDebugging) {
-    var companionMonitorServer = new CompanionMonitorServer();
-    companionMonitorServer.start(app, app.io);
+    var companionApp = express();
+    app.use('/companion', companionApp);
+    // Shares the httpServer with the main app... otherwise the websocket apps dont play nice
+    require('express-ws')(companionApp, app.httpServer);
+
+    // TODO: really they shouldnt share the same socket io...
+    companionApp.io = app.io;
+
+    var companionMonitorServer = new CompanionMonitorServer(opts);
+    companionMonitorServer.start(companionApp);
   }
 
   app.use(compression({level: Z_BEST_COMPRESSION}));
@@ -64,7 +73,7 @@ exports.serveWeb = function (opts, cb) {
   app.use('/', express.static(getPath('static')));
 
   // Serve
-  server.listen(port, function () {
+  app.httpServer.listen(port, function () {
     if (opts.testApp) {
       exports.serveTestApp(port);
     }
@@ -85,7 +94,6 @@ exports.serveWeb = function (opts, cb) {
       cb = null;
     }
   });
-
 
 };
 

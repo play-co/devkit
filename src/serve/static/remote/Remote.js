@@ -29,12 +29,16 @@ exports = Class(function () {
     this._ui = new RemoteUi(this);
     this._ui.setConnected(false);
 
+    this._qrData = { secret: null, routeId: null };
+
     // connect to the custom namespace '/remote' to avoid any collisions
-    this._socket = io(window.location.origin + '/remote');
+    this._socket = io(window.location.origin + '/companion/remote');
 
     this._socket.on('initBrowserResponse', bind(this, function(message) {
-      var text = this.host + ',' + message.secret + ',' + message.routeId;
-      this._ui.setQRCodeText(text);
+      this._updateQRCode({
+        secret: message.secret,
+        routeId: message.routeId
+      });
       this._ui.updateDevtoolsLink(null);
     }));
 
@@ -67,6 +71,15 @@ exports = Class(function () {
 
   this.getUI = function () {
     return this._ui;
+  };
+
+  this._updateQRCode = function(opts) {
+    // maybe set new data
+    this._qrData.secret = opts.secret || this._qrData.secret;
+    this._qrData.routeId = opts.routeId || this._qrData.routeId;
+
+    var text = this.host + ',' + this._qrData.secret + ',' + this._qrData.routeId;
+    this._ui.setQRCodeText(text);
   };
 
   this.getApp = function () { return this._app; }
