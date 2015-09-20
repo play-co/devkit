@@ -128,7 +128,17 @@ exports = Class(CenterLayout, function (supr) {
 
   this.updateDevtoolsLink = function(data) {
     if (data && data.devtoolsWsId) {
-      this.devtoolsLink.href = '//devtools.js.io/v1/front_end/?ws=' + location.hostname + ':9223/devtools/page/' + data.devtoolsWsId;
+      var ws, url;
+      if (/js\.io/.test(location.hostname)) {
+        ws = location.hostname.replace(/^devkit-/, 'devtools-')
+          + '/devtools/page/' + data.devtoolsWsId;
+        url = 'http://devtools.js.io/v1/front_end/';
+      } else {
+        ws = 'localhost:9223/devtools/page/' + data.devtoolsWsId;
+        url = 'chrome-devtools://devtools/bundled/inspector.html';
+      }
+
+      this.devtoolsLink.href = url + '?ws=' + ws;
       $.removeClass(this.devtoolsLink, 'disabled');
     } else {
       this.devtoolsLink.removeAttribute('href');
