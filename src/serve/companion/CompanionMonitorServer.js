@@ -179,7 +179,7 @@ Server.prototype.verifyHasRoute = function(shortName, appPath, buildPath) {
   if (this._staticPaths[routeId]) return;
 
   this._staticPaths[routeId] = this.app.use(
-    '/companion/app/' + routeId + '/bundle/latest',
+    '/app/' + routeId + '/bundle/latest',
     express.static(path.join(buildPath, shortName + '.zip'))
   );
 };
