@@ -24,7 +24,6 @@ var RemoteDebuggingProxy = require('devkit-remote-debugger-server');
 var Server = function(opts) {
   events.EventEmitter.call(this);
   // Optionally override some of the defaults
-  this.debuggerClientPort = opts.remoteDebuggingPort;
   this.debuggerHostOverride = opts.remoteDebuggingHost || null;
 
   this.browserSocket = null;
@@ -128,7 +127,6 @@ Server.prototype.start = function(app) {
               success: true,
               route: routeId,
               shortName: app.manifest.shortName,
-              debuggerPort: this.debuggerClientPort,
               debuggerHost: this.debuggerHostOverride
             });
           }.bind(this));

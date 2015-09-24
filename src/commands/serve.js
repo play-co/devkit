@@ -20,9 +20,6 @@ var ServeCommand = Class(BaseCommand, function (supr) {
                 'broadcasts address using mdns for test app clients')
       .describe('remote-debugging',
                 'starts the built in remote debugging proxy. See https://github.com/gameclosure/devkit-remote-debugger-server')
-      .describe('remote-debugging-port',
-                'Sets the port for the remote debugging connection to use')
-        .default('remote-debugging-port', 6000)
       .describe('remote-debugging-host',
                 'Sets the host for the remote debugging connection to use (overrides the client just guessing the URL that devkit is served on)');
   };
@@ -42,8 +39,7 @@ var ServeCommand = Class(BaseCommand, function (supr) {
       singlePort: !!argv['single-port'],
       separateBuildProcess: !!argv['separate-build-process'],
       remoteDebugging: !!argv['remote-debugging'],
-      remoteDebuggingHost: argv['remote-debugging-host'],
-      remoteDebuggingPort: argv['remote-debugging-port']
+      remoteDebuggingHost: argv['remote-debugging-host']
     });
   };
 });
