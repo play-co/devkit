@@ -79,6 +79,10 @@ module.exports = Class(function () {
   }
 });
 
+function copy(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 module.exports.get = function(id, opts) {
   var info = module.exports.allInfo[id];
   if (info) { return new module.exports(info); }
