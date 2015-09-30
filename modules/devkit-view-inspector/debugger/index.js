@@ -50,7 +50,8 @@ var ViewInspector = Class(Widget, function(supr) {
     this._nodeIndex = {};
 
     var simulator = devkit.getSimulator();
-    var contentArea = simulator.getParent().parentNode;
+    var node = simulator.getParent();
+    var contentArea = node && node.parentNode || document.body;
 
     this._deepTrace = document.createElement("div");
     this._deepTrace.setAttribute("id", "_deepTrace");
