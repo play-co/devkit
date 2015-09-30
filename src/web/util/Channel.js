@@ -12,25 +12,22 @@ exports = Class(lib.PubSub, function (supr) {
     this._onTransportConnect = this._onTransportConnect.bind(this);
     this._onTransportDisconnect = this._onTransportDisconnect.bind(this);
     this._onTransportMessage = this._onTransportMessage.bind(this);
+    this._onConnect = new Promise(function (resolve) {
+      this.once('connect', resolve);
+    }.bind(this));
   };
 
   /**
    * returns a Promise that resolves once the channel is connected to another channel
    */
   this.connect = function () {
-    return new Promise(function (resolve, reject) {
-      if (this._isConnected) {
-        resolve();
-      } else {
-        this.once('connect', resolve);
-      }
-    }.bind(this));
+    return this._onConnect;
   };
 
   this._isConnected = false;
 
   // is someone on the other end of this channel listening
-  this.isConnected = function () { return this._isConnected; }
+  this.isConnected = function () { return this._isConnected; };
 
   this.disconnect =
   this.close = function () {
@@ -39,7 +36,6 @@ exports = Class(lib.PubSub, function (supr) {
 
   // internal: set an underlying transport
   this.setTransport = function (transport) {
-
     if (this._transport && this._transport != transport) {
       // tear-down an old transport
       this._transport
