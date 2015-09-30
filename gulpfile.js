@@ -20,7 +20,7 @@ var UglifyJS = require('uglify-js');
  *       builds docs into dist/
  */
 
-var MAIN_JS_FILES = ['index.js', 'apps.js', 'mobile/apps.js'];
+var MAIN_JS_FILES = ['index.js', 'apps.js', 'devkit.js', 'mobile/apps.js'];
 
 var paths = {
   'dest': 'src/serve/static/',
