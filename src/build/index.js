@@ -52,9 +52,7 @@ exports.build = function (appPath, argv, cb) {
     // app.acquireLock(f());
   }, function () {
     // _hasLock = true;
-    require('./steps/getConfig').getConfig(app, argv, f());
-  }, function (res) {
-    config = res;
+    config = require('./steps/getConfig').getConfig(app, argv);
     require('./steps/createDirectories').createDirectories(app, config, f());
   }, function () {
     require('./steps/buildHooks').getDependencies(app, config, f());
@@ -96,8 +94,9 @@ exports.build = function (appPath, argv, cb) {
     }
   }, function () {
     require('./steps/executeTargetBuild').build(app, config, f());
-  }, function () {
-    require('./steps/buildHooks').onAfterBuild(app, config, f());
+  }, function (buildRes) {
+    f(buildRes);
+    require('./steps/buildHooks').onAfterBuild(app, config, f.wait());
   })
     .error(function (err) {
       if (err.code == 'EEXIST' && !_hasLock) {

@@ -3,7 +3,7 @@ var path = require('path');
 var sdkVersion = require('../../../package.json').version;
 var deviceTypes = require('../../util/deviceTypes');
 
-exports.getConfig = function(app, argv, cb) {
+exports.getConfig = function(app, argv) {
   // NOTICE: we don't change the argv object
   var config = {};
 
@@ -87,5 +87,5 @@ exports.getConfig = function(app, argv, cb) {
     config.baseURL = argv.baseURL;
   }
 
-  cb(null, config);
-}
+  return config;
+};
