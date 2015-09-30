@@ -6,11 +6,11 @@ var readFile = Promise.promisify(fs.readFile);
 
 var express = require('express');
 
-var api = require('../api/');
 var apps = require('../apps/');
 var baseModules = require('../modules').getBaseModules();
 
 var logging = require('../util/logging');
+var routeIds = require('./routeIds');
 var buildQueue = require('./buildQueue');
 
 var logger = logging.get('routes');
@@ -41,6 +41,39 @@ exports.addToAPI = function (opts, api) {
     });
   });
 
+  // preload the routes for known apps
+  apps.getAppDirs()
+    .map(function (appPath) {
+      routeIds.generate(appPath);
+    });
+
+  // just-in-time app mounting -- makes it easy to restart devkit and
+  // keep the mounted-app routes alives
+  baseApp.use('/apps/:routeId/', function (req, res, next) {
+    var appPath = routeIds.lookup(req.params.routeId);
+    if (appPath) {
+      MountedApp.get(baseApp, appPath)
+        .then(function () {
+          next();
+        });
+    } else {
+      next();
+    }
+  });
+
+  api.get('/mount', function (req, res) {
+    MountedApp.get(baseApp, req.query.app)
+      .then(function (mountedApp) {
+        res.json(mountedApp);
+      })
+      .catch(function (e) {
+        res.status(500).send({
+          message: e.message,
+          stack: e.stack
+        });
+      });
+  });
+
   // Rebuilds the app for a requested target (e.g. browser-mobile) and scheme
   // (debug/release). Returns the url where the app is hosted.
   api.get('/simulate', function (req, res) {
@@ -56,14 +89,10 @@ exports.addToAPI = function (opts, api) {
 
     MountedApp.get(baseApp, req.query.app)
       .then(function (mountedApp) {
-        buildOpts.output = mountedApp.buildPath;
-        return buildQueue.add(mountedApp.app.paths.root, buildOpts)
+        return mountedApp.build(buildOpts)
           .then(function (buildResult) {
-            return [mountedApp, buildResult];
+            res.json(buildResult);
           });
-      })
-      .spread(function (mountedApp, buildResult) {
-        res.json(mountedApp);
       })
       .catch(function (e) {
         res.status(500).send({
@@ -105,50 +134,20 @@ exports.addToAPI = function (opts, api) {
   }
 };
 
-var RouteIds = (function () {
-  // tracks used route uuids
-  var _routes = {};
-  var _routeMap = {};
-
-  // create a unique route hash from the app path
-  return {
-    generate: function (appPath) {
-      if (appPath in _routeMap) {
-        return _routeMap[appPath];
-      }
-
-      // compute a hash
-      var hash = 5381;
-      var i = appPath.length;
-      while(i) {
-        hash = (hash * 33) ^ appPath.charCodeAt(--i);
-      }
-      hash >>> 0;
-
-      // increase until unique
-      var routeId;
-      do {
-        routeId = hash.toString(36);
-      } while ((routeId in _routes) && ++hash);
-      _routes[routeId] = true;
-      _routeMap[appPath] = routeId;
-      return routeId;
-    }
-  };
-})();
-
 var MountedApp = Class(EventEmitter, function () {
-  this.init = function (app, buildPath) {
-    this.id = RouteIds.generate(app.paths.root);
+  var api = require('../api/');
+
+  this.init = function (app) {
+    this.id = routeIds.generate(app.paths.root);
     this.expressApp = express();
     this.app = app;
     this.url = '/apps/' + this.id + '/';
     this.sockets = [];
     this.debuggerURLs = {};
-    this.buildPath = buildPath;
+    this.buildPath = path.join(app.paths.root, 'build', 'debug', 'simulator');
 
     // setup routes
-    this.expressApp.use('/', express.static(buildPath));
+    this.expressApp.use('/', express.static(this.buildPath));
 
     var modules = app.getModules();
     Object.keys(modules).forEach(function (moduleName) {
@@ -161,20 +160,39 @@ var MountedApp = Class(EventEmitter, function () {
     }, this);
   };
 
+  this.getLastBuildConfig = function () {
+    return this._lastConfig;
+  };
+
+  this.build = function (opts) {
+    opts.output = this.buildPath;
+
+    // approximate build config -- TODO: get real config
+    var config = require('../build/steps/getConfig').getConfig(this.app, opts);
+    this._lastConfig = config;
+
+    return buildQueue.add(this.app.paths.root, opts);
+  };
+
   this.loadExtensions = function (module) {
     var route = '/modules/' + module.name;
     var info = module.getExtension('debugger');
     if (info) {
       // mount dynamic routes
       if (info.routes) {
-        var moduleRoutes = express();
-        var routes = require(path.join(module.path, info.routes));
-        if (routes.init) {
-          routes.init(api, this.app.toJSON(), moduleRoutes);
-          this.expressApp.use(route, moduleRoutes);
-        } else {
-          logger.warn('expecting an init function for the routes of',
-              module.path + ', but init was not found!');
+        try {
+          var moduleRoutes = express();
+          var routes = require(path.join(module.path, info.routes));
+          if (routes.init) {
+            routes.init(api, this.app.toJSON(), moduleRoutes);
+            this.expressApp.use(route, moduleRoutes);
+          } else {
+            logger.warn('expecting an init function for the routes of',
+                module.path + ', but init was not found!');
+          }
+        } catch (e) {
+          console.error('Unable to load debugger extension from', module.name);
+          console.error(e.stack || e);
         }
       }
 
@@ -212,27 +230,36 @@ var MountedApp = Class(EventEmitter, function () {
       url: this.url,
       appPath: this.app.paths.root,
       buildPath: this.buildPath,
-      debuggerURLs: this.debuggerURLs
+      debuggerURLs: this.debuggerURLs,
+      manifest: this.app.manifest
     };
   };
 });
 
-MountedApp._appsByPath = {};
-MountedApp.get = function (baseApp, appPath) {
-  appPath = path.normalize(appPath
+
+
+function resolvePath(appPath) {
+  return path.normalize(appPath
       .replace(/^~[\/\\]/, HOME + path.sep)
       .replace(/[\/\\]/g, path.sep));
+}
 
-  var buildPath = path.join(appPath, 'build', 'debug', 'simulator');
+MountedApp._appsByPath = {};
+MountedApp.get = function (baseApp, appPath) {
+  appPath = resolvePath(appPath);
 
   if (!MountedApp._appsByPath[appPath]) {
     MountedApp._appsByPath[appPath] = apps.get(appPath)
       .then(function (app) {
-        var mountedApp = new MountedApp(app, buildPath);
+        var mountedApp = new MountedApp(app);
         baseApp.use('/apps/' + mountedApp.id, mountedApp.expressApp);
         return mountedApp;
       });
   }
 
   return MountedApp._appsByPath[appPath];
+};
+
+exports.getMountedApp = function (appPath) {
+  return MountedApp._appsByPath[resolvePath(appPath)];
 };
