@@ -26,6 +26,7 @@ import squill.Delegate;
 
 import ..util.Size as Size;
 import ..util.DeviceInfo as DeviceInfo;
+import ..util.bluebird as Promise;
 
 import ..components.FrameBackground as FrameBackground;
 import ..components.CenterLayout as CenterLayout;

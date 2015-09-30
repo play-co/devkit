@@ -1,4 +1,5 @@
 import lib.PubSub;
+import .bluebird as Promise;
 
 exports = Class(lib.PubSub, function (supr) {
 
