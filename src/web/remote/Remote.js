@@ -7,6 +7,7 @@ import ..util.DeviceInfo as DeviceInfo;
 
 import ..util.upgrade;
 
+import .RemoteAPI;
 import .RemoteUi;
 
 var defaultParentNode = document.querySelector('devkit') || document.body;
@@ -32,41 +33,37 @@ exports = Class(function () {
     this._qrData = { secret: null, routeId: null };
 
     // connect to the custom namespace '/remote' to avoid any collisions
-    this._socket = io(window.location.origin + '/companion/remote');
+    var RemoteAPI = GC.RemoteAPI;
+    var socketUrl = window.location.origin + '/companion/remotesocket/ui';
+    RemoteAPI.init(socketUrl);
 
-    this._socket.on('initBrowserResponse', bind(this, function(message) {
+    RemoteAPI.on('connectionStatus', function (data) {
+      this._ui.setConnected(data.connected);
+      if (data.connected) {
+        RemoteAPI.send('initBrowserRequest', {
+          appPath: this._app
+        });
+      }
+    }.bind(this));
+
+    RemoteAPI.on('initBrowserResponse', function (message) {
       this._updateQRCode({
         secret: message.secret,
         routeId: message.routeId
       });
       this._ui.updateDevtoolsLink(null);
-    }));
+    }.bind(this));
 
-    this._socket.on('clientConnected', bind(this, function(isConnected) {
+    RemoteAPI.on('clientConnected', function (isConnected) {
       this._ui.setPhoneConnected(isConnected);
-    }));
+    }.bind(this));
 
-    this._socket.on('connect', bind(this, function() {
-      this._ui.setConnected(true);
-      this._socket.emit('initBrowserRequest', { app: this._app });
-    }));
-
-    // This is called frequently to sync serverside data with this client
-    this._socket.on('browserData', bind(this, function(data) {
+    RemoteAPI.on('browserData', function (data) {
       // TODO: make this less janky
       this._ui.setPhoneConnected((data && data.devtoolsWsId));
 
       this._ui.updateDevtoolsLink(data);
-    }));
-
-    // Connection status
-    this._socket.on('disconnect', bind(this, function(data) {
-      this._ui.setConnected(false);
-    }));
-
-    this._socket.on('reconnect', bind(this, function(data) {
-      this._ui.setConnected(true);
-    }));
+    }.bind(this));
   };
 
   this.getUI = function () {
