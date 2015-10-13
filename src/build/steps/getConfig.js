@@ -33,7 +33,8 @@ exports.getConfig = function(app, argv) {
     modules: []
   };
 
-  config.spriteImages = true;
+  config.spriteImages = 'sprite-images' in argv ? !!argv['sprite-images']
+                                                : !config.isSimulated;
 
   var serverName;
   if (config.isSimulated) {
