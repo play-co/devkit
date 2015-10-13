@@ -36,7 +36,6 @@ exports.getResourceDirectories = function (app, config, cb) {
         var target = path.join('modules', module.name, directory.target);
         builder.add(directory.src, target);
       });
-      console.log(res);
     })
     .then(function () {
       // add any localized resource directories
