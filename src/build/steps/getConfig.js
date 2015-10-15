@@ -33,7 +33,11 @@ exports.getConfig = function(app, argv) {
     modules: []
   };
 
-  config.spriteImages = 'sprite-images' in argv ? !!argv['sprite-images']
+  // devkit-core v3 requires this to be true
+  config.spriteImages = true;
+
+  // devkit-core v4 enable/disable spriter
+  config.createSpritesheets = 'sprite-images' in argv ? !!argv['sprite-images']
                                                 : !config.isSimulated;
 
   var serverName;
