@@ -17,99 +17,118 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
 
   this.exec = function (command, args, cb) {
     var path = require('path');
-    var ff = require('ff');
     var chalk = require('chalk');
 
     var apps = require('../apps');
     var Module = require('../modules/Module');
-
     var stringify = require('../util/stringify');
 
     var argv = this.opts.argv;
     var moduleName = args.shift();
     var isJSON = argv.json;
-    apps.get('.', bind(this, function (err, app) {
-      if (err) { throw err; }
+    var allModules = argv.r || argv.recursive || argv.all;
 
-      if (!isJSON) {
-        console.log(chalk.yellow(app.paths.root));
-      }
+    apps.get('.')
+      .then(function (app) {
+        if (!isJSON) {
+          console.log(chalk.yellow(app.paths.root));
+        }
 
-      var modules = app.getModules();
-      var res = {};
-      var f = ff(function () {
+        var modules = app.getModules();
         if (moduleName) {
           if (!modules[moduleName]) {
-            return f.fail("no module found with name " + moduleName);
+            throw new Error("no module found with name " + moduleName);
           }
 
-          handleModule(modules[moduleName], f());
-        } else {
-          for (var name in modules) {
-            if (modules[name].isDependency) {
-              handleModule(modules[name], f());
-            }
-          }
-        }
-      }, function () {
-        if (isJSON) {
-          console.log(stringify(res));
-        }
-      }).cb(cb);
-
-      function handleModule(module, cb) {
-
-        var moduleName = module.name;
-        var version = module.version;
-        if (argv['list-versions']) {
-          Module.getVersions(path.join(app.paths.modules, moduleName), function (err, info) {
-            if (err) { return cb && cb(err); }
-            if (isJSON) {
-              res[moduleName] = info.versions;
-            } else {
-              console.log(chalk.cyan('available versions'), moduleName ? chalk.cyan('for module ') + chalk.yellow(moduleName) : '');
-              console.log(info.versions.map(function (version) {
-                return version == info.current ? chalk.yellow(version) : version;
-              }).join('\t'));
-            }
-
-            cb && cb();
-          });
-        } else {
-          Module.describeVersion(path.join(app.paths.modules, moduleName), function (err, currentVersion) {
-            if (err) { return cb && cb(err); }
-
-            if (argv['save-current']) {
-              if (version != currentVersion.tag && version != currentVersion.hash) {
-                // prefer tag names over hashes
-                var name = currentVersion.tag || currentVersion.hash;
-                console.log(chalk.yellow(moduleName) + ':', chalk.red(version), "-->", chalk.cyan(name));
-                app.addDependency(moduleName, {
-                  version: name
-                });
+          return onModule(app, modules[moduleName])
+            .then(function (info) {
+              if (info) {
+                console.log(stringify(res));
               }
-            } else {
+            });
+        } else {
+          var res = {};
+          return Promise.map(Object.keys(modules), function (name) {
+              if (modules[name].isDependency || allModules) {
+                return onModule(app, modules[name])
+                  .then(function (info) {
+                    res[name] = info;
+                  })
+                  .catch(function (e) {
+                    if (e.code == 'ENOENT') {
+                      console.error('Module', name, 'does not exist');
+                    } else {
+                      throw e;
+                    }
+                  });
+              }
+            })
+            .then(function () {
               if (isJSON) {
-                res[moduleName] = {
-                  version: version,
-                  currentVersion: currentVersion
-                };
-              } else {
-                var name = currentVersion.tag
-                  ? currentVersion.tag + ' (' + currentVersion.hash + ')'
-                  : currentVersion.hash;
-
-                console.log(moduleName + ':');
-                console.log('\tmanifest version:', version);
-                console.log('\tcurrent version:', name);
+                console.log(stringify(res));
               }
-            }
-
-            cb && cb();
-          });
+            });
         }
-      }
-    }));
+      })
+      .nodeify(cb);
+
+    function onModule(app, module) {
+      return (argv['list-versions'] ? listVersions : describeVersion)(app, module);
+    }
+
+    function listVersions(app, module) {
+      return Module.getVersions(module.path)
+        .then(function (info) {
+          if (isJSON) {
+            return info.versions;
+          } else {
+            console.log(chalk.cyan('available versions'),
+                module.name ? chalk.cyan('for module ')
+                              + chalk.yellow(module.name)
+                            : '');
+
+            console.log(info.versions.map(function (version) {
+              return version == info.current ? chalk.yellow(version) : version;
+            }).join('\t'));
+          }
+        });
+    }
+
+    function describeVersion(app, module) {
+      var version = module.version;
+      return Module.describeVersion(module.path)
+        .then(function (currentVersion) {
+          if (argv['save-current']) {
+            if (version != currentVersion.tag && version != currentVersion.hash) {
+              // prefer tag names over hashes
+              var name = currentVersion.tag || currentVersion.hash;
+              console.log(chalk.yellow(module.name) + ':', chalk.red(version), "-->", chalk.cyan(name));
+              app.addDependency(module.name, {
+                version: name
+              });
+            }
+          } else {
+            if (isJSON) {
+              return {
+                version: version,
+                currentVersion: currentVersion,
+                path: module.path
+              };
+            } else {
+              var name = currentVersion.tag
+                ? currentVersion.tag + ' (' + currentVersion.hash + ')'
+                : currentVersion.hash;
+
+              console.log(module.name + ':');
+              console.log('\tlocation:', module.path);
+              console.log('\tinstalled version:', name);
+              console.log('\trequested version:', version, '(in manifest.json)');
+            }
+          }
+
+          cb && cb();
+        });
+    }
   };
 
 });

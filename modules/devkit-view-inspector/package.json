@@ -3,8 +3,11 @@
   "version": "0.0.1",
   "devkit": {
     "extensions": {
-      "debugger": "debugger",
-      "devkit-simulator": "client"
+      "debugger": {
+        "static": "build/",
+        "main": "compiled.js"
+      },
+      "devkit-simulator": "simulator"
     }
   },
   "devDependencies": {

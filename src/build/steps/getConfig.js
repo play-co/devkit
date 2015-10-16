@@ -3,7 +3,7 @@ var path = require('path');
 var sdkVersion = require('../../../package.json').version;
 var deviceTypes = require('../../util/deviceTypes');
 
-exports.getConfig = function(app, argv, cb) {
+exports.getConfig = function(app, argv) {
   // NOTICE: we don't change the argv object
   var config = {};
 
@@ -33,7 +33,12 @@ exports.getConfig = function(app, argv, cb) {
     modules: []
   };
 
+  // devkit-core v3 requires this to be true
   config.spriteImages = true;
+
+  // devkit-core v4 enable/disable spriter
+  config.createSpritesheets = 'sprite-images' in argv ? !!argv['sprite-images']
+                                                : !config.isSimulated;
 
   var serverName;
   if (config.isSimulated) {
@@ -87,5 +92,5 @@ exports.getConfig = function(app, argv, cb) {
     config.baseURL = argv.baseURL;
   }
 
-  cb(null, config);
-}
+  return config;
+};

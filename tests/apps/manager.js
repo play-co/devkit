@@ -1,6 +1,5 @@
 var path = require('path');
-var rimraf = require('rimraf');
-var copy = require(path.join(__src, 'util/copy'));
+var fs = require('fs-extra');
 
 var App = require(path.join(__src, 'apps', 'App'));
 var AppManager = require(path.join(__src, 'apps'));
@@ -23,12 +22,12 @@ describe('App', function () {
   describe('loadFromPath', function () {
     before(function (done) {
       // make a copy of noAppID project
-      copy.path(noAppIDManifest, noAppIDManifestCopy).then(done);
+      fs.copy(noAppIDManifest, noAppIDManifestCopy, done);
     });
 
     after(function (done) {
       // remove copy of noAppID project
-      rimraf(noAppIDManifestCopy, done);
+      fs.remove(noAppIDManifestCopy, done);
     });
 
     it('should generate an appID if an empty one exists', function (done) {

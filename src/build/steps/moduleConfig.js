@@ -12,7 +12,7 @@ exports.getConfig = function(app, config, cb) {
   });
 
   if (buildModule && buildModule.configure) {
-    buildModule.configure(api, app, config, function (err, res) {
+    buildModule.configure(api, app.toJSON(), config, function (err, res) {
       if (err) {
         logger.error("Could not configure build", err);
       }
@@ -22,4 +22,4 @@ exports.getConfig = function(app, config, cb) {
   } else {
     cb(null, config);
   }
-}
+};

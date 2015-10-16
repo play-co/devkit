@@ -26,6 +26,7 @@ var ServeCommand = Class(BaseCommand, function (supr) {
 
   this.exec = function () {
     var fs = require('fs');
+    require('../util/logging').install();
 
     if (fs.existsSync('manifest.json')) {
       require('../apps').get('.');

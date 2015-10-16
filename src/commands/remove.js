@@ -11,32 +11,26 @@ var RemoveCommand = Class(BaseCommand, function (supr) {
 
     this.opts
       .describe('--cache', 'removes the module from the DevKit module cache');
-  }
+  };
 
   this.exec = function (command, args, cb) {
-    var fs = require('fs');
-    var ff = require('ff');
-
-    var path = require('path');
-    var rimraf = require('rimraf');
-    var cache = require('../install/cache');
-
     var apps = require('../apps');
-
+    var cache = require('../install/cache');
     var argv = this.opts.argv;
-    var protocol = argv.ssh ? 'ssh' : 'https';
     var module = args.shift();
 
-    var f = ff(this, function () {
-      apps.get('.', f());
-    }, function (app) {
-      app.removeDependency(module, f.wait());
-      if (argv.cache) {
-        this.logger.log('removing from cache...');
-        cache.remove(module, f.wait());
-      }
-    }).cb(cb);
-  }
+    apps.get('.')
+      .then(function (app) {
+        return app.removeDependency(module);
+      })
+      .then(function () {
+        if (argv.cache) {
+          this.logger.log('removing from cache...');
+          return cache.remove(module);
+        }
+      })
+      .nodeify(cb);
+  };
 });
 
 module.exports = RemoveCommand;

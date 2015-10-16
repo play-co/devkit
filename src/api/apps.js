@@ -13,13 +13,6 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-var fs = require('fs');
-var path = require('path');
-var printf = require('printf');
-var walk = require('../util/walk').walk;
-var EventEmitter = require('events').EventEmitter;
-var apps = require('../apps');
-
 /**
  ** WARNING
  **
@@ -34,4 +27,4 @@ exports.get = function (app, cb) {
   // get the JSON for this app
   // see toJSON methods for App and Module for API
   cb && cb(null, app && app.toJSON());
-}
+};

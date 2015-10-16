@@ -91,6 +91,7 @@ var BuildItem = Class(function () {
         }
       }.bind(this))
       .timeout(5000)
+      .bind(this)
       .catch(Promise.TimeoutError, function () {
         logger.warn('build did not stop, killing...');
         this._build.kill('SIGKILL');

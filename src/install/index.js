@@ -2,16 +2,13 @@ var fs = require('fs');
 var chalk = require('chalk');
 var path = require('path');
 var logger = require('../util/logging').get('install');
-var gitClient = require('../util/gitClient');
 var Module = require('../modules/Module');
 
 var cache = require('./cache');
-var FileLockerError = require('../util/lockfile').FileLockerError;
 
-exports.installDependencies = function (app, opts, cb) {
+exports.installDependencies = function (app, opts) {
   // serially install all dependencies in the manifest
   var deps = app.manifest.dependencies;
-  var index = 0;
   var names = Object.keys(deps);
   return Promise.map(names, function (name) {
     if (name && name !== 'devkit') {
@@ -66,15 +63,13 @@ function resolveRequestedModuleVersion (app, moduleName, version, opts) {
 }
 
 exports.installModule = function (app, moduleName, opts, cb) {
-  var appPath = app.paths.root;
-
   if (!opts) { opts = {}; }
 
   var url = opts.url;
   var version = opts.version;
 
   if (opts.url) {
-    urlInfo = parseURL(url, opts.protocol);
+    var urlInfo = parseURL(url, opts.protocol);
     url = urlInfo.url;
     version = urlInfo.version;
   }
@@ -259,7 +254,6 @@ function copyModuleIntoApp (app, cacheEntry) {
 function addModuleToApp (app, cacheEntry, moduleName, opts) {
   trace('addModuleToApp cacheEntry:', cacheEntry);
   moduleName = cacheEntry && cacheEntry.name || moduleName;
-  var modulePath = path.join(app.paths.modules, moduleName);
 
   if (opts.link) {
     return linkModuleIntoApp(app, cacheEntry);

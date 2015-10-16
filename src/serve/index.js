@@ -14,10 +14,7 @@ var ip = require('../util/ip');
 var logging = require('../util/logging');
 
 var config = require('../config');
-var jvmtools = require('../jvmtools');
 
-var stylus = require('./stylus');
-var importMiddleware = require('./import');
 var appRoutes = require('./appRoutes');
 
 var logger = logging.get('serve');
@@ -61,12 +58,6 @@ exports.serveWeb = function (opts, cb) {
     app: app
   }, opts)));
 
-  // serve compiled CSS
-  app.use('/', stylus(getPath('static')));
-
-  // serve compiled JS
-  app.use('/compile/', importMiddleware(getPath('static/')));
-
   // serve static files
   var devkitPath = path.resolve(__dirname, '..', '..');
   app.use('/devkit/', express.static(devkitPath));
@@ -95,22 +86,6 @@ exports.serveWeb = function (opts, cb) {
     }
   });
 
-};
-
-exports.serveTestApp = function (port) {
-  // Launch multicast server (only on OS X for now)
-  var addresses = ip.getLocalIP();
-  var address = addresses[0];
-  if (address) {
-    var hostname = require('os').hostname();
-    jvmtools.exec({
-      tool: 'jmdns',
-      args: [
-        '-rs', hostname, 'devkit._tcp', 'local', port
-      ]
-    }, function (err, stdout, stderr) {
-    });
-  }
 };
 
 function getAPIRouter(opts) {
@@ -211,18 +186,6 @@ function getAPIRouter(opts) {
   // usage: make a GET request to /api/ip
   api.get('/ip', function (req, res) {
     res.json({ip: ip.getLocalIP()});
-  });
-
-  // a better js syntax checker
-  api.use('/syntax', bodyParser.urlencoded({extended: true}));
-  api.post('/syntax', function(req, res) {
-    jvmtools.checkSyntax(req.body.javascript, function (err, syntaxErrors) {
-      if (err) {
-        res.send([false, err]);
-      } else {
-        res.send([true, syntaxErrors]);
-      }
-    });
   });
 
   appRoutes.addToAPI(opts, api);

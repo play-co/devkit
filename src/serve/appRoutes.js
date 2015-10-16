@@ -1,16 +1,16 @@
 var path = require('path');
 var fs = require('fs');
+var EventEmitter = require('events').EventEmitter;
 var Promise = require('bluebird');
 var readFile = Promise.promisify(fs.readFile);
 
 var express = require('express');
-var bodyParser = require('body-parser');
 
 var apps = require('../apps/');
 var baseModules = require('../modules').getBaseModules();
 
-var jvmtools = require('../jvmtools');
 var logging = require('../util/logging');
+var routeIds = require('./routeIds');
 var buildQueue = require('./buildQueue');
 var routeIdGenerator = require('./routeIdGenerator');
 
@@ -23,6 +23,7 @@ var HOME = process.env.HOME
       || process.env.USERPROFILE;
 var ROUTE_INACTIVE_TIME_LIMIT = 30 * 60 * 1000;
 
+
 exports.addToAPI = function (opts, api) {
 
   var modulesApp = express();
@@ -30,48 +31,96 @@ exports.addToAPI = function (opts, api) {
 
   // root express app
   var baseApp = opts.app;
+  baseApp.io.on('connection', function(socket) {
+    logger.info('socket connected');
+
+    socket.on('handshake', function (appPath) {
+      MountedApp.get(appPath)
+        .then(function (mountedApp) {
+          mountedApp.addSocket(socket);
+        });
+    });
+
+    socket.on('watch', function(appPath) {
+      // Add this socket to the app
+      var app = getAppByPath(appPath);
+      if (app) {
+        app.sockets.push(socket);
+      }
+    });
+
+    socket.on('disconnect', function() {
+      logger.info('socket disconnect');
+    });
+  });
+
+  // preload the routes for known apps
+  apps.getAppDirs()
+    .map(function (appPath) {
+      routeIds.generate(appPath);
+    });
+
+  // just-in-time app mounting -- makes it easy to restart devkit and
+  // keep the mounted-app routes alives
+  baseApp.use('/apps/:routeId/', function (req, res, next) {
+    var appPath = routeIds.lookup(req.params.routeId);
+    if (appPath) {
+      MountedApp.get(appPath)
+        .then(function (mountedApp) {
+          mountedApp.expressApp(req, res, next);
+        });
+    } else {
+      next();
+    }
+  });
+
+  api.get('/mount', function (req, res) {
+    MountedApp.get(req.query.app)
+      .then(function (mountedApp) {
+        res.json(mountedApp);
+      })
+      .catch(function (e) {
+        res.status(500).send({
+          message: e.message,
+          stack: e.stack
+        });
+      });
+  });
 
   // Rebuilds the app for a requested target (e.g. browser-mobile) and scheme
   // (debug/release). Returns the url where the app is hosted.
   api.get('/simulate', function (req, res) {
-    var opts;
-    if (req.query.mobile == 'true') {
-      // from the mobile site
-      opts = {
-        app: req.query.app,
-        target: 'browser-mobile',
-        scheme: 'debug'
+    // from the mobile site
+    var isMobile = (req.query.mobile == 'true');
+    var buildOpts = {
+        target: isMobile ? 'browser-mobile' : req.query.target,
+        scheme: isMobile ? 'debug' : req.query.scheme,
+        simulated: true,
+        simulateDeviceId: req.query.deviceId,
+        simulateDeviceType: req.query.deviceType
       };
-    } else if (req.query.remote == 'true') {
-      opts = {
-        app: req.query.app,
-        target: 'native-archive',
-        scheme: 'debug'
-      };
-    } else {
-      opts = {
-        app: req.query.app,
-        target: req.query.target,
-        scheme: req.query.scheme,
-        deviceId: req.query.deviceId,
-        deviceType: req.query.deviceType
-      };
-    }
 
-    buildFromRequest(opts)
-      .spread(function (mountInfo, buildResult) {
-        res.json(mountInfo);
-        // Finally, add all of the resource routes (some are dynamically added at build by devkit modules)
-        var simulatorApp = getAppByPath(mountInfo.appPath);
-        if (!simulatorApp._areResourcesMounted) {
-          simulatorApp._areResourcesMounted = true;
-          buildResult.config.directories.forEach(function(resource) {
-            simulatorApp.use(
-              path.join('/' + resource.target),
-              express.static(resource.src)
-            );
+      if (req.query.remote == 'true') {
+        buildOpts.target = 'native-archive';
+      }
+
+    MountedApp.get(req.query.app)
+      .then(function (mountedApp) {
+        return mountedApp.build(buildOpts)
+          .then(function (buildResult) {
+            res.json(buildResult);
+            // Finally, add all of the resource routes (some are dynamically added at build by devkit modules)
+            var simulatorApp = mountedApp.expressApp;
+            if (!simulatorApp._areResourcesMounted) {
+              simulatorApp._areResourcesMounted = true;
+              buildResult.config.directories.forEach(function(directory) {
+                simulatorApp.use(
+                  path.join('/' + directory.target),
+                  express.static(directory.src)
+                );
+              });
+            }
           });
-        }
       })
       .catch(function (e) {
         logger.error('Error mounting app', e.stack);
@@ -82,30 +131,23 @@ exports.addToAPI = function (opts, api) {
       });
   });
 
-  function mountAppFromRequest(opts) {
-    var appPath = opts.app.replace(/^~[\/\\]/, HOME + path.sep);
-    var buildPath = path.join(appPath, 'build', 'debug', 'simulator');
-    return mountApp(appPath, buildPath);
-  }
-
-  function buildFromRequest(opts) {
-    return mountAppFromRequest(opts)
-      .then(function (mountInfo) {
-        var buildOpts = {
-          target: opts.target,
-          scheme: opts.scheme,
-          simulated: true,
-          simulateDeviceId: opts.deviceId,
-          simulateDeviceType: opts.deviceType,
-          output: mountInfo.buildPath
-        };
-
-        return buildQueue.add(mountInfo.appPath, buildOpts)
-          .then(function (buildResult) {
-            return [mountInfo, buildResult];
+  api.get('/mobileIndex', function (req, res) {
+    MountedApp.get(req.query.app)
+      .then(function (mountedApp) {
+        var filePath = mountedApp.buildPath;
+        return readFile(path.join(filePath, 'index.html'), 'utf8')
+          .then(function (html) {
+            var baseURL = mountedApp.url;
+            res.send(simulateMobileHTML(html, baseURL));
           });
+      })
+      .catch(function (e) {
+        res.status(500).send({
+          message: e.message,
+          stack: e.stack
+        });
       });
-  }
+  });
 
   function simulateMobileHTML(html, baseURL) {
     var baseTag = '<base href="'
@@ -119,220 +161,216 @@ exports.addToAPI = function (opts, api) {
 
     return html;
   }
+};
 
-  api.get('/mobileIndex', function (req, res) {
-    mountAppFromRequest({
-      app: req.query.app
-    })
-      .bind({})
-      .then(function (mountInfo) {
-        this.mountInfo = mountInfo;
-        var filePath = mountInfo.buildPath;
-        return readFile(path.join(filePath, 'index.html'), 'utf8');
-      })
-      .then(function (html) {
-        var baseURL = this.mountInfo.url;
-        res.send(simulateMobileHTML(html, baseURL));
-      })
-      .catch(function (e) {
-        res.status(500).send({
-          message: e.message,
-          stack: e.stack
-        });
-      });
-  });
+var MountedApp = Class(EventEmitter, function () {
+  var api = require('../api/');
 
-  function addSimulatorAPI(app) {
-    // a better js syntax checker
-    app.use('/api/syntax', bodyParser.urlencoded({extended: true}));
-    app.post('/api/syntax', function(req, res) {
-      jvmtools.checkSyntax(req.body.javascript, function (err, syntaxErrors) {
-        if (err) {
-          res.send([false, err]);
-        } else {
-          res.send([true, syntaxErrors]);
-        }
-      });
-    });
-  }
+  this.init = function (app) {
+    this.id = routeIds.generate(app.paths.root);
+    this.expressApp = express();
+    this.app = app;
+    this.url = '/apps/' + this.id + '/';
+    this.sockets = [];
+    this.debuggerURLs = {};
+    this.buildPath = path.join(app.paths.root, 'build', 'debug', 'simulator');
 
-  // Promises that resolve with mount info once ready
-  var _mountedApps = {};
-  // Map of appId -> app
-  var _availableSimulatorApps = {};
-  var getAppByPath = function(appPath) {
-    for (var appId in _availableSimulatorApps) {
-      var app = _availableSimulatorApps[appId];
-      if (app.appPath === appPath) {
-        return app;
-      }
-    }
-    return null;
-  };
+    // setup routes //
 
-  baseApp.use('/apps/:appId', function(req, res, next) {
-    var app = _availableSimulatorApps[req.params.appId];
-    if (app) {
-      app(req, res, next);
-    } else {
-      next();
-    }
-  });
-
-  baseApp.io.on('connection', function(socket) {
-    logger.info('socket connected');
-
-    socket.on('watch', function(appPath) {
-      // Add this socket to the app
-      var app = getAppByPath(appPath);
-      if (app) {
-        app.sockets.push(socket);
-      }
-    });
-
-    socket.on('disconnect', function() {
-      logger.info('socket disconnect');
-    });
-
-  });
-
-  function mountApp(appPath, buildPath) {
-    var routeId = routeIdGenerator.get(appPath);
-
-    if (!_mountedApps[appPath]) {
-      _mountedApps[appPath] = apps.get(appPath)
-        .then(function mountExtensions(app) {
-          var simulatorApp = express();
-
-          // Special case src directories
-          simulatorApp.use(
-            '/modules',
-            express.static(path.join(appPath, 'modules'))
-          );
-          simulatorApp.use(
-            '/src',
-            express.static(path.join(appPath, 'src'))
-          );
-          simulatorApp.use(
-            '/lib',
-            express.static(path.join(appPath, 'lib'))
-          );
-
-          simulatorApp._areResourcesMounted = false;
-
-          // Static serve builds
-          simulatorApp.use('/', express.static(buildPath));
-
-          addSimulatorAPI(simulatorApp);
-
-          var modules = app.getModules();
-          var debuggerURLs = {};
-          var simulatorURLs = {};
-          var loadExtension = function (module) {
-            var extension = module.loadExtension('debugger');
-            if (!extension || !extension.getMiddleware) { return; }
-
-            try {
-              var routes = extension.getMiddleware(require('../api'), app);
-              if (!routes) { return; }
-
-              var routeName;
-
-              if (routes.simulator) {
-                routeName = '/modules/' + module.name;
-                simulatorApp.use(routeName, routes.simulator);
-                simulatorURLs[module.name] = '/apps/' + routeId + routeName;
-              }
-
-              if (routes.debugger) {
-                routeName = '/' + routeId + '/' + module.name;
-                modulesApp.use(routeName, routes.debugger);
-                debuggerURLs[module.name] = '/api/modules' + routeName;
-              }
-            } catch (e) {
-              logger.error('Unable to mount simulator middleware for',
-                           module.name, e);
-            }
-          };
-
-          Object.keys(modules).forEach(function (moduleName) {
-            var module = modules[moduleName];
-            loadExtension(module);
-          });
-
-          baseModules.forEach(function (module) { loadExtension(module); });
-
-          // Add socket connection
-          simulatorApp.sockets = [];
-          simulatorApp.socketEmit = function(name, data) {
-            simulatorApp.sockets.forEach(function(socket) {
-              socket.emit(name, data);
-            });
-          };
-
-          // Everything is set, add some file watchers
-          simulatorApp.watchers = [];
-          simulatorApp.watchers.push(
-            chokidar.watch(
-              [
-                path.join(appPath, 'manifest.json'),
-                path.join(appPath, 'src'),
-                path.join(appPath, 'resources')
-              ],
-              { recursive: true, followSymLinks: false, persistent: true, ignoreInitial: true }
-            ).on('all', function(event, path) {
-              logger.info(routeId + ': changed ' + path);
-              simulatorApp.socketEmit('watch:changed', path);
-            })
-          );
-
-          // Meta data
-          simulatorApp.appPath = appPath;
-
-          // Add to available routes, return info
-          _availableSimulatorApps[routeId] = simulatorApp;
-          return {
-              id: routeId,
-              url: '/apps/' + routeId + '/',
-              appPath: appPath,
-              buildPath: buildPath,
-              simulatorURLs: simulatorURLs,
-              debuggerURLs: debuggerURLs
-            };
-        });
-    }
-
-    // Remove and clean up the routes after a bit of inactivity
-    var mountedApp = _mountedApps[appPath];
-    // remove the old timeout
-    if (mountedApp.cleanupTimeout) {
-      clearTimeout(mountedApp.cleanupTimeout);
-    }
-    mountedApp.cleanupTimeout = setTimeout(
-      unmountApp.bind(null, appPath, routeId),
-      ROUTE_INACTIVE_TIME_LIMIT
+    // Special case src directories
+    this.appPath = this.app.paths.root;
+    this.expressApp.use(
+      '/modules',
+      express.static(path.join(this.appPath, 'modules'))
+    );
+    this.expressApp.use(
+      '/src',
+      express.static(path.join(this.appPath, 'src'))
+    );
+    this.expressApp.use(
+      '/lib',
+      express.static(path.join(this.appPath, 'lib'))
     );
 
-    return Promise.resolve(mountedApp);
-  }
+    this.expressApp.use('/', express.static(this.buildPath));
 
-  function unmountApp(appPath, routeId) {
-    logger.info('Shutting down route for: ' + appPath + ' (' + routeId + ')');
+    // Everything is set, add some file watchers
+    this.expressApp.watchers = [];
+    this.expressApp.watchers.push(
+      chokidar.watch(
+        [
+          path.join(this.appPath, 'manifest.json'),
+          path.join(this.appPath, 'src'),
+          path.join(this.appPath, 'resources')
+        ],
+        { recursive: true, followSymLinks: false, persistent: true, ignoreInitial: true }
+      ).on('all', function(event, path) {
+        logger.info(routeId + ': changed ' + path);
+        this.expressApp.socketEmit('watch:changed', path);
+      }.bind(this))
+    );
+    // ----- //
 
-    var app = _availableSimulatorApps[routeId];
+    this.expressApp._areResourcesMounted = false;
+
+    var modules = app.getModules();
+    Object.keys(modules).forEach(function (moduleName) {
+      var module = modules[moduleName];
+      this.loadExtensions(module);
+    }, this);
+
+    baseModules.forEach(function (module) {
+      this.loadExtensions(module);
+    }, this);
+  };
+
+  this.addSocket = function(clientSocket) {
+    this.sockets.push(clientSocket);
+  };
+
+  this.getLastBuildConfig = function () {
+    return this._lastConfig;
+  };
+
+  this.build = function (opts) {
+    opts.output = this.buildPath;
+
+    // approximate build config -- TODO: get real config
+    var config = require('../build/steps/getConfig').getConfig(this.app, opts);
+    this._lastConfig = config;
+
+    return buildQueue.add(this.app.paths.root, opts);
+  };
+
+  this.loadExtensions = function (module) {
+    var route = '/modules/' + module.name;
+    var info = module.getExtension('debugger');
+    if (info) {
+      // mount dynamic routes
+      if (info.routes) {
+        try {
+          var moduleRoutes = express();
+          var routes = require(path.join(module.path, info.routes));
+          if (routes.init) {
+            routes.init(api, this.app.toJSON(), moduleRoutes);
+            this.expressApp.use(route, moduleRoutes);
+          } else {
+            logger.warn('expecting an init function for the routes of',
+                module.path + ', but init was not found!');
+          }
+        } catch (e) {
+          console.error('Unable to load debugger extension from', module.name);
+          console.error(e.stack || e);
+        }
+      }
+
+      // setup a main file
+      if (info.main) {
+        var mainFile = info.main;
+        var ext = path.extname(mainFile).toLowerCase();
+        if (!ext) {
+          mainFile += '.js';
+          ext = '.js';
+        }
+
+        // simulator will init all urls in this.debuggerURLs
+        var routeName = route + '/' + mainFile;
+        this.debuggerURLs[module.name] = '/apps/' + this.id + routeName;
+      }
+
+      // mount static routes
+      if (info.static) {
+        var staticPath = path.join(module.path, info.static);
+        this.expressApp.use(route, express.static(staticPath));
+      }
+    }
+  };
+
+  this.makeNotUnmountSoon = function() {
+    // Remove and clean up the routes after a bit of inactivity
+    // remove the old timeout
+    this.clearExistingCleanupTimeout();
+    this.cleanupTimeout = setTimeout(
+      MountedApp.unmount.bind(null, this.appPath),
+      ROUTE_INACTIVE_TIME_LIMIT
+    );
+  };
+
+  this.clearExistingCleanupTimeout = function() {
+    if (this.cleanupTimeout) {
+      clearTimeout(this.cleanupTimeout);
+    }
+  };
+
+  this.onUnmount = function() {
+    logger.info('Shutting down route for: ' + this.appPath + ' (' + this.routeId + ')');
 
     // Close sockets
-    app.sockets.forEach(function(socket) {
+    this.sockets.forEach(function(socket) {
       socket.disconnect();
     });
 
     // Remove watchers
-    app.watchers.forEach(function(watcher) {
+    this.watchers.forEach(function(watcher) {
       watcher.close();
     });
 
-    // Remove app routes
-    delete _availableSimulatorApps[routeId];
-    delete _mountedApps[appPath];
+    this.clearExistingCleanupTimeout();
+  };
+
+  this.emit = function (name, data) {
+    this.sockets.forEach(function (socket) {
+      socket.emit(name, data);
+    });
+  };
+
+  this.toJSON = function () {
+    return {
+      id: this.id,
+      url: this.url,
+      appPath: this.app.paths.root,
+      buildPath: this.buildPath,
+      debuggerURLs: this.debuggerURLs,
+      manifest: this.app.manifest
+    };
+  };
+});
+
+
+function resolvePath(appPath) {
+  return path.normalize(appPath
+      .replace(/^~[\/\\]/, HOME + path.sep)
+      .replace(/[\/\\]/g, path.sep));
+}
+
+MountedApp._appsByPath = {};
+MountedApp._get = function (appPath) {
+  appPath = resolvePath(appPath);
+
+  if (!MountedApp._appsByPath[appPath]) {
+    MountedApp._appsByPath[appPath] = apps.get(appPath)
+      .then(function (app) {
+        return new MountedApp(app);
+      });
   }
+
+  return MountedApp._appsByPath[appPath];
+};
+
+MountedApp.get = function(appPath) {
+  return MountedApp._get(appPath)
+    .tap(function(mountedApp) {
+      mountedApp.makeNotUnmountSoon();
+    });
+};
+
+MountedApp.unmount = function(appPath) {
+  return MountedApp._get(appPath)
+    .then(function (mountedApp) {
+      mountedApp.onUnmount();
+    });
+};
+
+exports.getMountedApp = function (appPath) {
+  return MountedApp._appsByPath[resolvePath(appPath)];
 };

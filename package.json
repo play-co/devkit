@@ -5,7 +5,7 @@
   "name": "devkit",
   "keywords": "HTML 5 game sdk platform mobile browser javascript ios android",
   "description": "HTML 5 game platform for browser and mobile",
-  "version": "3.0.0",
+  "version": "3.1.1",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
     "url": "https://github.com/gameclosure/devkit.git"
@@ -14,42 +14,52 @@
     "devkit": "./src/devkit.js"
   },
   "dependencies": {
-    "bluebird": "^2.9.24",
-    "body-parser": "1.x",
-    "chalk": "^1.0.0",
+    "bluebird": "^2.9.34",
+    "body-parser": "^1.13.3",
+    "chalk": "^1.1.1",
     "chokidar": "^1.0.5",
-    "compression": "^1.4.3",
+    "compression": "^1.5.2",
     "devkit-remote-debugger-server": "git+ssh://git@github.com:gameclosure/devkit-remote-debugger-server",
-    "express": "4.x",
+    "express": "^4.13.3",
     "express-ws": "^0.2.6",
     "ff": "^0.2.1",
-    "filesize": "^3.1.2",
-    "js-yaml": "^3.2.5",
-    "jsio": "^2.2.1",
+    "filesize": "^3.1.3",
+    "fs-extra": "^0.24.0",
+    "js-yaml": "^3.4.0",
+    "jsio": "^2.2.4",
     "lockfile": "^1.0.0",
     "mime": "^1.3.4",
-    "mkdirp": "^0.5.1",
-    "ncp": "https://github.com/gameclosure/ncp/archive/v2.0.0.tar.gz",
-    "nib": "1.x",
     "open": "0.0.5",
     "optimist": "0.6.1",
     "path-extra": "^1.0.3",
-    "printf": "^0.2.1",
+    "printf": "^0.2.3",
     "randomstring": "^1.1.0",
     "request": "^2.61.0",
     "rimraf": "^2.2.8",
     "semver": "^4.3.4",
-    "socket.io": "^1.0.6",
+    "socket.io": "^1.3.6",
     "squill": "0.0.2",
     "stylus": "^0.51.1"
   },
   "main": "src/devkit.js",
   "scripts": {
     "postinstall": "sh scripts/postinstall.sh",
-    "test": "mocha --reporter spec --recursive -C ./tests"
+    "test": "mocha --reporter spec --recursive -C ./tests",
+    "prepublish": "npm test && gulp publish"
   },
   "devDependencies": {
     "express-debug": "^1.1.0",
-    "mocha": "^2.0.1"
+    "gulp": "^3.9.0",
+    "gulp-debug": "^2.1.0",
+    "gulp-filter": "^3.0.1",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sequence": "^0.4.1",
+    "gulp-stylus": "^2.0.6",
+    "mocha": "^2.0.1",
+    "nib": "^1.1.0",
+    "squill": "0.0.2",
+    "stylus": "^0.51.1",
+    "uglify-js": "^2.4.24"
   }
 }

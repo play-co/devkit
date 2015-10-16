@@ -26,6 +26,7 @@ import squill.Delegate;
 
 import ..util.Size as Size;
 import ..util.DeviceInfo as DeviceInfo;
+import ..util.bluebird as Promise;
 
 import ..components.FrameBackground as FrameBackground;
 import ..components.CenterLayout as CenterLayout;
@@ -33,6 +34,21 @@ import ..components.Toolbar as Toolbar;
 import ..components.DeviceDialog as DeviceDialog;
 
 import ..components.renderers.facebook as facebookRenderer;
+
+var lowerBrowserPrefix = (function () {
+  var styles = window.getComputedStyle(document.documentElement, '');
+  var prefix = Array.prototype.slice
+      .call(styles)
+      .join('')
+      .match(/-(moz|webkit|ms)-/);
+  prefix = prefix && prefix[1] || styles.OLink === '' && 'o';
+  return prefix;
+})();
+
+var browserPrefix = lowerBrowserPrefix[0].toUpperCase() + lowerBrowserPrefix.substring(1);
+var TRANSFORM_STYLE = browserPrefix + 'Transform';
+var TRANSFORM_ORIGIN_STYLE = browserPrefix + 'TransformOrigin';
+var TRANSITION_END_EVENT = lowerBrowserPrefix + "TransitionEnd";
 
 exports = Class(CenterLayout, function (supr) {
 
@@ -377,20 +393,20 @@ exports = Class(CenterLayout, function (supr) {
     this.setTransitionsEnabled(true);
     this.toolbar.hide();
 
-    this.contents.style.WebkitTransform = 'rotate(' + (this._rotation % 2 ? 90 : -90) + 'deg)';
+    this.contents.style[TRANSFORM_STYLE] = 'rotate(' + (this._rotation % 2 ? 90 : -90) + 'deg)';
 
     var onRotate = bind(this, function () {
-      this.contents.removeEventListener("webkitTransitionEnd", onRotate);
+      this.contents.removeEventListener(TRANSITION_END_EVENT, onRotate);
       this.setTransitionsEnabled(false);
 
-      this.contents.style.WebkitTransform = '';
+      this.contents.style[TRANSFORM_STYLE] = '';
       this.toolbar.show();
       this.update();
 
       setTimeout(bind(this, 'setTransitionsEnabled', true), 100);
     });
 
-    this.contents.addEventListener("webkitTransitionEnd", onRotate);
+    this.contents.addEventListener(TRANSITION_END_EVENT, onRotate);
 
     this.emit('change');
   };
@@ -481,14 +497,12 @@ exports = Class(CenterLayout, function (supr) {
       var style;
 
       if (this._isRetina) {
-        style = merge(sizeToCSS(viewport), {
-          WebkitTransform: 'scale(' + scale + ')',
-          WebkitTransformOrigin: '0px 0px'
-        });
+        style = sizeToCSS(viewport);
+        style[TRANSFORM_STYLE] = 'scale(' + scale + ')';
+        style[TRANSFORM_ORIGIN_STYLE] = '0px 0px';
       } else {
-        style = merge(sizeToCSS(viewport, scale), {
-          WebkitTransform: ''
-        });
+        style = sizeToCSS(viewport, scale);
+        style[TRANSFORM_STYLE] = '';
       }
 
       $.style(this._frame, style);

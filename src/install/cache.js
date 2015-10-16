@@ -1,26 +1,17 @@
+/* globals trace */
 var EventEmitter = require('events').EventEmitter;
 var path = require('path');
 var pathExtra = require('path-extra');
-var fs = require('fs');
+var fs = require('../util/fs');
 var crypto = require('crypto');
-
-var copy = require('../util/copy');
-var mkdirp = Promise.promisify(require('mkdirp')); // mkdir -p
-var mkdirpSync = require('mkdirp').sync;
-var readdir = Promise.promisify(fs.readdir);
 
 var gitClient = require('../util/gitClient');
 var Module = require('../modules/Module');
 var logger = require('../util/logging').get('cache');
-var rimraf = require('../util/rimraf');
 
 function randomName() {
   return '' + crypto.randomBytes(4).readUInt32LE(0)
     + crypto.randomBytes(4).readUInt32LE(0);
-}
-
-function isRandomName(name) {
-  return /^\d+$/.test(name);
 }
 
 var MODULE_CACHE = path.join(pathExtra.datadir(process.title), 'cache');
@@ -31,15 +22,14 @@ var ModuleCache = Class(EventEmitter, function () {
   this.init = function () {
     EventEmitter.call(this);
 
-    if (!fs.existsSync(MODULE_CACHE)) {
-      mkdirpSync(MODULE_CACHE);
-    }
-
     this._isLoaded = false;
     this._entries = {};
 
-    readdir(MODULE_CACHE)
+    fs.ensureDirAsync(MODULE_CACHE)
       .bind(this)
+      .then(function () {
+        return fs.readdirAsync(MODULE_CACHE);
+      })
       .map(function (entry) {
         var cachePath = this.getPath(entry);
         return getCachedModuleInfo(cachePath, true)
@@ -117,7 +107,6 @@ var ModuleCache = Class(EventEmitter, function () {
 
   this.add = function (nameOrURL, version, cb) {
     trace('cache.add name:', nameOrURL, 'version:', version);
-    var self = this;
     var tempName = this.getPath(randomName());
 
     return Promise.resolve(void 0).bind(this).then(function () {
@@ -183,12 +172,12 @@ var ModuleCache = Class(EventEmitter, function () {
       this.convertTempModulePath(tempName, entry.name);
       return entry;
     }).finally(function () {
-      return rimraf(tempName);
+      return fs.removeAsync(tempName);
     }).nodeify(cb);
   };
 
   this.remove = function (name, cb) {
-    return rimraf(this.getPath(name), cb);
+    return fs.removeAsync(this.getPath(name), cb);
   };
 
   this.copy = function (cacheEntry, destPath, cb) {
@@ -197,9 +186,11 @@ var ModuleCache = Class(EventEmitter, function () {
 
     logger.log('installing', cacheEntry.name, 'at', copyTo);
 
-    return mkdirp(copyTo).then(function () {
-      return copy.path(srcPath, copyTo);
-    }).nodeify(cb);
+    return fs.ensureDirAsync(copyTo)
+      .then(function () {
+        return fs.copyAsync(srcPath, copyTo);
+      })
+      .nodeify(cb);
   };
 
   this.link = function (cacheEntry, destPath, cb) {
