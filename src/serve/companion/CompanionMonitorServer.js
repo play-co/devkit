@@ -103,24 +103,21 @@ Server.prototype.start = function(app) {
         return Promise.promisify(apps.get.bind(apps))(appPath);
       })
       .then(function(app) {
-        // TODO: dont hardcode this path
-        var buildPath = path.join(appPath, 'debug', 'native-archive');
         var routeId = routeIdGenerator.get(appPath);
         var buildOpts = {
           target: 'native-archive',
           scheme: 'debug',
-          simulated: true,
-          output: buildPath
+          simulated: false
         };
 
         return buildQueue.add(appPath, buildOpts)
-          .then(function() {
+          .tap(function(buildResult) {
             // verify that there is a route to the bundle
-            this.verifyHasRoute(app.manifest.shortName, appPath, buildPath);
+            this.verifyHasRoute(app.manifest.shortName, appPath, buildResult.config.outputPath);
           }.bind(this))
           .then(function(buildResult) {
             // Build is done, update the proxy with the new native.js
-            return this.remoteDebuggingProxy.onRun(buildPath);
+            return this.remoteDebuggingProxy.onRun(buildResult.config.outputPath);
           }.bind(this))
           .then(function () {
             res.send({

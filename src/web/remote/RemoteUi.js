@@ -132,7 +132,7 @@ exports = Class(CenterLayout, function (supr) {
       if (/js\.io/.test(location.hostname)) {
         ws = location.hostname.replace(/^devkit-/, 'devtools-')
           + '/devtools/page/' + data.devtoolsWsId;
-        url = 'http://devtools.js.io/v1/front_end/';
+        url = 'http://devtools.js.io/v1/front_end/inspector.html';
       } else {
         ws = 'localhost:9223/devtools/page/' + data.devtoolsWsId;
         url = 'chrome-devtools://devtools/bundled/inspector.html';
