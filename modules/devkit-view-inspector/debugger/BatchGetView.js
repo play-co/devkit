@@ -1,3 +1,6 @@
+// devkit's bluebird Promise
+var Promise = devkit.Promise;
+
 // batches get view requests:
 //  - only sends requests once per tick
 //  - dedups requests
