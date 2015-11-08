@@ -7,7 +7,7 @@ var nib = require('nib');
 var compress = true;
 var sourcemaps = false;
 
-var devkit = path.join(__dirname, '../../src/serve/static');
+var devkit = path.join(__dirname, '../../src/web/');
 
 gulp.task('default', ['setup-dev', 'dist', 'watch']);
 

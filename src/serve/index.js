@@ -16,6 +16,7 @@ var logging = require('../util/logging');
 var config = require('../config');
 
 var appRoutes = require('./appRoutes');
+var routeIds = require('./routeIds');
 
 var logger = logging.get('serve');
 
@@ -116,8 +117,25 @@ function getAPIRouter(opts) {
       if (err) {
         res.status(404).send(err);
       } else {
-        res.json(apps);
+        var appData = {};
+        for (var appPath in apps) {
+          appData[appPath] = apps[appPath].toJSON();
+          appData[appPath].routeId = routeIds.generate(appPath);
+        }
+
+        res.json(appData);
       }
+    });
+  });
+
+  api.get('/redirect', function (req, res) {
+    var url = req.query.url;
+    var app = req.query.app;
+    apps.get(app, {updateLastOpened: false}, function (err, app) {
+      url = url.replace(/:app/g, app)
+        .replace(/:routeId/g, routeIds.generate(app.paths.root));
+      console.log(url);
+      res.redirect(url);
     });
   });
 
