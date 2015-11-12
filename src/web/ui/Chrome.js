@@ -206,6 +206,10 @@ exports = Class(CenterLayout, function (supr) {
   };
 
   this.setBuilding = function (isBuilding) {
+
+    // Make sure we remove game simulation overhead when building
+    this.setPaused(isBuilding);
+
     var spinner = this['build-spinner'];
 
     if (!isBuilding) {
@@ -345,6 +349,10 @@ exports = Class(CenterLayout, function (supr) {
     }
   };
 
+  this.getDeviceInfo = function() {
+    return this._deviceInfo;
+  };
+
   this.setDeviceInfo = function (deviceInfo) {
     this.setTransitionsEnabled(false);
 
@@ -367,14 +375,10 @@ exports = Class(CenterLayout, function (supr) {
     logInfo('pixel-ratio', deviceInfo.getDevicePixelRatio());
 
     this.update();
+    if (this.banner) { this.banner.hide(); }
+    this.emit('change:type');
 
     setTimeout(bind(this, 'setTransitionsEnabled', true), 1000);
-
-    if (this._frame) {
-      this.refresh();
-    }
-
-    this.emit('change:type');
   };
 
   this.rotate = function () {
@@ -509,7 +513,6 @@ exports = Class(CenterLayout, function (supr) {
 
   this.reload = function () {
     this._simulator.rebuild();
-    // this._frame.contentWindow.reload();
   };
 
   this.update = function () {
