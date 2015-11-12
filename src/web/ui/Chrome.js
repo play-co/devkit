@@ -478,21 +478,13 @@ exports = Class(CenterLayout, function (supr) {
     };
   }
 
-  this._setViewport = function (size, viewport, scale) {
+  this._setViewport = function (size, viewport, scale, dpr) {
     $.style(this.contents, sizeToCSS(size, scale));
-    // $.style(this.frameWrapper, sizeToCSS(viewport, scale));
     if (this._frame) {
       var style;
-
-      if (this._isRetina) {
-        style = sizeToCSS(viewport);
-        style[TRANSFORM_STYLE] = 'scale(' + scale + ')';
-        style[TRANSFORM_ORIGIN_STYLE] = '0px 0px';
-      } else {
-        style = sizeToCSS(viewport, scale);
-        style[TRANSFORM_STYLE] = '';
-      }
-
+      style = sizeToCSS(viewport, 1 / dpr);
+      style[TRANSFORM_STYLE] = 'scale(' + scale * dpr + ')';
+      style[TRANSFORM_ORIGIN_STYLE] = '0px 0px';
       $.style(this._frame, style);
     }
   };
@@ -553,7 +545,7 @@ exports = Class(CenterLayout, function (supr) {
     this.contents.style.cssText = '';
     $.style(this.contents, info.getCustomStyle());
 
-    this._setViewport(size, viewportSize, scale);
+    this._setViewport(size, viewportSize, scale, dpr);
 
     var renderer = this._renderers[info.getName()];
     if (this._customRenderer && (!renderer || renderer != this._customRenderer)) {
