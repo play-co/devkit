@@ -471,12 +471,13 @@ exports = Class(CenterLayout, function (supr) {
     };
   }
 
-  this._setViewport = function (size, viewport, scale, dpr) {
+  this._setViewport = function (size, viewport, scale) {
     $.style(this.contents, sizeToCSS(size, scale));
     if (this._frame) {
-      var style;
-      style = sizeToCSS(viewport, 1 / dpr);
-      style[TRANSFORM_STYLE] = 'scale(' + scale * dpr + ')';
+      var dpr = this.getDevicePixelRatio();
+      var style = sizeToCSS(viewport, 1 / dpr);
+      var scaleDPR = dpr * scale;
+      style[TRANSFORM_STYLE] = 'scale(' + scaleDPR + ')';
       style[TRANSFORM_ORIGIN_STYLE] = '0px 0px';
       $.style(this._frame, style);
     }
@@ -538,7 +539,7 @@ exports = Class(CenterLayout, function (supr) {
     this.contents.style.cssText = '';
     $.style(this.contents, info.getCustomStyle());
 
-    this._setViewport(size, viewportSize, scale, dpr);
+    this._setViewport(size, viewportSize, scale);
 
     var renderer = this._renderers[info.getName()];
     if (this._customRenderer && (!renderer || renderer != this._customRenderer)) {
