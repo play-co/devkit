@@ -82,7 +82,6 @@ exports = Class(CenterLayout, function (supr) {
 
     var opts = this._opts;
 
-    this._isRetina = true;
     this._validOrientations = {};
     this._renderers = {
       'Facebook': facebookRenderer
@@ -270,12 +269,6 @@ exports = Class(CenterLayout, function (supr) {
     setTimeout(bind(this, function () {
       this.splashImage.style.display = 'none';
     }), 500);
-  };
-
-  this.setRetina = function (isRetina) {
-    this._isRetina = isRetina;
-    this.update();
-    this.refresh();
   };
 
   this.getFrame = function () { return this._frame; };
