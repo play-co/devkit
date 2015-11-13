@@ -33,9 +33,13 @@ module.exports = Class(function () {
 
   this.getChromeSize = function (isRotated) {
     var opts = this._opts;
-    var size = opts && opts.background
-             ? new Size(opts.background.width, opts.background.height)
-             : new Size();
+    var bg = opts && opts.background;
+
+    if (Array.isArray(bg)) {
+      bg = bg[0];
+    }
+
+    var size = bg ? new Size(bg.width, bg.height) : new Size();
 
     return isRotated ? size.rotate() : size;
   }
@@ -65,6 +69,11 @@ module.exports = Class(function () {
 
     return background;
   }
+
+  this.getBackgroundCount = function() {
+    var background = this._opts.background;
+    return Array.isArray(background) ? background.length : 1;
+  };
 
   this.getDevicePixelRatio = function () {
     return this._opts.devicePixelRatio || 1;

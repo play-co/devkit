@@ -471,12 +471,12 @@ exports = Class(CenterLayout, function (supr) {
     };
   }
 
-  this._setViewport = function (size, viewport, scale) {
-    $.style(this.contents, sizeToCSS(size, scale));
+  this._setViewport = function (size, viewport, zoom) {
+    $.style(this.contents, sizeToCSS(size, zoom));
     if (this._frame) {
       var dpr = this.getDevicePixelRatio();
       var style = sizeToCSS(viewport, 1 / dpr);
-      var scaleDPR = dpr * scale;
+      var scaleDPR = dpr * zoom;
       style[TRANSFORM_STYLE] = 'scale(' + scaleDPR + ')';
       style[TRANSFORM_ORIGIN_STYLE] = '0px 0px';
       $.style(this._frame, style);
@@ -513,24 +513,20 @@ exports = Class(CenterLayout, function (supr) {
       size.rotate();
     }
 
-    var dpr = this.getDevicePixelRatio();
     var zoom = this._zoom;
     if (!zoom) {
       // check for auto-zoom out to fit window
-      var padding = 10;
-      var winSize = new Size(window.innerWidth - padding * 2, window.innerHeight - padding * 2);
+      var paddingX = 10;
+      var paddingY = 100;
+      var winSize = new Size(window.innerWidth - paddingX * 2, window.innerHeight - paddingY * 2);
       var targetSize = info.getChromeSize(this._rotation % 2 == 1);
       if (winSize.getRatio() < targetSize.getRatio()) {
         zoom = winSize.width / targetSize.width;
       } else {
         zoom = winSize.height / targetSize.height;
       }
-      zoom = Math.min(1, zoom * dpr);
+      zoom = Math.max(0.1, Math.min(1, zoom));
     }
-
-    var scale = this._scale = 1 / dpr * zoom;
-    this._width = size.width * scale || 0;
-    this._height = size.height * scale || 0;
 
     // override the default full-screen with a custom screen size
     // Note: custom size with viewport != screen size is not supported
@@ -539,7 +535,7 @@ exports = Class(CenterLayout, function (supr) {
     this.contents.style.cssText = '';
     $.style(this.contents, info.getCustomStyle());
 
-    this._setViewport(size, viewportSize, scale);
+    this._setViewport(size, viewportSize, zoom);
 
     var renderer = this._renderers[info.getName()];
     if (this._customRenderer && (!renderer || renderer != this._customRenderer)) {
@@ -555,13 +551,16 @@ exports = Class(CenterLayout, function (supr) {
     this.setCenterX(info.centerSimulatorX());
     this.setCenterY(info.centerSimulatorY());
 
-    this.background.update(merge({
-      scale: scale,
-      rotation: this._rotation,
-      screenSize: size,
-    }, info.getBackground(this._rotation)));
+    var newBG = info.getBackground(this._rotation);
+    var bgRotation = (info.getBackgroundCount() === 1) ? this._rotation : 0;
 
-    this.setContentSize(size.width * scale, size.height * scale);
+    this.background.update(merge({
+      scale: zoom,
+      rotation: bgRotation,
+      screenSize: size,
+    }, newBG));
+
+    this.setContentSize(size.width * zoom, size.height * zoom);
 
     this.toolbar.setOffset(this.getContentArea(), this.background.getOffset());
 
