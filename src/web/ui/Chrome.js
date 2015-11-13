@@ -475,9 +475,8 @@ exports = Class(CenterLayout, function (supr) {
     $.style(this.contents, sizeToCSS(size, zoom));
     if (this._frame) {
       var dpr = this.getDevicePixelRatio();
-      var style = sizeToCSS(viewport, 1 / dpr);
-      var scaleDPR = dpr * zoom;
-      style[TRANSFORM_STYLE] = 'scale(' + scaleDPR + ')';
+      var style = sizeToCSS(viewport);
+      style[TRANSFORM_STYLE] = 'scale(' + zoom + ')';
       style[TRANSFORM_ORIGIN_STYLE] = '0px 0px';
       $.style(this._frame, style);
     }
@@ -505,8 +504,6 @@ exports = Class(CenterLayout, function (supr) {
     var info = this._deviceInfo;
     if (!info) { return; }
 
-    var start = Date.now();
-
     this._rotation = this._computeRotation();
     var size = this._customSize || info.getScreenSize();
     if (this._rotation % 2 == 1) {
@@ -531,7 +528,6 @@ exports = Class(CenterLayout, function (supr) {
     // override the default full-screen with a custom screen size
     // Note: custom size with viewport != screen size is not supported
     var viewportSize = this._customSize ? size : info.getViewportSize(this._rotation);
-
     this.contents.style.cssText = '';
     $.style(this.contents, info.getCustomStyle());
 
@@ -555,7 +551,7 @@ exports = Class(CenterLayout, function (supr) {
     var bgRotation = (info.getBackgroundCount() === 1) ? this._rotation : 0;
 
     this.background.update(merge({
-      scale: zoom,
+      scale: zoom / info.getDevicePixelRatio(),
       rotation: bgRotation,
       screenSize: size,
     }, newBG));
@@ -564,7 +560,6 @@ exports = Class(CenterLayout, function (supr) {
 
     this.toolbar.setOffset(this.getContentArea(), this.background.getOffset());
 
-    console.log("UPDATE", Date.now() - start);
     this.emit('change');
   };
 

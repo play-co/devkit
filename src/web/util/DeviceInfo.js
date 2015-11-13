@@ -28,7 +28,8 @@ module.exports = Class(function () {
              ? new Size(opts.width, opts.height)
              : new Size();
 
-    return isRotated ? size.rotate() : size;
+    if (isRotated) { size.rotate(); }
+    return size.scale(1 / this.getDevicePixelRatio());
   }
 
   this.getChromeSize = function (isRotated) {
@@ -39,9 +40,12 @@ module.exports = Class(function () {
       bg = bg[0];
     }
 
-    var size = bg ? new Size(bg.width, bg.height) : new Size();
+    var chromeSize = bg
+      ? new Size(bg.width, bg.height)
+      : new Size();
 
-    return isRotated ? size.rotate() : size;
+    if (isRotated) { chromeSize.rotate(); }
+    return chromeSize.scale(1 / this.getDevicePixelRatio());
   }
 
   // some devices have browser chrome, so the renderable viewport is smaller
@@ -49,9 +53,11 @@ module.exports = Class(function () {
   this.getViewportSize = function (rotation) {
     var opts = this._opts;
     if (opts.viewportSize) {
-      return Array.isArray(opts.viewportSize)
+      var viewport = Array.isArray(opts.viewportSize)
                ? new Size(opts.viewportSize[rotation % opts.viewportSize.length])
                : new Size(opts.viewportSize);
+
+      return viewport.scale(1 / this.getDevicePixelRatio());
     } else {
       return this.getScreenSize(rotation % 2);
     }
