@@ -65,6 +65,7 @@ var Simulator = exports = Class(function () {
     // DOM simulator
     if (opts.chrome !== false) {
       this._ui = new ui.Chrome(this);
+      this._ui.on('change:type', bind(this, 'onDeviceChange'));
     }
 
     this._modules = {};
@@ -118,6 +119,13 @@ var Simulator = exports = Class(function () {
         el: el
       };
     }, this);
+  };
+
+  this.onDeviceChange = function() {
+    this._deviceInfo = this._ui.getDeviceInfo();
+    this._type = this._deviceInfo.getId();
+    window.location.hash = 'device=' + JSON.stringify({ type: this._type });
+    this.rebuild();
   };
 
   this.rebuild = PUBLIC_API(function () {

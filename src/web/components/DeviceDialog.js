@@ -18,8 +18,7 @@ module.exports = Class(Dialog, function (supr) {
       {id: 'zoomCustomWrapper', type: 'widget', children: [
         {id: 'zoom', tag: 'input', attrs: {type: 'range', value: 100, max: 400, min: 10, step: 1}},
         {id: 'zoomPercent', type: 'label', label: '100%'},
-      ]},
-      {id: 'retina', type: 'checkbox', text: 'retina', value: true}
+      ]}
     ],
     children: [
       {type: 'label', text: 'select a device' },
@@ -65,10 +64,6 @@ module.exports = Class(Dialog, function (supr) {
     on.zoom50 = function () { this.zoom.value = 50; this._onZoom(); }
     on.zoom100 = function () { this.zoom.value = 100; this._onZoom(); }
     on.zoom200 = function () { this.zoom.value = 200; this._onZoom(); }
-
-    on.retina = function () {
-      this._simulator.setRetina(this.retina.isChecked());
-    };
   });
 
   this._onZoom = function () {
