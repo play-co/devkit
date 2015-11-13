@@ -193,4 +193,13 @@ var Simulator = exports = Class(function () {
    this.prompt = PUBLIC_API(function (opts) {
     return this._ui && this._ui.prompt(opts) || Promise.reject();
   });
+
+  /**
+   * screenshot
+   * @returns {Promise<String>} a base64-encoded image
+   */
+  this.screenshot = PUBLIC_API(function (opts) {
+    return this.api.getChannel('devkit-simulator')
+      .request('screenshot', opts);
+  });
 });
