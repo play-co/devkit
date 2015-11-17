@@ -22,16 +22,9 @@ UIClient.prototype.setSocket = function(socket) {
 
 /**
  * @param  {Object}  message
- * @param  {String}  message.appPath
  */
 UIClient.prototype.onInitBrowser = function(message) {
-  if (!message.appPath) {
-    this._error('missing_appPath', 'browser info response requires appPath');
-    return;
-  }
-
   this.send('initBrowserResponse', {
-    routeId: routeIdGenerator.get(message.appPath),
     secret: this._server.secret
   });
 };
@@ -49,7 +42,19 @@ UIClient.prototype.onRun = function(message) {
     return;
   }
 
-  runTarget.run(this, message.appPath);
+  if (!message.appPath) {
+    this._error('missing_appPath', 'no appPath on message');
+    return;
+  }
+
+  this._server.buildApp(message.appPath).then(function(res) {
+    if (!res.success) {
+      this._error('buildFailed', res.error);
+      return;
+    }
+
+    runTarget.run(this, res);
+  }.bind(this));
 };
 
 /**

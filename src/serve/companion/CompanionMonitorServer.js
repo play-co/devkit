@@ -88,55 +88,6 @@ Server.prototype.start = function(app) {
       });
   }.bind(this));
 
-  app.get('/build', function(req, res) {
-    // Check the secret
-    if (!this.isSecretValid(req.query.secret)) {
-      res.send({ success: false, message: 'invalid secret' });
-      return;
-    }
-
-    var routeId = req.query.routeId;
-    var appPath = null;
-    logger.info('build: ' + appPath);
-
-    getAppPathByRouteId(routeId)
-      .then(function(_appPath) {
-        appPath = _appPath;
-        logger.info('info: ' + appPath);
-        return Promise.promisify(apps.get.bind(apps))(appPath);
-      })
-      .then(function(app) {
-        var routeId = routeIdGenerator.get(appPath);
-        var buildOpts = {
-          target: 'native-archive',
-          scheme: 'debug',
-          simulated: false
-        };
-
-        return buildQueue.add(appPath, buildOpts)
-          .tap(function(buildResult) {
-            // verify that there is a route to the bundle
-            this.verifyHasRoute(app.manifest.shortName, appPath, buildResult.config.outputPath);
-          }.bind(this))
-          .then(function(buildResult) {
-            // Build is done, update the proxy with the new native.js
-            return this.remoteDebuggingProxy.onRun(buildResult.config.outputPath);
-          }.bind(this))
-          .then(function () {
-            res.send({
-              success: true,
-              route: routeId,
-              shortName: app.manifest.shortName,
-              debuggerHost: this.debuggerHostOverride
-            });
-          }.bind(this));
-      }.bind(this))
-      .catch(function(err) {
-        logger.error('error while building', err);
-        res.send({ success: false, error: err.toString() });
-      });
-  }.bind(this))
-
   // update the secret
   this.updateSecret();
   this._resetBrowserData();
@@ -332,6 +283,43 @@ Server.prototype.getRunTargets = function() {
   });
   return res;
 };
+
+Server.prototype.buildApp = function(appPath) {
+  logger.info('Building app at', appPath);
+  return Promise.promisify(apps.get.bind(apps))(appPath)
+    .then(function(app) {
+      var buildOpts = {
+        target: 'native-archive',
+        scheme: 'debug',
+        simulated: false
+      };
+
+      return buildQueue.add(appPath, buildOpts)
+        .tap(function(buildResult) {
+          // verify that there is a route to the bundle
+          this.verifyHasRoute(app.manifest.shortName, appPath, buildResult.config.outputPath);
+        }.bind(this))
+        .then(function(buildResult) {
+          // Build is done, update the proxy with the new native.js
+          return this.remoteDebuggingProxy.onRun(buildResult.config.outputPath);
+        }.bind(this))
+        .then(function () {
+          return {
+            success: true,
+            route: routeIdGenerator.get(appPath),
+            shortName: app.manifest.shortName,
+            debuggerHost: this.debuggerHostOverride
+          };
+        }.bind(this));
+    }.bind(this))
+    .catch(function(err) {
+      logger.error('error while building', err);
+      return {
+        success: false,
+        error: err.toString()
+      };
+    });
+}
 
 Server.prototype.updateSecret = function() {
   this.secret = 'SECRETSES';  //randomstring.generate(16);

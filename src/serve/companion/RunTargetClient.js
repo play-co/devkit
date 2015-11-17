@@ -24,6 +24,7 @@ RunTargetClient.prototype.setSocket = function(socket) {
   if (this.socket) {
     // Add the socket listeners
     this.on('clientInfo', this.onClientInfo.bind(this));
+    this.on('updateStatus', this.updateStatus.bind(this));
     this.status = 'available';
   } else {
     this.status = 'unavailable';
@@ -39,9 +40,12 @@ RunTargetClient.prototype.isReady = function() {
 };
 
 /**
- * @param  {String} appPath
+ * @param  {Object} runData
+ * @param  {String} runData.route
+ * @param  {String} runData.shortName
+ * @param  {String} [runData.debuggerHost]
  */
-RunTargetClient.prototype.run = function(requestor, appPath) {
+RunTargetClient.prototype.run = function(requestor, runData) {
   if (this.status === 'unavailable') {
     if (requestor) {
       requestor._error('run_target_not_available');
@@ -51,9 +55,7 @@ RunTargetClient.prototype.run = function(requestor, appPath) {
     return;
   }
 
-  this.send('run', {
-    appPath: appPath
-  });
+  this.send('run', runData);
 };
 
 RunTargetClient.prototype.stop = function(requestor) {
@@ -102,6 +104,21 @@ RunTargetClient.prototype.onClientInfo = function(message) {
 
   this._server.saveRunTarget(this);
   this._server.updateRunTarget(this, !existingClient);
+};
+
+/**
+ * @param  {Object}  message
+ * @param  {String}  message.status
+ */
+RunTargetClient.prototype.updateStatus = function(message) {
+  if (!message.status) {
+    this._criticalError('missing_status', 'updateStatus: requires message.status');
+    return;
+  }
+
+  this.status = message.status;
+
+  this._server.updateRunTarget(this, false);
 };
 
 RunTargetClient.prototype.onDisconnect = function() {

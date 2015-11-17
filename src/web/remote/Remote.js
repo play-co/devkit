@@ -40,16 +40,13 @@ exports = Class(function () {
     RemoteAPI.on('connectionStatus', function (data) {
       this._ui.setConnected(data.connected);
       if (data.connected) {
-        RemoteAPI.send('initBrowserRequest', {
-          appPath: this._app
-        });
+        RemoteAPI.send('initBrowserRequest');
       }
     }.bind(this));
 
     RemoteAPI.on('initBrowserResponse', function (message) {
       this._updateQRCode({
-        secret: message.secret,
-        routeId: message.routeId
+        secret: message.secret
       });
       this._ui.updateDevtoolsLink(null);
     }.bind(this));
@@ -75,7 +72,7 @@ exports = Class(function () {
     this._qrData.secret = opts.secret || this._qrData.secret;
     this._qrData.routeId = opts.routeId || this._qrData.routeId;
 
-    var text = this.host + ',' + this._qrData.secret + ',' + this._qrData.routeId;
+    var text = this.host + ',' + this._qrData.secret;
     this._ui.setQRCodeText(text);
   };
 
