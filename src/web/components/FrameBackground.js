@@ -40,12 +40,12 @@ module.exports = Class(Widget, function () {
     if (isRotated) {
       width = opts.height;
       height = opts.width;
-      offsetX = opts.height - opts.screenSize.width - opts.offsetY;
+      offsetX = opts.height - opts.screenSize.width / scale - opts.offsetY;
       offsetY = opts.offsetX;
     }
 
     this._width = width * scale;
-    this._height = height  * scale;
+    this._height = height * scale;
     this._offsetX = -(offsetX || 0) * scale;
     this._offsetY = -(offsetY || 0) * scale;
 
@@ -62,7 +62,6 @@ module.exports = Class(Widget, function () {
       width: this._fullWidth + 'px',
       height: this._fullHeight + 'px'
     });
-
   }
 
   this.getOffset = function () {

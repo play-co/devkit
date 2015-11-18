@@ -28,16 +28,24 @@ module.exports = Class(function () {
              ? new Size(opts.width, opts.height)
              : new Size();
 
-    return isRotated ? size.rotate() : size;
+    if (isRotated) { size.rotate(); }
+    return size.scale(1 / this.getDevicePixelRatio());
   }
 
   this.getChromeSize = function (isRotated) {
     var opts = this._opts;
-    var size = opts && opts.background
-             ? new Size(opts.background.width, opts.background.height)
-             : new Size();
+    var bg = opts && opts.background;
 
-    return isRotated ? size.rotate() : size;
+    if (Array.isArray(bg)) {
+      bg = bg[0];
+    }
+
+    var chromeSize = bg
+      ? new Size(bg.width, bg.height)
+      : new Size();
+
+    if (isRotated) { chromeSize.rotate(); }
+    return chromeSize.scale(1 / this.getDevicePixelRatio());
   }
 
   // some devices have browser chrome, so the renderable viewport is smaller
@@ -45,9 +53,11 @@ module.exports = Class(function () {
   this.getViewportSize = function (rotation) {
     var opts = this._opts;
     if (opts.viewportSize) {
-      return Array.isArray(opts.viewportSize)
+      var viewport = Array.isArray(opts.viewportSize)
                ? new Size(opts.viewportSize[rotation % opts.viewportSize.length])
                : new Size(opts.viewportSize);
+
+      return viewport.scale(1 / this.getDevicePixelRatio());
     } else {
       return this.getScreenSize(rotation % 2);
     }
@@ -65,6 +75,11 @@ module.exports = Class(function () {
 
     return background;
   }
+
+  this.getBackgroundCount = function() {
+    var background = this._opts.background;
+    return Array.isArray(background) ? background.length : 1;
+  };
 
   this.getDevicePixelRatio = function () {
     return this._opts.devicePixelRatio || 1;

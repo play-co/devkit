@@ -63,17 +63,11 @@ ipad:
   width: 768
   height: 1024
   background:
-    - img: ipad.png
-      width: 860
-      height: 1125
-      offsetX: 49
-      offsetY: 52
-
-    - img: ipad-horiz.png
-      width: 1125
-      height: 860
-      offsetX: 51
-      offsetY: 49
+    img: ipad.png
+    width: 860
+    height: 1125
+    offsetX: 49
+    offsetY: 52
 
 ipad3:
   name: iPad 3
@@ -84,17 +78,11 @@ ipad3:
   width: 1536
   height: 2048
   background:
-    - img: ipad.png
-      width: 1720
-      height: 2260
-      offsetX: 98
-      offsetY: 104
-
-    - img: ipad-horiz.png
-      width: 2250
-      height: 1720
-      offsetX: 102
-      offsetY: 98
+    img: ipad.png
+    width: 1720
+    height: 2260
+    offsetX: 98
+    offsetY: 104
 
 nexus:
   name: Nexus S
@@ -104,18 +92,11 @@ nexus:
   width: 480
   height: 800
   background:
-    - img: nexus.png
-      width: 649
-      height: 1135
-      offsetX: 81
-      offsetY: 178
-
-    - img: nexus.png
-      rotation: 90
-      width: 1135
-      height: 649
-      offsetX: 167
-      offsetY: 81
+    img: nexus.png
+    width: 649
+    height: 1135
+    offsetX: 81
+    offsetY: 178
 
 iphone:
   name: iPhone 3GS

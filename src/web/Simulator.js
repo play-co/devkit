@@ -65,6 +65,7 @@ var Simulator = exports = Class(function () {
     // DOM simulator
     if (opts.chrome !== false) {
       this._ui = new ui.Chrome(this);
+      this._ui.on('change:type', bind(this, 'onDeviceChange'));
     }
 
     this._modules = {};
@@ -118,6 +119,13 @@ var Simulator = exports = Class(function () {
         el: el
       };
     }, this);
+  };
+
+  this.onDeviceChange = function() {
+    this._deviceInfo = this._ui.getDeviceInfo();
+    this._type = this._deviceInfo.getId();
+    window.location.hash = 'device=' + JSON.stringify({ type: this._type });
+    this.rebuild();
   };
 
   this.rebuild = PUBLIC_API(function () {
@@ -184,5 +192,14 @@ var Simulator = exports = Class(function () {
    */
    this.prompt = PUBLIC_API(function (opts) {
     return this._ui && this._ui.prompt(opts) || Promise.reject();
+  });
+
+  /**
+   * screenshot
+   * @returns {Promise<String>} a base64-encoded image
+   */
+  this.screenshot = PUBLIC_API(function (opts) {
+    return this.api.getChannel('devkit-simulator')
+      .request('screenshot', opts);
   });
 });

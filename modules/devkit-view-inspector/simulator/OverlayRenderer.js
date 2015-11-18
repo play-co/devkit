@@ -30,6 +30,7 @@ module.exports = Class(function () {
   var maxColor = 255;
   var minColor = 100;
   var _ctx;
+  var _appCanvas;
 
   // render the highlighted view
   var _now = Date.now()
@@ -124,12 +125,20 @@ module.exports = Class(function () {
     if (!ctx) { return; }
     // if (!this._isEnabled) { return; }
 
+    if (!_appCanvas) {
+      _appCanvas = document.getElementById("timestep_onscreen_canvas");
+    }
+
     // on simulated devices, we have our own canvas
     // so size it to fit the screen (clearing it too)
     if (_ctx) {
       ctx = _ctx;
-      ctx.canvas.width = device.screen.width;
-      ctx.canvas.height = device.screen.height;
+      if (_appCanvas) {
+        ctx.canvas.width = _appCanvas.width;
+        ctx.canvas.height = _appCanvas.height;
+        ctx.canvas.style.width = _appCanvas.style.width;
+        ctx.canvas.style.height = _appCanvas.style.height;
+      }
     }
 
     // render highlighted views

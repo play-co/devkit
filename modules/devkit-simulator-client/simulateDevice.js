@@ -25,7 +25,7 @@ exports.simulate = function (params) {
     shim.userAgent = params.userAgent;
   }
 
-  window.devicePixelRatio = params.devicePixelRatio || 1;
+  window.devicePixelRatio = params.devicePixelRatio || window.devicePixelRatio || 1;
 
   import device;
   var isMobileBrowser = (params.target === 'browser-mobile');
