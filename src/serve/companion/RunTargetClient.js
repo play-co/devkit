@@ -86,10 +86,12 @@ RunTargetClient.prototype.onClientInfo = function(message) {
   var existingClient = this._server.getRunTarget(message.UUID);
   if (existingClient) {
     // If it is an active client, throw an error
-    if (existingClient.socket) {
-      this._criticalError('UUID_collision', 'onClientInfo: message.UUID not unique: ' + message.UUID);
-      return;
-    }
+    // Not quite sure why we are treating a newly created client as an existing one
+    // We should have a list of existing ones rather then doing this which will dc the new client every time
+    //if (existingClient.socket) {
+    //  this._criticalError('UUID_collision', 'onClientInfo: message.UUID not unique: ' + message.UUID);
+    //  return;
+    //}
     // Otherwise merge data with the existing client, and then remove the temporary entry from server memory
     this.name = existingClient.name;
     this._server.removeRunTargetClient(existingClient, {
@@ -102,6 +104,7 @@ RunTargetClient.prototype.onClientInfo = function(message) {
     this.name = message.name;
   }
 
+  this._server.addRunTargetClient(this);
   this._server.saveRunTarget(this);
   this._server.updateRunTarget(this, !existingClient);
 };
