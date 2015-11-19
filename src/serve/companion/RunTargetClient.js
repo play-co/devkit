@@ -82,13 +82,19 @@ RunTargetClient.prototype.onClientInfo = function(message) {
     return;
   }
 
+  //ensure that the client is only in the list once
+  this._server.removeRunTargetClient(this);
+
   // Check for an existing client with this UUID
   var existingClient = this._server.getRunTarget(message.UUID);
   if (existingClient) {
-    // If it is an active client, throw an error
+
     // Not quite sure why we are treating a newly created client as an existing one
     // We should have a list of existing ones rather then doing this which will dc the new client every time
-    //if (existingClient.socket) {
+    // this issue is by this stage the newly added client is available resulting in the following to always be true
+
+    // If it is an active client, throw an error
+    //if (existingClient.status === 'available') {
     //  this._criticalError('UUID_collision', 'onClientInfo: message.UUID not unique: ' + message.UUID);
     //  return;
     //}
