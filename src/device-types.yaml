@@ -2,7 +2,7 @@
 
 fullScreen:
   name: Full Screen
-  target: browser-desktop
+  target: browser-mobile
   canRotate: false
   canResize: true
   centerX: false
