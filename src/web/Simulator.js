@@ -124,6 +124,7 @@ var Simulator = exports = Class(function () {
   this.onDeviceChange = function() {
     this._deviceInfo = this._ui.getDeviceInfo();
     this._type = this._deviceInfo.getId();
+    this._buildTarget = this._deviceInfo.getTarget();
     window.location.hash = 'device=' + JSON.stringify({ type: this._type });
     this.rebuild();
   };
