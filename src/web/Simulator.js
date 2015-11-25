@@ -67,6 +67,10 @@ var Simulator = exports = Class(function () {
       this._ui = new ui.Chrome(this);
     }
 
+    this.changedFiles = [];
+
+    this.setupSocket();
+
     this._modules = {};
     this.loadModules(opts.modules);
 
@@ -78,6 +82,31 @@ var Simulator = exports = Class(function () {
   this.getURL = PUBLIC_API(function () {
     return this._mountInfo.url;
   });
+
+  this.setupSocket = function() {
+    // socket connection to the devkit server
+    this.s = io(location.host);
+    this._ui.setConnected(false);
+    this.s.on('disconnect', function() {
+      this._ui.setConnected(false);
+    }.bind(this));
+    this.s.on('connect', function() {
+      this._ui.setConnected(true);
+    }.bind(this));
+
+    this.s.on('handshakeResponse', function() {
+      console.log('Got handshake response');
+    });
+
+    this.s.on('watch:changed', function(path) {
+      console.log('File changed:', path);
+      if (this.changedFiles.indexOf(path) === -1) {
+        this.changedFiles.push(path);
+      }
+    }.bind(this));
+
+    this.s.emit('handshake', this._app);
+  };
 
   this.getUI = function () {
     return this._ui;
@@ -120,10 +149,21 @@ var Simulator = exports = Class(function () {
     }, this);
   };
 
-  this.rebuild = PUBLIC_API(function () {
-    this._ui && this._ui.setBuilding(true);
+  this.rebuild = PUBLIC_API(function (opts) {
+    opts = opts || {};
+
+    if (opts.soft) {
+      console.log('Soft reload', this.changedFiles);
+      // this._ui.restart();
+      // return Promise.resolve();
+    }
+
+    this.lastBuildAt = Date.now();
+    this.changedFiles = [];
 
     console.log('%cbuilding ' + this._mountInfo.manifest.shortName + '...', 'font-weight: bold; color: blue');
+
+    this._ui && this._ui.setBuilding(true);
 
     // get or update a simulator port with the following options
     return util.ajax

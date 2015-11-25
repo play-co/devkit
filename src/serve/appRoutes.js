@@ -35,6 +35,7 @@ exports.addToAPI = function (opts, api) {
     logger.info('socket connected');
 
     socket.on('handshake', function (appPath) {
+      logger.info('Socket handshake:', appPath);
       MountedApp.get(appPath)
         .then(function (mountedApp) {
           mountedApp.addSocket(socket);
@@ -205,8 +206,8 @@ var MountedApp = Class(EventEmitter, function () {
         ],
         { recursive: true, followSymLinks: false, persistent: true, ignoreInitial: true }
       ).on('all', function(event, path) {
-        logger.info(routeId + ': changed ' + path);
-        this.expressApp.socketEmit('watch:changed', path);
+        logger.info(this.id + ': changed ' + path);
+        this.emit('watch:changed', path);
       }.bind(this))
     );
     // ----- //
@@ -226,6 +227,7 @@ var MountedApp = Class(EventEmitter, function () {
 
   this.addSocket = function(clientSocket) {
     this.sockets.push(clientSocket);
+    clientSocket.emit('handshakeResponse')
   };
 
   this.getLastBuildConfig = function () {

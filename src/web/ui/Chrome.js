@@ -60,7 +60,14 @@ exports = Class(CenterLayout, function (supr) {
         {id: 'background', type: FrameBackground},
         {id: 'splashImage'},
         {id: 'resizeHandle'},
-        {id: 'build-spinner', children: [{id: 'spinner'}]}
+        {id: 'build-spinner', class: 'spinnerContainer', children: [
+          {class: 'spinner'},
+          {tag: 'p', text: 'Building app'}
+        ]},
+        {id: 'connLostContainer', class: 'spinnerContainer', children: [
+          {class: 'spinner'},
+          {tag: 'p', text: 'Connection lost to devkit'}
+        ]}
       ]}
     ]
   };
@@ -167,6 +174,14 @@ exports = Class(CenterLayout, function (supr) {
     this.fromJSON(this._opts);
   };
 
+  this.setConnected = function (isConnected) {
+    if (isConnected) {
+      $.removeClass(this.connLostContainer, 'visible');
+    } else {
+      $.addClass(this.connLostContainer, 'visible');
+    }
+  };
+
   this._startDrag = function () {
     if (this._isDragEnabled) {
       this._mover.startDrag();
@@ -211,16 +226,15 @@ exports = Class(CenterLayout, function (supr) {
 
     if (!isBuilding) {
       setTimeout(bind(this, function () {
-        $.hide(this['build-spinner']);
+        $.removeClass(spinner, 'visible');
         this.removeClass('building');
       }), 1000);
-      spinner.style.opacity = 0;
+      $.removeClass(spinner, 'visible');
     } else {
       this.showSplash();
-      spinner.style.display = 'flex';
+      $.addClass(spinner, 'visible');
 
       setTimeout(bind(this, function () {
-        spinner.style.opacity = 0.5;
         this.addClass('building');
       }), 100);
     }
@@ -524,8 +538,9 @@ exports = Class(CenterLayout, function (supr) {
   };
 
   this.reload = function () {
-    this._simulator.rebuild(null, true);
-    // this._frame.contentWindow.reload();
+    this._simulator.rebuild({
+      soft: true
+    });
   };
 
   this.update = function () {
