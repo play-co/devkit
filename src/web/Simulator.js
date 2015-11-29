@@ -10,6 +10,8 @@ import .util.upgrade;
 
 import .devkitConn;
 
+import .util.ConsoleLogger as ConsoleLogger;
+
 var resolveURL = util.ajax.resolveURL;
 var defaultParentNode = document.querySelector('devkit') || document.body;
 var head = document.getElementsByTagName('head')[0];
@@ -47,6 +49,7 @@ var Simulator = exports = Class(function () {
   this.init = function (opts) {
     this._opts = opts;
     this.id = opts.id || ('sim' + (++_simulatorId));
+    this.logger = new ConsoleLogger(this.id);
 
     this._type = opts.type;
     this._screen = opts.screen;
@@ -98,11 +101,11 @@ var Simulator = exports = Class(function () {
     }.bind(this));
 
     this.s.on('handshakeResponse', function() {
-      console.log('Got handshake response');
-    });
+      this.logger.info('Got handshake response');
+    }.bind(this));
 
     this.s.on('watch:changed', function(data) {
-      console.log('File changed:', data.path);
+      this.logger.info('File changed:', data.path);
       if (data.requiresHardRebuild) {
         this._requiresHardRebuild = true;
       } else {
@@ -136,8 +139,9 @@ var Simulator = exports = Class(function () {
 
     Object.keys(modules).forEach(function (name) {
       if (name in this._modules) { return; }
-
       var src = modules[name];
+      this.logger.info('loading module: ' + name + ' (' + src + ')');
+
       var el;
       if (/\.js$/.test(src)) {
         el = $({
@@ -165,7 +169,7 @@ var Simulator = exports = Class(function () {
     opts = opts || {};
 
     if (opts.soft && !this._requiresHardRebuild) {
-      console.log('Soft reload', this.changedFiles);
+      this.logger.info('Soft reload', this.changedFiles);
       return this._ui.restart().then(function() {
         var loadPromises = [];
         for (var x in this.changedFiles) {
@@ -188,7 +192,7 @@ var Simulator = exports = Class(function () {
     this.changedFiles = {};
     this._requiresHardRebuild = false;
 
-    console.log('%cbuilding ' + this._mountInfo.manifest.shortName + '...', 'font-weight: bold; color: blue');
+    this.logger.info('%cbuilding ' + this._mountInfo.manifest.shortName + '...', 'font-weight: bold; color: blue');
 
     this._ui && this._ui.setBuilding(true);
 
@@ -207,8 +211,8 @@ var Simulator = exports = Class(function () {
       })
       .bind(this)
       .then(function (res) {
-        console.log('%cbuild completed:%c ' + res[0].elapsed + ' seconds', 'font-weight: bold; color: blue', 'color: green');
-        console.log('build result:', res[0]);
+        this.logger.info('%cbuild completed:%c ' + res[0].elapsed + ' seconds', 'font-weight: bold; color: blue', 'color: green');
+        this.logger.info('build result:', res[0]);
 
         if (this._ui) {
           this._ui.setBuilding(false);
@@ -219,8 +223,8 @@ var Simulator = exports = Class(function () {
 
         return res;
       }, function (err) {
-        logger.error('Unable to simulate', this._app);
-        console.error(err);
+        this.logger.error('Unable to simulate', this._app);
+        this.logger.error(err);
       });
   });
 

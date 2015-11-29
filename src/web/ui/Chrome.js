@@ -81,6 +81,8 @@ exports = Class(CenterLayout, function (supr) {
     this._channel.on('hideSplash', bind(this, 'hideSplash'));
     this._channel.on('connect', bind(this, '_onConnect'));
 
+    this.logger = simulator.logger.get('chrome');
+
     var opts = simulator.getOpts();
     supr(this, 'init', [opts]);
   };
@@ -257,13 +259,15 @@ exports = Class(CenterLayout, function (supr) {
   };
 
   this._remoteScreenshot = function () {
-    this._channel.request('screenshot').then(function (res) {
-      this._frame.src = res.canvasImg;
-      this._frame.style.width = res.width + 'px';
-      this._frame.style.height = res.height + 'px';
-    }).catch(function (e) {
-      logger.log("Error taking screenshot", e);
-    });
+    this._channel.request('screenshot')
+      .then(function (res) {
+        this._frame.src = res.canvasImg;
+        this._frame.style.width = res.width + 'px';
+        this._frame.style.height = res.height + 'px';
+      }.bind(this))
+      .catch(function (e) {
+        this.logger.log("Error taking screenshot", e);
+      }.bind(this));
   };
 
   this.canRotate = function () { return this._canRotate; };
@@ -368,12 +372,12 @@ exports = Class(CenterLayout, function (supr) {
     // reset any custom resize
     this._customSize = null;
 
-    function logInfo(key, value) {
-      console.log(new Array(20 - key.length + 1).join(' ')
+    var logInfo = function(key, value) {
+      this.logger.log(new Array(20 - key.length + 1).join(' ')
           + '%c' + key + ':%c ' + value,
           'color: green',
           'font-weight: bold; color: blue');
-    }
+    }.bind(this);
 
     logInfo('type', deviceInfo.getName() || deviceInfo.getId());
     logInfo('build-target', deviceInfo.getTarget());
@@ -493,7 +497,7 @@ exports = Class(CenterLayout, function (supr) {
         var cmd = splitCmd(event.data);
         if (cmd.cmd === 'LIVE_EDIT') {
           if (cmd.data === 'listener_ready') {
-            console.log('Live edit listener ready');
+            this.logger.log('Live edit listener ready');
             this._iframeLoadDeferComplete();
             def.resolve();
           }
@@ -627,7 +631,7 @@ exports = Class(CenterLayout, function (supr) {
 
     this.toolbar.setOffset(this.getContentArea(), this.background.getOffset());
 
-    console.log("UPDATE", Date.now() - start);
+    this.logger.log('UPDATE', Date.now() - start);
     this.emit('change');
   };
 
@@ -702,7 +706,7 @@ exports = Class(CenterLayout, function (supr) {
   };
 
   this.setSrc = function(path, contents) {
-    console.log('Setting source:', path);
+    this.logger.log('Setting source:', path);
     if (!this._frame || !this._frame.contentWindow) {
       return false;
     }

@@ -10,8 +10,10 @@ var BASE_PATH = path.join(__dirname, '..', '..', 'modules');
 exports.getBaseModules = function () {
   if (!_modules) {
     try {
+      logger.debug('Loading default modules');
       _modules = fs.readdirSync(BASE_PATH)
         .map(function (item) {
+          logger.debug('Loading: ' + item);
           return Module.load(path.join(BASE_PATH, item));
         })
         .filter(function (module) { return module; });

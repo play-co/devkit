@@ -7,17 +7,9 @@ import squill.Widget as Widget;
 import .DetailsWidget;
 import .ViewNode;
 import .BatchGetView;
-import squill.Button as Button;
 
 if (!devkit) {
   console.error('no devkit api available?');
-} else {
-  var module = devkit.getSimulator().getModules()['devkit-view-inspector'];
-  var directory = util.path.splitPath(module.path).directory;
-  var link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = util.path.join(directory, 'inspector.css');
-  document.querySelector('head').appendChild(link);
 }
 
 var ViewInspector = Class(Widget, function(supr) {
@@ -53,8 +45,8 @@ var ViewInspector = Class(Widget, function(supr) {
     var node = simulator.getParent();
     var contentArea = node && node.parentNode || document.body;
 
-    this._deepTrace = document.createElement("div");
-    this._deepTrace.setAttribute("id", "_deepTrace");
+    this._deepTrace = document.createElement('div');
+    this._deepTrace.setAttribute('id', '_deepTrace');
     contentArea.appendChild(this._deepTrace);
 
     supr(this, 'init', [{parent: contentArea}]);
@@ -69,13 +61,8 @@ var ViewInspector = Class(Widget, function(supr) {
     var getViews = this._channel.request.bind(this._channel, 'getViews');
     this._batchGetView = new BatchGetView(getViews);
 
-    new Button({
-      id: 'devkit-view-inspector-toggle-button',
-      parent: contentArea,
-      children: [{
-        tagName: 'span',
-        className: 'glyphicon glyphicon-search'
-      }]
+    devkit.addModuleButton({
+      iconClassName: 'glyphicon glyphicon-search'
     }).on('Select', bind(this, 'toggleVisibility'));
   };
 

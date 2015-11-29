@@ -5,7 +5,8 @@
     "extensions": {
       "debugger": {
         "static": "build/",
-        "main": "compiled.js"
+        "main": "compiled.js",
+        "styles": "inspector.css"
       },
       "devkit-simulator": "simulator"
     }

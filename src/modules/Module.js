@@ -6,7 +6,8 @@ var spawn = require('child_process').spawn;
 var os = require('os');
 
 var gitClient = require('../util/gitClient');
-var logger = require('../util/logging').get('module');
+var _logger = require('../util/logging')
+var logger = _logger.get('module');
 
 var exists = function (filePath) {
   return new Promise(function (resolve, reject) {
@@ -28,7 +29,7 @@ var exists = function (filePath) {
  *  - app paths: defines a list of paths into a module's file structure for
  *    files that a game can import
  *  - build targets: defines a list of build targets this module can generate
- *  - extensions: defines devkit extension modules (e.g. 'simulator')
+ *  - extensions: defines devkit extension modules (e.g. 'devkit-simulator')
  */
 
 var Module = module.exports = Class(function () {
@@ -38,6 +39,7 @@ var Module = module.exports = Class(function () {
     this.version = info.version || info.packageContents.version;
     this.parent = info.parent;
     this.isDependency = info.isDependency;
+    this._logger = _logger.get('mod:' + this.name);
 
     // game-side js.io path for importing client code from this module
     this._clientPaths = {};
@@ -60,6 +62,7 @@ var Module = module.exports = Class(function () {
     this._extensions = {};
     if (devkit.extensions) {
       for (var name in devkit.extensions) {
+        this._logger.debug('extension registered: ' + name);
         var extInfo = devkit.extensions[name];
         if (typeof extInfo == 'string') {
           extInfo = path.join(this.path, devkit.extensions[name]);

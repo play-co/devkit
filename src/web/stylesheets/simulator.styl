@@ -39,7 +39,6 @@ else
     flex 1
     position relative
 
-#devkit
   #myIP
     position absolute
     top 5px
@@ -52,6 +51,23 @@ else
 
   .Pane > #_container > div:last-child
     flex 1 // last item should fill remainder of pane by default
+
+  #extension-bar
+    position absolute
+    bottom 0
+    left 0
+    width 100%
+    display flex
+    padding 10px
+
+    &> button
+      width 60px
+      height 60px
+      padding 10px
+
+      .glyphicon
+        font-size 30px
+        top -1px
 
 .module-frame
   position absolute
