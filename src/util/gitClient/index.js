@@ -56,6 +56,7 @@ function spawnWithLogger(args, opts, cb) {
   };
 
   var ranCallback = false;
+  logger.debug('spawning with args "' + args.join(' ') + '" in cwd:', opts.cwd);
   var child = spawn(name, args, {stdio: opts.stdio, cwd: opts.cwd});
   var streams;
   if (opts.buffer) {

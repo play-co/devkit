@@ -11,6 +11,10 @@ var SimulatorSocketClient = Class(function () {
     this._socket.emit(name, data);
   };
 
+  this.disconnect = function() {
+    this._socket.disconnect();
+  };
+
 })
 
 module.exports = SimulatorSocketClient;

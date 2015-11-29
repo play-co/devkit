@@ -92,7 +92,6 @@ exports = Class(CenterLayout, function (supr) {
 
     var opts = this._opts;
 
-    this._isRetina = true;
     this._validOrientations = {};
     this._renderers = {
       'Facebook': facebookRenderer
@@ -224,6 +223,10 @@ exports = Class(CenterLayout, function (supr) {
   };
 
   this.setBuilding = function (isBuilding) {
+
+    // Make sure we remove game simulation overhead when building
+    this.setPaused(isBuilding);
+
     var spinner = this['build-spinner'];
 
     if (!isBuilding) {
@@ -285,12 +288,6 @@ exports = Class(CenterLayout, function (supr) {
     setTimeout(bind(this, function () {
       this.splashImage.style.display = 'none';
     }), 500);
-  };
-
-  this.setRetina = function (isRetina) {
-    this._isRetina = isRetina;
-    this.update();
-    this.refresh();
   };
 
   this.getFrame = function () { return this._frame; };
@@ -364,6 +361,10 @@ exports = Class(CenterLayout, function (supr) {
     }
   };
 
+  this.getDeviceInfo = function() {
+    return this._deviceInfo;
+  };
+
   this.setDeviceInfo = function (deviceInfo) {
     this.setTransitionsEnabled(false);
 
@@ -386,14 +387,10 @@ exports = Class(CenterLayout, function (supr) {
     logInfo('pixel-ratio', deviceInfo.getDevicePixelRatio());
 
     this.update();
+    if (this.banner) { this.banner.hide(); }
+    this.emit('change:type');
 
     setTimeout(bind(this, 'setTransitionsEnabled', true), 1000);
-
-    if (this._frame) {
-      this.refresh();
-    }
-
-    this.emit('change:type');
   };
 
   this.rotate = function () {
@@ -534,21 +531,13 @@ exports = Class(CenterLayout, function (supr) {
     };
   }
 
-  this._setViewport = function (size, viewport, scale) {
-    $.style(this.contents, sizeToCSS(size, scale));
-    // $.style(this.frameWrapper, sizeToCSS(viewport, scale));
+  this._setViewport = function (size, viewport, zoom) {
+    $.style(this.contents, sizeToCSS(size, zoom));
     if (this._frame) {
-      var style;
-
-      if (this._isRetina) {
-        style = sizeToCSS(viewport);
-        style[TRANSFORM_STYLE] = 'scale(' + scale + ')';
-        style[TRANSFORM_ORIGIN_STYLE] = '0px 0px';
-      } else {
-        style = sizeToCSS(viewport, scale);
-        style[TRANSFORM_STYLE] = '';
-      }
-
+      var dpr = this.getDevicePixelRatio();
+      var style = sizeToCSS(viewport);
+      style[TRANSFORM_STYLE] = 'scale(' + zoom + ')';
+      style[TRANSFORM_ORIGIN_STYLE] = '0px 0px';
       $.style(this._frame, style);
     }
   };
@@ -571,41 +560,34 @@ exports = Class(CenterLayout, function (supr) {
     var info = this._deviceInfo;
     if (!info) { return; }
 
-    var start = Date.now();
-
     this._rotation = this._computeRotation();
     var size = this._customSize || info.getScreenSize();
     if (this._rotation % 2 == 1) {
       size.rotate();
     }
 
-    var dpr = this.getDevicePixelRatio();
     var zoom = this._zoom;
     if (!zoom) {
       // check for auto-zoom out to fit window
-      var padding = 10;
-      var winSize = new Size(window.innerWidth - padding * 2, window.innerHeight - padding * 2);
+      var paddingX = 10;
+      var paddingY = 100;
+      var winSize = new Size(window.innerWidth - paddingX * 2, window.innerHeight - paddingY * 2);
       var targetSize = info.getChromeSize(this._rotation % 2 == 1);
       if (winSize.getRatio() < targetSize.getRatio()) {
         zoom = winSize.width / targetSize.width;
       } else {
         zoom = winSize.height / targetSize.height;
       }
-      zoom = Math.min(1, zoom * dpr);
+      zoom = Math.max(0.1, Math.min(1, zoom));
     }
-
-    var scale = this._scale = 1 / dpr * zoom;
-    this._width = size.width * scale || 0;
-    this._height = size.height * scale || 0;
 
     // override the default full-screen with a custom screen size
     // Note: custom size with viewport != screen size is not supported
     var viewportSize = this._customSize ? size : info.getViewportSize(this._rotation);
-
     this.contents.style.cssText = '';
     $.style(this.contents, info.getCustomStyle());
 
-    this._setViewport(size, viewportSize, scale);
+    this._setViewport(size, viewportSize, zoom);
 
     var renderer = this._renderers[info.getName()];
     if (this._customRenderer && (!renderer || renderer != this._customRenderer)) {
@@ -621,17 +603,19 @@ exports = Class(CenterLayout, function (supr) {
     this.setCenterX(info.centerSimulatorX());
     this.setCenterY(info.centerSimulatorY());
 
-    this.background.update(merge({
-      scale: scale,
-      rotation: this._rotation,
-      screenSize: size,
-    }, info.getBackground(this._rotation)));
+    var newBG = info.getBackground(this._rotation);
+    var bgRotation = (info.getBackgroundCount() === 1) ? this._rotation : 0;
 
-    this.setContentSize(size.width * scale, size.height * scale);
+    this.background.update(merge({
+      scale: zoom / info.getDevicePixelRatio(),
+      rotation: bgRotation,
+      screenSize: size,
+    }, newBG));
+
+    this.setContentSize(size.width * zoom, size.height * zoom);
 
     this.toolbar.setOffset(this.getContentArea(), this.background.getOffset());
 
-    this.logger.log('UPDATE', Date.now() - start);
     this.emit('change');
   };
 
