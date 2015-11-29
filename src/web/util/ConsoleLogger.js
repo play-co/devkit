@@ -21,6 +21,8 @@ var Logger = Class(function() {
   };
 
   this._doLog = function(fn, level, args) {
+    // ensure args is an array object
+    args = Array.prototype.slice.call(args);
     var interp = [];
 
     var prefix = '%c[' + this._name + ']';
@@ -38,10 +40,19 @@ var Logger = Class(function() {
     prefix += '\t%c';
     interp.push('color: black');
 
-    var _args = [prefix + args[0]].concat(interp);
+    var _args = [prefix];
+    if (typeof args[0] === 'string') {
+      _args[0] += args[0];
+      _args = _args.concat(interp);
+    } else {
+      _args = _args.concat(interp);
+      _args.push(args[0]);
+    }
+
     if (args.length > 1) {
       _args = _args.concat(Array.prototype.slice.call(args, 1));
     }
+
     fn.apply(console, _args);
   };
 
