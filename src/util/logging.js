@@ -16,6 +16,8 @@ exports.WARN = 4;
 exports.ERROR = 5;
 exports.NONE = 10;
 
+exports.defaultLogLevel = exports.LOG;
+
 var Class = require('jsio')('jsio.base').Class;
 
 /*
@@ -50,7 +52,7 @@ exports.Logger = Class(Writable, function () {
     this._tag = tag;
     this._prefix = exports.getPrefix(tag);
 
-    this._level = exports.LOG;
+    this._level = exports.defaultLogLevel;
   };
 
   // adds writable streams to this logger that pipe to the console unless

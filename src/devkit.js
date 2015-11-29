@@ -29,6 +29,8 @@ require('jsio');
 
 require('./globals');
 
+var logging = require('./util/logging');
+
 /**
  * Module API.
  */
@@ -42,6 +44,10 @@ function main () {
   var commands = require('./commands');
   var argv = commands.argv;
   var args = argv._;
+
+  if (argv.v) {
+    logging.defaultLogLevel = logging.DEBUG;
+  }
 
   var name;
 
