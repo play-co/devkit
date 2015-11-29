@@ -234,6 +234,14 @@ var Simulator = exports = Class(function () {
       }, function (err) {
         this.logger.error('Unable to simulate', this._app);
         this.logger.error(err);
+
+        this._requiresHardRebuild = true;
+
+        if (err.response && err.response.message) {
+          this._ui.showBuildFailed(err.response.message);
+        } else {
+          this._ui.showBuildFailed('Unknown failure, please check devkit server logs.');
+        }
       });
   });
 

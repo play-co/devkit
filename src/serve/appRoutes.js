@@ -115,6 +115,12 @@ exports.addToAPI = function (opts, api) {
                 );
               });
             }
+          })
+          .catch(function(e) {
+            logger.error('Error building app', e);
+            res.status(500).send({
+              message: e
+            });
           });
       })
       .catch(function (e) {

@@ -60,6 +60,10 @@ exports = Class(CenterLayout, function (supr) {
         {id: 'background', type: FrameBackground},
         {id: 'splashImage'},
         {id: 'resizeHandle'},
+        {id: 'buildFailedContainer', children: [
+          {tag: 'h3', text: 'Build failed'},
+          {id: 'buildFailedMessage', tag: 'p', text: '<message>'}
+        ]},
         {id: 'build-spinner', class: 'spinnerContainer', children: [
           {class: 'spinner'},
           {tag: 'p', text: 'Building app'}
@@ -89,6 +93,8 @@ exports = Class(CenterLayout, function (supr) {
 
   this.buildWidget = function () {
     supr(this, 'buildWidget', arguments);
+
+    $.style(this['buildFailedContainer'], {display: 'none'});
 
     var opts = this._opts;
 
@@ -223,9 +229,10 @@ exports = Class(CenterLayout, function (supr) {
   };
 
   this.setBuilding = function (isBuilding) {
-
     // Make sure we remove game simulation overhead when building
     this.setPaused(isBuilding);
+
+    $.style(this['buildFailedContainer'], {display: 'none'});
 
     var spinner = this['build-spinner'];
 
@@ -243,6 +250,13 @@ exports = Class(CenterLayout, function (supr) {
         this.addClass('building');
       }), 100);
     }
+  };
+
+  this.showBuildFailed = function(msg) {
+    $.style(this['buildFailedContainer'], {display: 'block'});
+    $.removeClass(this['build-spinner'], 'visible');
+
+    $.setText(this.buildFailedMessage, msg);
   };
 
   this._onMenuOpen = function (menu) {

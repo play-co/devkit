@@ -102,8 +102,13 @@ exports.build = function (appPath, argv, cb) {
         return logger.error('another build is already in progress');
       }
 
-      logger.error(err);
-      logger.log('build failed');
+      logger.info('build failed');
+      logger.error('exception: ' + err.stack);
+      if (process.send) {
+        process.send({
+          err: err.stack
+        });
+      }
       process.exit(1);
     })
     .success(function () {

@@ -74,7 +74,7 @@ var BuildItem = Class(function () {
 
     logger.log('starting build', this.appPath, this.buildOpts.target);
 
-    this._build = childProcess.fork(buildFork, [(args)])
+    this._build = childProcess.fork(buildFork, [args])
       .on('message', this._onFinish.bind(this))
       .on('close', this._onClose.bind(this));
   };
@@ -118,7 +118,9 @@ var BuildItem = Class(function () {
     // if the fork terminated normally, done will be true here
     if (this.done) { return; }
 
-    this._reject({message: 'build failed'});
+    this._reject({
+      message: 'build failed (closed before done)'
+    });
     this.done = true;
     if (this._onStop) {
       this._onStop();
