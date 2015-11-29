@@ -84,7 +84,7 @@ var BuildItem = Class(function () {
         if (this.done) {
           resolve();
         } else if (!this._build) {
-          reject({message: "not building"});
+          reject({message: 'not building'});
         } else {
           this._onStop = resolve;
           this._build.send('stop');

@@ -134,7 +134,7 @@ GLOBAL.devkit = {
 
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = util.path.join(directory, 'inspector.css');
+    link.href = util.path.join(directory, stylePath);
     document.querySelector('head').appendChild(link);
   },
 

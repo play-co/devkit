@@ -97,7 +97,15 @@ var usageStr = "usage: devkit [--version] [--help] <command> [<args>]\n\n"
   + "available commands:\n" + _usage.join('\n') + "\n\n"
   + "See 'devkit help <command>' to read about a specific command";
 
-exports.argv = optimist.usage(usageStr).argv;
+// Let commands update optimist
+var _optimistObj = optimist.usage(usageStr);
+for (var commandName in _commands) {
+  var command = _commands[commandName];
+  if (command.updateOptimist) {
+    _optimistObj = command.updateOptimist(_optimistObj);
+  }
+}
+exports.argv = _optimistObj.argv;
 
 exports.get = function (name) {
   return _commands[name];

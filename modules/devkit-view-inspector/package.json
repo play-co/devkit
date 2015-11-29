@@ -4,18 +4,9 @@
   "devkit": {
     "extensions": {
       "debugger": {
-        "static": "build/",
-        "main": "compiled.js",
-        "styles": "inspector.css"
+        "main": "debugger"
       },
       "devkit-simulator": "simulator"
     }
-  },
-  "devDependencies": {
-    "gulp": "^3.8.11",
-    "gulp-concat": "^2.5.2",
-    "gulp-load-plugins": "^0.10.0",
-    "gulp-stylus": "^2.0.1",
-    "nib": "^1.1.0"
   }
 }

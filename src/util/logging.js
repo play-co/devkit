@@ -52,7 +52,7 @@ exports.Logger = Class(Writable, function () {
     this._tag = tag;
     this._prefix = exports.getPrefix(tag);
 
-    this._level = exports.defaultLogLevel;
+    this._level = null;
   };
 
   // adds writable streams to this logger that pipe to the console unless
@@ -123,25 +123,29 @@ exports.Logger = Class(Writable, function () {
     this._level = level;
   };
 
+  this.getLevel = function() {
+    return this._level || exports.defaultLogLevel;
+  };
+
   // call these for formatted logging from code
   this.debug = function () {
-    this._level <= exports.DEBUG && this._log(undefined, arguments);
+    this.getLevel() <= exports.DEBUG && this._log(undefined, arguments);
   };
 
   this.log = function () {
-    this._level <= exports.LOG && this._log(undefined, arguments);
+    this.getLevel() <= exports.LOG && this._log(undefined, arguments);
   };
 
   this.info = function () {
-    this._level <= exports.INFO && this._log(undefined, arguments);
+    this.getLevel() <= exports.INFO && this._log(undefined, arguments);
   };
 
   this.warn = function () {
-    this._level <= exports.WARN && this._log(exports.warnPrefix, arguments);
+    this.getLevel() <= exports.WARN && this._log(exports.warnPrefix, arguments);
   };
 
   this.error = function () {
-    this._level <= exports.ERROR && this._log(exports.errorPrefix, arguments);
+    this.getLevel() <= exports.ERROR && this._log(exports.errorPrefix, arguments);
   };
 
   this._log = function (prefix, args) {

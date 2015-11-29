@@ -317,7 +317,26 @@ var MountedApp = Class(EventEmitter, function () {
       this.debuggerModules[module.name] = info;
     }
 
+    // Check for a main style file
+    var styleMainPath = path.join(module.path, 'build', 'main.css');
+    if (fs.existsSync(styleMainPath)) {
+      if (!info.styles) {
+        info.styles = [];
+      }
+      if (info.styles.indexOf('main.css') === -1) {
+        logger.debug('Inferring main.css at:', styleMainPath);
+        info.styles.push('main.css');
+      }
+    }
+
     // mount static routes
+    if (!info.static) {
+      var inferStaticPath = path.join(module.path, 'build');
+      if (fs.existsSync(inferStaticPath)) {
+        logger.debug('Inferring static path at:', inferStaticPath);
+        info.static = 'build';
+      }
+    }
     if (info.static) {
       var staticPath = path.join(module.path, info.static);
       logger.debug('Extension static routes: ' + route  + ' -> ' + staticPath);
