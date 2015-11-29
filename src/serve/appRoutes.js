@@ -13,6 +13,7 @@ var logging = require('../util/logging');
 var routeIds = require('./routeIds');
 var buildQueue = require('./buildQueue');
 var routeIdGenerator = require('./routeIdGenerator');
+var SimulatorSocketClient = require('./SimulatorSocketClient');
 
 var chokidar = require('chokidar');
 
@@ -40,14 +41,6 @@ exports.addToAPI = function (opts, api) {
         .then(function (mountedApp) {
           mountedApp.addSocket(socket);
         });
-    });
-
-    socket.on('watch', function(appPath) {
-      // Add this socket to the app
-      var app = getAppByPath(appPath);
-      if (app) {
-        app.sockets.push(socket);
-      }
     });
 
     socket.on('disconnect', function() {
@@ -98,7 +91,8 @@ exports.addToAPI = function (opts, api) {
         scheme: isMobile ? 'debug' : req.query.scheme,
         simulated: true,
         simulateDeviceId: req.query.deviceId,
-        simulateDeviceType: req.query.deviceType
+        simulateDeviceType: req.query.deviceType,
+        liveEdit: req.query.liveEdit
       };
 
       if (req.query.remote == 'true') {
@@ -200,14 +194,24 @@ var MountedApp = Class(EventEmitter, function () {
     this.expressApp.watchers.push(
       chokidar.watch(
         [
-          path.join(this.appPath, 'manifest.json'),
-          path.join(this.appPath, 'src'),
-          path.join(this.appPath, 'resources')
+          'manifest.json',
+          'src',
+          'resources'
         ],
-        { recursive: true, followSymLinks: false, persistent: true, ignoreInitial: true }
-      ).on('all', function(event, path) {
-        logger.info(this.id + ': changed ' + path);
-        this.emit('watch:changed', path);
+        {
+          recursive: true, followSymLinks: false, persistent: true, ignoreInitial: true,
+          cwd: this.appPath
+        }
+      ).on('all', function(event, changedPath) {
+        logger.info(this.id + ': changed ' + changedPath);
+        if (changedPath.indexOf('src') === 0) {
+          this._jsFileChanged(changedPath);
+        } else {
+          this.emit('watch:changed', {
+            path: changedPath,
+            requiresHardRebuild: true
+          });
+        }
       }.bind(this))
     );
     // ----- //
@@ -225,9 +229,25 @@ var MountedApp = Class(EventEmitter, function () {
     }, this);
   };
 
+  this._jsFileChanged = function(changedPath) {
+    var fullPath = path.join(this.appPath, changedPath);
+    fs.readFile(fullPath, function(err, dataBuffer) {
+      if (err) {
+        logger.error('Error reading changed file:', fullPath, err);
+        return;
+      }
+      // TODO:
+      logger.info('TODO: RE PARSE AND CHECK SOURCE FOR IMPORTS (against previous compile imports)');
+      this.emit('watch:changed', {
+        path: changedPath,
+        buffer: dataBuffer
+      });
+    }.bind(this));
+  };
+
   this.addSocket = function(clientSocket) {
-    this.sockets.push(clientSocket);
-    clientSocket.emit('handshakeResponse')
+    var client = new SimulatorSocketClient(this, clientSocket);
+    this.sockets.push(client);
   };
 
   this.getLastBuildConfig = function () {
@@ -308,14 +328,18 @@ var MountedApp = Class(EventEmitter, function () {
     logger.info('Shutting down route for: ' + this.appPath + ' (' + this.routeId + ')');
 
     // Close sockets
-    this.sockets.forEach(function(socket) {
-      socket.disconnect();
-    });
+    if (this.sockets) {
+      this.sockets.forEach(function(socket) {
+        socket.disconnect();
+      });
+    }
 
     // Remove watchers
-    this.watchers.forEach(function(watcher) {
-      watcher.close();
-    });
+    if (this.watchers) {
+      this.watchers.forEach(function(watcher) {
+        watcher.close();
+      });
+    }
 
     this.clearExistingCleanupTimeout();
   };

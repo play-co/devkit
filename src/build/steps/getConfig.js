@@ -25,6 +25,7 @@ exports.getConfig = function(app, argv) {
   config.sdkVersion = sdkVersion;
   config.isTestApp = argv.isTestApp;
   config.isSimulated = argv.simulated;
+  config.liveEdit = argv.liveEdit == 'true';
   config.simulator = {
     deviceId: argv.simulateDeviceId,
     deviceType: argv.simulateDeviceType,

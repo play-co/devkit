@@ -67,7 +67,8 @@ var Simulator = exports = Class(function () {
       this._ui = new ui.Chrome(this);
     }
 
-    this.changedFiles = [];
+    this._requiresHardRebuild = false;
+    this.changedFiles = {};
 
     this.setupSocket();
 
@@ -89,23 +90,34 @@ var Simulator = exports = Class(function () {
     this._ui.setConnected(false);
     this.s.on('disconnect', function() {
       this._ui.setConnected(false);
+      this._requiresHardRebuild = true;
     }.bind(this));
     this.s.on('connect', function() {
       this._ui.setConnected(true);
+      this.s.emit('handshake', this._app);
     }.bind(this));
 
     this.s.on('handshakeResponse', function() {
       console.log('Got handshake response');
     });
 
-    this.s.on('watch:changed', function(path) {
-      console.log('File changed:', path);
-      if (this.changedFiles.indexOf(path) === -1) {
-        this.changedFiles.push(path);
+    this.s.on('watch:changed', function(data) {
+      console.log('File changed:', data.path);
+      if (data.requiresHardRebuild) {
+        this._requiresHardRebuild = true;
+      } else {
+        var loadDefer = Promise.defer();
+        // Enter the new details in the changedFiles map
+        var contents = String.fromCharCode.apply(null, new Uint8Array(data.buffer));
+        this.changedFiles[data.path] = {
+          path: data.path,
+          loadPromise: loadDefer.promise,
+          lastLoad: Date.now(),
+          contents: contents
+        };
+        loadDefer.resolve();
       }
     }.bind(this));
-
-    this.s.emit('handshake', this._app);
   };
 
   this.getUI = function () {
@@ -152,14 +164,29 @@ var Simulator = exports = Class(function () {
   this.rebuild = PUBLIC_API(function (opts) {
     opts = opts || {};
 
-    if (opts.soft) {
+    if (opts.soft && !this._requiresHardRebuild) {
       console.log('Soft reload', this.changedFiles);
-      // this._ui.restart();
-      // return Promise.resolve();
+      return this._ui.restart().then(function() {
+        var loadPromises = [];
+        for (var x in this.changedFiles) {
+          loadPromises.push(this.changedFiles[x].loadPromise);
+        }
+        return Promise.all(loadPromises).then(function() {
+          for (var x in this.changedFiles) {
+            var changed = this.changedFiles[x];
+            var success = this._ui.setSrc(changed.path, changed.contents);
+            if (!success) {
+              return Promise.reject();
+            }
+          }
+          this._ui.continueLoad();
+        }.bind(this));
+      }.bind(this));
     }
 
     this.lastBuildAt = Date.now();
-    this.changedFiles = [];
+    this.changedFiles = {};
+    this._requiresHardRebuild = false;
 
     console.log('%cbuilding ' + this._mountInfo.manifest.shortName + '...', 'font-weight: bold; color: blue');
 
@@ -174,7 +201,8 @@ var Simulator = exports = Class(function () {
           deviceType: this._type,
           deviceId: this.id,
           scheme: 'debug',
-          target: this._buildTarget
+          target: this._buildTarget,
+          liveEdit: true
         }
       })
       .bind(this)
@@ -184,7 +212,9 @@ var Simulator = exports = Class(function () {
 
         if (this._ui) {
           this._ui.setBuilding(false);
-          this._ui.loadURL(this._mountInfo.url);
+          this._ui.loadURL(this._mountInfo.url, true).then(function() {
+            this._ui.continueLoad();
+          }.bind(this));
         }
 
         return res;

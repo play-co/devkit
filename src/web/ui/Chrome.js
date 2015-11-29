@@ -456,7 +456,15 @@ exports = Class(CenterLayout, function (supr) {
     this.emit('change');
   };
 
-  this.loadURL = function (url) {
+  var splitCmd = function(s) {
+    var i = s.indexOf(' ');
+    return {
+      cmd: s.substring(0, i),
+      data: s.substring(i + 1, s.length),
+    }
+  }
+
+  this.loadURL = function (url, liveEdit) {
     this.showSplash();
 
     if (this._frame) {
@@ -480,16 +488,34 @@ exports = Class(CenterLayout, function (supr) {
     // TODO: use the proper channel stuff for this
     window.addEventListener('message', function(event) {
       if (event.data === 'bootstrapping') {
-        if (this._iframeLoadDefer) {
-          this._iframeLoadDefer.resolve();
-          this._iframeLoadDefer = undefined;
+        this._iframeLoadDeferComplete();
+      } else {
+        var cmd = splitCmd(event.data);
+        if (cmd.cmd === 'LIVE_EDIT') {
+          if (cmd.data === 'listener_ready') {
+            console.log('Live edit listener ready');
+            this._iframeLoadDeferComplete();
+            def.resolve();
+          }
         }
       }
     }.bind(this));
 
     this.update();
 
+    // Immediately resolve non live edit games
+    if (!liveEdit) {
+      def.resolve();
+    }
+
     return def.promise;
+  };
+
+  this._iframeLoadDeferComplete = function() {
+    if (this._iframeLoadDefer) {
+      this._iframeLoadDefer.resolve();
+      this._iframeLoadDefer = undefined;
+    }
   };
 
   this.getDevicePixelRatio = function () {
@@ -535,12 +561,6 @@ exports = Class(CenterLayout, function (supr) {
       rotation = 1;
     }
     return rotation;
-  };
-
-  this.reload = function () {
-    this._simulator.rebuild({
-      soft: true
-    });
   };
 
   this.update = function () {
@@ -645,6 +665,12 @@ exports = Class(CenterLayout, function (supr) {
     this.update();
   };
 
+  this.reload = function () {
+    this._simulator.rebuild({
+      soft: true
+    });
+  };
+
   /** Reject any old deferred, make a new one. */
   this._newIframeLoadDefer = function() {
     if (this._iframeLoadDefer) {
@@ -666,19 +692,23 @@ exports = Class(CenterLayout, function (supr) {
     return Promise.resolve();
   };
 
-  this.softReload = function() {
-    return this._channel.request('reload', { partialLoad: true });
-  };
-
   /** Send a partialLoadContinue signal to the inner window, return the promise */
   this.continueLoad = function() {
     if (this._frame) {
-      this._frame.contentWindow.postMessage('partialLoadContinue', '*');
+      this._frame.contentWindow.postMessage('LIVE_EDIT ready', '*');
       return Promise.resolve();
     }
     return Promise.reject('no iframe set');
-    // return this._channel.request('partialLoadContinue');
-  }
+  };
+
+  this.setSrc = function(path, contents) {
+    console.log('Setting source:', path);
+    if (!this._frame || !this._frame.contentWindow) {
+      return false;
+    }
+    this._frame.contentWindow.postMessage('SOURCE ' + path + ' ' + contents, '*');
+    return true;
+  };
 
   this.takeScreenshot = function () {
     var win = window.open('', '', 'width=' + (this._screenWidth + 2) + ',height=' + (this._screenHeight + 2));
