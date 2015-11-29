@@ -31,6 +31,11 @@ var ModuleCache = Class(EventEmitter, function () {
         return fs.readdirAsync(MODULE_CACHE);
       })
       .map(function (entry) {
+        // Manually exclude anything starting with a '.'
+        if (entry.indexOf('.') === 0) {
+          return;
+        }
+
         var cachePath = this.getPath(entry);
         return getCachedModuleInfo(cachePath, true)
           .catch(function () {
