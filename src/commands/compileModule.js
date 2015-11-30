@@ -2,7 +2,7 @@ var commands = require('./index');
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 var logger = require('../util/logging').get('compileModule');
 
-var gulpTasks = require('../modules/gulpTasks');
+var moduleCompiler = require('../modules/moduleCompiler');
 
 var CompileModuleCommand = Class(BaseCommand, function (supr) {
 
@@ -17,9 +17,9 @@ var CompileModuleCommand = Class(BaseCommand, function (supr) {
     var moduleDir = args.shift();
 
     if (commands.argv.watch) {
-      gulpTasks.watch(moduleDir, cb);
+      moduleCompiler.executeRunnerTask(moduleDir, 'watch', cb);
     } else {
-      gulpTasks.compile(moduleDir, cb);
+      moduleCompiler.executeRunnerTask(moduleDir, 'compile', cb);
     }
   };
 

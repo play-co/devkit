@@ -169,11 +169,13 @@ var MountedApp = Class(EventEmitter, function () {
 
   this.init = function (app) {
     this.id = routeIds.generate(app.paths.root);
+    logger.debug('initializing appRoutes for: ' + app.paths.root + ' (' + this.id + ')');
+
     this.expressApp = express();
     this.app = app;
     this.url = '/apps/' + this.id + '/';
     this.sockets = [];
-    this.debuggerURLs = {};
+    this.debuggerUI = {};
     this.debuggerModules = {}
     this.buildPath = path.join(app.paths.root, 'build', 'debug', 'simulator');
 
@@ -272,75 +274,90 @@ var MountedApp = Class(EventEmitter, function () {
   };
 
   this.loadExtensions = function (module) {
-    var route = '/modules/' + module.name;
-    var info = module.getExtension('debugger');
     logger.debug('Loading extensions for: ' + module.name);
-    if (!info) {
-      return;
-    }
+    var route = '/modules/' + module.name;
 
-    // mount dynamic routes
-    if (info.routes) {
-      logger.debug('Extension routes:', info.routes);
-      try {
-        var moduleRoutes = express();
-        var routes = require(path.join(module.path, info.routes));
-        if (routes.init) {
-          routes.init(api, this.app.toJSON(), moduleRoutes);
-          this.expressApp.use(route, moduleRoutes);
-        } else {
-          logger.warn('expecting an init function for the routes of',
-              module.path + ', but init was not found!');
+    var info = module.getExtension('serve');
+    if (info) {
+      // mount dynamic routes
+      if (info.routes) {
+        logger.debug('serve routes:', info.routes);
+        try {
+          var moduleRoutes = express();
+          var routes = require(path.join(module.path, info.routes));
+          if (routes.init) {
+            routes.init(api, this.app.toJSON(), moduleRoutes);
+            this.expressApp.use(route, moduleRoutes);
+          } else {
+            logger.warn('expecting an init function for the routes of',
+                module.path + ', but init was not found!');
+          }
+        } catch (e) {
+          logger.error('Unable to load debugger extension from', module.name);
+          logger.error(e.stack || e);
         }
-      } catch (e) {
-        logger.error('Unable to load debugger extension from', module.name);
-        logger.error(e.stack || e);
+      }
+      // Mount static routes
+      if (info.static) {
+        if (!Array.isArray(info.static)) {
+          info.static = [info.static];
+        }
+
+        for (var i = 0; i < info.static.length; i++) {
+          var staticEntry = info.static[i];
+          var staticPath = path.join(module.path, staticEntry);
+          var staticRoute;
+          if (i === 0) {
+            staticRoute = route;
+          } else {
+            staticRoute = path.join(route, staticEntry);
+          }
+
+          logger.debug('serve static route: ' + staticRoute  + ' -> ' + staticPath);
+          this.expressApp.use(staticRoute, express.static(staticPath));
+        }
       }
     }
 
-    // setup a main file
-    if (info.main) {
-      var mainFile = info.main;
-      var ext = path.extname(mainFile).toLowerCase();
-      if (!ext) {
-        mainFile += '.js';
-        ext = '.js';
-      }
+    info = module.getExtension('debuggerUI');
+    if (info) {
+      for (var i = 0; i < info.length; i++) {
+        // debuggerUI will be loaded by devkit front end
+        var mainFile = info[i];
+        var staticPath = path.join(module.path, 'build', mainFile);
+        var staticRoute = path.join(route, mainFile);
 
-      // debuggerModules will be loaded by devkit
-      // debuggerURLs are main files to be loaded by each simulator
-      var routeName = route + '/' + mainFile;
-      logger.debug('Extension main file:', routeName);
-      var mainPath = '/apps/' + this.id + routeName;
+        var debuggerUIInfo = {
+          main: 'index.js',
+          route: path.join('apps', this.id, staticRoute),
+          styles: []
+        };
 
-      info.mainPath = mainPath;
-      this.debuggerModules[module.name] = info;
-    }
+        // Check for a main style file
+        var styleMainPath = path.join(staticPath, 'index.css');
+        if (fs.existsSync(styleMainPath)) {
+          logger.debug('Inferring style at:', styleMainPath);
+          debuggerUIInfo.styles.push('index.css');
+        }
 
-    // Check for a main style file
-    var styleMainPath = path.join(module.path, 'build', 'main.css');
-    if (fs.existsSync(styleMainPath)) {
-      if (!info.styles) {
-        info.styles = [];
-      }
-      if (info.styles.indexOf('main.css') === -1) {
-        logger.debug('Inferring main.css at:', styleMainPath);
-        info.styles.push('main.css');
+        logger.debug('debuggerUI info:', debuggerUIInfo);
+        this.debuggerUI[module.name] = debuggerUIInfo;
+        logger.debug('debuggerUI route: ' + staticRoute + ' -> ' + staticPath);
+        this.expressApp.use(staticRoute, express.static(staticPath));
       }
     }
 
-    // mount static routes
-    if (!info.static) {
-      var inferStaticPath = path.join(module.path, 'build');
-      if (fs.existsSync(inferStaticPath)) {
-        logger.debug('Inferring static path at:', inferStaticPath);
-        info.static = 'build';
+    info = module.getExtension('standaloneUI');
+    if (info) {
+      // Mount standalone UIs
+      for (var uiRoute in info) {
+        var uiPath = info[uiRoute];
+        var staticPath = path.join(module.path, 'build', uiPath);
+        var staticRoute = path.join(route, uiRoute);
+
+        logger.debug('standaloneUI route: ' + staticRoute + ' -> ' + staticPath);
+        this.expressApp.use(staticRoute, express.static(staticPath));
       }
-    }
-    if (info.static) {
-      var staticPath = path.join(module.path, info.static);
-      logger.debug('Extension static routes: ' + route  + ' -> ' + staticPath);
-      this.expressApp.use(route, express.static(staticPath));
     }
   };
 
@@ -392,7 +409,7 @@ var MountedApp = Class(EventEmitter, function () {
       url: this.url,
       appPath: this.app.paths.root,
       buildPath: this.buildPath,
-      debuggerURLs: this.debuggerURLs,
+      debuggerUI: this.debuggerUI,
       debuggerModules: this.debuggerModules,
       manifest: this.app.manifest
     };

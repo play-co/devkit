@@ -53,15 +53,9 @@ GLOBAL.devkit = {
 
         mountInfo = mountInfo[0];
 
-        // convert response to absolute URLs
-        mountInfo.url = resolveURL(mountInfo.url);
-        Object.keys(mountInfo.debuggerURLs).forEach(function (name) {
-          mountInfo.debuggerURLs[name] = resolveURL(mountInfo.debuggerURLs[name]);
-        });
-
         // Load the debugger modules
-        Object.keys(mountInfo.debuggerModules).forEach(function (name) {
-          this.addModule(name, mountInfo.debuggerModules[name]);
+        Object.keys(mountInfo.debuggerUI).forEach(function (name) {
+          this.addModule(name, mountInfo.debuggerUI[name]);
         }.bind(this));
 
         var simulator = new Simulator(merge({
@@ -82,13 +76,15 @@ GLOBAL.devkit = {
   },
 
   addModule: function(name, info) {
-    var src = resolveURL(info.mainPath);
-    this.logger.info('adding module: ' + name + ' (main ' + src + ')');
+    info.resolvedRoute = resolveURL(info.route);
+    this.logger.info('adding module: ' + name, info);
 
     if (name in this._modules) {
       this.logger.info('module already exists, skipping');
       return;
     }
+
+    var src = util.path.join(info.resolvedRoute, info.main);
 
     this._modules[name] = {
       path: src,
@@ -116,9 +112,6 @@ GLOBAL.devkit = {
 
     // Load any styles
     if (info.styles) {
-      if (!Array.isArray(info.styles)) {
-        info.styles = [info.styles];
-      }
       info.styles.forEach(function(stylePath) {
         this.addModuleStyle(name, stylePath);
       }.bind(this));
@@ -129,12 +122,12 @@ GLOBAL.devkit = {
 
   addModuleStyle: function(moduleName, stylePath) {
     var module = this._modules[moduleName];
-    var directory = util.path.splitPath(module.path).directory;
-    this.logger.info('Loading module style', moduleName, stylePath);
 
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = util.path.join(directory, stylePath);
+    link.href = util.path.join(module.info.resolvedRoute, stylePath);
+
+    this.logger.info('Loading module style', moduleName, stylePath, link.href);
     document.querySelector('head').appendChild(link);
   },
 

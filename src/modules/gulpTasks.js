@@ -6,186 +6,128 @@ var fs = require('fs');
 var UglifyJS = require('uglify-js');
 var resolve = require('resolve');
 var Promise = require('bluebird');
+
+var CompilerTasks = require('./CompilerTasks');
+
 var _logger = require('../util/logging');
+var logger = _logger.get('GulpTasks');
 
 
-var logger = _logger.get('gulpTasks');
+var GulpTasks = Class(CompilerTasks, function(supr) {
 
-var paths = {
-  'base': path.join(__dirname, '..', '..'),
-  'jsio': path.dirname(resolve.sync('jsio')),
-  'squill': path.join(__dirname, '..', '..', 'node_modules', 'squill')
-};
+  this.init = function(opts) {
+    supr(this, 'init', arguments);
 
-var compress = true;
-var sourcemaps = false;
+    this.paths = {
+      base: path.join(__dirname, '..', '..'),
+      jsio: path.dirname(resolve.sync('jsio')),
+      squill: path.join(__dirname, '..', '..', 'node_modules', 'squill'),
 
+      stylusMain: path.join(this.srcPath, 'stylus', 'main.styl')
+    };
 
-var getBuildPath = function(modulePath) {
-  return path.join(modulePath, 'build');
-};
+    this.compress = false;
+    this.sourcemaps = false;
 
-
-var buildStylus = function (moduleName, modulePath, stylusMainPath, cb) {
-  logger.info('Compiling stylus for ' + moduleName + ': ' + stylusMainPath);
-
-  var buildPath = getBuildPath(modulePath);
-
-  var stream = gulp.src(stylusMainPath)
-    .pipe(plugins.stylus({
-      use: nib(),
-      sourcemap: sourcemaps,
-      compress: compress
-    }))
-    .pipe(plugins.concat('main.css'))
-    .pipe(gulp.dest(buildPath));
-
-  stream.on('end', function() {
-    cb();
-  });
-  stream.on('error', function(err) {
-    cb(err);
-  });
-};
+    this.promiseBuildStylus = Promise.promisify(this._buildStylus.bind(this));
+    this.promiseBuildJS = Promise.promisify(this._buildJS.bind(this));
+  };
 
 
-var buildJS = function (moduleName, modulePath, moduleMain, jsPath, cb) {
-  logger.info('Compiling jsMain for ' + moduleName + ': ' + moduleMain);
-  logger.debug('jsio path:', paths.jsio);
-  logger.debug('module jsPath:', jsPath);
+  this._buildStylus = function (stylusMainPath, cb) {
+    logger.info('Compiling stylus for ' + this.moduleName + ': ' + stylusMainPath);
 
-  var basePath = path.dirname(jsPath);
-  var buildPath = getBuildPath(modulePath);
+    var stream = gulp.src(stylusMainPath)
+      .pipe(plugins.stylus({
+        use: nib(),
+        sourcemap: this.sourcemaps,
+        compress: this.compress
+      }))
+      .pipe(plugins.concat('index.css'))
+      .pipe(gulp.dest(this.buildPath));
 
-  var jsio = require('jsio');
-  var compilerPath = path.join(jsio.__env.getPath(), '..', 'compilers');
-  jsio.path.add(compilerPath);
+    stream.on('end', function() {
+      cb();
+    });
+    stream.on('error', function(err) {
+      cb(err);
+    });
+  };
 
-  var compiler = jsio('import jsio_compile.compiler');
-  compiler.start(['jsio_compile', jsPath, 'import src.' + moduleMain], {
-    cwd: basePath,
-    environment: 'browser',
-    path: [paths.jsio],
-    includeJsio: false,
-    appendImport: true,
-    compressSources: compress,
-    compressResult: compress,
-    pathCache: {
-      jsio: paths.jsio,
-      squill: paths.squill,
-      src: basePath
-    },
-    interface: {
-      setCompiler: function (compiler) { this.compiler = compiler; },
-      run: function (args, opts) { this.compiler.run(args, opts); },
-      onError: function (err) {
-        logger.error('Error while compiling:', err);
-        cb && cb(err);
+
+  this._buildJS = function (cb) {
+    var moduleMain = this.src;
+    var buildPath = this.buildPath;
+    var jsPath = this.srcPath;
+    var basePath = path.dirname(jsPath);
+
+    logger.info('Compiling jsMain for ' + this.moduleName + ': ' + moduleMain);
+    logger.debug('jsio path:', this.paths.jsio);
+    logger.debug('module jsPath:', jsPath);
+
+    var jsio = require('jsio');
+    var compilerPath = path.join(jsio.__env.getPath(), '..', 'compilers');
+    jsio.path.add(compilerPath);
+
+    var compiler = jsio('import jsio_compile.compiler');
+    compiler.start(['jsio_compile', jsPath, 'import src.' + moduleMain], {
+      cwd: basePath,
+      environment: 'browser',
+      path: [this.paths.jsio],
+      includeJsio: false,
+      appendImport: true,
+      compressSources: this.compress,
+      compressResult: this.compress,
+      pathCache: {
+        jsio: this.paths.jsio,
+        squill: this.paths.squill,
+        src: basePath
       },
-      onFinish: function (opts, code) {
-        if (!fs.existsSync(buildPath)) {
-          fs.mkdirSync(buildPath);
-        }
-
-        code = ';(function(jsio){' + code + '})(jsio.clone());';
-        var filename = path.join(buildPath, moduleMain + '.js');
-        fs.writeFile(filename, code, cb);
-      },
-      compress: function (filename, src, opts, cb) {
-        var result = UglifyJS.minify(src, {
-          fromString: true,
-          compress: {
-            global_defs: {
-              DEBUG: false
-            }
+      interface: {
+        setCompiler: function (compiler) { this.compiler = compiler; },
+        run: function (args, opts) { this.compiler.run(args, opts); },
+        onError: function (err) {
+          logger.error('Error while compiling:', err);
+          cb && cb(err);
+        },
+        onFinish: function (opts, code) {
+          if (!fs.existsSync(buildPath)) {
+            fs.mkdirSync(buildPath);
           }
-        });
 
-        cb(result.code);
+          code = ';(function(jsio){' + code + '})(jsio.clone());';
+          var filename = path.join(buildPath, 'index.js');
+          fs.writeFile(filename, code, cb);
+        },
+        compress: function (filename, src, opts, cb) {
+          var result = UglifyJS.minify(src, {
+            fromString: true,
+            compress: {
+              global_defs: {
+                DEBUG: false
+              }
+            }
+          });
+
+          cb(result.code);
+        }
       }
-    }
-  });
-};
+    });
+  };
 
 
-module.exports = {
-  load: function(modulePath) {
-    logger.info('Loading module at:', modulePath);
-    try {
-      var modulePackage = require(path.join(modulePath, 'package.json'));
-      // Get all the main files and compile them
-      if (!modulePackage.devkit || !modulePackage.devkit.extensions) {
-        logger.warn('module did not specify a devkit.extensions');
-        return;
-      }
-      return modulePackage;
-    } catch(e) {
-      throw new Error('module contains no package.json');
-    }
-  },
-
-
-  compile: function(modulePath, cb) {
-    modulePath = path.resolve(modulePath);
-    var modulePackage = this.load(modulePath);
-    var moduleName = modulePackage.name;
-    logger.info('Compiling module:', moduleName);
-
-    var tasks = [];
+  this.compile = function(tasks) {
     // Check for stylus main file
-    tasks.push(this.compileStylus(moduleName, modulePath, modulePackage));
-    // Check for javascript stuff
-    tasks.push(this.compileJS(moduleName, modulePath, modulePackage));
-
-    logger.info('Waiting for tasks to finish');
-    Promise.all(tasks)
-      .then(function() {
-        logger.info('Done!');
-        cb && cb();
-      });
-  },
-
-  compileStylus: function(moduleName, modulePath, modulePackage) {
-    var tasks = [];
-    var promiseBuildStylus = Promise.promisify(buildStylus);
-
-    var stylusMainPath = path.join(modulePath, 'stylus', 'main.styl');
-    if (fs.existsSync(stylusMainPath)) {
-      tasks.push(
-        promiseBuildStylus(moduleName, modulePath, stylusMainPath)
-      );
-    }
-    return Promise.all(tasks).then(function() {
-      logger.info('stylus complete');
-    });
-  },
-
-  compileJS: function(moduleName, modulePath, modulePackage) {
-    var promiseBuildJS = Promise.promisify(buildJS);
-    var tasks = [];
-
-    for (var extName in modulePackage.devkit.extensions) {
-      var ext = modulePackage.devkit.extensions[extName];
-      if (ext.main) {
-        tasks.push(
-          promiseBuildJS(moduleName, modulePath, ext.main, path.join(modulePath, ext.main))
-        );
-      }
+    if (fs.existsSync(this.paths.stylusMain)) {
+      tasks.push(this.promiseBuildStylus(this.paths.stylusMain));
     }
 
-    return Promise.all(tasks).then(function() {
-      logger.info('js complete');
-    });
-  },
+    // Check for javascript stuff (required)
+    tasks.push(this.promiseBuildJS());
+  };
 
 
-  watch: function(modulePath, cb) {
-    modulePath = path.resolve(modulePath);
-    var modulePackage = this.load(modulePath);
-    var moduleName = modulePackage.name;
-
-    logger.info('Watching module ' + moduleName + ' at: ' + modulePath);
-
+  this.watch = function(tasks) {
     var runningTask = null;
     var taskQueue = [];
     var queueTask = function(fn) {
@@ -205,21 +147,24 @@ module.exports = {
       });
     };
 
-    gulp.watch(path.join(modulePath, 'stylus', '**', '**.styl'), function() {
+    gulp.watch(path.join(this.srcPath, 'stylus', '**', '**.styl'), function() {
       logger.info('stylus changed');
       queueTask(function() {
-        return this.compileStylus(moduleName, modulePath, modulePackage);
+        return this.promiseBuildStylus(this.paths.stylusMain);
       }.bind(this));
     }.bind(this));
 
     gulp.watch([
-      path.join(modulePath, '**', '**.js'),
-      '!' + path.join(modulePath, 'build', '**', '**.js'),
+      path.join(this.srcPath, '**', '**.js')
     ], function() {
       logger.info('js changed');
       queueTask(function() {
-        return this.compileJS(moduleName, modulePath, modulePackage);
+        return this.promiseBuildJS();
       }.bind(this));
     }.bind(this));
-  }
-};
+  };
+
+});
+
+
+module.exports = GulpTasks;

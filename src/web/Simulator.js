@@ -80,7 +80,7 @@ var Simulator = exports = Class(function () {
     this.loadModules(opts.modules);
 
     if (opts.debuggerModules !== false) {
-      this.loadModules(this._mountInfo.debuggerURLs);
+      this.loadModules(this._mountInfo.debuggerModules);
     }
   };
 
