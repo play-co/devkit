@@ -325,7 +325,7 @@ var MountedApp = Class(EventEmitter, function () {
         // debuggerUI will be loaded by devkit front end
         var mainFile = info[i];
         var staticPath = path.join(module.path, 'build', mainFile);
-        var staticRoute = path.join(route, mainFile);
+        var staticRoute = path.join(route, 'extension', mainFile);
 
         var debuggerUIInfo = {
           main: 'index.js',
@@ -353,7 +353,7 @@ var MountedApp = Class(EventEmitter, function () {
       for (var uiRoute in info) {
         var uiPath = info[uiRoute];
         var staticPath = path.join(module.path, 'build', uiPath);
-        var staticRoute = path.join(route, uiRoute);
+        var staticRoute = path.join(route, 'extension', uiRoute);
 
         logger.debug('standaloneUI route: ' + staticRoute + ' -> ' + staticPath);
         this.expressApp.use(staticRoute, express.static(staticPath));
