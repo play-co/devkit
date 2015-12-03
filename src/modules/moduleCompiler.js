@@ -1,10 +1,5 @@
-var gulp = require('gulp');
-var nib = require('nib');
 var path = require('path');
-var plugins = require('gulp-load-plugins')();
-var fs = require('fs');
-var UglifyJS = require('uglify-js');
-var resolve = require('resolve');
+var mkdirp = require('mkdirp');
 var Promise = require('bluebird');
 
 var GulpTasks = require('./GulpTasks');
@@ -35,6 +30,11 @@ module.exports = {
     var modulePackage = this.load(modulePath);
     var moduleName = modulePackage.name;
     logger.info('Running task "' + taskName + '" on module: ' + moduleName);
+
+    // Special case compile
+    if (taskName === 'compile') {
+      mkdirp.sync(path.join(modulePath, 'build'));
+    }
 
     var taskRunners = [];
     this.checkDebuggerUI(modulePath, modulePackage, taskRunners);
