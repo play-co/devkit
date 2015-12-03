@@ -570,6 +570,7 @@ exports = Class(CenterLayout, function (supr) {
     return rotation;
   };
 
+
   this.update = function () {
     var info = this._deviceInfo;
     if (!info) { return; }
