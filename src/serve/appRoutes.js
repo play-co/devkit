@@ -8,6 +8,7 @@ var express = require('express');
 
 var apps = require('../apps/');
 var baseModules = require('../modules').getBaseModules();
+var moduleRoutes = require('../modules/moduleRoutes');
 
 var logging = require('../util/logging');
 var routeIds = require('./routeIds');
@@ -230,11 +231,11 @@ var MountedApp = Class(EventEmitter, function () {
     var modules = app.getModules();
     Object.keys(modules).forEach(function (moduleName) {
       var module = modules[moduleName];
-      this.loadExtensions(module);
+      moduleRoutes.loadExtensions(this.expressApp, this, module);
     }, this);
 
     baseModules.forEach(function (module) {
-      this.loadExtensions(module);
+      moduleRoutes.loadExtensions(this.expressApp, this, module);
     }, this);
   };
 
@@ -271,94 +272,6 @@ var MountedApp = Class(EventEmitter, function () {
     this._lastConfig = config;
 
     return buildQueue.add(this.app.paths.root, opts);
-  };
-
-  this.loadExtensions = function (module) {
-    logger.debug('Loading extensions for: ' + module.name);
-    var route = '/modules/' + module.name;
-
-    var info = module.getExtension('serve');
-    if (info) {
-      // mount dynamic routes
-      if (info.routes) {
-        logger.debug('serve routes:', info.routes);
-        try {
-          var moduleRoutes = express();
-          var routes = require(path.join(module.path, info.routes));
-          if (routes.init) {
-            routes.init(api, this.app.toJSON(), moduleRoutes);
-            this.expressApp.use(route, moduleRoutes);
-          } else {
-            logger.warn('expecting an init function for the routes of',
-                module.path + ', but init was not found!');
-          }
-        } catch (e) {
-          logger.error('Unable to load debugger extension from', module.name);
-          logger.error(e.stack || e);
-        }
-      }
-      // Mount static routes
-      if (info.static) {
-        if (!Array.isArray(info.static)) {
-          info.static = [info.static];
-        }
-
-        for (var i = 0; i < info.static.length; i++) {
-          var staticEntry = info.static[i];
-          var staticPath = path.join(module.path, staticEntry);
-          var staticRoute;
-          if (i === 0) {
-            staticRoute = route;
-          } else {
-            staticRoute = path.join(route, staticEntry);
-          }
-
-          logger.debug('serve static route: ' + staticRoute  + ' -> ' + staticPath);
-          this.expressApp.use(staticRoute, express.static(staticPath));
-        }
-      }
-    }
-
-    info = module.getExtension('debuggerUI');
-    if (info) {
-      for (var i = 0; i < info.length; i++) {
-        // debuggerUI will be loaded by devkit front end
-        var mainFile = info[i];
-        var staticPath = path.join(module.path, 'build', mainFile);
-        var staticRoute = path.join(route, 'extension', mainFile);
-
-        var debuggerUIInfo = {
-          main: 'index.js',
-          route: path.join('apps', this.id, staticRoute),
-          styles: []
-        };
-
-        // Check for a main style file
-        var styleMainPath = path.join(staticPath, 'index.css');
-        if (fs.existsSync(styleMainPath)) {
-          logger.debug('Inferring style at:', styleMainPath);
-          debuggerUIInfo.styles.push('index.css');
-        }
-
-        logger.debug('debuggerUI info:', debuggerUIInfo);
-        this.debuggerUI[module.name] = debuggerUIInfo;
-        logger.debug('debuggerUI route: ' + staticRoute + ' -> ' + staticPath);
-        this.expressApp.use(staticRoute, express.static(staticPath));
-      }
-    }
-
-    info = module.getExtension('standaloneUI');
-    if (info) {
-      // Mount standalone UIs
-      for (var uiRoute in info) {
-        var uiPath = info[uiRoute];
-        var staticPath = path.join(module.path, 'build', uiPath);
-        var staticRoute = path.join(route, 'extension', uiRoute);
-
-        logger.debug('standaloneUI route: ' + staticRoute + ' -> ' + staticPath);
-        this.expressApp.use(staticRoute, express.static(staticPath));
-      }
-    }
   };
 
   this.makeNotUnmountSoon = function() {

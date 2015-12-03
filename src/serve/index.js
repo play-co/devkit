@@ -12,6 +12,8 @@ var apps = require('../apps');
 
 var ip = require('../util/ip');
 var logging = require('../util/logging');
+var baseModules = require('../modules').getBaseModules();
+var moduleRoutes = require('../modules/moduleRoutes');
 
 var config = require('../config');
 
@@ -53,6 +55,11 @@ exports.serveWeb = function (opts, cb) {
     res.header('Cache-Control', 'no-cache');
     res.header('Expires', '-1');
     next();
+  });
+
+  // Add the global scope modules
+  baseModules.forEach(function (module) {
+    moduleRoutes.loadExtensions(app, null, module);
   });
 
   app.use('/api/', getAPIRouter(merge({

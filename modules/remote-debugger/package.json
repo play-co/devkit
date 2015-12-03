@@ -1,0 +1,21 @@
+{
+  "name": "remote-debugger",
+  "version": "0.0.1",
+  "devkit": {
+    "extensions": {
+      "debuggerUI": [
+        "debuggerUI"
+      ],
+      "standaloneUI": {
+        "remoteDeviceConnect": {
+          "src": "remoteDeviceConnect",
+          "isGlobal": true
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3"
+  }
+}

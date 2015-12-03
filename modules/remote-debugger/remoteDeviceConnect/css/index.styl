@@ -1,12 +1,12 @@
 @import "nib"
 
-@import "includes/ui"
-@import "includes/base"
+// @import "includes/ui"
+// @import "includes/base"
 
-if theme is "light"
-  @import "includes/light"
-else
-  @import "includes/dark"
+// if theme is "light"
+//   @import "includes/light"
+// else
+//   @import "includes/dark"
 
 remote-bg-color = #252f3b
 remote-color = #A3ABB3
@@ -19,6 +19,14 @@ remote-btn-bgcolor-hover = #313D4C
 remote-btn-disabled-bgcolor = #384350
 remote-btn-disabled-color = #82868C
 
+
+html, body
+  margin 0px
+  padding 0px
+  height 100%
+  background remote-bg-color
+
+
 pixelated()
   image-rendering optimizeSpeed             /* Legal fallback */
   image-rendering -moz-crisp-edges          /* Firefox        */
@@ -29,6 +37,7 @@ pixelated()
   image-rendering pixelated                 /* CSS4 Proposed  */
   -ms-interpolation-mode nearest-neighbor   /* IE8+           */
 
+
 center()
   position absolute
   left 50%
@@ -36,7 +45,18 @@ center()
   transform translate(-50%, -50%)
   text-align center
 
-#remote
+
+.bold
+    font-weight 500
+
+
+////////////////////////
+
+#main
+  height 100%
+
+
+.remote
   height 100%
   width 100%
   color remote-color
@@ -54,41 +74,35 @@ center()
   button
     cursor pointer
 
-  .bold
-    font-weight 500
-
-  #_corner
-    padding 40px
-
-  #header
+  .header
     font-size 30px
     font-weight 300
     margin-bottom 15px
     text-align center
 
-  #notConnectedEl
+  .cmpt-instructions
     position relative
     display flex
     flex-direction column
     align-items center
 
-    #instructions
+    .instructions
       font-size 18px
       font-weight 300
       margin-top 20px
 
-    #qrcode
+    .qrcode
       padding 20px
       background-color #fff
 
-      #qr
+      .qr
         img
           pixelated()
 
     .instructions
       text-align left
 
-  #connectedEl
+  .cmpt-connected
     display flex
     align-items center
     flex-direction column
@@ -96,19 +110,12 @@ center()
     &>*
       margin-top 30px
 
-    #device
+    .device
       position relative
-      #deviceImage
+      .device-image
         width 125px
-      #dimensions
+      .dimensions
         center()
-    #deviceName
-      text-align center
-      color device-name-color
-
-    #btnContainer
-      >*
-        margin-top 30px
 
     .btn
       display block
@@ -131,14 +138,6 @@ center()
 
       &:not(.disabled):hover
         background-color remote-btn-bgcolor-hover
-
-    #connectUri
-      font-size 25px
-      font-weight 300
-      text-align: center
-      margin 20px
-      flex 3
-      user-select auto
 
   .spinnerContainer
     position absolute
@@ -164,7 +163,7 @@ center()
       width 40px
       height 40px
       pointer-events none
-      background url(../icons/spinner.png)
+      background url(/icons/spinner.png)
       background-size 40px 40px
       background-repeat no-repeat
       animation spin 0.5s linear infinite
@@ -175,7 +174,7 @@ center()
       .spinner
         animation none
 
-  #connLostContainer
+  .cmpt-connection-lost
     background rgba(40, 0, 0, 0.7)
 
 
