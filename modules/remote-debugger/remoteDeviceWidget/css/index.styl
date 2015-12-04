@@ -1,0 +1,165 @@
+@import 'nib'
+
+
+shadow(h, v, b, s, c)
+  -webkit-box-shadow h v b s c
+  -moz-box-shadow    h v b s c
+  box-shadow         h v b s c
+
+
+stop-btn-color          = #2F7EFD
+stop-btn-color-bg       = #FFFFFF
+stop-btn-color-bg-hover = #E0ECFF
+stop-btn-color-disabled    = #416092
+stop-btn-color-bg-disabled = #AAAAAA
+
+start-btn-color          = #FFFFFF
+start-btn-color-bg       = #2f7efd
+start-btn-color-bg-hover = #478EFF
+start-btn-color-disabled    = #CACACA
+start-btn-color-bg-disabled = #728EBB
+
+target-list-item-color          = #3c3c3c
+target-list-item-color-bg       = #FFFFFF
+target-list-item-color-bg-hover = #E9F1FF
+target-list-item-color-selected = #297ffa
+
+target-list-spacer-color= #D7E7FF
+
+target-list-status-unavailable = #EF6C6C
+target-list-status-available   = #70DA70
+target-list-status-occupied    = #EFAD2E
+
+
+.jsio-run-target
+  top 5px
+  right 12px
+  position absolute
+  min-width 190px
+
+  .selected-container
+    display flex
+    position relative
+    overflow hidden
+    border-radius 6px
+    background-color #435265
+
+    font-size 12px
+
+    .selected-run, .selected-stop
+      position relative
+      cursor pointer
+
+    .selected-stop
+      font-size 18px
+      line-height 12px
+      background-color stop-btn-color-bg
+      color stop-btn-color
+      border 1px solid stop-btn-color
+      border-radius 5px 0px 0px 5px
+      padding 4px 8px
+
+      &:hover
+        background-color stop-btn-color-bg-hover
+
+      &[disabled]
+        color stop-btn-color-disabled
+        background-color stop-btn-color-bg-disabled
+        cursor default
+
+    .selected-run
+      padding 4px 12px
+      color start-btn-color
+      background-color start-btn-color-bg
+
+      &:hover
+        background-color start-btn-color-bg-hover
+
+      &[disabled]
+        color start-btn-color-disabled
+        background-color start-btn-color-bg-disabled
+        cursor default
+
+      &:after
+        content ''
+        width 20px
+        height 20px
+        position absolute
+        right 0
+        top 50%
+        transform translate(37%, -34%) rotate(68deg) skewX(45deg)
+        background-color inherit
+
+    .selected-item
+      flex 1 0
+      position relative
+      padding 4px 18px 4px 14px
+      color #b4c6ea;
+      cursor pointer
+
+      &:after
+        content '▾'
+        position absolute
+        right 6px
+        top 5px
+
+    .connection-overlay
+      position absolute
+      width 100%
+      height 100%
+      left 0
+      top 0
+      background-color #D6BDBD
+      color #333
+      opacity 0.9
+      text-align center
+      line-height 26px
+      font-weight 500
+
+  .target-list
+    shadow(0px, 0px, 13px, -1px, rgba(0,0,0,0.75))
+    list-style-type none
+    background-color target-list-item-color-bg
+    color target-list-item-color
+    border-radius 2px
+    text-align left
+    padding 6px
+    z-index 1000
+
+    .target-list-item
+      display flex
+      padding 10px 6px
+      cursor pointer
+
+      &:hover
+        background-color target-list-item-color-bg-hover
+
+      &.selected
+        color target-list-item-color-selected
+
+      .icon, .selected-icon
+        flex-shrink 0
+        width 20px
+        text-align center
+        position relative
+        top 2px
+
+      .icon
+        margin-right 8px
+
+      .selected-icon
+        margin-left 8px
+
+      .name
+        flex 1 1
+
+      &.status-unavailable .status-icon
+        color target-list-status-unavailable
+      &.status-available .status-icon
+        color target-list-status-available
+      &.status-occupied .status-icon
+        color target-list-status-occupied
+
+    .spacer
+      background-color target-list-spacer-color
+      height 1px

@@ -80,11 +80,14 @@ module.exports = {
     }
 
     for (var uiRoute in standaloneUI) {
+      var uiEntry = standaloneUI[uiRoute];
+      var moduleSrc = typeof uiEntry === 'string' ? uiEntry : uiEntry.src;
+
       var taskRunner = new StandaloneGulpTasks({
         modulePath: modulePath,
         modulePackage: modulePackage,
 
-        src: standaloneUI[uiRoute]
+        src: moduleSrc
       });
       taskRunners.push(taskRunner);
     }

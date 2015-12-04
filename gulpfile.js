@@ -20,7 +20,7 @@ var UglifyJS = require('uglify-js');
  *       builds docs into dist/
  */
 
-var MAIN_JS_FILES = ['index.js', 'apps.js', 'devkit.js', 'mobile/apps.js', 'remote/index.js'];
+var MAIN_JS_FILES = ['index.js', 'apps.js', 'devkit.js', 'mobile/apps.js'];
 
 var paths = {
   'dest': 'src/serve/static/',
@@ -31,7 +31,7 @@ var paths = {
 
 var globs = {
   'js': 'src/web/**/*.js',
-  'static': 'src/web/**/!(*.js|*.styl)',
+  'static': ['src/web/**/!(*.js|*.styl)', 'src/web/static/**/**.*'],
   'stylus': 'src/web/stylesheets/*.styl',
   'stylusWatcher': 'src/web/stylesheets/**/*.styl', // catches includes too
 };

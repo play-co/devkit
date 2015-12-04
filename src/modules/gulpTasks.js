@@ -9,8 +9,7 @@ var Promise = require('bluebird');
 
 var CompilerTasks = require('./CompilerTasks');
 
-var _logger = require('../util/logging');
-var logger = _logger.get('GulpTasks');
+var logging = require('../util/logging');
 
 
 var GulpTasks = Class(CompilerTasks, function(supr) {
@@ -26,6 +25,8 @@ var GulpTasks = Class(CompilerTasks, function(supr) {
       stylusMain: path.join(this.srcPath, 'stylus', 'main.styl')
     };
 
+    this.logger = logging.get('GulpTasks.' + this.moduleName + '.' + this.src);
+
     this.compress = false;
     this.sourcemaps = false;
 
@@ -35,7 +36,7 @@ var GulpTasks = Class(CompilerTasks, function(supr) {
 
 
   this._buildStylus = function (stylusMainPath, cb) {
-    logger.info('Compiling stylus for ' + this.moduleName + ': ' + stylusMainPath);
+    this.logger.info('Compiling stylus for ' + this.moduleName + ': ' + stylusMainPath);
 
     var stream = gulp.src(stylusMainPath)
       .pipe(plugins.stylus({
@@ -61,6 +62,7 @@ var GulpTasks = Class(CompilerTasks, function(supr) {
     var jsPath = this.srcPath;
     var basePath = path.dirname(jsPath);
 
+    var logger = this.logger;
     logger.info('Compiling jsMain for ' + this.moduleName + ': ' + moduleMain);
     logger.debug('jsio path:', this.paths.jsio);
     logger.debug('module jsPath:', jsPath);
@@ -132,7 +134,7 @@ var GulpTasks = Class(CompilerTasks, function(supr) {
     var taskQueue = [];
     var queueTask = function(fn) {
       if (runningTask) {
-        logger.info('watch task already running, queueing');
+        this.logger.info('watch task already running, queueing');
         taskQueue.push(fn);
         return;
       }
@@ -145,10 +147,10 @@ var GulpTasks = Class(CompilerTasks, function(supr) {
           runningTask = null;
         }
       });
-    };
+    }.bind(this);
 
     gulp.watch(path.join(this.srcPath, 'stylus', '**', '**.styl'), function() {
-      logger.info('stylus changed');
+      this.logger.info('stylus changed');
       queueTask(function() {
         return this.promiseBuildStylus(this.paths.stylusMain);
       }.bind(this));
@@ -157,7 +159,7 @@ var GulpTasks = Class(CompilerTasks, function(supr) {
     gulp.watch([
       path.join(this.srcPath, '**', '**.js')
     ], function() {
-      logger.info('js changed');
+      this.logger.info('js changed');
       queueTask(function() {
         return this.promiseBuildJS();
       }.bind(this));

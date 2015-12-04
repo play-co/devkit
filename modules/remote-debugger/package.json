@@ -10,6 +10,10 @@
         "remoteDeviceConnect": {
           "src": "remoteDeviceConnect",
           "isGlobal": true
+        },
+        "remoteDeviceWidget": {
+          "src": "remoteDeviceWidget",
+          "isGlobal": true
         }
       }
     }

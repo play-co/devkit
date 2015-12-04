@@ -10,8 +10,7 @@ var Promise = require('bluebird');
 
 var CompilerTasks = require('./CompilerTasks');
 
-var _logger = require('../util/logging');
-var logger = _logger.get('StandaloneGulpTasks');
+var logging = require('../util/logging');
 
 
 var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
@@ -34,8 +33,10 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
       DEST_FONT: path.join(this.buildPath, 'fonts')
     };
 
+    this.logger = logging.get('StandaloneGulpTasks.' + this.moduleName + '.' + this.src);
+
     this.compress = false;
-    this.sourcemaps = false;
+    this.sourcemaps = true;
   };
 
   this.stylus = function () {
@@ -87,12 +88,12 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
     }));
 
     return watcher.on('update', function () {
-      logger.log('updating...');
+      this.logger.log('updating...');
       watcher.bundle()
         .on('error', function (err) {
-          logger.log(err.toString());
+          this.logger.log(err.toString());
           this.emit('end');
-        })
+        }.bind(this))
         .pipe(source(this.path.OUT))
         .pipe(plugins.debug())
         .pipe(gulp.dest(this.path.DEST_SRC))
@@ -123,18 +124,18 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
   };
 
   this.runAsPromise = function(taskName) {
-    logger.info('Starting:', taskName);
+    this.logger.info('Starting:', taskName);
     return new Promise(function(resolve, reject) {
       var stream = (this[taskName].bind(this))();
 
       stream.on('end', function() {
-        logger.info('Complete:', taskName);
+        this.logger.info('Complete:', taskName);
         resolve();
-      });
+      }.bind(this));
       stream.on('error', function(err) {
-        logger.info('Error:', taskName, err);
+        this.logger.info('Error:', taskName, err);
         reject(err);
-      });
+      }.bind(this));
     }.bind(this));
   };
 
