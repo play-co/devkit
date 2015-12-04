@@ -102,6 +102,7 @@ exports = Class(CenterLayout, function (supr) {
     this._renderers = {
       'Facebook': facebookRenderer
     };
+    this._liveEditEnabled = false;
 
     var manifest = this._simulator.getManifest();
     if (manifest.supportedOrientations) {
@@ -503,13 +504,13 @@ exports = Class(CenterLayout, function (supr) {
     // TODO: use the proper channel stuff for this
     window.addEventListener('message', function(event) {
       if (event.data === 'bootstrapping') {
-        this._iframeLoadDeferComplete();
+        this._iframeLoadDeferComplete(false);
       } else {
         var cmd = splitCmd(event.data);
         if (cmd.cmd === 'LIVE_EDIT') {
           if (cmd.data === 'listener_ready') {
             this.logger.log('Live edit listener ready');
-            this._iframeLoadDeferComplete();
+            this._iframeLoadDeferComplete(true);
             def.resolve();
           }
         }
@@ -526,7 +527,8 @@ exports = Class(CenterLayout, function (supr) {
     return def.promise;
   };
 
-  this._iframeLoadDeferComplete = function() {
+  this._iframeLoadDeferComplete = function(liveEditEnabled) {
+    this._liveEditEnabled = liveEditEnabled;
     if (this._iframeLoadDefer) {
       this._iframeLoadDefer.resolve();
       this._iframeLoadDefer = undefined;
@@ -670,7 +672,7 @@ exports = Class(CenterLayout, function (supr) {
 
   this.reload = function () {
     this._simulator.rebuild({
-      soft: true
+      soft: this._liveEditEnabled
     });
   };
 
