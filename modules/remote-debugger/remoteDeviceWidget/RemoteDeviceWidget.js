@@ -1,5 +1,4 @@
 import React from 'react';
-import url from 'url';
 
 import DevkitController from './DevkitController';
 import PostmessageController from './PostmessageController';
@@ -13,13 +12,12 @@ export default class RemoteDeviceWidget extends React.Component {
 
     var items = DevkitController.listItems;
     var selectedTarget = DevkitController.getSelectedTarget();
-    var urlObject = url.parse(window.location.href, true);
 
     this.state = {
       open: false,
       items: items,
       selectedItem: selectedTarget || items[0],
-      appPath: urlObject.query.app
+      appPath: DevkitController.appPath
     };
   }
 

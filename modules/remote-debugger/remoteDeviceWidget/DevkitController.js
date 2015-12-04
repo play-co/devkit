@@ -1,3 +1,5 @@
+import url from 'url';
+
 import PostmessageController from './PostmessageController';
 
 
@@ -12,6 +14,7 @@ class DevkitController {
 
   constructor () {
     this.listItems = null;
+    this.appPath = null;
   }
 
   /**
@@ -145,6 +148,14 @@ class DevkitController {
   }
 
   initJsioConnection = () => {
+    // Read the app path off of the url
+    let urlObject = url.parse(window.location.href, true);
+    let appPath = urlObject.query.app;
+    if (!appPath) {
+      alert('Warning: no app specified in URL');
+    }
+    this.appPath = appPath;
+
     // Prime the parent app with the saved run target
     this.postmessageRunTarget();
     this.resetListItems();
