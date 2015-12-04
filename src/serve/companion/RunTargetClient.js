@@ -46,6 +46,8 @@ RunTargetClient.prototype.isReady = function() {
  * @param  {String} [runData.debuggerHost]
  */
 RunTargetClient.prototype.run = function(requestor, runData) {
+  this._logger.debug('trying to run', runData);
+
   if (this.status === 'unavailable') {
     if (requestor) {
       requestor._error('run_target_not_available');
@@ -59,6 +61,8 @@ RunTargetClient.prototype.run = function(requestor, runData) {
 };
 
 RunTargetClient.prototype.stop = function(requestor) {
+  this._logger.debug('trying to stop');
+
   if (this.status === 'unavailable') {
     if (requestor) {
       requestor._error('run_target_not_available');
@@ -77,6 +81,8 @@ RunTargetClient.prototype.stop = function(requestor) {
  * @param  {String}  [message.name]
  */
 RunTargetClient.prototype.onClientInfo = function(message) {
+  this._logger.debug('onClientInfo', message);
+
   if (!message.UUID) {
     this._criticalError('missing_UUID', 'onClientInfo: requires message.UUID');
     return;
@@ -120,6 +126,8 @@ RunTargetClient.prototype.onClientInfo = function(message) {
  * @param  {String}  message.status
  */
 RunTargetClient.prototype.updateStatus = function(message) {
+  this._logger.debug('updateStatus', message);
+
   if (!message.status) {
     this._criticalError('missing_status', 'updateStatus: requires message.status');
     return;
@@ -131,7 +139,7 @@ RunTargetClient.prototype.updateStatus = function(message) {
 };
 
 RunTargetClient.prototype.onDisconnect = function() {
-  this._logger.log('RunTargetClient disconnected', this.UUID);
+  this._logger.log('disconnected', this.UUID);
   this.setSocket(null);
 };
 

@@ -149,7 +149,7 @@ Server.prototype.onUIConnection = function (socket) {
   logger.log('UIClient Connected');
   var client = new UIClient({
     server: this,
-    logger: logger
+    logger: this._getSocketClientLogger('UIClient', socket)
   });
   client.setSocket(socket);
 
@@ -161,11 +161,31 @@ Server.prototype.onRunTargetConnection = function (ws) {
 
   var client = new RunTargetClient({
     server: this,
-    logger: logger
+    logger: this._getSocketClientLogger('RunTargetClient', ws)
   });
   client.setSocket(ws);
 
   this.addRunTargetClient(client);
+};
+
+Server.prototype._getSocketClientLogger = function (prefix, socket) {
+  var address;
+  if (socket.handshake) {
+    address = socket.handshake.address;
+  }
+  else if (socket.upgradeReq) {
+    address = socket.upgradeReq.connection.remoteAddress;
+  }
+
+  var socketID;
+  if (address) {
+    var parts = address.split(':');
+    socketID = parts[parts.length - 1];
+  }
+  else {
+    socketID = 'unknown';
+  }
+  return logging.get(prefix + '.' + socketID);
 };
 
 Server.prototype.removeUIClient = function (client) {

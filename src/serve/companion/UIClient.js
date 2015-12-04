@@ -24,6 +24,7 @@ UIClient.prototype.setSocket = function(socket) {
  * @param  {Object}  message
  */
 UIClient.prototype.onInitBrowser = function(message) {
+  this._logger.debug('onInitBrowser', message);
   this.send('initBrowserResponse', {
     secret: this._server.secret
   });
@@ -35,6 +36,8 @@ UIClient.prototype.onInitBrowser = function(message) {
  * @param  {String}  message.appPath
  */
 UIClient.prototype.onRun = function(message) {
+  this._logger.debug('onRun', message);
+
   var runTarget = this._server.getRunTarget(message.runTargetUUID);
 
   if (!runTarget) {
@@ -66,6 +69,8 @@ UIClient.prototype.onRun = function(message) {
  * @param  {String}  message.runTargetUUID
  */
 UIClient.prototype.onStop = function(message) {
+  this._logger.debug('onStop', message);
+
   var runTarget = this._server.getRunTarget(message.runTargetUUID);
 
   if (!runTarget) {
@@ -80,6 +85,8 @@ UIClient.prototype.onStop = function(message) {
  * @param  {Object}  message
  */
 UIClient.prototype.onRequestRunTargetList = function(message) {
+  this._logger.debug('onRequestRunTargetList', message);
+
   var runTargets = this._server.getRunTargets();
   var infos = [];
   runTargets.forEach(function(client) {
@@ -92,7 +99,7 @@ UIClient.prototype.onRequestRunTargetList = function(message) {
 };
 
 UIClient.prototype.onDisconnect = function() {
-  this._logger.log('UIClient disconnected');
+  this._logger.log('disconnected');
   this._server.removeUIClient(this);
 };
 
