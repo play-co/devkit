@@ -47,6 +47,10 @@ UIClient.prototype.onRun = function(message) {
     return;
   }
 
+  if (runTarget.status === 'occupied') {
+    runTarget.stop(this);
+  }
+
   this._server.buildApp(message.appPath).then(function(res) {
     if (!res.success) {
       this._error('buildFailed', res.error);
