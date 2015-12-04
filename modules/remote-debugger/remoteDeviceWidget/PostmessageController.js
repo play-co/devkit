@@ -1,3 +1,4 @@
+import DevkitController from './DevkitController';
 
 class PostmessageController {
 
@@ -12,6 +13,8 @@ class PostmessageController {
 
     this._messageCallbacks = {};
     this._messageCallbackId = 0;
+
+    this._windows = {};
 
     window.addEventListener('message', this._handleMessage);
   }
@@ -42,8 +45,40 @@ class PostmessageController {
     data._jsio = true;
 
     if (window.parent === window) {
-      console.error('parent is self, not sending message');
-      return;
+      // No parent, just open devkit in a new tab
+      if (data.target === 'simulator' && data.action === 'run') {
+        let windowsKey = 'simulator:' + data.runTarget + ':' + DevkitController.appPath;
+        let existingWindow = this._windows[windowsKey];
+
+        if (existingWindow && !existingWindow.closed) {
+          if (data.runTarget === 'local') {
+            existingWindow.postMessage('devkit:reload', '*');
+          } else {
+            existingWindow.focus();
+          }
+        } else {
+          if (data.runTarget === 'local') {
+            var simulatorUrl = location.protocol + '//' + location.host;
+            simulatorUrl += '?app=' + encodeURI(DevkitController.appPath);
+            simulatorUrl += '#device={"type":"iphone6"}';
+
+            this._windows[windowsKey] = window.open(simulatorUrl, '_blank');
+          }
+          else if (data.runTarget === 'remote') {
+            var remoteUrl = location.protocol + '//' + location.host;
+            remoteUrl += '/modules/remote-debugger/extension/remoteDeviceConnect/';
+
+            this._windows[windowsKey] = window.open(remoteUrl, '_blank');
+          }
+          else {
+            console.error('unknown runTarget (and no parent)');
+            return;
+          }
+        }
+      } else {
+        console.error('parent is self, not sending message');
+        return;
+      }
     }
 
     if (callback) {

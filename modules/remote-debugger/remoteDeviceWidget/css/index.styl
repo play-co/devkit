@@ -12,28 +12,28 @@ shadow(h, v, b, s, c)
   box-shadow         h v b s c
 
 
-stop-btn-color          = #2F7EFD
-stop-btn-color-bg       = #FFFFFF
-stop-btn-color-bg-hover = #E0ECFF
-stop-btn-color-disabled    = #416092
-stop-btn-color-bg-disabled = #AAAAAA
+stop-btn-color                  = #2F7EFD
+stop-btn-color-bg               = #FFFFFF
+stop-btn-color-bg-hover         = #E0ECFF
+stop-btn-color-disabled         = #416092
+stop-btn-color-bg-disabled      = #AAAAAA
 
-start-btn-color          = #FFFFFF
-start-btn-color-bg       = #2f7efd
-start-btn-color-bg-hover = #478EFF
-start-btn-color-disabled    = #CACACA
-start-btn-color-bg-disabled = #728EBB
+start-btn-color                 = #FFFFFF
+start-btn-color-bg              = #2f7efd
+start-btn-color-bg-hover        = #478EFF
+start-btn-color-disabled        = #CACACA
+start-btn-color-bg-disabled     = #728EBB
 
 target-list-item-color          = #3c3c3c
 target-list-item-color-bg       = #FFFFFF
 target-list-item-color-bg-hover = #E9F1FF
 target-list-item-color-selected = #297ffa
 
-target-list-spacer-color= #D7E7FF
+target-list-spacer-color        = #D7E7FF
 
-target-list-status-unavailable = #EF6C6C
-target-list-status-available   = #70DA70
-target-list-status-occupied    = #EFAD2E
+target-list-status-unavailable  = #EF6C6C
+target-list-status-available    = #70DA70
+target-list-status-occupied     = #EFAD2E
 
 
 .jsio-run-target
@@ -108,18 +108,22 @@ target-list-status-occupied    = #EFAD2E
         right 6px
         top 5px
 
-    .connection-overlay
+    .overlay
       position absolute
       width 100%
       height 100%
       left 0
       top 0
-      background-color #D6BDBD
       color #333
       opacity 0.9
       text-align center
       line-height 26px
       font-weight 500
+
+      &.app-path
+        background-color #E8BFA1
+      &.connection
+        background-color #D6BDBD
 
   .target-list
     shadow(0px, 0px, 13px, -1px, rgba(0,0,0,0.75))

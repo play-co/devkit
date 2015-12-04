@@ -1,5 +1,7 @@
 import React from 'react';
 
+import DevkitController from './DevkitController';
+
 export default class SelectedItem extends React.Component {
   constructor(props) {
     super(props);
@@ -39,10 +41,16 @@ export default class SelectedItem extends React.Component {
       }, selectedItemName)
     ];
 
-    if (!GC.RemoteAPI.isConnected()) {
+    if (!DevkitController.appPath) {
       children.push(React.DOM.div({
-        key: 'connection-overlay',
-        className: 'connection-overlay'
+        key: 'overlay-appPath',
+        className: 'overlay app-path'
+      }, 'No app specified in URL'));
+    }
+    else if (!GC.RemoteAPI.isConnected()) {
+      children.push(React.DOM.div({
+        key: 'overlay-connection',
+        className: 'overlay connection'
       }, 'Waiting for devkit'));
     }
 

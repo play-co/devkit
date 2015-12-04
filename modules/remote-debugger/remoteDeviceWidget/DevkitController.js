@@ -150,11 +150,7 @@ class DevkitController {
   initJsioConnection = () => {
     // Read the app path off of the url
     let urlObject = url.parse(window.location.href, true);
-    let appPath = urlObject.query.app;
-    if (!appPath) {
-      alert('Warning: no app specified in URL');
-    }
-    this.appPath = appPath;
+    this.appPath = urlObject.query.app;
 
     // Prime the parent app with the saved run target
     this.postmessageRunTarget();
