@@ -7,9 +7,6 @@ export let DEFAULT_TARGETS = [
   { UUID: 'remote', name: 'Add Remote Device', icon: 'plus', postMessage: true }
 ];
 
-// TODO
-var reactDropdown = null;
-
 
 class DevkitController {
 
@@ -40,7 +37,7 @@ class DevkitController {
     };
 
     this.listItems.splice(this.listItems.length - 1, 0, newTarget);
-    reactDropdown && reactDropdown.forceUpdate();
+    this.reactDropdown && this.reactDropdown.forceUpdate();
 
     return newTarget;
   }
@@ -54,7 +51,7 @@ class DevkitController {
     }
 
     this.validateCurrentSelection();
-    reactDropdown && reactDropdown.forceUpdate();
+    this.reactDropdown && this.reactDropdown.forceUpdate();
   }
 
   /**
@@ -81,7 +78,7 @@ class DevkitController {
     }
 
     this.validateCurrentSelection();
-    reactDropdown && reactDropdown.forceUpdate();
+    this.reactDropdown && this.reactDropdown.forceUpdate();
   }
 
   getRunTargetById = (targetId) => {
@@ -112,9 +109,9 @@ class DevkitController {
 
   validateCurrentSelection = () => {
     // Validate the currect selection (and select simulator if the current selection is no longer valid)
-    /*var target = reactDropdown.state.selectedItem;
+    /*var target = this.reactDropdown.state.selectedItem;
     if (target.status === 'unavailable' || listItems.indexOf(target) === -1) {
-      reactDropdown.setState({
+      this.reactDropdown.setState({
         selectedItem: listItems[0]
       });
     }*/
@@ -142,11 +139,7 @@ class DevkitController {
     this.listItems.splice(1, 0, { spacer: true });
 
     // Need to make sure our dropdown is referencing the right array
-    if (reactDropdown) {
-      reactDropdown.setProps({
-        items: this.listItems
-      });
-    }
+    this.reactDropdown && this.reactDropdown.render();
   }
 
   initJsioConnection = () => {
@@ -155,18 +148,20 @@ class DevkitController {
     this.resetListItems();
 
     var RemoteAPI = GC.RemoteAPI;
-    var socketUrl = 'wss://';
-    if(window.location.protocol=='http') {
-      socketUrl = 'ws://'
+    var socketProtocol;
+    if(window.location.protocol === 'http:') {
+      socketProtocol = 'ws:';
+    } else {
+      socketProtocol = 'wss:';
     }
-    socketUrl += window.location.host + '/companion/remotesocket/ui';
+    var socketUrl = socketProtocol + '//' + window.location.host + '/companion/remotesocket/ui';
     RemoteAPI.init(socketUrl);
 
     RemoteAPI.on('connectionStatus', (data) => {
       if (data.connected) {
         RemoteAPI.send('requestRunTargetList');
       }
-      reactDropdown && reactDropdown.forceUpdate();
+      this.reactDropdown && this.reactDropdown.forceUpdate();
     });
 
     RemoteAPI.on('runTargetList', (data) => {
@@ -185,6 +180,10 @@ class DevkitController {
     RemoteAPI.on('updateRunTarget', (data) => {
       this.updateRunTarget(data.runTargetInfo);
     });
+  }
+
+  setDropdownInstance = (instance) => {
+    this.reactDropdown = instance;
   }
 
 }

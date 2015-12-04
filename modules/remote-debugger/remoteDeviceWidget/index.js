@@ -7,9 +7,11 @@ import RemoteDeviceWidget from './RemoteDeviceWidget';
 
 DevkitController.initJsioConnection();
 
-ReactDOM.render(
+let dropdown = ReactDOM.render(
   React.createElement(RemoteDeviceWidget, {
     items: DevkitController.listItems
   }),
   document.getElementById('main')
 );
+
+DevkitController.setDropdownInstance(dropdown);

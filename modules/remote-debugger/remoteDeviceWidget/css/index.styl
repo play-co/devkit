@@ -1,6 +1,11 @@
 @import 'nib'
 
 
+body, ul
+  margin 0
+  font-family "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif
+
+
 shadow(h, v, b, s, c)
   -webkit-box-shadow h v b s c
   -moz-box-shadow    h v b s c
@@ -32,10 +37,9 @@ target-list-status-occupied    = #EFAD2E
 
 
 .jsio-run-target
-  top 5px
-  right 12px
-  position absolute
   min-width 190px
+  max-width 300px
+  font-size 14px
 
   .selected-container
     display flex
@@ -94,8 +98,9 @@ target-list-status-occupied    = #EFAD2E
       flex 1 0
       position relative
       padding 4px 18px 4px 14px
-      color #b4c6ea;
+      color #b4c6ea
       cursor pointer
+      text-align center
 
       &:after
         content '▾'
