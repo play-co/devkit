@@ -52,6 +52,10 @@ export default class RemoteDeviceWidget extends React.Component {
     }
   }
 
+  _blurListener = (e) => {
+    this.doToggleOpen(false);
+  }
+
   doToggleOpen = (forceState) => {
     var open = forceState !== undefined ? forceState : !this.state.open;
 
@@ -63,9 +67,11 @@ export default class RemoteDeviceWidget extends React.Component {
     if (open) {
       document.addEventListener('click', this._documentClickListener);
       document.addEventListener('keydown', this._documentKeyListener);
+      window.addEventListener('blur', this._blurListener);
     } else {
       document.removeEventListener('click', this._documentClickListener);
       document.removeEventListener('keydown', this._documentKeyListener);
+      window.removeEventListener('blur', this._blurListener);
     }
   }
 
@@ -135,6 +141,15 @@ export default class RemoteDeviceWidget extends React.Component {
         })
       );
     }
+
+    // Let parent know that the height has changed
+    setTimeout(function() {
+      PostmessageController.postMessage({
+        target: 'devkitRemoteWidget',
+        action: 'render',
+        height: document.body.offsetHeight
+      });
+    }, 50);
 
     return React.DOM.div({
       className: 'jsio-run-target',
