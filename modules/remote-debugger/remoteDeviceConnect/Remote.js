@@ -22,9 +22,12 @@ export default class RemoteDeviceConnect extends React.Component {
     GC.RemoteAPI.init(window.location.origin + '/companion/remotesocket/ui');
 
     GC.RemoteAPI.on('initBrowserResponse', (message) => {
+      let protocol = window.location.protocol === 'http:' ? '0' : '1';
+      let host = window.location.host;
+
       this.setState({
         devtoolsLink: null,
-        qrText: window.location.host + ',' + message.secret
+        qrText: protocol + ',' + host + ',' + message.secret
       });
     });
 
