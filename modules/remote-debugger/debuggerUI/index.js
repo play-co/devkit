@@ -2,12 +2,15 @@ var RemoteDebuggerUI = Class(function() {
 
   this.init = function() {
     devkit.addModuleButton({
-      iconClassName: 'glyphicon glyphicon-phone'
+      iconClassName: 'fa fa-wifi'
     }).on('Select', bind(this, 'toggleVisibility'));
   };
 
   this.toggleVisibility = function() {
-    console.log('TOGGLE')
+    // var appPath = devkit.getSimulator().getApp();
+    var remoteUrl = location.protocol + '//' + location.host + '/modules/remote-debugger/extension/remoteDeviceConnect/';
+    // remoteUrl += '?app=' + encodeURI(appPath);
+    window.open(remoteUrl, '_blank');
   };
 
 });
