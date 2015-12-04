@@ -28,7 +28,7 @@ export default class TargetList extends React.Component {
       });
     } else {
       return React.createElement(TargetListItem, {
-        key: 'target-list-item-' + item.name,
+        key: 'target-list-item-' + item.UUID,
         item: item,
         selected: this.props.selectedItem === item,
         doSelectItem: this.props.doSelectItem
@@ -73,11 +73,11 @@ class TargetListItem extends React.Component {
 
     var itemChildren = [
       React.DOM.div({
-        key: 'item-name-' + item.name,
+        key: 'item-name-' + item.UUID,
         className: 'name'
       }, item.name),
       React.DOM.div({
-        key: 'item-selected-icon-' + item.name,
+        key: 'item-selected-icon-' + item.UUID,
         className: 'selected-icon ' + selectedIcon
       })
     ];
@@ -85,7 +85,7 @@ class TargetListItem extends React.Component {
     if (item.icon) {
       itemChildren.unshift(
         React.DOM.div({
-          key: 'item-icon-' + item.name,
+          key: 'item-icon-' + item.UUID,
           className: 'icon fa fa-' + item.icon
         })
       );
@@ -93,7 +93,7 @@ class TargetListItem extends React.Component {
       // Want to keep things in the right position
       itemChildren.unshift(
         React.DOM.div({
-          key: 'item-icon-spacer-' + item.name,
+          key: 'item-icon-spacer-' + item.UUID,
           className: 'icon icon-spacer'
         })
       );

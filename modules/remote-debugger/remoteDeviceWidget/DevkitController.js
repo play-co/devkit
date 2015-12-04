@@ -11,7 +11,7 @@ export let DEFAULT_TARGETS = [
 class DevkitController {
 
   constructor () {
-    this.listItems = null; // populated below
+    this.listItems = null;
   }
 
   /**
@@ -25,7 +25,7 @@ class DevkitController {
       console.error('error adding run target', targetInfo);
       throw new Error('run targets require a UUID');
     }
-    if (getRunTargetById(targetInfo.id) !== null) {
+    if (this.getRunTargetById(targetInfo.UUID) !== null) {
       console.error('error adding run target', targetInfo);
       throw new Error('run targets require a UUID (one already exists)');
     }
@@ -37,7 +37,7 @@ class DevkitController {
     };
 
     this.listItems.splice(this.listItems.length - 1, 0, newTarget);
-    this.reactDropdown && this.reactDropdown.forceUpdate();
+    this.reactDropdown && this.reactDropdown.render();
 
     return newTarget;
   }
@@ -139,7 +139,9 @@ class DevkitController {
     this.listItems.splice(1, 0, { spacer: true });
 
     // Need to make sure our dropdown is referencing the right array
-    this.reactDropdown && this.reactDropdown.render();
+    this.reactDropdown && this.reactDropdown.setState({
+      items: this.listItems
+    });
   }
 
   initJsioConnection = () => {

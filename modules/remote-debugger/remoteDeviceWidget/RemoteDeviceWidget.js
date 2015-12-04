@@ -1,4 +1,5 @@
 import React from 'react';
+import url from 'url';
 
 import DevkitController from './DevkitController';
 import PostmessageController from './PostmessageController';
@@ -10,11 +11,16 @@ export default class RemoteDeviceWidget extends React.Component {
   constructor(props) {
     super(props);
 
+    var items = DevkitController.listItems;
     var selectedTarget = DevkitController.getSelectedTarget();
+    var urlObject = url.parse(window.location.href, true);
+
     this.state = {
       open: false,
-      selectedItem: selectedTarget || this.props.items[0]
-    }
+      items: items,
+      selectedItem: selectedTarget || items[0],
+      appPath: urlObject.query.app
+    };
   }
 
   doSelectItem = (item) => {
@@ -83,7 +89,8 @@ export default class RemoteDeviceWidget extends React.Component {
       });
     } else {
       GC.RemoteAPI.send('run', {
-        runTargetUUID: runTarget.UUID
+        runTargetUUID: runTarget.UUID,
+        appPath: this.state.appPath
       });
     }
   }
@@ -124,7 +131,7 @@ export default class RemoteDeviceWidget extends React.Component {
       children.push(
         React.createElement(TargetList, {
           key: 'target-list',
-          items: this.props.items,
+          items: this.state.items,
           selectedItem: this.state.selectedItem,
           doSelectItem: this.doSelectItem
         })
