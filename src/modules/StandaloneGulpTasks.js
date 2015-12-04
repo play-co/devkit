@@ -142,7 +142,11 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
   this.compile = function(tasks) {
     tasks.push(this.runAsPromise('copy'));
     tasks.push(this.runAsPromise('stylus'));
-    tasks.push(this.runAsPromise('build'));
+    tasks.push(
+      this.runAsPromise('build').then(function() {
+        this.runAsPromise('replaceHTML')
+      }.bind(this))
+    );
     tasks.push(this.runAsPromise('font'));
   };
 
