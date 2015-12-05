@@ -7,9 +7,10 @@
         "debuggerUI"
       ],
       "standaloneUI": {
-        "remoteDeviceConnect": {
-          "src": "remoteDeviceConnect",
-          "isGlobal": true
+        "remoteDevice": {
+          "src": "remoteDevice",
+          "isGlobal": true,
+          "html5History": true
         },
         "remoteDeviceWidget": {
           "src": "remoteDeviceWidget",
@@ -21,6 +22,7 @@
   "dependencies": {
     "qrcode.react": "^0.5.2",
     "react": "^0.14.3",
-    "react-dom": "^0.14.3"
+    "react-dom": "^0.14.3",
+    "react-router": "^1.0.0"
   }
 }

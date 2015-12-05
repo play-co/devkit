@@ -40,6 +40,7 @@ var Server = function(opts) {
 
   // Object shared across any incomming browser socket
   this.browserData = null;
+  this._buildId = 0;
 
   // This is what the phone's tealeaf and chrome devtools connect to
   this.remoteDebuggingProxy = new RemoteDebuggingProxy();
@@ -48,7 +49,8 @@ util.inherits(Server, events.EventEmitter);
 
 Server.prototype._resetBrowserData = function() {
   this.browserData = {
-    devtoolsWsId: null
+    devtoolsWsId: null,
+    runTargetUUID: null
   };
 };
 
@@ -236,6 +238,18 @@ Server.prototype.sendBrowserData = function() {
   }.bind(this));
 };
 
+Server.prototype.sendToAll = function(message, data) {
+  message = 'server:' + message;
+  logger.info('Send to all:', message, data);
+
+  var send = function(companionSocketClient) {
+    client.send(message, data);
+  };
+
+  this._uiClients.forEach(send);
+  this._runTargetClients.forEach(send);
+};
+
 Server.prototype.updateRunTarget = function(client, isNew) {
   if (!client.isReady()) {
     return;
@@ -304,8 +318,22 @@ Server.prototype.getRunTargets = function() {
   return res;
 };
 
-Server.prototype.buildApp = function(appPath) {
-  logger.info('Building app at', appPath);
+Server.prototype.buildApp = function(appPath, runTargetClient) {
+  var buildID = this._buildId;
+  this._buildId++;
+
+  logger.info('Building app at', appPath, 'for client', runTargetClient.UUID, '(' + buildID + ')');
+
+  // What uuid is the devtools link for
+  this.browserData.runTargetUUID = runTargetClient.UUID;
+  this.sendBrowserData();
+
+  this.sendToAll('buildStarted', {
+    appPath: appPath,
+    runTargetUUID: runTargetClient.UUID,
+    buildID: buildID
+  });
+
   return Promise.promisify(apps.get.bind(apps))(appPath)
     .then(function(app) {
       var buildOpts = {
@@ -324,6 +352,13 @@ Server.prototype.buildApp = function(appPath) {
           return this.remoteDebuggingProxy.onRun(buildResult.config.outputPath);
         }.bind(this))
         .then(function () {
+          this.sendToAll('buildComplete', {
+            appPath: appPath,
+            runTargetUUID: runTargetClient.UUID,
+            buildID: buildID,
+            success: true
+          });
+
           return {
             success: true,
             route: routeIdGenerator.get(appPath),
@@ -334,6 +369,14 @@ Server.prototype.buildApp = function(appPath) {
     }.bind(this))
     .catch(function(err) {
       logger.error('error while building', err);
+      this.sendToAll('buildComplete', {
+        appPath: appPath,
+        runTargetUUID: runTargetClient.UUID,
+        buildID: buildID,
+        success: false,
+        error: err.toString()
+      });
+
       return {
         success: false,
         error: err.toString()
@@ -349,10 +392,6 @@ Server.prototype.updateSecret = function() {
 
 Server.prototype.isSecretValid = function(testSecret) {
   return testSecret === this.secret;
-};
-
-Server.prototype.isBrowserConnected = function() {
-  return this.browserSocket !== null;
 };
 
 module.exports = Server;

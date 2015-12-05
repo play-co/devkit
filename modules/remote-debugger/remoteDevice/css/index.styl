@@ -55,12 +55,12 @@ center()
 
 #main
   height 100%
+  color remote-color
 
 
-.remote
+.cmpt-page-info, .cmpt-page-connect
   height 100%
   width 100%
-  color remote-color
   background-color remote-bg-color
   display flex
   align-items center
@@ -81,6 +81,7 @@ center()
     margin-bottom 15px
     text-align center
 
+.cmpt-page-connect
   .cmpt-instructions
     position relative
     display flex
@@ -103,80 +104,111 @@ center()
     .instructions
       text-align left
 
-  .cmpt-connected
+
+.cmpt-run-target-info
+  display flex
+  flex-direction column
+  align-items center
+
+  border 1px solid
+  border-radius 4px
+  padding 20px
+  min-width 300px
+  min-height 500px
+
+  p
+    margin 20px 0
+
+  .loading-content
+    flex 1
     display flex
-    align-items center
     flex-direction column
-
-    &>*
-      margin-top 30px
-
-    .device
-      position relative
-      .device-image
-        width 125px
-      .dimensions
-        center()
-
-    .btn
-      display block
-      box-sizing border-box
-      background-color remote-bg-color
-      color remote-btn-color
-      padding 12px 40px
-      border 1px solid remote-btn-color
-      border-radius 40px
-      cursor pointer
-      font-weight 400
-      font-size 18px
-      width 225px
-      transition background-color 0.1s
-
-      &.disabled
-        background-color remote-btn-disabled-bgcolor
-        color remote-btn-disabled-color
-        cursor default
-
-      &:not(.disabled):hover
-        background-color remote-btn-bgcolor-hover
-
-  .spinnerContainer
-    position absolute
-    top 0px
-    left 0px
-    width 100%
-    height 100%
-    z-index 100
-    transition opacity 0.25s
-    opacity 1
-    background rgba(0, 0, 0, 0.6)
-
-    display flex
     justify-content center
     align-items center
+
+  .content
+    display flex
     flex-direction column
+    align-items center
 
-    p
-      background-color rgba(0,0,0,0.75)
-      padding 5px 10px
+  .device
+    position relative
+    .device-image
+      width 125px
+    .dimensions
+      center()
 
+  .btn
+    display block
+    box-sizing border-box
+    background-color remote-bg-color
+    color remote-btn-color
+    padding 12px 40px
+    margin 20px
+    border 1px solid remote-btn-color
+    border-radius 40px
+    cursor pointer
+    font-weight 400
+    font-size 18px
+    width 225px
+    transition background-color 0.1s
+
+    &[disabled]
+      background-color remote-btn-disabled-bgcolor
+      color remote-btn-disabled-color
+      cursor default
+
+    &:not([disabled]):hover
+      background-color remote-btn-bgcolor-hover
+
+  .error-message
+    color #FF9090
+
+  .uuid
+    font-style italic
+    font-size 12px
+    margin 0
+
+  .name
+    margin-bottom 0
+
+.spinnerContainer
+  position absolute
+  top 0px
+  left 0px
+  width 100%
+  height 100%
+  z-index 100
+  transition opacity 0.25s
+  opacity 1
+  background rgba(0, 0, 0, 0.6)
+
+  display flex
+  justify-content center
+  align-items center
+  flex-direction column
+
+  p
+    background-color rgba(0,0,0,0.75)
+    padding 5px 10px
+
+  .spinner
+    width 40px
+    height 40px
+    pointer-events none
+    background url(/icons/spinner.png)
+    background-size 40px 40px
+    background-repeat no-repeat
+    animation spin 0.5s linear infinite
+
+  &:not(.visible)
+    opacity 0
+    pointer-events none
     .spinner
-      width 40px
-      height 40px
-      pointer-events none
-      background url(/icons/spinner.png)
-      background-size 40px 40px
-      background-repeat no-repeat
-      animation spin 0.5s linear infinite
+      animation none
 
-    &:not(.visible)
-      opacity 0
-      pointer-events none
-      .spinner
-        animation none
-
-  .cmpt-connection-lost
-    background rgba(40, 0, 0, 0.7)
+.cmpt-connection-lost
+  background rgba(40, 0, 0, 0.7)
 
 
 @keyframes spin

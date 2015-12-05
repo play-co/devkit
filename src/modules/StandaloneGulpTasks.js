@@ -74,6 +74,7 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
   this._watch = function() {
     this.sourcemaps = true;
     this.compress = false;
+    var logger = this.logger;
 
     plugins.livereload.listen();
 
@@ -88,12 +89,12 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
     }));
 
     return watcher.on('update', function () {
-      this.logger.log('updating...');
+      logger.log('updating...');
       watcher.bundle()
         .on('error', function (err) {
-          this.logger.log(err.toString());
+          logger.log(err.toString());
           this.emit('end');
-        }.bind(this))
+        })
         .pipe(source(this.path.OUT))
         .pipe(plugins.debug())
         .pipe(gulp.dest(this.path.DEST_SRC))

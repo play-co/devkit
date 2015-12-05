@@ -19,14 +19,14 @@ export default class RemoteDeviceWidget extends React.Component {
       selectedItem: selectedTarget || items[0],
       appPath: DevkitController.appPath
     };
+
+    this._lastRenderHeight = 0;
   }
 
   doSelectItem = (item) => {
     // Special case for remote (fire the run immediately)
     if (item.UUID === 'remote') {
-      PostmessageController.postMessage({
-        target: 'simulator',
-        action: 'run',
+      this._sendRunMessage({
         runTarget: 'remote'
       });
       this.setState({
@@ -75,6 +75,39 @@ export default class RemoteDeviceWidget extends React.Component {
     }
   }
 
+  /** Return the devkit url for a run request */
+  _getRunURL = (data) => {
+    let windowUrl;
+    if (data.runTarget === 'local') {
+      windowUrl = location.protocol + '//' + location.host;
+      windowUrl += '?app=' + encodeURI(this.state.appPath);
+      windowUrl += '#device={"type":"iphone6"}';
+    }
+    else if (data.runTarget === 'remote') {
+      windowUrl = location.protocol + '//' + location.host;
+      windowUrl += '/modules/remote-debugger/extension/remoteDevice/connect';
+    }
+    else if (data.runTarget === 'remote-info') {
+      windowUrl = location.protocol + '//' + location.host;
+      windowUrl += '/modules/remote-debugger/extension/remoteDevice/info';
+      windowUrl += '?runTarget=' + encodeURI(data.UUID);
+    }
+    else {
+      console.error('unknown runTarget', data.runTarget);
+      return null;
+    }
+    return windowUrl;
+  }
+
+  _sendRunMessage = (data) => {
+    // Tack on the target URL
+    data.targetURL = this._getRunURL(data);
+    data.target = 'simulator';
+    data.action = 'run';
+    // Send to parent!
+    PostmessageController.postMessage(data);
+  }
+
   /**
    * @param  {MouseEvent} [evt]
    */
@@ -85,9 +118,7 @@ export default class RemoteDeviceWidget extends React.Component {
 
     var runTarget = this.state.selectedItem;
     if (runTarget.postMessage) {
-      PostmessageController.postMessage({
-        target: 'simulator',
-        action: 'run',
+      this._sendRunMessage({
         runTarget: runTarget.UUID,
         newWindow: evt && evt.metaKey
       });
@@ -95,6 +126,12 @@ export default class RemoteDeviceWidget extends React.Component {
       GC.RemoteAPI.send('run', {
         runTargetUUID: runTarget.UUID,
         appPath: this.state.appPath
+      });
+      // Open the remote device info
+      this._sendRunMessage({
+        runTarget: 'remote-info',
+        UUID: runTarget.UUID,
+        newWindow: evt && evt.metaKey
       });
     }
   }
@@ -144,11 +181,15 @@ export default class RemoteDeviceWidget extends React.Component {
 
     // Let parent know that the height has changed
     setTimeout(function() {
-      PostmessageController.postMessage({
-        target: 'devkitRemoteWidget',
-        action: 'render',
-        height: document.body.offsetHeight
-      });
+      let height = document.body.offsetHeight;
+      if (height !== this._lastRenderHeight) {
+        this._lastRenderHeight = height;
+        PostmessageController.postMessage({
+          target: 'devkitRemoteWidget',
+          action: 'render',
+          height: height
+        });
+      }
     }, 50);
 
     return React.DOM.div({

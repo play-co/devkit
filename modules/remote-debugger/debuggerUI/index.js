@@ -8,7 +8,7 @@ var RemoteDebuggerUI = Class(function() {
 
   this.toggleVisibility = function() {
     // var appPath = devkit.getSimulator().getApp();
-    var remoteUrl = location.protocol + '//' + location.host + '/modules/remote-debugger/extension/remoteDeviceConnect/';
+    var remoteUrl = location.protocol + '//' + location.host + '/modules/remote-debugger/extension/remoteDevice/connect';
     // remoteUrl += '?app=' + encodeURI(appPath);
     window.open(remoteUrl, '_blank');
   };

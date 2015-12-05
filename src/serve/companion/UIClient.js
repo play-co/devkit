@@ -15,6 +15,7 @@ UIClient.prototype.setSocket = function(socket) {
 
   // Add the socket listeners
   this.on('initBrowserRequest',   this.onInitBrowser.bind(this));
+  this.on('inspectRunTarget',     this.onInspectRunTarget.bind(this));
   this.on('run',                  this.onRun.bind(this));
   this.on('stop',                 this.onStop.bind(this));
   this.on('requestRunTargetList', this.onRequestRunTargetList.bind(this));
@@ -28,6 +29,20 @@ UIClient.prototype.onInitBrowser = function(message) {
   this.send('initBrowserResponse', {
     secret: this._server.secret
   });
+};
+
+/**
+ * @param  {Object}  message
+ * @param  {Object}  message.runTargetUUID
+ */
+UIClient.prototype.onInspectRunTarget = function(message) {
+  this._logger.debug('onInspectRunTarget', message);
+  var runTarget = this._server.getRunTarget(message.runTargetUUID);
+  if (!runTarget) {
+    this._error('invalid_runTargetUUID', 'No run target for: ' + message.runTargetUUID);
+    return;
+  }
+  this.send('runTargetInfo', runTarget.toInfoObject());
 };
 
 /**
@@ -54,7 +69,7 @@ UIClient.prototype.onRun = function(message) {
     runTarget.stop(this);
   }
 
-  this._server.buildApp(message.appPath).then(function(res) {
+  this._server.buildApp(message.appPath, runTarget).then(function(res) {
     if (!res.success) {
       this._error('buildFailed', res.error);
       return;

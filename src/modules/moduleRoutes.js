@@ -111,6 +111,13 @@ module.exports = {
 
         logger.debug('standaloneUI route: ' + staticRoute + ' -> ' + staticPath);
         expressApp.use(staticRoute, express.static(staticPath));
+        // handle html5 routers
+        if (standaloneUIInfo.html5History) {
+          logger.debug('Adding catch all route for html5 history');
+          expressApp.get(staticRoute + '/*', function (req, res) {
+            res.sendFile(path.join(staticPath, 'index.html'));
+          });
+        }
       }
     }
   }

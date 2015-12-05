@@ -15,6 +15,7 @@
   var _connected = false;
 
   var _handlers = [];
+  var _sendQueue = [];
 
   /**
    * @param  {String} remoteApiUrl ws or wss link
@@ -22,6 +23,11 @@
    * @param  {Object} [opts.io] - socketio instance
    */
   this.init = function (socketUrl, opts) {
+    if (_socket) {
+      throw new Error('socket already initilized');
+      return;
+    }
+
     opts = opts || {};
     opts.io = opts.io || window.io;
 
@@ -54,6 +60,14 @@
   this._onConnected = function () {
     this._connected = true;
     this._emit('connectionStatus', { connected: true });
+
+    if (_sendQueue.length) {
+      console.log('Draining send queue');
+      _sendQueue.forEach(function(formattedMessage) {
+        _socket.send(formattedMessage);
+      });
+    }
+    _sendQueue = [];
   };
 
   this._emit = function (message, data) {
@@ -77,10 +91,16 @@
   };
 
   this.send = function (message, data) {
-    _socket.send(JSON.stringify({
+    var formattedMessage = JSON.stringify({
       message: message,
       data: data
-    }));
+    });
+    if (_socket) {
+      _socket.send(formattedMessage);
+    } else {
+      console.log('Socket not yet initilized, adding message to queue');
+      _sendQueue.push(formattedMessage);
+    }
   };
 
   // Attach to the global GC object

@@ -41,44 +41,32 @@ class PostmessageController {
   }
 
   postMessage = (data, callback) => {
-    console.log('jsio postmessage: ', data);
+    console.log('jsio postmessage:', data);
     data._jsio = true;
 
     if (window.parent === window) {
       // No parent, just open devkit in a new tab
+      console.warn('parent is self, not sending message');
       if (data.target === 'simulator' && data.action === 'run') {
         let windowsKey = 'simulator:' + data.runTarget + ':' + DevkitController.appPath;
         let existingWindow = this._windows[windowsKey];
 
         if (existingWindow && !existingWindow.closed) {
+          console.log('Existing window still open, focussing');
+          existingWindow.focus();
           if (data.runTarget === 'local') {
             existingWindow.postMessage('devkit:reload', '*');
-          } else {
-            existingWindow.focus();
-          }
-        } else {
-          if (data.runTarget === 'local') {
-            var simulatorUrl = location.protocol + '//' + location.host;
-            simulatorUrl += '?app=' + encodeURI(DevkitController.appPath);
-            simulatorUrl += '#device={"type":"iphone6"}';
-
-            this._windows[windowsKey] = window.open(simulatorUrl, '_blank');
-          }
-          else if (data.runTarget === 'remote') {
-            var remoteUrl = location.protocol + '//' + location.host;
-            remoteUrl += '/modules/remote-debugger/extension/remoteDeviceConnect/';
-
-            this._windows[windowsKey] = window.open(remoteUrl, '_blank');
-          }
-          else {
-            console.error('unknown runTarget (and no parent)');
-            return;
           }
         }
-      } else {
-        console.error('parent is self, not sending message');
-        return;
+        else if (data.targetURL) {
+          console.log('Opening child window for:', data.targetURL);
+          this._windows[windowsKey] = window.open(data.targetURL, '_blank');
+        }
+        else {
+          console.log('No existing window, and no targetURL. Nothing to do');
+        }
       }
+      return;
     }
 
     if (callback) {
