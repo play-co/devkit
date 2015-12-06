@@ -51,7 +51,8 @@
     "squill": "0.0.2",
     "stylus": "^0.51.1",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.6.1"
+    "watchify": "^3.6.1",
+    "http-fs": "git+https://github.com/weebygames/http-fs.git"
   },
   "main": "src/devkit.js",
   "scripts": {

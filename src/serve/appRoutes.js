@@ -3,8 +3,9 @@ var fs = require('fs');
 var EventEmitter = require('events').EventEmitter;
 var Promise = require('bluebird');
 var readFile = Promise.promisify(fs.readFile);
-
 var express = require('express');
+
+var remoteFS = require('http-fs/src/middleware');
 
 var apps = require('../apps/');
 var baseModules = require('../modules').getBaseModules();
@@ -177,7 +178,7 @@ var MountedApp = Class(EventEmitter, function () {
     this.url = '/apps/' + this.id + '/';
     this.sockets = [];
     this.debuggerUI = {};
-    this.debuggerModules = {}
+    this.debuggerModules = {};
     this.buildPath = path.join(app.paths.root, 'build', 'debug', 'simulator');
 
     // setup routes //
@@ -198,6 +199,40 @@ var MountedApp = Class(EventEmitter, function () {
     );
 
     this.expressApp.use('/', express.static(this.buildPath));
+
+    // Add browser-fs endpoints (src)
+    var createRemoteFSExtra = function(basePath) {
+      return remoteFS(basePath, {
+        fs: fs,
+        methods: {
+          outputFile: {
+            params: [
+              {name: 'file', isPath: true},
+              {name: 'data', isData: true}
+            ]
+          },
+          move: {
+            params: [
+              {name: 'src', isPath: true},
+              {name: 'dest', isPath: true}
+            ]
+          },
+          copy: {
+            params: [
+              {name: 'src', isPath: true},
+              {name: 'dest', isPath: true}
+            ]
+          },
+          remove: {
+            params: [
+              {name: 'dir', isPath: true}
+            ]
+          }
+        }
+      });
+    };
+    this.expressApp.use('/http-fs/', createRemoteFSExtra(this.appPath));
+    this.expressApp.use('/http-fs/', express.static(this.appPath));
 
     // Everything is set, add some file watchers
     this.expressApp.watchers = [];
