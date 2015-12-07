@@ -20,6 +20,7 @@
     }
   },
   "dependencies": {
+    "history": "^1.15.0",
     "qrcode.react": "^0.5.2",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
