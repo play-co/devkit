@@ -1,4 +1,5 @@
 var path = require('path');
+var fs = require('fs');
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var source = require('vinyl-source-stream');
@@ -7,6 +8,8 @@ var watchify = require('watchify');
 var babelify = require('babelify');
 var nib = require('nib');
 var Promise = require('bluebird');
+var mainBowerFiles = require('main-bower-files');
+var bower = require('bower');
 
 var CompilerTasks = require('./CompilerTasks');
 
@@ -30,7 +33,9 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
       CSS_ENTRY_POINT: path.join(this.srcPath, 'css', '*.styl'),
       STYLUS_FILES: path.join(this.srcPath, 'css', '**', '**.*'),
       FONT: path.join(this.srcPath, 'fonts', '*.*'),
-      DEST_FONT: path.join(this.buildPath, 'fonts')
+      DEST_FONT: path.join(this.buildPath, 'fonts'),
+      BOWER_JSON: path.join(this.modulePath, 'bower.json'),
+      BOWER_DEST: path.join(this.buildPath, 'bower')
     };
 
     this.logger = logging.get('StandaloneGulpTasks.' + this.moduleName + '.' + this.src);
@@ -59,6 +64,32 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
       .pipe(plugins.livereload());
   };
 
+  this._bower = function() {
+    return this.runAsPromise('bowerInstall').then(function() {
+      return this.runAsPromise('mainBowerFiles');
+    }.bind(this));
+  };
+
+  this.bowerInstall = function() {
+    return bower.commands.install();
+  };
+
+  this.mainBowerFiles = function() {
+    var jsFilter = plugins.filter('**/*.js', {restore: true});
+    var cssFilter = plugins.filter('**/*.css', {restore: true});
+
+    return gulp.src(mainBowerFiles())
+      .pipe(jsFilter)
+        .pipe(plugins.debug({ title: 'bower js' }))
+        .pipe(plugins.concat('bower.js'))
+        .pipe(jsFilter.restore)
+      .pipe(cssFilter)
+        .pipe(plugins.debug({ title: 'bower css' }))
+        .pipe(plugins.concat('bower.css'))
+        .pipe(cssFilter.restore)
+      .pipe(gulp.dest(this.path.BOWER_DEST));
+  };
+
   this.copy = function() {
     return gulp.src(this.path.HTML)
       .pipe(gulp.dest(this.path.DEST))
@@ -78,6 +109,7 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
 
     plugins.livereload.listen();
 
+    gulp.watch(this.path.BOWER_JSON, this._bower.bind(this));
     gulp.watch(this.path.HTML, this.copy.bind(this));
     gulp.watch(this.path.STYLUS_FILES, this.stylus.bind(this));
 
@@ -129,23 +161,31 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
     return new Promise(function(resolve, reject) {
       var stream = (this[taskName].bind(this))();
 
-      stream.on('end', function() {
+      var onEnd = function() {
         this.logger.info('Complete:', taskName);
         resolve();
-      }.bind(this));
-      stream.on('error', function(err) {
+      }.bind(this);
+
+      var onError = function(err) {
         this.logger.info('Error:', taskName, err);
         reject(err);
-      }.bind(this));
+      }.bind(this);
+
+      stream.on('end', onEnd);
+      stream.on('error', onError);
+      stream.on('err', onError);
     }.bind(this));
   };
 
   this.compile = function(tasks) {
     tasks.push(this.runAsPromise('copy'));
+    if (fs.existsSync(this.path.BOWER_JSON)) {
+      tasks.push(this._bower());
+    }
     tasks.push(this.runAsPromise('stylus'));
     tasks.push(
       this.runAsPromise('build').then(function() {
-        this.runAsPromise('replaceHTML')
+        return this.runAsPromise('replaceHTML');
       }.bind(this))
     );
     tasks.push(this.runAsPromise('font'));
