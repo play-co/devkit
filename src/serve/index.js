@@ -1,3 +1,4 @@
+var fs = require('fs');
 var path = require('path');
 var http = require('http');
 var express = require('express');
@@ -174,6 +175,10 @@ function getAPIRouter(opts) {
       if (err) { return res.status(404).send(err); }
       var iconFile = app.getIcon(req.query.targetSize || 512);
       var iconPath = path.join(app.paths.root, iconFile);
+      if (!fs.existsSync(iconPath)) {
+        res.status(404).send();
+        return;
+      }
       res.sendFile(iconPath);
     });
   });
