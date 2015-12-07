@@ -31,7 +31,7 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
       DEST_SRC: path.join(this.buildPath, 'src'),
       ENTRY_POINT: path.join(this.srcPath, 'index.js'),
       CSS_ENTRY_POINT: path.join(this.srcPath, 'css', '*.styl'),
-      STYLUS_FILES: path.join(this.srcPath, 'css', '**', '**.*'),
+      STYLUS_FILES: path.join(this.srcPath, 'css', '**', '*.*'),
       FONT: path.join(this.srcPath, 'fonts', '*.*'),
       DEST_FONT: path.join(this.buildPath, 'fonts'),
       BOWER_JSON: path.join(this.modulePath, 'bower.json'),
