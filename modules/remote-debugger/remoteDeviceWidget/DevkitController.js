@@ -1,9 +1,9 @@
 import url from 'url';
 
 import PostmessageController from './PostmessageController';
+import autobind from '../autobind';
 
-
-export let LSKEY = 'bracketsExtensionJsio.';
+export let LSKEY = 'devkit/remoteWidget/';
 export let DEFAULT_TARGETS = [
   { UUID: 'local', name: 'Simulator', icon: 'desktop', postMessage: true },
   { UUID: 'remote', name: 'Add Remote Device', icon: 'plus', postMessage: true }
@@ -15,6 +15,7 @@ class DevkitController {
   constructor () {
     this.listItems = null;
     this.appPath = null;
+    autobind(this);
   }
 
   /**
@@ -23,7 +24,7 @@ class DevkitController {
   * @param  {String}  targetInfo.name
   * @return {Object}  newRunTarget
   */
-  addRunTarget = (targetInfo) => {
+  addRunTarget(targetInfo) {
     if (!targetInfo.UUID) {
       console.error('error adding run target', targetInfo);
       throw new Error('run targets require a UUID');
@@ -46,7 +47,7 @@ class DevkitController {
   }
 
   /** only checks for matching id's */
-  removeRunTarget = (targetUUID) => {
+  removeRunTarget(targetUUID) {
     for (var i = this.listItems.length - 1; i >= 0; i--) {
       if (this.listItems[i].UUID === targetUUID) {
         this.listItems.splice(i, 1);
@@ -64,7 +65,7 @@ class DevkitController {
    * @param  {String}  [targetInfo.name]
    * @param  {String}  [targetInfo.status]
    */
-  updateRunTarget = (targetInfo) => {
+  updateRunTarget(targetInfo) {
     if (!targetInfo.UUID) {
       console.error('error updating run target', targetInfo);
       throw new Error('run targets require a UUID');
@@ -84,7 +85,7 @@ class DevkitController {
     this.reactDropdown && this.reactDropdown.forceUpdate();
   }
 
-  getRunTargetById = (targetId) => {
+  getRunTargetById(targetId) {
     for (var i = this.listItems.length - 1; i >= 0; i--) {
       var testTarget = this.listItems[i];
       if (testTarget.UUID === targetId) {
@@ -94,12 +95,12 @@ class DevkitController {
     return null;
   }
 
-  setRunTarget = (target) => {
+  setRunTarget(target) {
     window.localStorage[LSKEY + 'runTarget'] = target;
     this.postmessageRunTarget();
   }
 
-  postmessageRunTarget = () => {
+  postmessageRunTarget() {
     var target = window.localStorage[LSKEY + 'runTarget'];
     if (target) {
       PostmessageController.postMessage({
@@ -110,7 +111,7 @@ class DevkitController {
     }
   }
 
-  validateCurrentSelection = () => {
+  validateCurrentSelection() {
     // Validate the currect selection (and select simulator if the current selection is no longer valid)
     /*var target = this.reactDropdown.state.selectedItem;
     if (target.status === 'unavailable' || listItems.indexOf(target) === -1) {
@@ -121,7 +122,7 @@ class DevkitController {
   }
 
   /** Return the TARGET object currently set by localstorage */
-  getSelectedTarget = () => {
+  getSelectedTarget() {
     var target = window.localStorage[LSKEY + 'runTarget'];
     if (!target) {
       return null;
@@ -135,7 +136,7 @@ class DevkitController {
     return null;
   }
 
-  resetListItems = () => {
+  resetListItems() {
     // These will be the actual items displayed in the list
     this.listItems = DEFAULT_TARGETS.slice(0);
     // Add a spacer after the local run target
@@ -147,7 +148,7 @@ class DevkitController {
     });
   }
 
-  initJsioConnection = () => {
+  initJsioConnection() {
     // Read the app path off of the url
     let urlObject = url.parse(window.location.href, true);
     this.appPath = urlObject.query.app;
@@ -180,7 +181,7 @@ class DevkitController {
       }
 
       this.resetListItems();
-      data.runTargets.forEach(this.addRunTarget);
+      data.runTargets.forEach(this.bound.addRunTarget);
     });
 
     RemoteAPI.on('removeRunTarget', (data) => {
@@ -191,7 +192,7 @@ class DevkitController {
     });
   }
 
-  setDropdownInstance = (instance) => {
+  setDropdownInstance(instance) {
     this.reactDropdown = instance;
   }
 

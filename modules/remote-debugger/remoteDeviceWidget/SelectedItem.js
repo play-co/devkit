@@ -1,19 +1,21 @@
 import React from 'react';
 
 import DevkitController from './DevkitController';
+import autobind from '../autobind';
 
 export default class SelectedItem extends React.Component {
   constructor(props) {
     super(props);
+    autobind(this);
   }
 
-  handleClick = (e) => {
+  handleClick(e) {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
     this.props.doToggleOpen();
   }
 
-  render = () => {
+  render() {
     var selectedItem = this.props.selectedItem;
     var selectedItemName = '<none>';
 
@@ -37,7 +39,7 @@ export default class SelectedItem extends React.Component {
       React.DOM.div({
         key: 'btn-selected',
         className: 'selected-item',
-        onClick: this.handleClick
+        onClick: this.bound.handleClick
       }, selectedItemName)
     ];
 

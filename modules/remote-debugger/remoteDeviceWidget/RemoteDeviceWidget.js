@@ -5,6 +5,7 @@ import PostmessageController from './PostmessageController';
 
 import SelectedItem from './SelectedItem';
 import TargetList from './TargetList';
+import autobind from '../autobind';
 
 export default class RemoteDeviceWidget extends React.Component {
   constructor(props) {
@@ -21,9 +22,11 @@ export default class RemoteDeviceWidget extends React.Component {
     };
 
     this._lastRenderHeight = 0;
+
+    autobind(this);
   }
 
-  doSelectItem = (item) => {
+  doSelectItem(item) {
     // Special case for remote (fire the run immediately)
     if (item.UUID === 'remote') {
       this._sendRunMessage({
@@ -42,21 +45,21 @@ export default class RemoteDeviceWidget extends React.Component {
     DevkitController.setRunTarget(item.UUID);
   }
 
-  _documentClickListener = (e) => {
+  _documentClickListener(e) {
     this.doToggleOpen(false);
   }
 
-  _documentKeyListener = (e) => {
+  _documentKeyListener(e) {
     if (e.keyCode === 27) {
       this.doToggleOpen(false);
     }
   }
 
-  _blurListener = (e) => {
+  _blurListener(e) {
     this.doToggleOpen(false);
   }
 
-  doToggleOpen = (forceState) => {
+  doToggleOpen(forceState) {
     var open = forceState !== undefined ? forceState : !this.state.open;
 
     this.setState({
@@ -65,30 +68,27 @@ export default class RemoteDeviceWidget extends React.Component {
 
     // Click anywhere else to close
     if (open) {
-      document.addEventListener('click', this._documentClickListener);
-      document.addEventListener('keydown', this._documentKeyListener);
-      window.addEventListener('blur', this._blurListener);
+      document.addEventListener('click', this.bound._documentClickListener);
+      document.addEventListener('keydown', this.bound._documentKeyListener);
+      window.addEventListener('blur', this.bound._blurListener);
     } else {
-      document.removeEventListener('click', this._documentClickListener);
-      document.removeEventListener('keydown', this._documentKeyListener);
-      window.removeEventListener('blur', this._blurListener);
+      document.removeEventListener('click', this.bound._documentClickListener);
+      document.removeEventListener('keydown', this.bound._documentKeyListener);
+      window.removeEventListener('blur', this.bound._blurListener);
     }
   }
 
   /** Return the devkit url for a run request */
-  _getRunURL = (data) => {
-    let windowUrl;
+  _getRunURL (data) {
+    let windowUrl = location.protocol + '//' + location.host;
     if (data.runTarget === 'local') {
-      windowUrl = location.protocol + '//' + location.host;
       windowUrl += '?app=' + encodeURI(this.state.appPath);
       windowUrl += '#device={"type":"iphone6"}';
     }
     else if (data.runTarget === 'remote') {
-      windowUrl = location.protocol + '//' + location.host;
       windowUrl += '/modules/remote-debugger/extension/remoteDevice/connect';
     }
     else if (data.runTarget === 'remote-info') {
-      windowUrl = location.protocol + '//' + location.host;
       windowUrl += '/modules/remote-debugger/extension/remoteDevice/info';
       windowUrl += '?runTarget=' + encodeURI(data.UUID);
     }
@@ -99,7 +99,7 @@ export default class RemoteDeviceWidget extends React.Component {
     return windowUrl;
   }
 
-  _sendRunMessage = (data) => {
+  _sendRunMessage(data) {
     // Tack on the target URL
     data.targetURL = this._getRunURL(data);
     data.target = 'simulator';
@@ -111,7 +111,7 @@ export default class RemoteDeviceWidget extends React.Component {
   /**
    * @param  {MouseEvent} [evt]
    */
-  doRun = (evt) => {
+  doRun(evt) {
     if (evt && evt.target.hasAttribute('disabled')) {
       return;
     }
@@ -139,7 +139,7 @@ export default class RemoteDeviceWidget extends React.Component {
   /**
    * @param  {MouseEvent} [evt]
    */
-  doStop = (evt) => {
+  doStop(evt) {
     if (evt && evt.target.hasAttribute('disabled')) {
       return;
     }
@@ -158,14 +158,14 @@ export default class RemoteDeviceWidget extends React.Component {
     }
   }
 
-  render = () => {
+  render() {
     var children = [
       React.createElement(SelectedItem, {
         key: 'selected-item',
         selectedItem: this.state.selectedItem,
-        doToggleOpen: this.doToggleOpen,
-        doRun: this.doRun,
-        doStop: this.doStop
+        doToggleOpen: this.bound.doToggleOpen,
+        doRun: this.bound.doRun,
+        doStop: this.bound.doStop
       })
     ];
     if (this.state.open) {
@@ -174,7 +174,7 @@ export default class RemoteDeviceWidget extends React.Component {
           key: 'target-list',
           items: this.state.items,
           selectedItem: this.state.selectedItem,
-          doSelectItem: this.doSelectItem
+          doSelectItem: this.bound.doSelectItem
         })
       );
     }

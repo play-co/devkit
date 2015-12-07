@@ -5,7 +5,7 @@ export default class ConnectionLost extends React.Component {
     super(props);
   }
 
-  render = () => {
+  render() {
     var className = 'cmpt-connection-lost spinnerContainer';
     if (this.props.visible) {
       className += ' visible';

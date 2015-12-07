@@ -1,26 +1,26 @@
 import React from 'react';
-
+import autobind from '../autobind';
 
 export default class TargetList extends React.Component {
   constructor(props) {
     super(props);
-
+    autobind(this);
   }
 
-  handleClick = (e) => {
+  handleClick(e) {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
     this.props.doToggleOpen();
   }
 
-  render = () => {
-    var items = this.props.items.map(this.renderItem);
+  render() {
+    var items = this.props.items.map(this.bound.renderItem);
     return React.DOM.ul({
       className: 'target-list'
     }, items);
   }
 
-  renderItem = (item) => {
+  renderItem(item) {
     if (item.spacer) {
       return React.DOM.li({
         key: 'target-list-spacer-' + Math.floor(Math.random() * 100000),
@@ -42,10 +42,10 @@ export default class TargetList extends React.Component {
 class TargetListItem extends React.Component {
   constructor(props) {
     super(props);
-
+    autobind(this);
   }
 
-  handleClick = (e) => {
+  handleClick(e) {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
 
@@ -53,7 +53,7 @@ class TargetListItem extends React.Component {
     this.props.doSelectItem(item);
   }
 
-  render = () => {
+  render() {
     var item = this.props.item;
     var selectedIcon = '';
     var className = 'target-list-item';
@@ -100,7 +100,7 @@ class TargetListItem extends React.Component {
     }
 
     return React.DOM.li({
-      onClick: this.handleClick,
+      onClick: this.bound.handleClick,
       className: className,
       title: item.UUID
     }, itemChildren);

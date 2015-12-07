@@ -29,7 +29,7 @@ export default class PageConnect extends React.Component {
     });
   }
 
-  render = () => {
+  render() {
     return (
       <div className="cmpt-page-connect">
         <h1 className="header">Remote Device Connect</h1>

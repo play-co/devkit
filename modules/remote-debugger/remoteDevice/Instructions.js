@@ -11,7 +11,7 @@ export default class Instructions extends React.Component {
     };
   }
 
-  render = () => {
+  render() {
     return (
       <div className="cmpt-instructions">
         <div className="qrcode">

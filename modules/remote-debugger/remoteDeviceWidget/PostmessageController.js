@@ -19,7 +19,7 @@ class PostmessageController {
     window.addEventListener('message', this._handleMessage);
   }
 
-  _handleMessage = (e) => {
+  _handleMessage(e) {
     try {
       var data = JSON.parse(e.data);
     } catch(err) {
@@ -40,7 +40,7 @@ class PostmessageController {
     }
   }
 
-  postMessage = (data, callback) => {
+  postMessage(data, callback) {
     console.log('jsio postmessage:', data);
     data._jsio = true;
 

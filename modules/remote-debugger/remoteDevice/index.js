@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, Redirect } from 'react-router';
+import { Router, Route, IndexRoute, Redirect } from 'react-router';
 
 import App from './App';
 import PageConnect from './PageConnect';
@@ -28,9 +28,9 @@ var wrapComponent = function(Component, props) {
 ReactDOM.render(
   <Router history={history}>
     <Route path='/' component={App}>
+      <IndexRoute component={PageConnect} />
       <Route path="info" component={PageInfo} />
-      <Route path="connect" component={PageConnect} />
-      <Redirect from="*" to="connect" />
+      <Redirect from="*" to="/" />
     </Route>
   </Router>,
   document.getElementById('main')

@@ -16,7 +16,7 @@ export default class PageInfo extends React.Component {
 
   }
 
-  render = () => {
+  render() {
     let runTarget = getQuery('runTarget');
     let content;
     if (runTarget) {

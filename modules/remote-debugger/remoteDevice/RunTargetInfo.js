@@ -37,7 +37,7 @@ export default class RunTargetInfo extends React.Component {
     });
   }
 
-  _updateDevtoolsLink = (data) => {
+  _updateDevtoolsLink(data) {
     if (data && data.devtoolsWsId) {
       var ws, url;
       if (/js\.io/.test(location.hostname)) {
@@ -60,11 +60,11 @@ export default class RunTargetInfo extends React.Component {
   }
 
   // TODO: one day this should match what your debugging device is
-  _getDeviceImage = () => {
+  _getDeviceImage() {
     return '/images/' + 'iphone6.png';
   }
 
-  render = () => {
+  render() {
     // Update the local run target info
     if (this.props.runTarget && !this.state.errorMessage) {
       if (!this.state.runTargetInfo || this.state.runTargetInfo.UUID !== this.props.runTarget) {
