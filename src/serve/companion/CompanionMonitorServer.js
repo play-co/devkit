@@ -170,7 +170,11 @@ Server.prototype.onRunTargetConnection = function (ws) {
   this.addRunTargetClient(client);
 };
 
-Server.prototype._getSocketClientLogger = function (prefix, socket) {
+Server.prototype._getSocketName = function (socket) {
+  if (!socket) {
+    return 'unknown(undefined)';
+  }
+
   var address;
   if (socket.handshake) {
     address = socket.handshake.address;
@@ -178,16 +182,16 @@ Server.prototype._getSocketClientLogger = function (prefix, socket) {
   else if (socket.upgradeReq) {
     address = socket.upgradeReq.connection.remoteAddress;
   }
-
-  var socketID;
-  if (address) {
-    var parts = address.split(':');
-    socketID = parts[parts.length - 1];
-  }
   else {
-    socketID = 'unknown';
+    return 'unknown';
   }
-  return logging.get(prefix + '.' + socketID);
+
+  var parts = address.split(':');
+  return parts[parts.length - 1];
+};
+
+Server.prototype._getSocketClientLogger = function (prefix, socket) {
+  return logging.get(prefix + '.' + this._getSocketName(socket));
 };
 
 Server.prototype.removeUIClient = function (client) {
@@ -239,12 +243,15 @@ Server.prototype.sendBrowserData = function() {
 };
 
 Server.prototype.sendToAll = function(message, data) {
-  message = 'server:' + message;
+  //message = 'server:' + message;
   logger.info('Send to all:', message, data);
 
-  var send = function(companionSocketClient) {
-    client.send(message, data);
-  };
+  var send = function(client) {
+    logger.debug('Sending to client:', this._getSocketName(client.socket));
+    if (client.isReady()) {
+      client.send(message, data);
+    }
+  }.bind(this);
 
   this._uiClients.forEach(send);
   this._runTargetClients.forEach(send);

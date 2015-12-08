@@ -17,6 +17,8 @@ CompanionSocketClient.prototype.setSocket = function(socket) {
   this.socket = socket;
   if (this.socket) {
     this.socket.on('message', function message(dataStr) {
+      if(dataStr == 'pong')
+        return;
       try {
         var data = JSON.parse(dataStr);
       }
@@ -38,6 +40,10 @@ CompanionSocketClient.prototype.setSocket = function(socket) {
 };
 
 CompanionSocketClient.prototype.send = function(message, data) {
+  if(!this.isReady()) {
+    throw new Error('socket not ready or init');
+  }
+
   this.socket.send(JSON.stringify({
     message: message,
     data: data
@@ -58,6 +64,10 @@ CompanionSocketClient.prototype.disconnect = function() {
 
 CompanionSocketClient.prototype.onDisconnect = function() {
   // Stub
+};
+
+CompanionSocketClient.prototype.isReady = function() {
+  return !!this.socket;
 };
 
 CompanionSocketClient.prototype._error = function(errorType, messageString) {

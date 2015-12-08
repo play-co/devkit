@@ -39,7 +39,7 @@ RunTargetClient.prototype.setSocket = function(socket) {
 
 /** RunTargets are not ready immediately, they must recieve ID info from the client first */
 RunTargetClient.prototype.isReady = function() {
-  return this.UUID !== null;
+  return supr.isReady.call(this) && (this.UUID !== null);
 };
 
 /**
