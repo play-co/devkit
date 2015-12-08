@@ -66,6 +66,9 @@ class PostmessageController {
           console.log('No existing window, and no targetURL. Nothing to do');
         }
       }
+      else if (data.target === 'ui' && data.action === 'alert') {
+        window.alert(data.message);
+      }
       return;
     }
 

@@ -1,10 +1,13 @@
 import React from 'react';
 
 import { getQuery } from './urlParams';
+import autobind from '../autobind';
 
 export default class RunTargetInfo extends React.Component {
   constructor(props) {
     super(props);
+
+    this.requests = 0;
 
     this.state = {
       runTargetInfo: null,
@@ -12,34 +15,22 @@ export default class RunTargetInfo extends React.Component {
 
       devtoolsLink: null
     };
-
-    GC.RemoteAPI.on('runTargetInfo', (data) => {
-      console.log('got run target info:', data);
-      if (data.UUID === this.props.runTarget) {
-        this.setState({ runTargetInfo: data });
-      }
-    });
-
-    GC.RemoteAPI.on('clientConnected', function (isConnected) {
-      debugger
-    }.bind(this));
+    autobind(this);
 
     // This is called frequently to sync serverside data with this client
-    GC.RemoteAPI.on('browserData', (data) => {
-      this._updateDevtoolsLink(data);
-    });
+    GC.RemoteAPI.on('browserData', this.bound._updateDevtoolsLink);
 
-    GC.RemoteAPI.on('APIError', (data) => {
-      console.error('API Error:', data);
-      this.setState({
-        errorMessage: data.errorType + ': ' + data.reason
-      });
+    GC.RemoteAPI.on('updateRunTarget', (data) => {
+      if (data.runTargetInfo.UUID === this.props.runTarget) {
+        this.setState({ runTargetInfo: data.runTargetInfo });
+      }
     });
   }
 
   _updateDevtoolsLink(data) {
-    if (data && data.devtoolsWsId) {
-      var ws, url;
+    if (data && this.props.runTarget === data.runTargetUUID && data.devtoolsWsId) {
+      let ws;
+      let url;
       if (/js\.io/.test(location.hostname)) {
         ws = location.hostname.replace(/^devkit-/, 'devtools-')
           + '/devtools/page/' + data.devtoolsWsId;
@@ -69,8 +60,21 @@ export default class RunTargetInfo extends React.Component {
     if (this.props.runTarget && !this.state.errorMessage) {
       if (!this.state.runTargetInfo || this.state.runTargetInfo.UUID !== this.props.runTarget) {
         console.log('requesting run target info:', this.props.runTarget);
+
+        this.requests++;
+        if (this.requests > 10) {
+          this.setState({ errorMessage: 'Request limit exceeded' });
+        }
+
         GC.RemoteAPI.send('inspectRunTarget', {
           runTargetUUID: this.props.runTarget
+        }, (data) => {
+          console.log('got run target info:', data);
+          if (!data.success) {
+            this.setState({ errorMessage: data.message });
+            return;
+          }
+          this.setState({ runTargetInfo: data.runTargetInfo });
         });
       }
     }
@@ -80,7 +84,7 @@ export default class RunTargetInfo extends React.Component {
     if (this.state.runTargetInfo) {
       let devtoolsButton;
       if (this.state.devtoolsLink) {
-        devtoolsButton = <a className="devtools-link btn" href="{this.state.devtoolsLink}">Open dev tools</a>;
+        devtoolsButton = <a className="devtools-link btn" href={this.state.devtoolsLink}>Open dev tools</a>;
       } else {
         devtoolsButton = <a className="devtools-link btn" disabled="true">Open dev tools</a>
       }

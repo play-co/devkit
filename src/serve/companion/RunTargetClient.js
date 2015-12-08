@@ -130,6 +130,7 @@ RunTargetClient.prototype.onClientInfo = function(message) {
 };
 
 RunTargetClient.prototype._sendPing = function() {
+  this._logger.debug('Sending ping');
   this.socket.send('ping');
 };
 
@@ -157,6 +158,8 @@ RunTargetClient.prototype.onDisconnect = function() {
     this._pingInterval = null;
   }
   this.setSocket(null);
+
+  this._server.updateRunTarget(this, false);
 };
 
 /** Get the info object to send to ui */

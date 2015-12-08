@@ -10,17 +10,24 @@ var CompanionSocketClient = function(opts) {
   this._server = opts.server;
   this._logger = opts.logger;
 };
-util.inherits(CompanionSocketClient, EventEmitter)
+util.inherits(CompanionSocketClient, EventEmitter);
 
 /** Accepts either socket.io or wss client sockets */
 CompanionSocketClient.prototype.setSocket = function(socket) {
   this.socket = socket;
+
+  this._requestCallbacks = {};
+  this._cbID = 0;
+
   if (this.socket) {
     this.socket.on('message', function message(dataStr) {
-      if(dataStr == 'pong')
+      if (dataStr === 'pong') {
+        this._logger.debug('Got pong');
         return;
+      }
+      var data;
       try {
-        var data = JSON.parse(dataStr);
+        data = JSON.parse(dataStr);
       }
       catch (err) {
         this._error('bad_json', 'client must send messages as json');
@@ -31,7 +38,36 @@ CompanionSocketClient.prototype.setSocket = function(socket) {
         return;
       }
 
-      this.emit(data.message, data.data);
+      var handler;
+      var respond = null;
+      if (data._requestCallbackID) {
+        this._logger.debug('message requesting response', data.message, data._requestCallbackID);
+        // This message is requesting a response
+        var _responseCallbackID = data._requestCallbackID;
+        respond = function(data, responseCb) {
+          this.send('_response', data, responseCb, _responseCallbackID);
+        }.bind(this);
+      } else {
+        respond = function() {
+          this._logger.error('Message is not expecting response', data.message);
+        }.bind(this);
+      }
+
+      if (data.message === '_response') {
+        handler = this._requestCallbacks[data._responseCallbackID];
+        delete this._requestCallbacks[data._responseCallbackID];
+
+        if (!handler) {
+          var msg = 'Could not find responseCallback';
+          console.error(msg, data);
+          throw new Error(msg);
+        }
+
+        handler(data.data, respond);
+      }
+      else {
+        this.emit(data.message, data.data, respond);
+      }
     }.bind(this));
 
     this.socket.on('disconnect', this.onDisconnect.bind(this));
@@ -39,15 +75,32 @@ CompanionSocketClient.prototype.setSocket = function(socket) {
   }
 };
 
-CompanionSocketClient.prototype.send = function(message, data) {
+CompanionSocketClient.prototype.send = function(message, data, responseCb, _responseCallbackID) {
   if(!this.isReady()) {
     throw new Error('socket not ready or init');
   }
 
-  this.socket.send(JSON.stringify({
+  var cbID = null;
+  // We are requesting a response
+  if (responseCb) {
+    this._cbID++;
+    cbID = this._cbID;
+    this._requestCallbacks[cbID] = responseCb;
+  }
+
+  var messageData = {
     message: message,
     data: data
-  }));
+  };
+  if (cbID) {
+    messageData._requestCallbackID = cbID;
+  }
+  // We are responding to a request
+  if (_responseCallbackID) {
+    messageData._responseCallbackID = _responseCallbackID;
+  }
+
+  this.socket.send(JSON.stringify(messageData));
 };
 
 CompanionSocketClient.prototype.disconnect = function() {

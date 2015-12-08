@@ -215,7 +215,7 @@ Server.prototype.removeRunTargetClient = function (client, opts) {
 
   // If it was a client that UI cared about
   if (!opts.onlyInMemory) {
-    if (client.isReady()) {
+    if (client.UUID) {
       this._uiClients.forEach(function(uiClient) {
         uiClient.send('removeRunTarget', {
           UUID: client.UUID
@@ -258,7 +258,8 @@ Server.prototype.sendToAll = function(message, data) {
 };
 
 Server.prototype.updateRunTarget = function(client, isNew) {
-  if (!client.isReady()) {
+  if (!client.UUID) {
+    logger.warn('updateRunTarget called for client with no UUID');
     return;
   }
 
@@ -318,7 +319,7 @@ Server.prototype.getRunTarget = function(runTargetUUID) {
 Server.prototype.getRunTargets = function() {
   var res = [];
   this._runTargetClients.forEach(function(client) {
-    if (client.isReady()) {
+    if (client.UUID) {
       res.push(client);
     }
   });

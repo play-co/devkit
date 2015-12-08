@@ -12,8 +12,9 @@
 (function () {
 
   var _socket = null;
-  var _connected = false;
 
+  var _requestCallbacks = {};
+  var _cbID = 0;
   var _handlers = [];
   var _sendQueue = [];
 
@@ -25,7 +26,6 @@
   this.init = function (socketUrl, opts) {
     if (_socket) {
       throw new Error('socket already initilized');
-      return;
     }
 
     opts = opts || {};
@@ -34,15 +34,16 @@
     _socket = opts.io.connect(socketUrl);
 
     _socket.on('connect', this._onConnected.bind(this));
-    _socket.on('reconnect', this._onConnected.bind(this));
+    // Maybe dont need - connect is also fired on reconnect
+    // _socket.on('reconnect', this._onConnected.bind(this));
     _socket.on('disconnect', function () {
-      this._connected = false;
       this._emit('connectionStatus', { connected: false });
     }.bind(this));
 
     _socket.on('message', function (dataStr) {
+      var data;
       try {
-        var data = JSON.parse(dataStr);
+        data = JSON.parse(dataStr);
       }
       catch (err) {
         console.error('bad_json', 'server must send messages as json', dataStr);
@@ -53,12 +54,39 @@
         return;
       }
 
-      this._emit(data.message, data.data);
+      var handler;
+      var respond = null;
+      if (data._requestCallbackID) {
+        // This message is requesting a response
+        var _responseCallbackID = data._requestCallbackID;
+        respond = function(data, responseCb) {
+          this.send('_response', data, responseCb, _responseCallbackID);
+        }.bind(this);
+      } else {
+        respond = function() {
+          console.error('Message is not expecting response', data.message);
+        };
+      }
+
+      if (data.message === '_response') {
+        handler = _requestCallbacks[data._responseCallbackID];
+        delete _requestCallbacks[data._responseCallbackID];
+
+        if (!handler) {
+          var msg = 'Could not find responseCallback';
+          console.error(msg, data);
+          throw new Error(msg);
+        }
+
+        handler(data.data, respond);
+      }
+      else {
+        this._emit(data.message, data.data, respond);
+      }
     }.bind(this));
   };
 
   this._onConnected = function () {
-    this._connected = true;
     this._emit('connectionStatus', { connected: true });
 
     if (_sendQueue.length) {
@@ -70,11 +98,11 @@
     _sendQueue = [];
   };
 
-  this._emit = function (message, data) {
+  this._emit = function (message, data, respond) {
     var messageHandlers = _handlers[message];
     if (messageHandlers) {
       messageHandlers.forEach(function(cb) {
-        cb(data);
+        cb(data, respond);
       });
     }
   };
@@ -90,11 +118,28 @@
     _handlers[message].push(cb);
   };
 
-  this.send = function (message, data) {
-    var formattedMessage = JSON.stringify({
+  this.send = function (message, data, responseCb, _responseCallbackID) {
+    var cbID = null;
+    // We are requesting a response
+    if (responseCb) {
+      _cbID++;
+      cbID = _cbID;
+      _requestCallbacks[cbID] = responseCb;
+    }
+
+    var messageData = {
       message: message,
-      data: data
-    });
+      data: data,
+    };
+    if (cbID) {
+      messageData._requestCallbackID = cbID;
+    }
+    // We are responding to their request
+    if (_responseCallbackID) {
+      messageData._responseCallbackID = _responseCallbackID;
+    }
+
+    var formattedMessage = JSON.stringify(messageData);
     if (_socket) {
       _socket.send(formattedMessage);
     } else {
@@ -106,9 +151,9 @@
   // Attach to the global GC object
   window.GC = window.GC || {};
   var API_NAME = 'RemoteAPI';
-  if (GC[API_NAME]) {
+  if (window.GC[API_NAME]) {
     console.error('GC.' +  API_NAME + ' Already taken... forfeiting');
     return;
   }
-  GC[API_NAME] = this;
+  window.GC[API_NAME] = this;
 })();

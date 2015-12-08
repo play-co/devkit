@@ -55,6 +55,12 @@ export default class SelectedItem extends React.Component {
         className: 'overlay connection'
       }, 'Waiting for devkit'));
     }
+    else if (this.props.isBuilding) {
+      children.push(React.DOM.div({
+        key: 'overlay-building',
+        className: 'overlay building'
+      }, 'Building app'));
+    }
 
     return React.DOM.div({
         className: 'selected-container'

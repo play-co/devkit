@@ -16,6 +16,7 @@ export default class RemoteDeviceWidget extends React.Component {
 
     this.state = {
       open: false,
+      isBuilding: false,
       items: items,
       selectedItem: selectedTarget || items[0],
       appPath: DevkitController.appPath
@@ -116,22 +117,35 @@ export default class RemoteDeviceWidget extends React.Component {
       return;
     }
 
-    var runTarget = this.state.selectedItem;
+    let runTarget = this.state.selectedItem;
     if (runTarget.postMessage) {
       this._sendRunMessage({
         runTarget: runTarget.UUID,
         newWindow: evt && evt.metaKey
       });
     } else {
+      this.setState({ isBuilding: true });
+
       GC.RemoteAPI.send('run', {
         runTargetUUID: runTarget.UUID,
         appPath: this.state.appPath
-      });
+      }, this.bound._onRunComplete);
       // Open the remote device info
       this._sendRunMessage({
         runTarget: 'remote-info',
         UUID: runTarget.UUID,
         newWindow: evt && evt.metaKey
+      });
+    }
+  }
+
+  _onRunComplete(data) {
+    this.setState({ isBuilding: false });
+    if (!data.success) {
+      PostmessageController.postMessage({
+        target: 'ui',
+        action: 'alert',
+        message: 'Build failed!\n' + data.err
       });
     }
   }
@@ -163,6 +177,7 @@ export default class RemoteDeviceWidget extends React.Component {
       React.createElement(SelectedItem, {
         key: 'selected-item',
         selectedItem: this.state.selectedItem,
+        isBuilding: this.state.isBuilding,
         doToggleOpen: this.bound.doToggleOpen,
         doRun: this.bound.doRun,
         doStop: this.bound.doStop

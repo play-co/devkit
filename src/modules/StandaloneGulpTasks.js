@@ -124,6 +124,7 @@ var StandaloneGulpTasks = Class(CompilerTasks, function(supr) {
       logger.log('updating...');
       watcher.bundle()
         .on('error', function (err) {
+          logger.log(Object.keys(err));
           logger.log(err.toString());
           this.emit('end');
         })

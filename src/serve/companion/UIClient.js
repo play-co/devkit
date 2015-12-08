@@ -19,14 +19,17 @@ UIClient.prototype.setSocket = function(socket) {
   this.on('run',                  this.onRun.bind(this));
   this.on('stop',                 this.onStop.bind(this));
   this.on('requestRunTargetList', this.onRequestRunTargetList.bind(this));
+
+  this.send('browserData', this._server.browserData);
 };
 
 /**
  * @param  {Object}  message
  */
-UIClient.prototype.onInitBrowser = function(message) {
-  this._logger.debug('onInitBrowser', message);
-  this.send('initBrowserResponse', {
+UIClient.prototype.onInitBrowser = function(data, respond) {
+  this._logger.debug('onInitBrowser');
+
+  respond({
     secret: this._server.secret
   });
 };
@@ -35,14 +38,21 @@ UIClient.prototype.onInitBrowser = function(message) {
  * @param  {Object}  message
  * @param  {Object}  message.runTargetUUID
  */
-UIClient.prototype.onInspectRunTarget = function(message) {
-  this._logger.debug('onInspectRunTarget', message);
-  var runTarget = this._server.getRunTarget(message.runTargetUUID);
+UIClient.prototype.onInspectRunTarget = function(data, respond) {
+  this._logger.debug('onInspectRunTarget', data);
+  var runTarget = this._server.getRunTarget(data.runTargetUUID);
   if (!runTarget) {
-    this._error('invalid_runTargetUUID', 'No run target for: ' + message.runTargetUUID);
+    this._error('invalid_runTargetUUID', 'No run target for: ' + data.runTargetUUID);
+    respond({
+      success: false,
+      message: 'Run target not found'
+    });
     return;
   }
-  this.send('runTargetInfo', runTarget.toInfoObject());
+  respond({
+    success: true,
+    runTargetInfo: runTarget.toInfoObject()
+  });
 };
 
 /**
@@ -50,7 +60,7 @@ UIClient.prototype.onInspectRunTarget = function(message) {
  * @param  {String}  message.runTargetUUID
  * @param  {String}  message.appPath
  */
-UIClient.prototype.onRun = function(message) {
+UIClient.prototype.onRun = function(message, respond) {
   this._logger.debug('onRun', message);
 
   var runTarget = this._server.getRunTarget(message.runTargetUUID);
@@ -72,9 +82,16 @@ UIClient.prototype.onRun = function(message) {
   this._server.buildApp(message.appPath, runTarget).then(function(res) {
     if (!res.success) {
       this._error('buildFailed', res.error);
+      respond({
+        success: false,
+        err: res.error
+      });
       return;
     }
 
+    respond({
+      success: true
+    });
     runTarget.run(this, res);
   }.bind(this));
 };
