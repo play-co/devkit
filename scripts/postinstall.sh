@@ -9,9 +9,10 @@ command -v java >/dev/null 2>&1 || { echo >&2 "java is required. please install 
 
 
 echo "building builtin modules"
-$DEVKIT_DIR/src/devkit.js compileModule $DEVKIT_DIR/modules/devkit-view-inspector
+PLUGIN_BUILDER="$DEVKIT_DIR/node_modules/devkit-plugin-builder/bin/pluginBuilder.js"
+$PLUGIN_BUILDER $DEVKIT_DIR/modules/devkit-view-inspector
 
 cd $DEVKIT_DIR/modules/remote-debugger/
 npm install
-$DEVKIT_DIR/src/devkit.js compileModule $DEVKIT_DIR/modules/remote-debugger/
+$PLUGIN_BUILDER $DEVKIT_DIR/modules/remote-debugger/
 cd - > /dev/null

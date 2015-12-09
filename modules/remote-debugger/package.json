@@ -17,6 +17,14 @@
           "isGlobal": true
         }
       }
+    },
+    "pluginBuilder": {
+      "generic": [
+        { "src": "remoteDevice" }
+      ],
+      "jsio": [
+        { "src": "debuggerUI" }
+      ]
     }
   },
   "dependencies": {

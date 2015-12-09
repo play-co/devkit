@@ -5,6 +5,11 @@
     "extensions": {
       "debuggerUI": ["debugger"],
       "devkit-simulator": "simulator"
+    },
+    "pluginBuilder": {
+      "jsio": [
+        { "src": "debugger" }
+      ]
     }
   }
 }
