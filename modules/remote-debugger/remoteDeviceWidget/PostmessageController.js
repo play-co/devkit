@@ -44,9 +44,9 @@ class PostmessageController {
     console.log('jsio postmessage:', data);
     data._jsio = true;
 
-    if (window.parent === window) {
+    if (window.parent === window || data.newWindow) {
       // No parent, just open devkit in a new tab
-      console.warn('parent is self, not sending message');
+      console.log('not sending message, handling internally');
       if (data.target === 'simulator' && data.action === 'run') {
         let windowsKey = 'simulator:' + data.runTarget + ':' + DevkitController.appPath;
         let existingWindow = this._windows[windowsKey];
@@ -60,7 +60,9 @@ class PostmessageController {
         }
         else if (data.targetURL) {
           console.log('Opening child window for:', data.targetURL);
-          this._windows[windowsKey] = window.open(data.targetURL, '_blank');
+          var newWindow = window.open(data.targetURL, '_blank');
+          this._windows[windowsKey] = newWindow;
+          newWindow.postMessage('devkit:focus', '*');
         }
         else {
           console.log('No existing window, and no targetURL. Nothing to do');

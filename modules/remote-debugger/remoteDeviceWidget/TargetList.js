@@ -50,7 +50,7 @@ class TargetListItem extends React.Component {
     e.nativeEvent.stopImmediatePropagation();
 
     var item = this.props.item;
-    this.props.doSelectItem(item);
+    this.props.doSelectItem(e, item);
   }
 
   render() {

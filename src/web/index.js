@@ -1,6 +1,7 @@
 import std.uri as URI;
 from util.browser import $;
 
+
 // prevent drag/drop
 $.onEvent(document.body, 'dragenter', this, function (evt) { evt.preventDefault(); });
 $.onEvent(document.body, 'dragover', this, function (evt) { evt.preventDefault(); });

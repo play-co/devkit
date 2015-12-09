@@ -155,3 +155,35 @@ GLOBAL.devkit = {
 
   }
 };
+
+// postmessage api
+GLOBAL.devkit.logger.log('Adding postMessage API');
+window.addEventListener('message', function (e) {
+  if (e.data.indexOf('devkit:') === 0) {
+    var cmd = e.data.slice(7, e.data.length);
+    var devkit = GLOBAL.devkit;
+    devkit.logger.log('Got postmessage command:', cmd);
+    switch (cmd) {
+      case 'reload':
+        devkit.getSimulator().rebuild();
+        break;
+      case 'focus':
+        window.focus();
+        break;
+      case 'toolbar:hide':
+        var sim = devkit.getSimulator();
+        sim._ui.toolbar.hide();
+        break;
+      case 'toolbar:show':
+        var sim = devkit.getSimulator();
+        sim._ui.toolbar.show();
+        break;
+      default:
+        devkit.logger.warn('command unhandled!');
+    }
+  }
+}.bind(this));
+var parentWindow = window.opener || window.parent;
+if (parentWindow !== window) {
+  parentWindow.postMessage('postMessageReady', '*');
+}

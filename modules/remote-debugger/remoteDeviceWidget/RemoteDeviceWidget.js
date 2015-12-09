@@ -27,11 +27,12 @@ export default class RemoteDeviceWidget extends React.Component {
     autobind(this);
   }
 
-  doSelectItem(item) {
+  doSelectItem(evt, item) {
     // Special case for remote (fire the run immediately)
     if (item.UUID === 'remote') {
       this._sendRunMessage({
-        runTarget: 'remote'
+        runTarget: 'remote',
+        newWindow: evt && evt.metaKey
       });
       this.setState({
         open: false
@@ -105,6 +106,7 @@ export default class RemoteDeviceWidget extends React.Component {
     data.targetURL = this._getRunURL(data);
     data.target = 'simulator';
     data.action = 'run';
+    data.appPath = this.state.appPath;
     // Send to parent!
     PostmessageController.postMessage(data);
   }

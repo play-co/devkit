@@ -153,25 +153,11 @@ exports = Class(CenterLayout, function (supr) {
     });
 
     $.onEvent(this.resizeHandle, 'mousedown', this, function () {
-        this._resizer.startDrag();
-      });
+      this._resizer.startDrag();
+    });
 
     window.addEventListener('resize', bind(this, 'update'));
-
     window.addEventListener('keydown', bind(this, this._rebuildKeyListener), true);
-    window.addEventListener('message', bind(this, function (e) {
-      if (e.data == 'devkit:reload') {
-        this._simulator.rebuild();
-      }
-
-      if (e.data == 'devkit:toolbar:hide') {
-        this.toolbar.hide();
-      }
-
-      if (e.data == 'devkit:toolbar:show') {
-        this.toolbar.show();
-      }
-    }));
 
     // initialize muted state from localStorage
     this._isMuted = false;
