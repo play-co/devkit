@@ -20,7 +20,8 @@
     },
     "pluginBuilder": {
       "generic": [
-        { "src": "remoteDevice" }
+        { "src": "remoteDevice" },
+        { "src": "remoteDeviceWidget" }
       ],
       "jsio": [
         { "src": "debuggerUI" }
