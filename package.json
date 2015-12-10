@@ -26,7 +26,7 @@
     "filesize": "^3.1.3",
     "fs-extra": "^0.24.0",
     "http-fs": "git+https://github.com/weebygames/http-fs.git",
-    "devkit-plugin-builder": "git+https://github.com/gameclosure/devkit-plugin-builder.git#v0.0.1",
+    "devkit-plugin-builder": "git+https://github.com/gameclosure/devkit-plugin-builder.git#v0.0.2",
     "js-yaml": "^3.4.0",
     "jsio": "^2.2.4",
     "lockfile": "^1.0.0",
