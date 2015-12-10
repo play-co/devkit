@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 # Must be invoked by npm install
-DEVKIT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DEVKIT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
 
 echo "ensuring java is installed"
