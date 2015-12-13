@@ -1,0 +1,97 @@
+html, body
+  padding 0
+  margin 0
+  width 100%
+  height 100%
+  overflow hidden
+
+#main
+  width 100%
+  height 100%
+  background #EEE
+  color #444
+  font-family 'Helvetica Neue', Helvetica, sans-serif
+  font-weight 200
+  font-size 80%
+
+.flex
+  flex 1
+  flex-shrink 0
+
+.row
+  display flex
+  flex-direction row
+  width 100%
+
+.column
+  display flex
+  width 100%
+  flex-direction column
+
+.full-height
+  position relative
+
+  > *
+    position absolute
+    top 0
+    bottom 0
+
+.MainContainer
+  align-items stretch
+  height 100%
+
+.FileTree
+  border-right 1px solid #CCC
+  width 250px
+  flex-shrink 0
+  overflow auto
+
+.FileNode
+  .label
+    padding 10px 5px
+    height 20px
+
+    .file-icon
+      margin-right 5px
+
+.FolderViewer
+  overflow auto
+  padding 5px
+
+.FilePreview
+  width 202px
+  height 250px
+  margin-right 5px
+  display inline-block
+
+  .thumbnailWrapper
+    padding 10px
+    background white
+    border 1px solid #CCC
+
+  .thumbnail
+    width 180px
+    height 180px
+    background-size contain
+    background-position center
+    background-repeat no-repeat
+
+  label
+    display block
+    margin-top 5px
+    text-align center
+    text-overflow ellipsis
+    overflow hidden
+
+.PathCrumbs
+  border-bottom 1px solid #CCC
+
+  .crumb
+    display inline-block
+    line-height 20px
+    border-right 1px solid #CCC
+    padding 5px 10px
+
+.FileInspector
+  border-left 1px solid #CCC
+  padding 5px
