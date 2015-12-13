@@ -10,6 +10,8 @@ module.exports = {
 
   loadExtensions: function(expressApp, appRoutes, module) {
     logger.debug('Loading extensions for: ' + module.name);
+
+    var api = require('../api/');
     var route = '/modules/' + module.name;
     var appRoute = appRoutes ? path.join('apps', appRoutes.id) : null;
 
