@@ -1,5 +1,6 @@
 import path from 'path';
 import React from 'react';
+import classnames from 'classnames';
 
 import {imageLoader} from '../util/ImageLoader';
 import IMAGE_TYPES from '../util/ImageTypes';
@@ -23,11 +24,23 @@ export default class FilePreview extends React.Component {
     if (file.path !== this._path) {
       this._path = file.path;
 
-      let src = path.extname(file.path) in IMAGE_TYPES
-        ? path.join(this.props.cwd, file.path)
+      let cwd = this.props.cwd;
+      if (!cwd && this.props.fs) {
+        cwd = path.join(this.props.fs.MOUNT_POINT, this.props.fs.CWD);
+      }
+
+      let isImage = path.extname(file.path) in IMAGE_TYPES;
+      let src = isImage && !file.data
+        ? path.join(cwd, file.path)
         : '';
 
       this.setState({src});
+
+      if (isImage && file.data && file.data instanceof File) {
+        var reader = new FileReader();
+        reader.onload = res => this.setState({src: res.target.result});
+        reader.readAsDataURL(file.data);
+      }
     }
   }
 
@@ -43,6 +56,8 @@ export default class FilePreview extends React.Component {
         let isContain = width > thumbnail.offsetWidth
                      || height > thumbnail.offsetHeight;
         thumbnail.style.backgroundSize = isContain ? 'contain' : 'initial';
+      }, () => {
+        console.error(`couldn't load ${this.props.file.path}`);
       });
   }
 
@@ -51,7 +66,8 @@ export default class FilePreview extends React.Component {
     let src = this.state.src || '';
     if (src) { this.refresh(); }
 
-    return <div className="FilePreview" onClick={this.handleClick}>
+    return <div className={classnames('FilePreview', this.props.className)}
+                onClick={this.handleClick}>
         <div className="thumbnailWrapper">
           <div ref="thumbnail" className="thumbnail" style={{backgroundImage: 'url("' + src.replace(/"/g, '\\"') + '")'}} />
         </div>

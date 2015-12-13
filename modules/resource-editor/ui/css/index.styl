@@ -4,15 +4,18 @@ html, body
   width 100%
   height 100%
   overflow hidden
+  font-family 'Helvetica Neue', Helvetica, sans-serif
+  font-weight 200
+  font-size 14px
+
+div, ul, li, a, i, input, dt, dd
+  box-sizing border-box
 
 #main
   width 100%
   height 100%
   background #EEE
   color #444
-  font-family 'Helvetica Neue', Helvetica, sans-serif
-  font-weight 200
-  font-size 80%
 
 .flex
   flex 1
@@ -48,11 +51,23 @@ html, body
 
 .FileNode
   .label
-    padding 10px 5px
-    height 20px
+    padding 8px 5px 5px
+    height 35px
 
     .file-icon
       margin-right 5px
+
+  .file-drop-target.file-drop-dragging-over-target
+    > .label
+      background #AAF
+      color #FFF
+
+      &::after
+        content '\f063'
+        font normal normal normal 14px/1 FontAwesome
+        float right
+        margin-right 3px
+        margin-top 3px
 
 .FolderViewer
   overflow auto
@@ -83,6 +98,20 @@ html, body
     text-overflow ellipsis
     overflow hidden
 
+  &.small
+    width 50px
+    height 50px
+
+    label
+      display none
+
+    .thumbnailWrapper
+      padding 2px
+
+      .thumbnail
+        width 46px
+        height 46px
+
 .PathCrumbs
   border-bottom 1px solid #CCC
 
@@ -95,3 +124,85 @@ html, body
 .FileInspector
   border-left 1px solid #CCC
   padding 5px
+
+.modal-overlay
+  position fixed
+  top 0
+  left 0
+  right 0
+  bottom 0
+  background rgba(0, 0, 0, 0.4)
+  display flex
+  align-items center
+  justify-content center
+
+  .modal
+    display inline-block
+    background white
+    border-radius 5px
+    min-width 400px
+    max-height 80%
+
+    .title
+      background #AAF
+      color #FFF
+      font-weight normal
+      padding-left 20px
+      border-radius 5px 5px 0px 0px
+      line-height 40px
+
+      .fa
+        line-height 40px
+        height 100%
+        width 45px
+        padding-left 20px
+
+    .footer
+      text-align right
+      padding 5px
+
+.UploadModal
+  overflow hidden
+
+  .contents
+    .description
+      padding 15px 20px
+      background #EEE
+      border-bottom 1px solid #CCC
+
+    .FileList
+      overflow auto
+      max-height 430px
+
+    .FileLineItem
+      padding 3px 20px 3px 3px
+      align-items center
+
+      &.skip
+        label
+          opacity 0.5
+
+        i
+          color #C22
+
+      .warning
+        color #C22
+
+      .message
+        font-size smaller
+
+      button
+        margin-right 5px
+        visibility hidden
+
+      &:hover
+        button
+          visibility visible
+
+
+  .footer
+    position relative
+    z-index 2
+    background #AAF
+    border-radius 0px 0px 5px 5px
+    box-shadow 0px -1px 2px rgba(0, 0, 0, 0.4)

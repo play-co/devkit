@@ -1,10 +1,14 @@
+import path from 'path';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import FileTree from 'react-http-fs-file-tree';
 import remoteFS from 'http-fs/src/clients/fs';
+import {extractFilesFromItems} from 'html5-upload-reader';
+
 import FolderViewer from './components/FolderViewer';
 import PathCrumbs from './components/PathCrumbs';
 import FileInspector from './components/FileInspector';
+import UploadModal from './components/UploadModal';
 
 export default class ResourceEditor extends React.Component {
   constructor() {
@@ -30,6 +34,13 @@ export default class ResourceEditor extends React.Component {
     }
   }
 
+  handleDrop = (folder, items) => {
+    extractFilesFromItems(items)
+      .then(files => {
+        UploadModal.open(this.state.fs, folder, files);
+      });
+  }
+
   render() {
     return <div className="MainContainer row">
         <FileTree
@@ -37,6 +48,7 @@ export default class ResourceEditor extends React.Component {
             onlyFolders={true}
             name="resources"
             onFile={this.handleFolder}
+            onDrop={this.handleDrop}
             onFilesLoaded={this.handleFilesLoaded}
           />
         <div className="column">

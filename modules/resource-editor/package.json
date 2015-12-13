@@ -24,6 +24,7 @@
     "classnames": "^2.2.1",
     "history": "=1.13",
     "http-fs": "https://github.com/weebygames/http-fs",
+    "html5-upload-reader": "https://github.com/weebygames/html5-upload-reader#v0.0.1",
     "qrcode.react": "^0.5.2",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
