@@ -9,7 +9,7 @@ import FolderViewer from './components/FolderViewer';
 import PathCrumbs from './components/PathCrumbs';
 import FileInspector from './components/FileInspector';
 import UploadModal from './components/UploadModal';
-import Modal from './util/Modal';
+import Modal from './components/Modal';
 
 import { createHistory } from 'history';
 

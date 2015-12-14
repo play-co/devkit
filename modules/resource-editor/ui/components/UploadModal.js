@@ -3,7 +3,7 @@ import React from 'react';
 import Promise from 'bluebird';
 import classnames from 'classnames';
 import FilePreview from './FilePreview';
-import Modal from '../util/Modal';
+import Modal from './Modal';
 
 class FileLineItem extends React.Component {
   constructor() {

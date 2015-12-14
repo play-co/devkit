@@ -5,7 +5,7 @@ import FilePreview from './FilePreview';
 import FileDrop from 'react-file-drop';
 
 import FolderModal from './FolderModal';
-import Modal from '../util/Modal';
+import Modal, {ConfirmModal} from './Modal';
 
 export default class extends React.Component {
 
@@ -58,8 +58,24 @@ export default class extends React.Component {
     this.props.onDrop && this.props.onDrop(this.props.folder, items || files);
   }
 
+  handleDelete = () => {
+    const filePaths = Object.keys(this.state.selected);
+    const fs = this.props.fs;
+    const files = this.props.files.filter(file => file.path in this.state.selected);
+
+    Modal.open(<ConfirmModal
+          title="Delete Files..."
+          description="Are you sure you want to delete these files?"
+          files={files}
+          fs={this.props.fs}
+        />)
+      .then(() => filePaths.map(filePath => fs.unlink(filePath)),
+            () => console.log('delete cancelled'));
+  }
+
   handleCopy = () => {
     const filePaths = Object.keys(this.state.selected);
+    const fs = this.props.fs;
 
     Modal.open(<FolderModal
           fs={this.props.fs}
@@ -67,7 +83,7 @@ export default class extends React.Component {
           description="Select a destination folder:" />)
       .then(folder => filePaths.map(filePath => {
         const dest = path.join(folder.path, path.basename(filePath));
-        return this.props.fs.copy(filePath, dest);
+        return fs.copy(filePath, dest);
       }),
       () => {
         console.log('copy cancelled');
@@ -101,8 +117,21 @@ export default class extends React.Component {
         <button onClick={this.handleSelectAll}>Select All</button>
         <button onClick={this.handleUnselectAll}>Unselect All</button>
         {hasSelection && <span>
-          <button onClick={this.handleCopy}>Copy...</button>
-          <button onClick={this.handleMove}>Move...</button>
+          <button onClick={this.handleDelete}>
+            <i className="fa fa-times" />
+            Delete...
+          </button>
+          <button onClick={this.handleCopy}>
+            <i className="fa fa-copy" />
+            Copy...
+          </button>
+          <button onClick={this.handleMove}>
+            <span className="icon-move">
+              <i className="fa fa-file-o"></i>
+              <i className="fa fa-arrow-right"></i>
+            </span>
+            Move...
+          </button>
         </span>}
       </div>
       <div className="full-height flex">

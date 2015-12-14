@@ -95,6 +95,19 @@ div, ul, li, a, i, input, dt, dd
       position relative
       color #888
 
+      .fa
+        margin-right 5px
+        font-size larger
+
+      .icon-move
+        position relative
+
+        i:nth-child(2)
+          position absolute
+          font-size 70%
+          top 0.4em
+          left 0.3em
+
       &:focus
         z-index 2
 
@@ -132,6 +145,7 @@ div, ul, li, a, i, input, dt, dd
     text-align center
     text-overflow ellipsis
     overflow hidden
+    white-space nowrap
 
   &.small
     width 50px
@@ -206,6 +220,7 @@ div, ul, li, a, i, input, dt, dd
       padding 10px 10px 10px 20px
       position relative
       z-index 2
+      display flex
       background #EEE
       border-radius 0px 0px 5px 5px
       box-shadow 0px -1px 2px rgba(0, 0, 0, 0.4)

@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from '../util/Modal';
+import Modal from './Modal';
 import FileTree from 'react-http-fs-file-tree';
 
 export default class FolderModal extends React.Component {
