@@ -37,6 +37,12 @@ export default class FilePreview extends React.Component {
     this.updateProps(props);
   }
 
+  componentWillUnmount() {
+    if (this._audio) {
+      this._audio.pause();
+    }
+  }
+
   getCwd() {
     let cwd = this.props.cwd;
     if (!cwd && this.props.fs) {
@@ -122,6 +128,9 @@ export default class FilePreview extends React.Component {
 
   refresh() {
     let src = this.state.src;
+    if (src === this._src) { return; }
+
+    this._src = src;
     imageLoader.load(src)
       .then(({width, height}) => {
         let thumbnail = this.refs.thumbnail;
