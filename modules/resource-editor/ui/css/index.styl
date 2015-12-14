@@ -43,13 +43,15 @@ div, ul, li, a, i, input, dt, dd
   align-items stretch
   height 100%
 
-.FileTree
-  border-right 1px solid #CCC
-  width 250px
-  flex-shrink 0
-  overflow auto
+  > .FileTree
+    border-right 1px solid #CCC
+    width 250px
+    flex-shrink 0
+    overflow auto
 
 .FileNode
+  cursor default
+
   .label
     padding 8px 5px 5px
     height 35px
@@ -70,9 +72,35 @@ div, ul, li, a, i, input, dt, dd
         margin-top 3px
 
 .FolderViewer
-  overflow auto
-  padding 5px
   background #F5F5F4
+  position relative
+
+  > .file-drop-target
+    position absolute
+    top 0
+    bottom 0
+    width 100%
+    display flex
+    flex-direction column
+
+  .toolbar
+    border-bottom 1px solid #E1E1E1
+    margin-bottom 3px
+
+    button
+      background #FFF
+      border none
+      border-right 1px solid #E1E1E1
+      padding 8px 8px
+      position relative
+      color #888
+
+      &:focus
+        z-index 2
+
+  .contents
+    padding 5px
+    overflow auto
 
 .FilePreview
   width 202px
@@ -84,6 +112,12 @@ div, ul, li, a, i, input, dt, dd
     padding 10px
     background white
     border 1px solid #E1E1E1
+    transition all 0.1s
+
+  &.selected .thumbnailWrapper
+    border-color #AAF
+    box-shadow inset 0px 0px 0px 2px #AAF
+    border-radius 3px
 
   .thumbnail
     width 180px
@@ -138,7 +172,8 @@ div, ul, li, a, i, input, dt, dd
   justify-content center
 
   .modal
-    display inline-block
+    display flex
+    flex-direction column
     background white
     border-radius 5px
     min-width 400px
@@ -158,19 +193,28 @@ div, ul, li, a, i, input, dt, dd
         width 45px
         padding-left 20px
 
+    .contents
+      flex 1
+      flex-shrink 0
+
+      .description
+        padding 15px 20px
+        background #EEE
+        border-bottom 1px solid #CCC
+
     .footer
-      text-align right
-      padding 5px
+      padding 10px 10px 10px 20px
+      position relative
+      z-index 2
+      background #EEE
+      border-radius 0px 0px 5px 5px
+      box-shadow 0px -1px 2px rgba(0, 0, 0, 0.4)
+
 
 .UploadModal
   overflow hidden
 
   .contents
-    .description
-      padding 15px 20px
-      background #EEE
-      border-bottom 1px solid #CCC
-
     .FileList
       overflow auto
       max-height 430px
@@ -202,9 +246,30 @@ div, ul, li, a, i, input, dt, dd
           visibility visible
 
 
-  .footer
-    position relative
-    z-index 2
-    background #AAF
-    border-radius 0px 0px 5px 5px
-    box-shadow 0px -1px 2px rgba(0, 0, 0, 0.4)
+.FolderModal
+  max-height 80%
+  max-width 90%
+  height 500px
+  width 500px
+
+  .contents
+    display flex
+    flex-direction column
+
+  .FileTree
+    overflow auto
+    flex 1
+
+  .FileNode.selected
+    > .label
+      background #AAF
+
+  .selection
+    display inline-block
+    margin-right 10px
+    background #FFF
+    border-radius 5px
+    border 1px solid #DDD
+    font-weight normal
+    padding 4px 6px
+    word-break break-word

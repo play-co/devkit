@@ -9,6 +9,7 @@ import FolderViewer from './components/FolderViewer';
 import PathCrumbs from './components/PathCrumbs';
 import FileInspector from './components/FileInspector';
 import UploadModal from './components/UploadModal';
+import Modal from './util/Modal';
 
 import { createHistory } from 'history';
 
@@ -57,7 +58,10 @@ export default class ResourceEditor extends React.Component {
   handleDrop = (folder, items) => {
     extractFilesFromItems(items)
       .then(files => {
-        UploadModal.open(this.state.fs, folder, files);
+        // remove files that start with a dot
+        files = files.filter(file => file.data && file.data.name && !/^\./.test(file.data.name));
+
+        Modal.open(<UploadModal {...{fs: this.state.fs, folder, files}} />);
       });
   }
 

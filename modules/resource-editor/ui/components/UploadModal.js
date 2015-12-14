@@ -1,9 +1,9 @@
 import path from 'path';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Promise from 'bluebird';
 import classnames from 'classnames';
 import FilePreview from './FilePreview';
+import Modal from '../util/Modal';
 
 class FileLineItem extends React.Component {
   constructor() {
@@ -63,7 +63,7 @@ export default class UploadModal extends React.Component {
 
   upload() {
     const fs = this.props.fs;
-    const folder = this.props.target;
+    const folder = this.props.folder;
     const files = this.props.files;
 
     return Promise.resolve(files)
@@ -78,21 +78,21 @@ export default class UploadModal extends React.Component {
 
   handleUpload = () => {
     this.upload()
-      .finally(() => UploadModal.close());
+      .finally(() => Modal.close());
   }
 
   handleClose = () => {
-    UploadModal.close();
+    Modal.close();
   }
 
   render() {
-    const folder = this.props.target;
+    const folder = this.props.folder;
     const files = this.props.files;
     const fs = this.props.fs;
 
     return <div className="UploadModal modal">
       <div className="title row">
-        <div className="flex">Upload Files</div>
+        <div className="flex">Upload Files to "{folder.path}"</div>
         <i className="fa fa-times" onClick={this.handleClose} />
       </div>
       <div className="contents">
@@ -107,21 +107,3 @@ export default class UploadModal extends React.Component {
     </div>;
   }
 }
-
-UploadModal.open = function (fs, target, files) {
-  if (!UploadModal.overlay) {
-    UploadModal.overlay = document.createElement('div');
-    UploadModal.overlay.className = 'modal-overlay';
-  }
-
-  // remove files that start with a dot
-  files = files.filter(file => file.data && file.data.name && !/^\./.test(file.data.name));
-
-  document.body.appendChild(UploadModal.overlay);
-  ReactDOM.render(<UploadModal {...{fs, target, files}} />, UploadModal.overlay);
-};
-
-UploadModal.close = function () {
-  ReactDOM.render(<div />, UploadModal.overlay);
-  document.body.removeChild(UploadModal.overlay);
-};
