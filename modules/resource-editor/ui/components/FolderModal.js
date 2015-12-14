@@ -41,9 +41,9 @@ export default class FolderModal extends React.Component {
       </div>
       <div className="footer row">
         <div className="flex">
-          selected: <span className="selection">resources/{this.state.folder && this.state.folder.path}</span>
+          destination: <span className="selection">resources/{this.state.folder && this.state.folder.path}</span>
         </div>
-        <button onClick={this.handleSelect}>select <i className="fa fa-arrow-right" /></button>
+        <button onClick={this.handleSelect}>{this.props.action || 'ok'} <i className="fa fa-arrow-right" /></button>
       </div>
     </div>;
   }

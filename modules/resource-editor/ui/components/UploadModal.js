@@ -102,7 +102,8 @@ export default class UploadModal extends React.Component {
         </div>
       </div>
       <div className="footer">
-        <button onClick={this.handleUpload}>upload <i className="fa fa-arrow-up" /></button>
+        <div className="flex" />
+        <button className="primary" onClick={this.handleUpload}>upload <i className="fa fa-arrow-up" /></button>
       </div>
     </div>;
   }

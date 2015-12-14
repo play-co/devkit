@@ -52,7 +52,7 @@ export class ConfirmModal extends React.Component {
     const files = this.props.files;
     const fs = this.props.fs;
 
-    return <div className="UploadModal modal">
+    return <div className="ConfirmModal modal">
       <div className="title row">
         <div className="flex">{this.props.title || ''}</div>
         <i className="fa fa-times" onClick={this.handleClose} />
@@ -66,6 +66,24 @@ export class ConfirmModal extends React.Component {
       <div className="footer">
         <div className="flex" />
         <button onClick={Modal.cancel}>{this.props.cancelText || 'cancel'}</button>
+        <button onClick={Modal.close}>{this.props.confirmText || 'ok'} <i className="fa fa-arrow-right" /></button>
+      </div>
+    </div>;
+  }
+}
+
+export class AlertModal extends React.Component {
+  render() {
+    return <div className="AlertModal modal">
+      <div className="title row">
+        <div className="flex">{this.props.title || ''}</div>
+        <i className="fa fa-times" onClick={this.handleClose} />
+      </div>
+      <div className="contents">
+        <div>{this.props.description || ''}</div>
+      </div>
+      <div className="footer">
+        <div className="flex" />
         <button onClick={Modal.close}>{this.props.confirmText || 'ok'} <i className="fa fa-arrow-right" /></button>
       </div>
     </div>;

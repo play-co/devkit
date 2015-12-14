@@ -5,7 +5,7 @@ import FilePreview from './FilePreview';
 import FileDrop from 'react-file-drop';
 
 import FolderModal from './FolderModal';
-import Modal, {ConfirmModal} from './Modal';
+import Modal, {AlertModal, ConfirmModal} from './Modal';
 
 export default class extends React.Component {
 
@@ -13,7 +13,8 @@ export default class extends React.Component {
     super();
 
     this.state = {
-      selected: {}
+      selected: {},
+      selectMultiple: false
     };
   }
 
@@ -23,8 +24,8 @@ export default class extends React.Component {
     }
   }
 
-  handleFile = (file) => {
-
+  handleFile = (file, event) => {
+    const hasMeta = event.ctrlKey || event.altKey || event.metaKey || event.shiftKey;
     const filePath = file.path;
     const selected = this.state.selected;
     const isSelected = !(filePath in selected);
@@ -34,11 +35,32 @@ export default class extends React.Component {
       delete selected[filePath];
     }
 
+    if (!this.state.selectMultiple && !hasMeta) {
+      Object.keys(selected).forEach(selectedPath => {
+        if (filePath !== selectedPath) {
+          delete selected[selectedPath];
+        }
+      });
+    }
+
     this.setState({selected});
 
     if (isSelected && this.props.onFile) {
       this.props.onFile(file);
     }
+  }
+
+  handleMultiSelect = () => {
+    const selectMultiple = !this.state.selectMultiple;
+    const newState = {selectMultiple};
+    if (!selectMultiple) {
+      newState.selected = {};
+      let lastKey = null;
+      for (let key in this.state.selected) { lastKey = key; }
+      newState.selected[lastKey] = true;
+    }
+
+    this.setState(newState);
   }
 
   handleSelectAll = () => {
@@ -69,8 +91,13 @@ export default class extends React.Component {
           files={files}
           fs={this.props.fs}
         />)
-      .then(() => filePaths.map(filePath => fs.unlink(filePath)),
-            () => console.log('delete cancelled'));
+      .then(() => {
+        return Promise.all(filePaths.map(filePath => fs.unlink(filePath)))
+          .catch(e => {
+            Modal.open(<AlertModal contents={e} />);
+          })
+          .then(() => this.refresh());
+      }, () => console.log('delete cancelled'));
   }
 
   handleCopy = () => {
@@ -80,7 +107,8 @@ export default class extends React.Component {
     Modal.open(<FolderModal
           fs={this.props.fs}
           title="Copy Files..."
-          description="Select a destination folder:" />)
+          description="Select a destination folder:"
+          action="Copy Files" />)
       .then(folder => filePaths.map(filePath => {
         const dest = path.join(folder.path, path.basename(filePath));
         return fs.copy(filePath, dest);
@@ -96,7 +124,8 @@ export default class extends React.Component {
     Modal.open(<FolderModal
          fs={this.props.fs}
          title="Move Files..."
-         description="Select a destination folder:" />)
+         description="Select a destination folder:"
+         action="Move Files" />)
       .then(folder => filePaths.map(filePath => {
         const dest = path.join(folder.path, path.basename(filePath));
         return this.props.fs.move(filePath, dest);
@@ -114,6 +143,11 @@ export default class extends React.Component {
               className={classnames('FolderViewer', this.props.className)}
               onDrop={this.handleDrop}>
       <div className="toolbar">
+        <button
+          className={classnames('selectMultiple', this.state.selectMultiple && 'enabled')}
+          onClick={this.handleMultiSelect}>
+            Select Multiple
+        </button>
         <button onClick={this.handleSelectAll}>Select All</button>
         <button onClick={this.handleUnselectAll}>Unselect All</button>
         {hasSelection && <span>

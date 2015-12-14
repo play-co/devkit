@@ -1,9 +1,26 @@
 import path from 'path';
 import React from 'react';
 import classnames from 'classnames';
+import Promise from 'bluebird';
 
 import {imageLoader} from '../util/ImageLoader';
-import IMAGE_TYPES from '../util/ImageTypes';
+import {IMAGE_TYPES, AUDIO_TYPES} from '../util/FileTypes';
+
+const ICONS = {
+  '.zip': 'fa-file-archive-o',
+  '.tar': 'fa-file-archive-o',
+  '.pdf': 'fa-file-pdf-o',
+  '.mp4': 'fa-film',
+  '.mov': 'fa-film',
+  '.js': 'fa-file-code-o',
+  '.json': 'fa-file-text-o',
+  '.txt': 'fa-file-text-o',
+  '.otf': 'fa-font',
+  '.ttf': 'fa-font',
+  '.woff': 'fa-font',
+  '.woff2': 'fa-font',
+  '.eot': 'fa-font'
+};
 
 export default class FilePreview extends React.Component {
   constructor() {
@@ -20,27 +37,81 @@ export default class FilePreview extends React.Component {
     this.updateProps(props);
   }
 
+  getCwd() {
+    let cwd = this.props.cwd;
+    if (!cwd && this.props.fs) {
+      cwd = path.join(this.props.fs.MOUNT_POINT, this.props.fs.CWD);
+    }
+    return cwd;
+  }
+
   updateProps(props) {
-    let file = props.file;
+    const file = props.file;
     if (file.path !== this._path) {
       this._path = file.path;
 
-      let cwd = this.props.cwd;
-      if (!cwd && this.props.fs) {
-        cwd = path.join(this.props.fs.MOUNT_POINT, this.props.fs.CWD);
+      const extname = path.extname(file.path);
+      const isImage = extname in IMAGE_TYPES;
+
+      this.setState({
+        canPlay: extname in AUDIO_TYPES,
+        icon: !isImage && ICONS[extname]
+      });
+
+      if (isImage) {
+        this._getSource(file)
+          .then(src => this.setState({src}));
       }
+    }
+  }
 
-      let isImage = path.extname(file.path) in IMAGE_TYPES;
-      let src = isImage && !file.data
-        ? path.join(cwd, file.path)
-        : '';
+  _getSource(file, force) {
+    const filePath = file.path;
+    const extname = path.extname(filePath);
+    const isImage = extname in IMAGE_TYPES;
 
-      this.setState({src});
+    const isUpload = file.data && file.data instanceof File;
+    if (isUpload && (isImage || force)) {
+      return this._readSource(file);
+    }
 
-      if (isImage && file.data && file.data instanceof File) {
-        var reader = new FileReader();
-        reader.onload = res => this.setState({src: res.target.result});
-        reader.readAsDataURL(file.data);
+    return Promise.resolve(filePath
+        ? path.join(this.getCwd(), filePath)
+        : '');
+  }
+
+  _readSource(file) {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onload = res => resolve(res.target.result);
+      reader.onerror = err => reject(err);
+      reader.readAsDataURL(file.data);
+    });
+  }
+
+  handleIconClick = (event) => {
+    const filePath = this.props.file.path;
+    const extname = path.extname(filePath);
+    if (extname in AUDIO_TYPES) {
+      event.stopPropagation();
+
+      if (this._audio) {
+        if (this._audio.paused) {
+          this._audio.play();
+          this.setState({playing: true});
+        } else {
+          this._audio.pause();
+          this.setState({playing: false});
+        }
+      } else {
+        this.setState({playing: true});
+        this._getSource(this.props.file, true)
+          .then(src => {
+            this._audio = new Audio();
+            this._audio.src = src;
+            this._audio.addEventListener('ended', _event => this.setState({playing: false}));
+            this._audio.play();
+          });
       }
     }
   }
@@ -72,7 +143,19 @@ export default class FilePreview extends React.Component {
     return <div className={classnames('FilePreview', this.props.className)}
                 onClick={this.handleClick}>
         <div className="thumbnailWrapper">
-          <div ref="thumbnail" className="thumbnail" style={{backgroundImage: 'url("' + src.replace(/"/g, '\\"') + '")'}} />
+          <div ref="thumbnail" className="thumbnail" style={{backgroundImage: 'url("' + src.replace(/"/g, '\\"') + '")'}} >
+
+          {!src && (this.state.icon || this.state.canPlay) &&
+            <i className={classnames('fa', (this.state.playing
+                  ? 'fa-pause-circle'
+                  : this.state.canPlay
+                    ? 'fa-play-circle'
+                    : this.state.icon),
+                this.state.canPlay && 'canPlay')}
+              onClick={this.handleIconClick}
+            />}
+
+          </div>
         </div>
         <label>{file.name}</label>
       </div>;
