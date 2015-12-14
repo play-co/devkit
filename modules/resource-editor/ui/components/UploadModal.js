@@ -1,5 +1,6 @@
 import path from 'path';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Promise from 'bluebird';
 import classnames from 'classnames';
 import FilePreview from './FilePreview';
@@ -117,10 +118,10 @@ UploadModal.open = function (fs, target, files) {
   files = files.filter(file => file.data && file.data.name && !/^\./.test(file.data.name));
 
   document.body.appendChild(UploadModal.overlay);
-  React.render(<UploadModal {...{fs, target, files}} />, UploadModal.overlay);
+  ReactDOM.render(<UploadModal {...{fs, target, files}} />, UploadModal.overlay);
 };
 
 UploadModal.close = function () {
-  React.render(<div />, UploadModal.overlay);
+  ReactDOM.render(<div />, UploadModal.overlay);
   document.body.removeChild(UploadModal.overlay);
 };

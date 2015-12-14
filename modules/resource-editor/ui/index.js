@@ -95,6 +95,7 @@ export default class ResourceEditor extends React.Component {
                   folder={this.state.folder}
                   files={this.state.files}
                   onFile={this.handleFile}
+                  onDrop={this.handleDrop}
                 />
               <FileInspector
                   fs={this.state.fs}
