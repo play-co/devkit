@@ -24,6 +24,7 @@
   "dependencies": {
     "bluebird": "^3.0.6",
     "classnames": "^2.2.1",
+    "filesize": "^3.1.4",
     "history": "=1.13",
     "http-fs": "git+https://github.com/weebygames/http-fs.git",
     "html5-upload-reader": "git+https://github.com/weebygames/html5-upload-reader.git#master",

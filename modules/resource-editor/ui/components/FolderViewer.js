@@ -159,7 +159,7 @@ export default class extends React.Component {
             Select Multiple
         </button>
         <button onClick={this.handleSelectAll}>Select All</button>
-        <button onClick={this.handleUnselectAll}>Unselect All</button>
+        <button onClick={this.handleUnselectAll}>Select None</button>
       </div>
 
       <div className="toolbar toolbar-selected-items">

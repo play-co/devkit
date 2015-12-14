@@ -139,6 +139,8 @@ export default class FilePreview extends React.Component {
         let isContain = width > thumbnail.offsetWidth
                      || height > thumbnail.offsetHeight;
         thumbnail.style.backgroundSize = isContain ? 'contain' : 'initial';
+
+        this.props.onImageSize && this.props.onImageSize(width, height);
       }, () => {
         console.error(`couldn't load ${this.props.file.path}`);
       });

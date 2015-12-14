@@ -1,32 +1,41 @@
 import path from 'path';
 import React from 'react';
+import filesize from 'filesize';
 
+import mime from 'mime';
 import FilePreview from './FilePreview';
+
+const FILE_SIZE_OPTS = {
+  spacer: ''
+};
 
 export default class FileInspector extends React.Component {
   constructor() {
     super();
-
-    this.actions = [
-      {name: 'delete'},
-      {name: 'move'},
-      {name: 'copy'}
-    ];
-
     this.state = {};
   }
 
+  handleImageSize = (width, height) => {
+    this.setState({dimensions: width + 'x' + height});
+  }
+
   render() {
-    let file = this.props.file;
+    const file = this.props.file;
+    if (!file) { return <div className="FileInspector" />; }
+
+    const mimeType = mime.lookup(file.path);
 
     return <div className="FileInspector">
-      {file && <div>
-        <FilePreview cwd={path.join(this.props.fs.MOUNT_POINT, this.props.fs.CWD)} file={file} />
-        <div className="filePath">{file.path}</div>
-        {this.actions.map(action => <div className="action" key={action.name}>
-          {action.name}
-        </div>)}
-      </div>}
+      <FilePreview
+        fs={this.props.fs}
+        file={file}
+        onImageSize={this.handleImageSize} />
+      <div className="metadata">
+        <div className="filePath">directory: {path.dirname(file.path)}</div>
+        <div className="mimeType">mime type: {mimeType}</div>
+        {('size' in file) && <div className="fileSize">file size: {filesize(file.size, FILE_SIZE_OPTS).toUpperCase()}</div>}
+        {this.state.dimensions && <div className="dimensions">dimensions: {this.state.dimensions}</div>}
+      </div>
     </div>;
   }
 }
