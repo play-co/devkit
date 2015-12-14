@@ -13,6 +13,7 @@ export default class FilePreview extends React.Component {
 
   componentDidMount() {
     this.updateProps(this.props);
+    if (this.state.src) { this.refresh(); }
   }
 
   componentWillReceiveProps(props) {
@@ -53,6 +54,8 @@ export default class FilePreview extends React.Component {
     imageLoader.load(src)
       .then(({width, height}) => {
         let thumbnail = this.refs.thumbnail;
+        if (!thumbnail) { return; }
+
         let isContain = width > thumbnail.offsetWidth
                      || height > thumbnail.offsetHeight;
         thumbnail.style.backgroundSize = isContain ? 'contain' : 'initial';

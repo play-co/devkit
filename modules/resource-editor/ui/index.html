@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script>
+  // use a base tag to solve loading relative URLs with html5 history
+  var match = location.pathname.match(/^(.*?\/extension\/ui\/)(.*?)$/);
+  var base = match[1];
+  if (base) {
+    document.write('<base href="' + base + '">');
+  }
+  </script>
   <link rel="stylesheet" href="/static/fa/font-awesome.css">
   <link rel="stylesheet" href="index.css">
 

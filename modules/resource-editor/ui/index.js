@@ -10,18 +10,38 @@ import PathCrumbs from './components/PathCrumbs';
 import FileInspector from './components/FileInspector';
 import UploadModal from './components/UploadModal';
 
+import { createHistory } from 'history';
+
 export default class ResourceEditor extends React.Component {
   constructor() {
     super();
 
     this.state = {};
 
-    remoteFS('../../../../http-fs/', {cwd: 'resources'})
+    this._onFileSystem = remoteFS('../../../../http-fs/', {cwd: 'resources'})
       .then(fs => this.setState({fs}));
+
+    var match = location.pathname.match(/^(.*?\/extension\/ui\/)(.*?)$/);
+    this.basePathname = match[1];
+    this.initialPath = match[2];
+
+    this.history = createHistory();
+    this.history.listen(location => {
+      console.log(location.pathname);
+    });
   }
 
-  handleFolder = (folder) => {
-    this.setState({folder});
+  componentDidMount() {
+    if (this.initialPath) {
+      this._onFileSystem.then(() => {
+        this.refs.fileTree.selectPath(this.initialPath);
+      });
+    }
+  }
+
+  handleFolder = (folder, files) => {
+    this.setState({folder, files});
+    this.updatePath(folder.path);
   }
 
   handleFile = (file) => {
@@ -29,7 +49,7 @@ export default class ResourceEditor extends React.Component {
   }
 
   handleFilesLoaded = (folder, isSelected, subfiles) => {
-    if (folder.path === this.state.folder.path) {
+    if (this.state.folder && folder.path === this.state.folder.path) {
       this.setState({files: subfiles});
     }
   }
@@ -41,9 +61,23 @@ export default class ResourceEditor extends React.Component {
       });
   }
 
+  handleNavigate = (folderPath) => {
+    const fileTree = this.refs.fileTree;
+    if (!fileTree) { return; }
+
+    fileTree.selectPath(folderPath);
+  }
+
+  updatePath(folderPath) {
+    this.history.push({
+      pathname: path.join(this.basePathname, folderPath)
+    });
+  }
+
   render() {
     return <div className="MainContainer row">
         <FileTree
+            ref="fileTree"
             fs={this.state.fs}
             onlyFolders={true}
             name="resources"
@@ -52,7 +86,7 @@ export default class ResourceEditor extends React.Component {
             onFilesLoaded={this.handleFilesLoaded}
           />
         <div className="column">
-          <PathCrumbs folder={this.state.folder} />
+          <PathCrumbs folder={this.state.folder} onNavigate={this.handleNavigate} />
           <div className="full-height flex">
             <div className="row">
               <FolderViewer
