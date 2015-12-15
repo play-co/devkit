@@ -28,7 +28,7 @@ RunTargetClient.prototype.setSocket = function(socket) {
     // Add the socket listeners
     this.on('clientInfo', this.onClientInfo.bind(this));
     this.on('updateStatus', this.updateStatus.bind(this));
-    this.status = 'available';
+    this.status = 'occupied';
   } else {
     this.status = 'unavailable';
   }
