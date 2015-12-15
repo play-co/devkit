@@ -84,7 +84,7 @@ export default class RunTargetInfo extends React.Component {
     if (this.state.runTargetInfo) {
       let devtoolsButton;
       if (this.state.devtoolsLink) {
-        devtoolsButton = <a className="devtools-link btn" href={this.state.devtoolsLink}>Open dev tools</a>;
+        devtoolsButton = <a className="devtools-link btn" href={this.state.devtoolsLink} target="_blank">Open dev tools</a>;
       } else {
         devtoolsButton = <a className="devtools-link btn" disabled="true">Open dev tools</a>
       }
