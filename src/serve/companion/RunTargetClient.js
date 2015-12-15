@@ -144,6 +144,22 @@ RunTargetClient.prototype.onClientInfo = function(message) {
   this._server.updateRunTarget(this, !existingClient);
 };
 
+/**
+ * @param  {Object<String, ?>}  newInfo - merged in to this run target
+ */
+RunTargetClient.prototype.updateClientInfo = function(newInfo) {
+  this._logger.debug('updateClientInfo', newInfo);
+
+  for (var key in newInfo) {
+    var val = newInfo[key];
+    this._logger.debug('updateClientInfo: setting ' + key + ' to ' + val);
+    this[key] = val;
+  }
+
+  this._server.saveRunTarget(this);
+  this._server.updateRunTarget(this, false);
+};
+
 RunTargetClient.prototype._sendPing = function() {
   this._logger.debug('Sending ping');
   this.socket.send('ping');
