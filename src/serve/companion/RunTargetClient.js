@@ -119,6 +119,12 @@ RunTargetClient.prototype.onClientInfo = function(message) {
     this.name = message.name;
   }
 
+  if(message.deviceInfo.platform) {
+    this.platform = message.deviceInfo.platform;
+  } else {
+    this.platform = "unknown";
+  }
+
   if (message.deviceInfo.width && message.deviceInfo.height) {
     this.width = message.deviceInfo.width;
     this.height = message.deviceInfo.height;
@@ -180,7 +186,7 @@ RunTargetClient.prototype.toInfoObject = function() {
     deviceInfo: {
       width: this.width,
       height: this.height,
-      platform: 'ios' //TODO: Send Platform from client
+      platform: this.platform
     }
   };
 };
