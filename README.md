@@ -43,7 +43,7 @@ global `node_modules` folder.
 
 
 ### Linux
-Follow the instructions on [the project wiki](https://github.com/gameclosure/devkit2/wiki/Install-Instructions---Linux)
+Follow the instructions on [the project wiki](https://github.com/gameclosure/devkit/wiki/Install-Instructions---Linux)
 
 ### Windows
 Follow the instructions on [the project wiki](https://github.com/gameclosure/devkit/wiki/Install-Instructions---Windows)
