@@ -57,7 +57,9 @@ export default class extends React.Component {
       newState.selected = {};
       let lastKey = null;
       for (let key in this.state.selected) { lastKey = key; }
-      newState.selected[lastKey] = true;
+      if (lastKey) {
+        newState.selected[lastKey] = true;
+      }
     }
 
     this.setState(newState);
