@@ -1,7 +1,12 @@
 #!/bin/bash
 set -e
-# Must be invoked by npm install
-DEVKIT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+
+# Check to see if this is running via npm
+if [ -n "$npm_package_version" ]; then
+  DEVKIT_DIR="$PWD"
+else
+  DEVKIT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+fi
 
 
 echo "ensuring java is installed"
@@ -11,7 +16,7 @@ command -v java >/dev/null 2>&1 || { echo >&2 "java is required. please install 
 echo "building builtin modules"
 PLUGIN_BUILDER="$DEVKIT_DIR/node_modules/devkit-plugin-builder/bin/pluginBuilder.js"
 
-function build_module {
+build_module() {
   MODULE=$1
   cd $MODULE
   npm install
