@@ -139,7 +139,15 @@ export default class extends React.Component {
 
   render() {
     const files = this.props.files;
-    const hasSelection = Object.keys(this.state.selected).length > 0;
+    const selectedCount = Object.keys(this.state.selected).length;
+    const hasSelection = selectedCount > 0;
+    let selectedText;
+    if (hasSelection) {
+      selectedText = selectedCount + ' item';
+      if (selectedCount > 1) {
+        selectedText += 's';
+      }
+    }
     return <FileDrop
               targetAlwaysVisible={true}
               className={classnames('FolderViewer', this.props.className)}
@@ -152,7 +160,11 @@ export default class extends React.Component {
         </button>
         <button onClick={this.handleSelectAll}>Select All</button>
         <button onClick={this.handleUnselectAll}>Unselect All</button>
+      </div>
+
+      <div className="toolbar toolbar-selected-items">
         {hasSelection && <span>
+          <div>{selectedText}</div>
           <button onClick={this.handleDelete}>
             <i className="fa fa-times" />
             Delete...
@@ -170,6 +182,7 @@ export default class extends React.Component {
           </button>
         </span>}
       </div>
+
       <div className="full-height flex">
         <div className="contents">
           {files && files.filter(file => !file.isDirectory).map(file => <FilePreview
