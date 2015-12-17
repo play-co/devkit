@@ -28,7 +28,7 @@ RunTargetClient.prototype.setSocket = function(socket) {
     // Add the socket listeners
     this.on('clientInfo', this.onClientInfo.bind(this));
     this.on('updateStatus', this.updateStatus.bind(this));
-    this.status = 'available';
+    this.status = 'occupied';
   } else {
     this.status = 'unavailable';
   }
@@ -119,6 +119,21 @@ RunTargetClient.prototype.onClientInfo = function(message) {
     this.name = message.name;
   }
 
+  if(message.deviceInfo.platform) {
+    this.platform = message.deviceInfo.platform;
+  } else {
+    this.platform = "unknown";
+  }
+
+  if (message.deviceInfo.width && message.deviceInfo.height) {
+    this.width = message.deviceInfo.width;
+    this.height = message.deviceInfo.height;
+  } else {
+    this.width = 0;
+    this.height = 0;
+  }
+
+
   if (!this._pingInterval) {
     // Send pings server side because its hard to do it on device reliably
     this._pingInterval = timers.setInterval(this._sendPing.bind(this), 45 * 1000);
@@ -127,6 +142,22 @@ RunTargetClient.prototype.onClientInfo = function(message) {
   this._server.addRunTargetClient(this);
   this._server.saveRunTarget(this);
   this._server.updateRunTarget(this, !existingClient);
+};
+
+/**
+ * @param  {Object<String, ?>}  newInfo - merged in to this run target
+ */
+RunTargetClient.prototype.updateClientInfo = function(newInfo) {
+  this._logger.debug('updateClientInfo', newInfo);
+
+  for (var key in newInfo) {
+    var val = newInfo[key];
+    this._logger.debug('updateClientInfo: setting ' + key + ' to ' + val);
+    this[key] = val;
+  }
+
+  this._server.saveRunTarget(this);
+  this._server.updateRunTarget(this, false);
 };
 
 RunTargetClient.prototype._sendPing = function() {
@@ -169,9 +200,9 @@ RunTargetClient.prototype.toInfoObject = function() {
     name: this.name,
     status: this.status,
     deviceInfo: {
-      width: 0,
-      height: 0,
-      platform: 'ios'
+      width: this.width,
+      height: this.height,
+      platform: this.platform
     }
   };
 };

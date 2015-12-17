@@ -38,7 +38,7 @@ var globs = {
 
 // default settings
 var sourcemaps = false;
-var compress = true;
+var compress = false;
 
 gulp.task('default', plugins.sequence('setup-dev', 'build', 'watch'));
 

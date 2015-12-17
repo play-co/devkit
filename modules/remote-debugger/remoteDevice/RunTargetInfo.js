@@ -3,6 +3,8 @@ import React from 'react';
 import { getQuery } from './urlParams';
 import autobind from '../autobind';
 
+let MAX_NAME_LENGTH = 32;
+
 export default class RunTargetInfo extends React.Component {
   constructor(props) {
     super(props);
@@ -22,7 +24,7 @@ export default class RunTargetInfo extends React.Component {
 
     GC.RemoteAPI.on('updateRunTarget', (data) => {
       if (data.runTargetInfo.UUID === this.props.runTarget) {
-        this.setState({ runTargetInfo: data.runTargetInfo });
+        this._setRunTargetInfo(data.runTargetInfo);
       }
     });
   }
@@ -55,6 +57,21 @@ export default class RunTargetInfo extends React.Component {
     return '/images/' + 'iphone6.png';
   }
 
+  _handleNameChange(event) {
+    var runTargetName = event.target.value;
+
+    GC.RemoteAPI.send('updateRunTargetInfo', {
+      UUID: this.state.runTargetInfo.UUID,
+      info: {
+        name: runTargetName
+      }
+    });
+  }
+
+  _setRunTargetInfo(runTargetInfo) {
+    this.setState({ runTargetInfo: runTargetInfo });
+  }
+
   render() {
     // Update the local run target info
     if (this.props.runTarget && !this.state.errorMessage) {
@@ -74,7 +91,7 @@ export default class RunTargetInfo extends React.Component {
             this.setState({ errorMessage: data.message });
             return;
           }
-          this.setState({ runTargetInfo: data.runTargetInfo });
+          this._setRunTargetInfo(data.runTargetInfo);
         });
       }
     }
@@ -84,14 +101,14 @@ export default class RunTargetInfo extends React.Component {
     if (this.state.runTargetInfo) {
       let devtoolsButton;
       if (this.state.devtoolsLink) {
-        devtoolsButton = <a className="devtools-link btn" href={this.state.devtoolsLink}>Open dev tools</a>;
+        devtoolsButton = <a className="devtools-link btn" href={this.state.devtoolsLink} target="_blank">Open dev tools</a>;
       } else {
         devtoolsButton = <a className="devtools-link btn" disabled="true">Open dev tools</a>
       }
 
       content = (
         <div className="content">
-          <p className="name">{this.state.runTargetInfo.name}</p>
+          <input type="text" maxLength={MAX_NAME_LENGTH} className="name" value={this.state.runTargetInfo.name} onChange={this.bound._handleNameChange} />
           <p className="uuid">{this.state.runTargetInfo.UUID}</p>
           <p className="status">Status: {this.state.runTargetInfo.status}</p>
 

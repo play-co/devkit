@@ -6,7 +6,7 @@ export default class Instructions extends React.Component {
     super(props);
 
     this.state = {
-      appBuildLink: 'https://builds.js.io',
+      appBuildLink: 'https://builds.js.io/#/k6rz/5683555321511936',
       qrSize: 256
     };
   }

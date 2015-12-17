@@ -19,6 +19,7 @@ UIClient.prototype.setSocket = function(socket) {
   this.on('run',                  this.onRun.bind(this));
   this.on('stop',                 this.onStop.bind(this));
   this.on('requestRunTargetList', this.onRequestRunTargetList.bind(this));
+  this.on('updateRunTargetInfo',  this.onUpdateRunTargetInfo.bind(this));
 
   this.send('browserData', this._server.browserData);
 };
@@ -32,6 +33,33 @@ UIClient.prototype.onInitBrowser = function(data, respond) {
   respond({
     secret: this._server.secret
   });
+};
+
+/**
+ * @param  {Object}  message
+ * @param  {String}  message.UUID
+ * @param  {Object}  message.info
+ */
+UIClient.prototype.onUpdateRunTargetInfo = function(message) {
+  this._logger.debug('onUpdateRunTargetInfo', message);
+
+  if (!message.UUID) {
+    this._criticalError('missing_UUID', 'updateClientInfo: requires message.UUID');
+    return;
+  }
+
+  if (!message.info || typeof message.info !== 'object') {
+    this._criticalError('missing_info', 'updateClientInfo: requires message.info be an object');
+    return;
+  }
+
+  var runTarget = this._server.getRunTarget(message.UUID);
+  if (!runTarget) {
+    this._error('invalid_runTargetUUID', 'No run target for: ' + message.UUID);
+    return;
+  }
+
+  runTarget.updateClientInfo(message.info);
 };
 
 /**

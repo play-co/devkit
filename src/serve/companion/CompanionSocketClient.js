@@ -21,7 +21,7 @@ CompanionSocketClient.prototype.setSocket = function(socket) {
 
   if (this.socket) {
     this.socket.on('message', function message(dataStr) {
-      if (dataStr === 'pong') {
+      if (dataStr == 'pong') {
         this._logger.debug('Got pong');
         return;
       }
@@ -30,7 +30,7 @@ CompanionSocketClient.prototype.setSocket = function(socket) {
         data = JSON.parse(dataStr);
       }
       catch (err) {
-        this._error('bad_json', 'client must send messages as json');
+        this._error('bad_json', 'client must send messages as json ->' + dataStr + '<-');
         return;
       }
       if (!data.message) {
