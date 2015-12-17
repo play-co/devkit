@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import FilePreview from './FilePreview';
 import FileDrop from 'react-file-drop';
 
+import Menu, {MenuButton} from './Menu';
 import FolderModal from './FolderModal';
 import Modal, {AlertModal, ConfirmModal} from './Modal';
 
@@ -18,9 +19,10 @@ export default class extends React.Component {
     };
   }
 
-  componentDidReceiveProps(props) {
+  componentWillReceiveProps(props) {
     if (props.folder !== this._folder) {
       this._folder = props.folder;
+      this.setState({selected: {}});
     }
   }
 
@@ -50,7 +52,9 @@ export default class extends React.Component {
     }
   }
 
-  handleMultiSelect = () => {
+  handleMultiSelect = (event) => {
+    event.preventDefault();
+
     const selectMultiple = !this.state.selectMultiple;
     const newState = {selectMultiple};
     if (!selectMultiple) {
@@ -148,23 +152,27 @@ export default class extends React.Component {
         selectedText += 's';
       }
     }
+
     return <FileDrop
               targetAlwaysVisible={true}
               className={classnames('FolderViewer', this.props.className)}
               onDrop={this.handleDrop}>
       <div className="toolbar">
-        <button
-          className={classnames('selectMultiple', this.state.selectMultiple && 'enabled')}
-          onClick={this.handleMultiSelect}>
-            Select Multiple
-        </button>
-        <button onClick={this.handleSelectAll}>Select All</button>
-        <button onClick={this.handleUnselectAll}>Select None</button>
-      </div>
+        <Menu>
+          <MenuButton>Select...</MenuButton>
+          <button onClick={this.handleSelectAll}>Select All</button>
+          <button onClick={this.handleUnselectAll}>Select None</button>
+          <hr />
+          <button
+            className={classnames('selectMultiple', this.state.selectMultiple && 'enabled')}
+            onClick={this.handleMultiSelect}>
+              {this.state.selectMultiple
+                  ? 'Multiple Selection'
+                  : 'Multiple Selection'}
+          </button>
+        </Menu>
 
-      <div className="toolbar toolbar-selected-items">
         {hasSelection && <span>
-          <div>{selectedText}</div>
           <button onClick={this.handleDelete}>
             <i className="fa fa-times" />
             Delete...

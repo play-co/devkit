@@ -8,14 +8,14 @@ export let overlay = null;
 let onClose;
 
 let Modal = {
-  open: function (Modal) {
+  open: function (modal) {
     if (!overlay) {
       overlay = document.createElement('div');
       overlay.className = 'modal-overlay';
     }
 
     document.body.appendChild(overlay);
-    ReactDOM.render(Modal, overlay);
+    ReactDOM.render(modal, overlay);
     return new Promise((resolve, reject) => {
       onClose = {resolve, reject};
     });

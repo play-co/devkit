@@ -16,6 +16,7 @@ body, div, span, label
 
 div, ul, li, a, i, input, dt, dd
   box-sizing border-box
+  cursor default
 
 button
   border-radius 4px
@@ -112,16 +113,22 @@ button.primary
     min-height 34px
     width 100%
 
-    button, div
+    .Menu, button
+      display inline-block
       background #FFF
       border-radius 0
-      padding 8px 14px
+      border none
+      border-right 1px solid #E1E1E1
+      padding 0px 14px
       position relative
       color #888
       margin-bottom 1px
-      display inline-block
-      border none
-      border-right 1px solid #E1E1E1
+      outline none
+      line-height 33px
+      font-weight 200
+
+      &:active
+        background #EEE
 
     button
       .fa
@@ -136,10 +143,6 @@ button.primary
           font-size 70%
           top 0.4em
           left 0.3em
-
-      &.selectMultiple.enabled
-        background #AAF
-        color #FFF
 
       &:focus
         z-index 2
@@ -224,6 +227,58 @@ button.primary
 
   .metadata
     padding 8px
+
+.menu-overlay
+  position fixed
+  top 0
+  left 0
+  width 100%
+  height 0
+
+  .MenuDropdown
+    position absolute
+    background #FFF
+    border 1px solid #E1E1E1
+    box-shadow 0px 1px 1px rgba(0, 0, 0, 0.2)
+    display flex
+    flex-direction column
+    align-items stretch
+    border-radius 0px 0px 3px 3px
+    overflow hidden
+
+    > *
+      flex-shrink 0
+      text-align left
+      border-radius 0
+      outline none
+      color #888
+
+      &:hover
+        background #EEE
+
+    hr
+      height 1px
+      width 100%
+      overflow hidden
+      border none
+      background #E1E1E1
+      display block
+
+    .selectMultiple
+      &:before
+        content '\f096'
+        width 1em
+        display inline-block
+        font normal normal normal 14px/1 FontAwesome
+        color #AAA
+        margin-right 10px
+
+      &.enabled
+        color #444
+
+        &:before
+          content '\f046'
+
 
 .modal-overlay
   position fixed
