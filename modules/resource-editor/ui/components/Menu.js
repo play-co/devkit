@@ -72,6 +72,8 @@ export class MenuButton extends React.Component {
 }
 
 let currentMenu = null;
+const EVENT_CAPTURES = ['mousedown', 'click', 'touchstart', 'touchend'];
+const CLOSE_EVENTS = {'click': true, 'touchend': true};
 
 Menu.open = function (component, menu) {
   if (!overlay) {
@@ -101,10 +103,9 @@ Menu.open = function (component, menu) {
   dropdown.style.top = rect.bottom + 'px';
   dropdown.style.left = rect.left + 'px';
 
-  window.addEventListener('mousedown', onMouseDown, true);
-  window.addEventListener('touchstart', onMouseDown, true);
+  EVENT_CAPTURES.forEach(type => window.addEventListener(type, onEvent, true));
 
-  function onMouseDown(event) {
+  function onEvent(event) {
     let el = event.target;
     while (el.parentNode) {
       if (el === overlay || el === button) { return; }
@@ -113,7 +114,11 @@ Menu.open = function (component, menu) {
 
     event.stopPropagation();
     event.preventDefault();
-    Menu.close();
+
+    if (event.type in CLOSE_EVENTS) {
+      Menu.close();
+    }
+
     return false;
   }
 
@@ -121,8 +126,7 @@ Menu.open = function (component, menu) {
     currentMenu = null;
     ReactDOM.unmountComponentAtNode(overlay);
     document.body.removeChild(overlay);
-    window.removeEventListener('mousedown', onMouseDown, true);
-    window.removeEventListener('touchstart', onMouseDown, true);
+    EVENT_CAPTURES.forEach(type => window.removeEventListener(type, onEvent, true));
   }
 
   return new Promise((resolve, reject) => {
