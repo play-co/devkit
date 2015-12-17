@@ -40,7 +40,7 @@ module.exports = Class(Widget, function () {
     if (isRotated) {
       width = opts.height;
       height = opts.width;
-      offsetX = opts.height - opts.screenSize.width / scale - opts.offsetY;
+      offsetX = opts.height - opts.screenSize.width * 2 - opts.offsetY;
       offsetY = opts.offsetX;
     }
 
