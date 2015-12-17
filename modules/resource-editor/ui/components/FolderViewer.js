@@ -26,6 +26,10 @@ export default class extends React.Component {
     }
   }
 
+  refresh = () => {
+    // TODO!
+  };
+
   handleFile = (file, event) => {
     const hasMeta = event.ctrlKey || event.altKey || event.metaKey || event.shiftKey;
     const filePath = file.path;
@@ -92,6 +96,7 @@ export default class extends React.Component {
     const files = this.props.files.filter(file => file.path in this.state.selected);
 
     Modal.open(<ConfirmModal
+          className="DeleteFilesModal"
           title="Delete Files..."
           description="Are you sure you want to delete these files?"
           files={files}
@@ -187,6 +192,10 @@ export default class extends React.Component {
               <i className="fa fa-arrow-right"></i>
             </span>
             Move...
+          </button>
+          <button onClick={this.handleRename}>
+            <i className="fa fa-copy" />
+            Rename...
           </button>
         </span>}
       </div>

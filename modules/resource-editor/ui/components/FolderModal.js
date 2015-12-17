@@ -9,7 +9,7 @@ export default class FolderModal extends React.Component {
   }
 
   handleSelect = (_event) => {
-    Modal.close(this.state.folder);
+    Modal.submit(this.state.folder);
   };
 
   handleFolder = (folder) => {

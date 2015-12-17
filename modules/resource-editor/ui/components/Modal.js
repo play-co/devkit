@@ -20,7 +20,7 @@ let Modal = {
       onClose = {resolve, reject};
     });
   },
-  close: function (res) {
+  submit: function (res) {
     _close();
     onClose && onClose.resolve(res);
   },
@@ -52,10 +52,10 @@ export class ConfirmModal extends React.Component {
     const files = this.props.files;
     const fs = this.props.fs;
 
-    return <div className="ConfirmModal modal">
+    return <div className={classnames('ConfirmModal', 'modal', this.props.className)}>
       <div className="title row">
         <div className="flex">{this.props.title || ''}</div>
-        <i className="fa fa-times" onClick={this.handleClose} />
+        <i className="fa fa-times" onClick={Modal.cancel} />
       </div>
       <div className="contents">
         <div className="description">{this.props.description || ''}</div>
@@ -66,7 +66,7 @@ export class ConfirmModal extends React.Component {
       <div className="footer">
         <div className="flex" />
         <button onClick={Modal.cancel}>{this.props.cancelText || 'cancel'}</button>
-        <button onClick={Modal.close}>{this.props.confirmText || 'ok'} <i className="fa fa-arrow-right" /></button>
+        <button onClick={Modal.submit}>{this.props.confirmText || 'ok'} <i className="fa fa-arrow-right" /></button>
       </div>
     </div>;
   }
@@ -77,14 +77,14 @@ export class AlertModal extends React.Component {
     return <div className="AlertModal modal">
       <div className="title row">
         <div className="flex">{this.props.title || ''}</div>
-        <i className="fa fa-times" onClick={this.handleClose} />
+        <i className="fa fa-times" onClick={Modal.cancel} />
       </div>
       <div className="contents">
         <div>{this.props.description || ''}</div>
       </div>
       <div className="footer">
         <div className="flex" />
-        <button onClick={Modal.close}>{this.props.confirmText || 'ok'} <i className="fa fa-arrow-right" /></button>
+        <button onClick={Modal.submit}>{this.props.confirmText || 'ok'} <i className="fa fa-arrow-right" /></button>
       </div>
     </div>;
   }
