@@ -19,7 +19,7 @@ class PostmessageController {
     window.addEventListener('message', this._handleMessage);
   }
 
-  _handleMessage(e) {
+  _handleMessage = (e) => {
     try {
       var data = JSON.parse(e.data);
     } catch(err) {

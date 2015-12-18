@@ -164,6 +164,9 @@ window.addEventListener('message', function (e) {
     var devkit = GLOBAL.devkit;
     devkit.logger.log('Got postmessage command:', cmd);
     switch (cmd) {
+      case 'reload:soft':
+        devkit.getSimulator().rebuild({soft: true});
+        break;
       case 'reload':
         devkit.getSimulator().rebuild();
         break;

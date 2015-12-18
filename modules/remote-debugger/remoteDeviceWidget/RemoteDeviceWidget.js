@@ -7,6 +7,9 @@ import SelectedItem from './SelectedItem';
 import TargetList from './TargetList';
 import autobind from '../autobind';
 
+const AUTO_SAVE_ON_RUN_KEY = 'jsio-auto-save-on-run';
+const FAST_RELOAD_KEY = 'jsio-fast-reload';
+
 export default class RemoteDeviceWidget extends React.Component {
   constructor(props) {
     super(props);
@@ -14,12 +17,17 @@ export default class RemoteDeviceWidget extends React.Component {
     var items = DevkitController.listItems;
     var selectedTarget = DevkitController.getSelectedTarget();
 
+    const autoSaveOnRun = localStorage.getItem(AUTO_SAVE_ON_RUN_KEY);
+    const fastReload = localStorage.getItem(FAST_RELOAD_KEY);
+
     this.state = {
       open: false,
       isBuilding: false,
       items: items,
       selectedItem: selectedTarget || items[0],
-      appPath: DevkitController.appPath
+      appPath: DevkitController.appPath,
+      autoSaveOnRun: autoSaveOnRun !== null ? autoSaveOnRun === 'true' : true,
+      fastReload: fastReload !== null ? fastReload === 'true' : true
     };
 
     this._lastRenderHeight = 0;
@@ -48,7 +56,9 @@ export default class RemoteDeviceWidget extends React.Component {
   }
 
   _documentClickListener(e) {
-    this.doToggleOpen(false);
+    if (!e.defaultPrevented) {
+      this.doToggleOpen(false);
+    }
   }
 
   _documentKeyListener(e) {
@@ -119,12 +129,37 @@ export default class RemoteDeviceWidget extends React.Component {
       return;
     }
 
+    // these will disappear for some reason in async calls (probably react is
+    // reusing the event object)
+    const shiftKey = evt && evt.shiftKey;
+    const metaKey = evt && evt.metaKey;
+
     let runTarget = this.state.selectedItem;
     if (runTarget.postMessage) {
-      this._sendRunMessage({
-        runTarget: runTarget.UUID,
-        newWindow: evt && evt.metaKey
-      });
+
+      let sentRun = false;
+      const run = () => {
+        if (sentRun) { return; }
+        sentRun = true;
+
+        this._sendRunMessage({
+          runTarget: runTarget.UUID,
+          newWindow: metaKey,
+          softReload: shiftKey ? false : this.state.fastReload
+        });
+      };
+
+      if (this.state.autoSaveOnRun) {
+        PostmessageController.postMessage({
+          target: 'brackets',
+          action: 'save'
+        }, run);
+
+        // TODO: should use bluebird promise timeouts
+        setTimeout(run, 5000);
+      } else {
+        run();
+      }
     } else {
       this.setState({ isBuilding: true });
 
@@ -174,6 +209,22 @@ export default class RemoteDeviceWidget extends React.Component {
     }
   }
 
+  handleFastReload = (evt) => {
+    evt.preventDefault();
+
+    const fastReload = !this.state.fastReload;
+    this.setState({fastReload});
+    localStorage.setItem(FAST_RELOAD_KEY, JSON.stringify(fastReload));
+  };
+
+  handleAutoSaveOnRun = (evt) => {
+    evt.preventDefault();
+
+    const autoSaveOnRun = !this.state.autoSaveOnRun;
+    this.setState({autoSaveOnRun});
+    localStorage.setItem(AUTO_SAVE_ON_RUN_KEY, JSON.stringify(autoSaveOnRun));
+  };
+
   render() {
     var children = [
       React.createElement(SelectedItem, {
@@ -191,7 +242,13 @@ export default class RemoteDeviceWidget extends React.Component {
           key: 'target-list',
           items: this.state.items,
           selectedItem: this.state.selectedItem,
-          doSelectItem: this.bound.doSelectItem
+          doSelectItem: this.bound.doSelectItem,
+
+          autoSaveOnRun: this.state.autoSaveOnRun,
+          fastReload: this.state.fastReload,
+
+          onAutoSaveOnRun: this.handleAutoSaveOnRun,
+          onFastReload: this.handleFastReload
         })
       );
     }

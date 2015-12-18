@@ -137,7 +137,7 @@ target-list-status-occupied     = #EFAD2E
     padding 6px
     z-index 1000
 
-    .target-list-item
+    li:not(.spacer)
       display flex
       padding 10px 6px
       cursor pointer
@@ -148,14 +148,14 @@ target-list-status-occupied     = #EFAD2E
       &.selected
         color target-list-item-color-selected
 
-      .icon, .selected-icon
+      .fa, .icon, .selected-icon
         flex-shrink 0
         width 20px
         text-align center
         position relative
         top 2px
 
-      .icon
+      .fa, .icon
         margin-right 8px
 
       .selected-icon

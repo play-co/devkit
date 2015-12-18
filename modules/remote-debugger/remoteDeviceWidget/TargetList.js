@@ -1,10 +1,16 @@
 import React from 'react';
 import autobind from '../autobind';
 
+function checkedClass(isChecked) {
+  return 'fa ' + (isChecked ? 'fa-check-square-o' : 'fa-square-o');
+}
+
 export default class TargetList extends React.Component {
   constructor(props) {
     super(props);
     autobind(this);
+
+    this.state = {};
   }
 
   handleClick(e) {
@@ -14,30 +20,24 @@ export default class TargetList extends React.Component {
   }
 
   render() {
-    var items = this.props.items.map(this.bound.renderItem);
-    return React.DOM.ul({
-      className: 'target-list'
-    }, items);
+    return <ul className="target-list">
+        {this.props.items.map((item, index) => item.spacer
+            ? <li className="spacer" key={index} />
+            : <TargetListItem key={index}
+                  item={item}
+                  selected={this.props.selectedItem === item}
+                  doSelectItem={this.props.doSelectItem} />)}
+        <li onClick={this.props.onAutoSaveOnRun}>
+          <i className={checkedClass(this.props.autoSaveOnRun)} />
+          auto-save on run
+        </li>
+        <li onClick={this.props.onFastReload}>
+          <i className={checkedClass(this.props.fastReload)} />
+          fast reload
+        </li>
+      </ul>;
   }
-
-  renderItem(item) {
-    if (item.spacer) {
-      return React.DOM.li({
-        key: 'target-list-spacer-' + Math.floor(Math.random() * 100000),
-        className: 'spacer'
-      });
-    } else {
-      return React.createElement(TargetListItem, {
-        key: 'target-list-item-' + item.UUID,
-        item: item,
-        selected: this.props.selectedItem === item,
-        doSelectItem: this.props.doSelectItem
-      });
-    }
-  }
-
 }
-
 
 class TargetListItem extends React.Component {
   constructor(props) {
