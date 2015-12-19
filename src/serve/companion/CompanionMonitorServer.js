@@ -1,8 +1,6 @@
 var path = require('path');
-var net = require('net');
 var events = require('events');
 var util = require('util');
-var http = require('http');
 var express = require('express');
 
 var Promise = require('bluebird');
@@ -105,7 +103,7 @@ Server.prototype.start = function(app) {
 
     // TODO: dont make a request here, just grab the info directly
     request(jsonUrl, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
+      if (!error && response.statusCode === 200) {
         var data = JSON.parse(body);
         var devtoolsId = data[data.length - 1].id;
 
@@ -139,7 +137,9 @@ Server.prototype.start = function(app) {
 /** Make sure that there is a /bundle/latest route to that app */
 Server.prototype.verifyHasRoute = function(shortName, appPath, buildPath) {
   var routeId = routeIdGenerator.get(appPath);
-  if (this._staticPaths[routeId]) return;
+  if (this._staticPaths[routeId]) {
+    return;
+  }
 
   this._staticPaths[routeId] = this.app.use(
     '/app/' + routeId + '/bundle/latest',
@@ -287,7 +287,7 @@ Server.prototype._writeConfig = function() {
     saveObj[client.UUID] = client.toObject();
   });
   config.set(CONFIG_KEY + 'runTargets', saveObj);
-}
+};
 
 Server.prototype.loadRunTargets = function() {
   if (this._runTargetClients.length > 0) {
@@ -390,7 +390,7 @@ Server.prototype.buildApp = function(appPath, runTargetClient) {
         error: err.toString()
       };
     });
-}
+};
 
 Server.prototype.updateSecret = function() {
   this.secret = 'SECRETSES';  //randomstring.generate(16);
