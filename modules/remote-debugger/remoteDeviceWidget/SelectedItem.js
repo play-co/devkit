@@ -28,13 +28,13 @@ export default class SelectedItem extends React.Component {
         key: 'btn-stop',
         className: 'selected-stop',
         onClick: this.props.doStop,
-        disabled: selectedItem && selectedItem.status !== 'occupied'
+        disabled: selectedItem && !selectedItem.statusInfo.canStop
       }, '■'),
       React.DOM.div({
         key: 'btn-run',
         className: 'selected-run',
         onClick: this.props.doRun,
-        disabled: selectedItem && selectedItem.status === 'unavailable'
+        disabled: selectedItem && selectedItem.statusInfo.canRun
       }, '▶ Run'),
       React.DOM.div({
         key: 'btn-selected',

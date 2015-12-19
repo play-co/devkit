@@ -3,6 +3,23 @@ var util = require('util');
 var CompanionSocketClient = require('./CompanionSocketClient');
 
 
+var StatusInfos = {
+  'unavailable': {
+    blocking: true
+  },
+  'available': {
+    canRun: true
+  },
+  'occupied': {
+    canStop: true,
+    canRun: true
+  },
+  'downloading': {
+    blocking: true
+  }
+};
+
+
 /**
  * @param  {String}  [opts.UUID]
  * @param  {String}  [opts.status='unavailable'] available, unavailable, occupied
@@ -37,10 +54,38 @@ RunTargetClient.prototype.setSocket = function(socket) {
   this._server.updateRunTarget(this);
 };
 
+
+/** Cannot send if in blocking state */
+RunTargetClient.prototype.send = function() {
+  var currentStateInfo = StatusInfos[this.status];
+  if (currentStateInfo.blocking) {
+    this._logger.warn('Dropping send call to runTarget (in blocking state)', this.status, arguments);
+    return;
+  }
+  supr.send.apply(this, arguments);
+};
+
+
 /** RunTargets are not ready immediately, they must recieve ID info from the client first */
 RunTargetClient.prototype.isReady = function() {
   return supr.isReady.call(this) && (this.UUID !== null);
 };
+
+
+RunTargetClient.prototype._validateStatus = function(flagName, requestor) {
+  var currentStateInfo = StatusInfos[this.status];
+  if (!currentStateInfo[flagName]) {
+    var errorMessage = flagName + ' not allowed in state ' + this.status;
+    if (requestor) {
+      requestor._error('unavailable_in_state', errorMessage);
+    } else {
+      this._logger.error(errorMessage);
+    }
+    return false;
+  }
+  return true;
+};
+
 
 /**
  * @param  {Object} runData
@@ -51,32 +96,24 @@ RunTargetClient.prototype.isReady = function() {
 RunTargetClient.prototype.run = function(requestor, runData) {
   this._logger.debug('trying to run', runData);
 
-  if (this.status === 'unavailable') {
-    if (requestor) {
-      requestor._error('run_target_not_available');
-    } else {
-      this._logger.error('cannot stop, run target unavailable');
-    }
+  if (!this._validateStatus('canRun', requestor)) {
     return;
   }
 
   this.send('run', runData);
 };
 
+
 RunTargetClient.prototype.stop = function(requestor) {
   this._logger.debug('trying to stop');
 
-  if (this.status === 'unavailable') {
-    if (requestor) {
-      requestor._error('run_target_not_available');
-    } else {
-      this._logger.error('cannot stop, run target unavailable');
-    }
+  if (!this._validateStatus('canStop', requestor)) {
     return;
   }
 
   this.send('stop');
 };
+
 
 /**
  * @param  {Object}  message
@@ -122,7 +159,7 @@ RunTargetClient.prototype.onClientInfo = function(message) {
   if(message.deviceInfo.platform) {
     this.platform = message.deviceInfo.platform;
   } else {
-    this.platform = "unknown";
+    this.platform = 'unknown';
   }
 
   if (message.deviceInfo.width && message.deviceInfo.height) {
@@ -144,6 +181,7 @@ RunTargetClient.prototype.onClientInfo = function(message) {
   this._server.updateRunTarget(this, !existingClient);
 };
 
+
 /**
  * @param  {Object<String, ?>}  newInfo - merged in to this run target
  */
@@ -160,10 +198,12 @@ RunTargetClient.prototype.updateClientInfo = function(newInfo) {
   this._server.updateRunTarget(this, false);
 };
 
+
 RunTargetClient.prototype._sendPing = function() {
   this._logger.debug('Sending ping');
   this.socket.send('ping');
 };
+
 
 /**
  * @param  {Object}  message
@@ -177,10 +217,16 @@ RunTargetClient.prototype.updateStatus = function(message) {
     return;
   }
 
+  if (!StatusInfos[message.status]) {
+    this._criticalError('unknown_status', 'updateStatus: Status provided is unknown: ' + message.status);
+    return;
+  }
+
   this.status = message.status;
 
   this._server.updateRunTarget(this, false);
 };
+
 
 RunTargetClient.prototype.onDisconnect = function() {
   this._logger.log('disconnected', this.UUID);
@@ -193,12 +239,14 @@ RunTargetClient.prototype.onDisconnect = function() {
   this._server.updateRunTarget(this, false);
 };
 
+
 /** Get the info object to send to ui */
 RunTargetClient.prototype.toInfoObject = function() {
   return {
     UUID: this.UUID,
     name: this.name,
     status: this.status,
+    statusInfo: StatusInfos[this.status],
     deviceInfo: {
       width: this.width,
       height: this.height,
@@ -206,6 +254,7 @@ RunTargetClient.prototype.toInfoObject = function() {
     }
   };
 };
+
 
 /** Get the object containing data to be persisted between saves */
 RunTargetClient.prototype.toObject = function() {
@@ -215,6 +264,7 @@ RunTargetClient.prototype.toObject = function() {
   };
 };
 
+
 RunTargetClient.fromObject = function(server, logger, obj) {
   return new RunTargetClient({
     server: server,
@@ -223,5 +273,6 @@ RunTargetClient.fromObject = function(server, logger, obj) {
     name: obj.name
   });
 };
+
 
 module.exports = RunTargetClient;
