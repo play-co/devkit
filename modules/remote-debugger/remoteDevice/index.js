@@ -30,8 +30,8 @@ ReactDOM.render(
     <Route path='/' component={App}>
       <IndexRoute component={PageConnect} />
       <Route path="info" component={PageInfo} />
-      <Redirect from="*" to="/" />
     </Route>
+    <Redirect from="*" to="/" />
   </Router>,
   document.getElementById('main')
 );

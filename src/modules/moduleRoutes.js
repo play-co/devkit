@@ -1,5 +1,6 @@
 var path = require('path');
 var fs = require('fs');
+var url = require('url');
 
 var express = require('express');
 
@@ -90,7 +91,7 @@ module.exports = {
     info = module.getExtension('standaloneUI');
     if (info) {
       // Mount standalone UIs
-      for (var uiRoute in info) {
+      Object.keys(info).forEach(function(uiRoute) {
         var standaloneUIInfo;
         if (typeof info[uiRoute] === 'string') {
           standaloneUIInfo = { src: info[uiRoute] };
@@ -102,11 +103,11 @@ module.exports = {
         // Validate
         if (!appRoutes && !standaloneUIInfo.isGlobal) {
           logger.debug('Standalone UI not global and no appRoutes. Skipping: ', staticPath);
-          continue;
+          return;
         }
         if (appRoutes && standaloneUIInfo.isGlobal) {
           logger.debug('Standalone UI global and appRoutes set. Skipping: ', staticPath);
-          continue;
+          return;
         }
 
         var staticRoute = path.join(route, 'extension', uiRoute);
@@ -117,10 +118,28 @@ module.exports = {
         if (standaloneUIInfo.html5History) {
           logger.debug('Adding catch all route for html5 history');
           expressApp.get(staticRoute + '/*', function (req, res) {
-            res.sendFile(path.join(staticPath, 'index.html'));
+            var filename = null;
+            var ext = path.extname(req.path);
+            if (ext) {
+              logger.debug('Attempting to infer resource path:', req.path);
+              var referrerRaw = req.get('Referrer');
+              if (referrerRaw) {
+                var referrer = url.parse(referrerRaw);
+                // Take the static path off of the request
+                var referrerDirname = path.dirname(referrer.pathname);
+                if (req.path.indexOf(referrerDirname) === 0) {
+                  filename = req.path.substring(referrerDirname.length, req.path.length);
+                }
+              }
+
+              if (!filename) {
+                logger.warn('Unable to resolve resource:', req.path);
+              }
+            }
+            res.sendFile(path.join(staticPath, filename || 'index.html'));
           });
         }
-      }
+      }.bind(this));
     }
   }
 };
