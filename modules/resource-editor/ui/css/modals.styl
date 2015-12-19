@@ -1,0 +1,125 @@
+.modal-overlay
+  position fixed
+  top 0
+  left 0
+  right 0
+  bottom 0
+  background rgba(0, 0, 0, 0.4)
+  display flex
+  align-items center
+  justify-content center
+  z-index 1000
+
+  .modal
+    display flex
+    flex-direction column
+    background white
+    border-radius 5px
+    min-width 400px
+    max-height 80%
+    box-shadow 0px 10px 30px rgba(0, 0, 0, 0.2)
+
+    .title
+      background #AAF
+      color #FFF
+      font-weight normal
+      padding-left 20px
+      border-radius 5px 5px 0px 0px
+      line-height 40px
+
+      .fa
+        line-height 40px
+        height 100%
+        width 45px
+        padding-left 20px
+
+    .contents
+      flex 1
+      flex-shrink 0
+
+      .description
+        padding 15px 20px
+        background #EEE
+        border-bottom 1px solid #CCC
+
+    .footer
+      padding 10px 10px 10px 20px
+      position relative
+      z-index 2
+      display flex
+      background #EEE
+      border-radius 0px 0px 5px 5px
+      box-shadow 0px -1px 2px rgba(0, 0, 0, 0.4)
+
+      button
+        margin-left 10px
+
+        .fa
+          margin-left 5px
+
+.UploadModal
+  overflow hidden
+
+  .contents
+    .FileList
+      overflow auto
+      max-height 430px
+      padding-bottom 2px
+
+    .FileLineItem
+      padding 3px 20px 3px 3px
+      align-items center
+
+      &.skip
+        label
+          opacity 0.5
+
+        i
+          color #C22
+
+      .warning
+        color #C22
+
+      .message
+        font-size smaller
+
+      button
+        margin-right 5px
+        visibility hidden
+
+      &:hover
+        button
+          visibility visible
+
+
+.FolderModal
+  max-height 80%
+  max-width 90%
+  height 500px
+  width 500px
+
+  .contents
+    display flex
+    flex-direction column
+
+  .FileTree
+    overflow auto
+    flex 1
+
+  .FileNode.selected
+    > .label
+      background #AAF
+
+  .selection
+    display inline-block
+    margin-right 10px
+    background #FFF
+    border-radius 5px
+    border 1px solid #DDD
+    font-weight normal
+    padding 4px 6px
+    word-break break-word
+
+.DeleteFilesModal
+  .title
+    background

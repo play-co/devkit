@@ -10,6 +10,7 @@ import PathCrumbs from './components/PathCrumbs';
 import FileInspector from './components/FileInspector';
 import UploadModal from './components/UploadModal';
 import Modal from './components/Modal';
+import openContextMenu from './components/ContextMenu';
 
 import { createHistory } from 'history';
 
@@ -72,6 +73,35 @@ export default class ResourceEditor extends React.Component {
     fileTree.selectPath(folderPath);
   }
 
+  handleContextMenu = (e, file) => {
+    e.preventDefault();
+    let entries = [
+      {
+        entries: [
+          {
+            title: 'Rename',
+            data: 'rename'
+          },
+          {
+            title: 'Move',
+            data: 'move'
+          }
+        ]
+      },
+      {
+        title: 'Delete',
+        data: 'delete'
+      }
+    ];
+    openContextMenu(e.clientX, e.clientY, entries)
+      .then(function(data) {
+        if (data) { console.log('context menu:', data); }
+      })
+      .catch(function(err) {
+        // pass
+      });
+  }
+
   updatePath(folderPath) {
     this.history.push({
       pathname: path.join(this.basePathname, folderPath)
@@ -88,6 +118,7 @@ export default class ResourceEditor extends React.Component {
             onFile={this.handleFolder}
             onDrop={this.handleDrop}
             onFilesLoaded={this.handleFilesLoaded}
+            onContextMenu={this.handleContextMenu}
           />
         <div className="column">
           <PathCrumbs folder={this.state.folder} onNavigate={this.handleNavigate} />
