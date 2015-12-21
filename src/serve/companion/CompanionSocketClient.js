@@ -21,10 +21,6 @@ CompanionSocketClient.prototype.setSocket = function(socket) {
 
   if (this.socket) {
     this.socket.on('message', function message(dataStr) {
-      if (dataStr == 'pong') {
-        this._logger.debug('Got pong');
-        return;
-      }
       var data;
       try {
         data = JSON.parse(dataStr);

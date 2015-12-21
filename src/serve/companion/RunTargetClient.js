@@ -1,6 +1,7 @@
 var timers = require('timers');
 var util = require('util');
 var CompanionSocketClient = require('./CompanionSocketClient');
+var sendHeartbeats = require('ws-heartbeats');
 
 
 var StatusInfos = {
@@ -32,7 +33,6 @@ var RunTargetClient = function(opts) {
 
   this.name = opts.name || 'noname';
 
-  this._pingInterval = null;
 };
 util.inherits(RunTargetClient, CompanionSocketClient);
 var supr = CompanionSocketClient.prototype;
@@ -42,6 +42,8 @@ RunTargetClient.prototype.setSocket = function(socket) {
   supr.setSocket.call(this, socket);
 
   if (this.socket) {
+    // Send pings :)
+    sendHeartbeats(this.socket);
     // Add the socket listeners
     this.on('clientInfo', this.onClientInfo.bind(this));
     this.on('updateStatus', this.updateStatus.bind(this));
@@ -170,12 +172,6 @@ RunTargetClient.prototype.onClientInfo = function(message) {
     this.height = 0;
   }
 
-
-  if (!this._pingInterval) {
-    // Send pings server side because its hard to do it on device reliably
-    this._pingInterval = timers.setInterval(this._sendPing.bind(this), 45 * 1000);
-  }
-
   this._server.addRunTargetClient(this);
   this._server.saveRunTarget(this);
   this._server.updateRunTarget(this, !existingClient);
@@ -230,12 +226,7 @@ RunTargetClient.prototype.updateStatus = function(message) {
 
 RunTargetClient.prototype.onDisconnect = function() {
   this._logger.log('disconnected', this.UUID);
-  if (this._pingInterval) {
-    timers.clearInterval(this._pingInterval);
-    this._pingInterval = null;
-  }
   this.setSocket(null);
-
   this._server.updateRunTarget(this, false);
 };
 
