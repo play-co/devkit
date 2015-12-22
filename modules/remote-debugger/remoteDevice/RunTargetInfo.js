@@ -30,7 +30,7 @@ export default class RunTargetInfo extends React.Component {
   }
 
   _updateDevtoolsLink(data) {
-    if (data && this.props.runTarget === data.runTargetUUID && data.devtoolsWsId) {
+    if (data && data.devtoolsWsId) {
       let ws;
       let url;
       if (/js\.io/.test(location.hostname)) {
