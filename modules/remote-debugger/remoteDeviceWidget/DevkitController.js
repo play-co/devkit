@@ -5,8 +5,24 @@ import autobind from '../autobind';
 
 export let LSKEY = 'devkit/remoteWidget/';
 export let DEFAULT_TARGETS = [
-  { UUID: 'local', name: 'Simulator', icon: 'desktop', postMessage: true },
-  { UUID: 'remote', name: 'Add Remote Device', icon: 'plus', postMessage: true }
+  {
+    UUID: 'local',
+    name: 'Simulator',
+    icon: 'desktop',
+    postMessage: true,
+    statusInfo: {
+      canRun: true
+    }
+  },
+  {
+    UUID: 'remote',
+    name: 'Add Remote Device',
+    icon: 'plus',
+    postMessage: true,
+    statusInfo: {
+      canRun: true
+    }
+  }
 ];
 
 

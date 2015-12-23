@@ -18,9 +18,11 @@ export default class SelectedItem extends React.Component {
   render() {
     var selectedItem = this.props.selectedItem;
     var selectedItemName = '<none>';
+    var statusInfo = null;
 
     if (selectedItem) {
       selectedItemName = selectedItem.name;
+      statusInfo = selectedItem.statusInfo;
     }
 
     let children = [
@@ -28,13 +30,13 @@ export default class SelectedItem extends React.Component {
         key: 'btn-stop',
         className: 'selected-stop',
         onClick: this.props.doStop,
-        disabled: selectedItem && !selectedItem.statusInfo.canStop
+        disabled: statusInfo && !statusInfo.canStop
       }, '■'),
       React.DOM.div({
         key: 'btn-run',
         className: 'selected-run',
         onClick: this.props.doRun,
-        disabled: selectedItem && selectedItem.statusInfo.canRun
+        disabled: statusInfo && !statusInfo.canRun
       }, '▶ Run'),
       React.DOM.div({
         key: 'btn-selected',
