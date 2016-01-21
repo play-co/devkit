@@ -1,0 +1,193 @@
+@import 'nib'
+
+@import '../../node_modules/react-simpletabs/dist/react-simpletabs.css'
+
+
+html, body, #main
+  height 100%
+
+body, ul
+  margin 0
+  font-family "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif
+
+
+tabs-border = 1px solid #333
+
+
+.module-manager
+  padding 20px
+  height 100%
+  box-sizing border-box
+  display flex
+  flex-direction column
+
+  .header
+    font-size 30px
+    margin-bottom 10px
+
+    .app-title
+      margin-left 20px
+      font-size 0.8em
+      font-style italic
+
+  .tabs
+    padding-top 10px
+    overflow hidden
+    display flex
+    flex-direction column
+
+    .tabs-navigation
+      border-bottom tabs-border
+      padding-left 20px
+
+      .tabs-menu
+        margin-bottom -1px
+
+      .tabs-menu-item
+        position relative
+        background-color #EAEAEA
+        border tabs-border
+        padding 8px 30px
+        margin-right 0
+        transform-origin bottom center
+        transform scale(1)
+        transition transform 0.1s ease-in, z-index 0.1s
+        z-index 0
+        margin-left 0
+
+        &.is-active
+          background-color #fff
+          transform scale(1.2)
+          z-index 10
+
+    .tab-panel
+      overflow-x hidden
+      overflow-y scroll
+      height 100%
+
+
+.btn
+  border 1px solid #333
+  border-radius 2px
+  padding 0 0.5em
+  margin 4px
+  opacity 0.7
+  cursor pointer
+  user-select none
+  transition opacity 0.1s ease-in
+
+  &.btn-danger
+    background-color #DCACAC
+  &.btn-info
+    background-color #D1D1EC
+  &.btn-success
+    background-color #BFEAA6
+
+  &:hover
+    opacity 1
+
+
+.module-list
+  .title-row
+    display flex
+    align-items center
+    justify-content space-between
+    .spacer
+      flex 1
+    .title
+      font-weight 600
+      font-size 22px
+    .ref
+      padding 0 20px
+      font-size 0.9em
+
+  .module
+    &:not(:last-child)
+      margin-bottom 20px
+
+    .info-elements
+      padding-left 20px
+
+      .info-item
+        padding 4px
+        .title
+          font-size 16px
+          font-weight 500
+        > .description
+          font-size 14px
+          font-style italic
+        .children
+          padding 10px 20px
+
+        &.warnings
+          background-color #EFE3DC
+        &.updates
+          background-color #DEEAD7
+        &.includes
+          background-color #DEE7F1
+
+      & > *
+        position relative
+
+        &::after
+          content '>'
+          position absolute
+          left -16px
+          top 0
+          color #000
+
+      .warning
+        padding-left 20px
+        position relative
+
+        &::before
+          content '\f071'
+          font-family FontAwesome
+          position absolute
+          left 0px
+          top 2px
+          color #C73100
+
+        .description
+          padding-left 1em
+          font-size 0.9em
+
+      .update
+        display flex
+        justify-content space-between
+
+        .ref
+          font-weight 500
+
+    .dependencies
+      color #aaa
+
+  .module-lite
+    display flex
+    align-items flex-end
+    justify-content space-between
+    font-size 16px
+    background-color #DADADA
+
+    &:nth-child(odd)
+      background-color #EFEFEF
+
+    .ref
+      color #666
+      font-size 0.8em
+
+
+.available-tab
+  .available-item
+    display flex
+    justify-content space-between
+    align-items center
+    background-color #FFF
+
+    &:nth-child(odd)
+      background-color #F3F3F7
+
+    .title
+      font-weight 500
+    .spacer
+      flex 1

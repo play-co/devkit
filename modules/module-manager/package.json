@@ -1,0 +1,41 @@
+{
+  "name": "module-manager",
+  "version": "0.0.1",
+  "devkit": {
+    "extensions": {
+      "debuggerUI": [
+        "debuggerUI"
+      ],
+      "standaloneUI": {
+        "moduleManager": {
+          "src": "moduleManager",
+          "isGlobal": true,
+          "html5History": true
+        }
+      }
+    },
+    "pluginBuilder": {
+      "generic": [
+        {
+          "src": "moduleManager"
+        }
+      ],
+      "jsio": [
+        {
+          "src": "debuggerUI"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "classnames": "^2.2.3",
+    "history": "=1.13",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-router": "=1.0.2",
+    "react-simpletabs": "^0.7.0",
+    "react-xhr": "0.0.6",
+    "xhr": "^2.2.0"
+  }
+}
