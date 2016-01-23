@@ -2,15 +2,13 @@ import React from 'react';
 import classNames from 'classnames';
 
 import autobind from '../autobind';
-
+import {modalService} from './Modal';
+import {moduleVersionService} from './ModuleVersionService';
 
 export default class ModuleList extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-    };
-
+    this.state = {};
     autobind(this);
   }
 
@@ -40,6 +38,27 @@ export default class ModuleList extends React.Component {
 class Module extends React.Component {
   constructor(props) {
     super(props);
+    autobind(this);
+  }
+
+  handleClickRemove(e) {
+    modalService.showModal({
+      title: 'Remove Module',
+      contents: [
+        <div>Are you sure you want to remove {this.props.data.name}</div>
+      ],
+      type: 'confirm'
+    }).then(() => {
+      debugger
+    }, () => {
+      debugger
+    });
+  }
+
+  handleClickUpdate(e) {
+    moduleVersionService.showForModule(this.props.data).then(() => {
+      debugger
+    });
   }
 
   renderInfoElement(data) {
@@ -63,7 +82,7 @@ class Module extends React.Component {
     return (
       <div className='update'>
         <div>Version <span className='ref'>{availableRef}</span> available</div>
-        <div className='btn btn-success'>update</div>
+        <div className='btn btn-success' onClick={this.bound.handleClickUpdate}>update</div>
       </div>
     );
   }
@@ -89,7 +108,10 @@ class Module extends React.Component {
         <div className='title'>{data.name}</div>
         <div className='ref'>#{data.ref}</div>
         <div className='spacer'></div>
-        <div className='btn btn-danger'>remove</div>
+        <div
+          className='btn btn-danger'
+          onClick={this.bound.handleClickRemove}
+        >remove</div>
       </div>
     );
 

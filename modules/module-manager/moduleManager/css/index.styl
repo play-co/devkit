@@ -20,6 +20,7 @@ tabs-border = 1px solid #333
   box-sizing border-box
   display flex
   flex-direction column
+  position relative
 
   .header
     font-size 30px
@@ -74,7 +75,9 @@ tabs-border = 1px solid #333
   opacity 0.7
   cursor pointer
   user-select none
-  transition opacity 0.1s ease-in
+  // transition opacity 1s  // TODO: causes a weird chrome bug where text to go out of focus
+  background-color #fff
+  color #111
 
   &.btn-danger
     background-color #DCACAC
@@ -191,3 +194,63 @@ tabs-border = 1px solid #333
       font-weight 500
     .spacer
       flex 1
+
+
+.modal
+  position absolute
+  top 0
+  left 0
+  width 100%
+  height 100%
+
+  z-index 500
+
+  .backdrop
+    position absolute
+    width 100%
+    height 100%
+    background-color rgba(0, 0, 0, 0.5)
+
+  & > *:not(.backdrop)
+    position absolute
+    top 50%
+    left 50%
+    transform translate(-50%, -50%)
+    min-width 20%
+    min-height 20%
+    max-width 80%
+    max-height 80%
+
+    background-color #eee
+    padding 20px
+    border-radius 4px
+
+    display flex
+    flex-direction column
+
+    .title
+      font-size 20px
+      font-weight 600
+      margin-bottom 0.5em
+
+    .contents
+      flex 1
+
+    .button-row
+      display flex
+      justify-content space-around
+
+
+.modal .module-versions-modal
+  min-width 30%
+  .tags-list
+    .tag-item
+      display flex
+      background-color #fff
+
+      &:nth-child(odd)
+        background-color #F3F3F7
+
+      .name
+        flex 1
+

@@ -1,8 +1,6 @@
-import Promise from 'bluebird';
-import xhr from 'xhr';
-import URL from 'url';
-
+import xhr from './xhr';
 import autobind from '../autobind';
+
 
 class DevkitAPI {
 
@@ -13,20 +11,10 @@ class DevkitAPI {
   }
 
   get(path, params) {
-    let url = URL.format({
+    return xhr({
       host: this._devkitHost,
       pathname: path,
       query: params
-    });
-
-    return Promise.promisify(xhr)(url).then((res) => {
-      let data = res[0];
-      if (data.body && data.body[0] === '{' && data.body[data.body.length - 1] === '}') {
-        try {
-          data.json = JSON.parse(data.body);
-        } catch (e) { }
-      }
-      return data;
     });
   }
 }

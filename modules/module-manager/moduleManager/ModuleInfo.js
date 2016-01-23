@@ -5,9 +5,9 @@ export default class ModuleInfo {
     this._raw = opts;
 
     this.name = opts.name;
-    this.url = 'the url';
+    this.url = 'the url';  // TODO: implement server side
     this.ref = opts.version;
-    this.status = 'ok';
+    this.status = 'ok';  // TODO: implement server side
     this.dependencies = [];
     // this.package = ;
     this.isSymlink = false;

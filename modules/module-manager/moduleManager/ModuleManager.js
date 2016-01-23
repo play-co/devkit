@@ -8,6 +8,7 @@ import autobind from '../autobind';
 import DevkitAPI from './DevkitAPI';
 import CurrentTab from './CurrentTab';
 import AvailableTab from './AvailableTab';
+import {modalService} from './Modal';
 
 export default class ModuleManager extends React.Component {
   constructor(props) {
@@ -26,6 +27,8 @@ export default class ModuleManager extends React.Component {
   }
 
   componentDidMount() {
+    modalService.registerContainer(this);
+
     DevkitAPI.get('api/app', {
       app: this.state.appPath
     }).then((res) => {
@@ -72,6 +75,11 @@ export default class ModuleManager extends React.Component {
         </Tabs.Panel>
       </Tabs>
     );
+
+    let modals = modalService.getModals();
+    if (modals.length > 0) {
+      children = children.concat(modals);
+    }
 
     return React.DOM.div({
       className: 'module-manager',

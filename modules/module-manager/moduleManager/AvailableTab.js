@@ -18,22 +18,6 @@ export default class AvailableTab extends React.Component {
         {
           title: 'devkit-scene',
           url: 'https://github.com/gameclosure/devkit-scene'
-        },
-        {
-          title: 'devkit-core',
-          url: 'https://github.com/gameclosure/devkit-core'
-        },
-        {
-          title: 'devkit-scene',
-          url: 'https://github.com/gameclosure/devkit-scene'
-        },
-        {
-          title: 'devkit-core',
-          url: 'https://github.com/gameclosure/devkit-core'
-        },
-        {
-          title: 'devkit-scene',
-          url: 'https://github.com/gameclosure/devkit-scene'
         }
       ]
     };
