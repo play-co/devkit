@@ -169,6 +169,13 @@ exports.Logger = Class(Writable, function () {
     this.getLevel() <= exports.ERROR && this._log(exports.errorPrefix, arguments);
   };
 
+  /** Use this if you want to skip log formatting (don't use this unless you really mean it) */
+  this.trace = function() {
+    if (process.env.DEVKIT_TRACE) {
+      console.log.apply(console, arguments);
+    }
+  };
+
   this._log = function (prefix, args) {
     // Run custom formatter on each individual argument
     args = Array.prototype.map.call(args, this.format, this);
@@ -235,8 +242,8 @@ exports.Logger = Class(Writable, function () {
 
 exports.nullPrefix = printf('%18s ', '');
 exports.debugPrefix = chalk.gray('[debug] ');
-exports.infoPrefix = chalk.white('[info] ');
-exports.warnPrefix = chalk.yellow('[warn] ');
+exports.infoPrefix = chalk.white('[info]  ');
+exports.warnPrefix = chalk.yellow('[warn]  ');
 exports.errorPrefix = chalk.red('[error] ');
 
 exports.getPrefix = function (tag) {

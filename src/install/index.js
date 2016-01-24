@@ -1,20 +1,30 @@
 var fs = require('fs');
 var chalk = require('chalk');
 var path = require('path');
+
 var logger = require('../util/logging').get('install');
 var Module = require('../modules/Module');
 
 var cache = require('./cache');
 
+/** serially install all dependencies in the manifest */
 exports.installDependencies = function (app, opts) {
-  // serially install all dependencies in the manifest
   var deps = app.manifest.dependencies;
   var names = Object.keys(deps);
   return Promise.map(names, function (name) {
-    if (name && name !== 'devkit') {
-      var installOpts = merge({url: deps[name]}, opts);
-      return exports.installModule(app, name, installOpts);
+    if (!name) {
+      logger.warn('Skipping dependency, name undefined');
+      return;
     }
+    if (name === 'devkit') {
+      logger.warn('Skipping dependency "devkit"');
+      return;
+    }
+
+    var installOpts = merge({
+      url: deps[name]
+    }, opts);
+    return exports.installModule(app, name, installOpts);
   }, {concurrency: 1});
 };
 
@@ -45,7 +55,6 @@ function parseURL (url, protocol) {
 /**
  * Figure out which version the user wishes to be installed.
  */
-
 function resolveRequestedModuleVersion (app, moduleName, version, opts) {
   if (opts.latest || version === 'latest') {
     opts.latest = true;
@@ -63,6 +72,7 @@ function resolveRequestedModuleVersion (app, moduleName, version, opts) {
 }
 
 exports.installModule = function (app, moduleName, opts, cb) {
+  logger.debug('Running install for', moduleName, ': ', opts);
   if (!opts) { opts = {}; }
 
   var url = opts.url;
@@ -76,8 +86,8 @@ exports.installModule = function (app, moduleName, opts, cb) {
 
   version = resolveRequestedModuleVersion(app, moduleName, version, opts);
 
-  var PROTOCOL = /^[a-z][a-z0-9+\-\.]*:/;
-  var isURL = !!url || moduleName && PROTOCOL.test(moduleName);
+  var protocolPattern = /^[a-z][a-z0-9+\-\.]*:/;
+  var isURL = !!url || moduleName && protocolPattern.test(moduleName);
 
   logger.log(
     chalk.cyan('Installing'),
@@ -86,10 +96,10 @@ exports.installModule = function (app, moduleName, opts, cb) {
     ) + chalk.cyan('...')
   );
 
-  trace('[installModule] moduleName:', moduleName);
-  trace('[installModule] version:', version);
-  trace('[installModule] url:', url);
-  trace('[installModule] isURL:', isURL);
+  logger.debug('moduleName:', moduleName);
+  logger.debug('version:', version);
+  logger.debug('url:', url);
+  logger.debug('isURL:', isURL);
 
   return Promise.bind({}).then(function () {
     this.hasLock = false;
@@ -100,13 +110,14 @@ exports.installModule = function (app, moduleName, opts, cb) {
     if (moduleName) {
       var modulePath = path.join(app.paths.modules, moduleName);
       if (fs.existsSync(modulePath)) {
+        logger.debug('module path exists', modulePath, ', getting current version from filesystem');
         return Module.describeVersion(modulePath);
       }
     }
 
     return Promise.resolve();
   }).then(function passOrInstallModule (currentVersion) {
-    trace('currentVersion', currentVersion);
+    logger.debug('currentVersion', currentVersion);
     // if there is no current version, use version from manifest or fetch latest
     // if there is a current version,
     //    - if you request latest, version is not defined
@@ -127,16 +138,20 @@ exports.installModule = function (app, moduleName, opts, cb) {
 
     if (hasRequestedVersion) {
       return Promise.resolve();
-    } else if (isURL) {
-      return installModuleFromURL(app, moduleName, url, version, opts);
-    } else {
-      return installModuleFromName(app, moduleName, version, opts);
     }
+    if (isURL) {
+      return installModuleFromURL(app, moduleName, url, version, opts);
+    }
+    return installModuleFromName(app, moduleName, version, opts);
   }).tap(function (installedVersion) {
-    installedVersion && logger.log(
-      chalk.yellow(moduleName + '@' + installedVersion),
-      chalk.cyan('install completed')
-    );
+    if (installedVersion) {
+      logger.log(
+        chalk.yellow(moduleName + '@' + installedVersion),
+        chalk.cyan('install completed')
+      );
+    } else {
+      logger.debug('No installedVersion...');
+    }
   }).finally(function () {
     // Unlock the app for future use
     if (this.hasLock) {
@@ -200,7 +215,9 @@ function installModuleFromURL (app, name, url, version, opts) {
         modulePath = path.join(app.paths.modules, this.cacheEntry.name);
       }
 
-      if (opts.link) { displayLinkWarning(app, modulePath); }
+      if (opts.link) {
+        displayLinkWarning(app, modulePath);
+      }
 
       return Module.setVersion(modulePath, version, {
         forceInstall: true,

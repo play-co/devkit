@@ -40,11 +40,9 @@ var AppManager = Class(EventEmitter, function () {
     this._isLoaded = false;
 
     config.on('change', bind(this, 'reload'));
-
-    this.reload();
   };
 
-  this.reload = function (cb) {
+  this.reload = function () {
     trace('reload');
     var persistedApps = config.get('apps');
     if (!persistedApps) {
@@ -66,7 +64,7 @@ var AppManager = Class(EventEmitter, function () {
 
     var appCache = this._apps;
 
-    Promise.map(appDirs, function (dir) {
+    return Promise.map(appDirs, function (dir) {
       trace('loading dir', dir);
       var lastLoadTime = persistedApps[dir];
       return App.loadFromPath(
@@ -92,7 +90,7 @@ var AppManager = Class(EventEmitter, function () {
     }).finally(function () {
       this._isReloading = false;
       this.emit('update');
-    }).nodeify(cb);
+    });
   };
 
   this.persist = function () {

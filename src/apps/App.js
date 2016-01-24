@@ -10,7 +10,8 @@ var Module = require('../modules/Module');
 var lockFile = require('../util/lockfile');
 var gitClient = require('../util/gitClient');
 var FatalGitError = gitClient.FatalGitError;
-var logger = require('../util/logging').get('apps');
+var logging = require('../util/logging');
+var logger = logging.get('apps');
 var stringify = require('../util/stringify');
 
 var ApplicationNotFoundError = require('./errors').ApplicationNotFoundError;
@@ -34,7 +35,11 @@ var MANIFEST = 'manifest.json';
 var App = module.exports = Class(function () {
 
   this.init = function (root, manifest, lastOpened) {
-    trace('Instantiating App with root path:', root);
+    logger.debug('Instantiating App with root path:', root);
+
+    var loggerName = (manifest && manifest.shortName) || ('!' + path.basename(root));
+    this.logger = logging.get('App.' + loggerName);
+
     this.paths = {
       root: root,
       build: path.join(root, 'build'),
@@ -115,11 +120,13 @@ var App = module.exports = Class(function () {
   };
 
   this.reloadModules = function () {
-    this._modules = {};
+    this.logger.debug('reloading modules');
+    this._modules = null;
     this._loadModules();
   };
 
   this._loadModules = function () {
+    this.logger.debug('loading modules');
     if (!this._modules) {
       this._modules = {};
     }
@@ -504,10 +511,12 @@ var App = module.exports = Class(function () {
   };
 
   this.acquireLock = function (cb) {
+    this.logger.debug('Acquiring lock');
     return lockFile.lock(path.join(this.paths.root, LOCK_FILE)).nodeify(cb);
   };
 
   this.releaseLock = function (cb) {
+    this.logger.debug('Releasing lock');
     return lockFile.unlock(path.join(this.paths.root, LOCK_FILE)).nodeify(cb);
   };
 
