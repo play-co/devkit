@@ -29,8 +29,6 @@ require('jsio');
 
 require('./globals');
 
-var logging = require('./util/logging');
-
 /**
  * Module API.
  */
@@ -41,7 +39,13 @@ if (require.main === module) {
 }
 
 function main () {
+  var Promise = require('bluebird');
+
+  var logging = require('./util/logging');
   var commands = require('./commands');
+  var cache = require('./install/cache');
+  var apps = require('./apps');
+
   var argv = commands.argv;
   var args = argv._;
 
@@ -52,23 +56,24 @@ function main () {
   var logger = logging.get('devkit.main');
   logger.debug('Main called; getting command:\nargv', argv,'\nargs ', args);
 
-  // Remove the executable from args
-  args.shift();
+  return Promise.all([
+    cache.loadCache(),
+    commands.initCommands(),
+    apps.reload()
+  ]).then(function() {
+    var name;
+    if (argv.help) {
+      name = 'help';
+    } else if (commands.has(args[0])) {
+      name = args.shift();
+    } else if (argv.version) {
+      name = 'version';
+    } else if (argv.info) {
+      name = 'info';
+    } else {
+      name = 'help';
+    }
 
-  var name;
-
-  if (argv.help) {
-    name = 'help';
-  } else if (commands.has(args[0])) {
-    name = args.shift();
-  } else if (argv.version) {
-    name = 'version';
-  } else if (argv.info) {
-    name = 'info';
-  } else {
-    name = 'help';
-  }
-
-  var command = commands.get(name);
-  command.exec(name, args);
+    return commands.run(name, args);
+  });
 }
