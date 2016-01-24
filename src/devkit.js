@@ -49,6 +49,12 @@ function main () {
     logging.defaultLogLevel = logging.DEBUG;
   }
 
+  var logger = logging.get('devkit.main');
+  logger.debug('Main called; getting command:\nargv', argv,'\nargs ', args);
+
+  // Remove the executable from args
+  args.shift();
+
   var name;
 
   if (argv.help) {

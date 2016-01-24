@@ -1,8 +1,28 @@
 var printf = require('printf');
 var chalk = require('chalk');
+var eyes = require('eyes');
 
 var Writable = require('stream').Writable;
 var errorToString = require('./toString').errorToString;
+
+
+var inspect = eyes.inspector({
+  styles: {                 // Styles applied to stdout
+    all:     'white',      // Overall style applied to everything
+    label:   'underline', // Inspection labels, like 'array' in `array: [1, 2, 3]`
+    other:   'inverted',  // Objects which don't have a literal representation, such as functions
+    key:     'bold',      // The keys in object literals, like 'a' in `{a: 1}`
+    special: 'grey',      // null, undefined...
+    string:  'green',
+    number:  'magenta',
+    bool:    'blue',      // true false
+    regexp:  'green',     // /\d+/
+  },
+  pretty: true,
+  maxLength: 2048,
+  stream: null
+});
+
 
 // save the current console values in case we overwrite them later
 exports.console = console;
@@ -111,9 +131,10 @@ exports.Logger = Class(Writable, function () {
     }
 
     if (typeof str == 'object') {
-      return str;
+      return exports.DEBUG ? inspect(str) : str;
     }
 
+    // It's actually a string!
     return ('' + str)
       .split('\n')
       .join('\n ' + exports.nullPrefix);
@@ -129,15 +150,15 @@ exports.Logger = Class(Writable, function () {
 
   // call these for formatted logging from code
   this.debug = function () {
-    this.getLevel() <= exports.DEBUG && this._log(undefined, arguments);
+    this.getLevel() <= exports.DEBUG && this._log(exports.DEBUG && exports.debugPrefix, arguments);
   };
 
   this.log = function () {
-    this.getLevel() <= exports.LOG && this._log(undefined, arguments);
+    this.getLevel() <= exports.LOG && this._log(exports.DEBUG && exports.infoPrefix, arguments);
   };
 
   this.info = function () {
-    this.getLevel() <= exports.INFO && this._log(undefined, arguments);
+    this.getLevel() <= exports.INFO && this._log(exports.DEBUG && exports.infoPrefix, arguments);
   };
 
   this.warn = function () {
@@ -149,8 +170,14 @@ exports.Logger = Class(Writable, function () {
   };
 
   this._log = function (prefix, args) {
+    // Run custom formatter on each individual argument
     args = Array.prototype.map.call(args, this.format, this);
-    prefix && args.unshift(prefix);
+
+    // Add the prefix if there is one
+    if (prefix) {
+      args.unshift(prefix);
+    }
+    // Add the render prefix (coloring, mostly)
     args.unshift(this._getRenderPrefix());
     exports.error.apply(exports.console, args);
   };
@@ -186,7 +213,7 @@ exports.Logger = Class(Writable, function () {
   this.getPrefix = function () { return this._prefix; };
 
   this.toString = function() {
-    return this._buffer.join("\n");
+    return this._buffer.join('\n');
   };
 
   // deprecated
@@ -207,6 +234,8 @@ exports.Logger = Class(Writable, function () {
 });
 
 exports.nullPrefix = printf('%18s ', '');
+exports.debugPrefix = chalk.gray('[debug] ');
+exports.infoPrefix = chalk.white('[info] ');
 exports.warnPrefix = chalk.yellow('[warn] ');
 exports.errorPrefix = chalk.red('[error] ');
 

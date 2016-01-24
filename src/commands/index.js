@@ -1,5 +1,5 @@
 var fs = require('fs');
-var optimist = require('optimist');
+var yargs = require('yargs');
 var path = require('path');
 var printf = require('printf');
 
@@ -49,7 +49,7 @@ commandNames.forEach(function (name) {
 
         } else {
           // add alias for command name
-          optimist.alias(name, alias);
+          yargs.alias(name, alias);
 
           // add to list of alias names
           aliasNames.push(alias);
@@ -97,15 +97,19 @@ var usageStr = "usage: devkit [--version] [--help] <command> [<args>]\n\n"
   + "available commands:\n" + _usage.join('\n') + "\n\n"
   + "See 'devkit help <command>' to read about a specific command";
 
-// Let commands update optimist
-var _optimistObj = optimist.usage(usageStr);
+// Let commands update args
+var _yargsObj = yargs
+  .usage(usageStr)
+  .boolean('v')
+  .help('h')
+  .alias('h', 'help');
 for (var commandName in _commands) {
   var command = _commands[commandName];
-  if (command.updateOptimist) {
-    _optimistObj = command.updateOptimist(_optimistObj);
+  if (command.updateArgs) {
+    _yargsObj = command.updateArgs(_yargsObj);
   }
 }
-exports.argv = _optimistObj.argv;
+exports.argv = _yargsObj.argv;
 
 exports.get = function (name) {
   return _commands[name];
