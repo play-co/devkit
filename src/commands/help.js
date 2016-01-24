@@ -12,7 +12,7 @@ var HelpCommand = Class(BaseCommand, function (supr) {
     if (commands.has(cmd)) {
       commands.get(cmd).showHelp(args);
     } else {
-      require('optimist').showHelp();
+      require('yargs').help();
     }
 
     cb && cb();

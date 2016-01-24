@@ -31,7 +31,7 @@ exports.BaseCommand = Class(function () {
       process.argv.shift();
     }
 
-    this.opts = require('optimist')(process.argv);
+    this.opts = require('yargs')(process.argv);
     this.logger = logging.get(this.name);
   };
 
