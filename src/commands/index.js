@@ -13,7 +13,8 @@ var commandUsages = [];
 
 // Let commands update args
 var _yargsObj = yargs
-  .boolean('v')
+  .count('verbose')
+  .alias('v', 'verbose')
   .help('h')
   .alias('h', 'help');
 exports.argv = _yargsObj.argv;

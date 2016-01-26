@@ -49,12 +49,12 @@ function main () {
   var argv = commands.argv;
   var args = argv._;
 
-  if (argv.v) {
-    logging.defaultLogLevel = logging.DEBUG;
+  if (argv.verbose > 0) {
+    logging.defaultLogLevel += argv.verbose;
   }
 
   var logger = logging.get('devkit.main');
-  logger.debug('Main called; getting command:\nargv', argv,'\nargs ', args);
+  logger.silly('Main called; getting command:\nargv', argv, '\nargs ', args);
 
   return Promise.all([
     cache.loadCache(),
