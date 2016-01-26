@@ -153,13 +153,6 @@ exports.Logger = Class(Writable, function () {
     return this._level || exports.defaultLogLevel;
   };
 
-  /** Use this if you want to skip log formatting (don't use this unless you really mean it) */
-  this.trace = function() {
-    if (process.env.DEVKIT_TRACE) {
-      console.log.apply(console, arguments);
-    }
-  };
-
   this.format = function (str) {
     if (str instanceof Error) {
       if (str.showStack === false) {
