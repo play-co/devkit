@@ -10,6 +10,7 @@ var fs = require('../util/fs');
 
 var logger = require('../util/logging').get('cache');
 var nodegitCredentialHelper = require('./nodegitCredentialHelper');
+var cacheErrors = require('./cacheErrors');
 
 var MODULE_CACHE = path.join(pathExtra.datadir(process.title), 'cache');
 
@@ -125,7 +126,7 @@ var ModuleCache = Class(EventEmitter, function () {
           logger.warn('Directory exists at:', repoPath);
           logger.warn('Please remove this directory if you want the devkit to manage the module');
           logger.warn('Cache exiting for safety of local files');
-          throw new Error('local directory collision at ' + repoPath);
+          throw new cacheErrors.DirectoryCollision('local directory collision at ' + repoPath);
         }
       })
       .then(function(statusArray) {
@@ -148,7 +149,7 @@ var ModuleCache = Class(EventEmitter, function () {
           logger.warn('You have made local changes to the module:', repoPath);
           logger.warn('Please remove the existing repository (after saving changes)');
           logger.warn('Cache exiting for safety of local files');
-          throw new Error('local repository not clean ' + repoPath);
+          throw new cacheErrors.DirtyRepo('local repository not clean ' + repoPath, changedFileNames);
         }
       })
       .then(function() {
@@ -172,7 +173,7 @@ var ModuleCache = Class(EventEmitter, function () {
             logger.warn('Local repository on an unknown commit:', headCommitHash);
             logger.warn('Please make sure to push your local commits before running devkit install.');
             logger.warn('Cache exiting for safety of local files');
-            throw new Error('local repository on unknown commit ' + testRepo.path());
+            throw new cacheErrors.UnknownLocalCommit('local repository on unknown commit ' + testRepo.path());
           });
       }, function() {
         logger.silly('local repo has no head, all good');
@@ -262,7 +263,7 @@ var ModuleCache = Class(EventEmitter, function () {
         // Nest this promise because we want to propagate errors if they are thrown from _safeGetLocalRepo
         return repo.getHeadCommit()
           .then(function(headCommit) {
-            return headCommit.id().toString().indexOf(version) !== 0;
+            return !headCommit || (headCommit.id().toString().indexOf(version) !== 0);
           }, function() {
             // tag, branch, unknown commit
             return true;

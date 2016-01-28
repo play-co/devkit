@@ -1,4 +1,3 @@
-
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var InstallCommand = Class(BaseCommand, function (supr) {
@@ -35,6 +34,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     var lockfile = require('../util/lockfile');
     var Module = require('../modules/Module');
     var install = require('../install');
+    var cacheErrors = require('../install/cacheErrors');
 
     var argv = this.opts.argv;
     var module = args.shift();
@@ -44,7 +44,9 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     function printErrorAndExit (msg, err, code) {
       console.log();
       logger.error.apply(logger, msg);
-      process.env.DEVKIT_TRACE && console.error(err && err.stack);
+      if (err) {
+        logger.debug(err.stack);
+      }
       process.exit(code || 1);
     }
 
@@ -121,27 +123,19 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         'Could not get a lock on this app. Is there a build or other devkit',
         'process running?'
       ], err);
-    }).catch(Module.ModifiedTreeError, function (err) {
-      // warn about the possibility that continuing might break your module
+    })
+    // Cache errors
+    .catch(
+      cacheErrors.DirectoryCollision,
+      cacheErrors.DirtyRepo,
+      cacheErrors.UnknownLocalCommit,
+    function (err) {
       return printErrorAndExit([
-          chalk.red('Devkit detected changes to the following files in '
-            + err.modulePath + ':\n\n\t')
-          + err.changes.map(function (change) {
-            var code = {
-              ' M': chalk.yellow(' (modified)'),
-              '??': chalk.green(' (untracked)')
-            }[change.code] || '';
-            return change.filename + code;
-          }).join('\n\t'),
-
-          '\n\nYou may be unable to switch versions unless you undo these',
-          'changes first. To try anyway, run with ',
-          chalk.red('--unsafe.')
-        ]);
-    }).catch(Module.CheckoutError, function (err) {
-      // checkout failed, error message contains git stderr
-      return printErrorAndExit([err.message]);
-    }).catch(function installErrorHandler (err) {
+        'Cache error:', err.message
+      ], err);
+    })
+    // unknown error
+    .catch(function installErrorHandler (err) {
       console.error('Unexpected error');
       console.error(err && err.stack || err);
     }).nodeify(cb);
