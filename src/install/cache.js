@@ -107,6 +107,12 @@ var ModuleCache = Class(EventEmitter, function () {
   };
 
   this._safeGetLocalRepo = function(repoPath) {
+    if (!fs.existsSync(repoPath)) {
+      // Initialize the new repository
+      var isBare = 0;
+      return nodegit.Repository.init(repoPath, isBare);
+    }
+
     var repo = null;
     return nodegit.Repository.open(repoPath)
       .then(function(_repo) {
@@ -189,12 +195,7 @@ var ModuleCache = Class(EventEmitter, function () {
     return Promise.resolve()
       .bind(this)
       .then(function() {
-        if (fs.existsSync(destPath)) {
-          return this._safeGetLocalRepo(destPath);
-        }
-        // Initialize the new repository
-        var isBare = 0;
-        return nodegit.Repository.init(destPath, isBare);
+        return this._safeGetLocalRepo(destPath);
       })
       .then(function(_repo) {
         repo = _repo;
@@ -252,6 +253,20 @@ var ModuleCache = Class(EventEmitter, function () {
       })
       .then(function() {
         logger.debug('local update complete for', destPath);
+      });
+  };
+
+  this.doesLocalNeedUpdate = function(dir, version) {
+    return this._safeGetLocalRepo(dir)
+      .then(function(repo) {
+        // Nest this promise because we want to propagate errors if they are thrown from _safeGetLocalRepo
+        return repo.getHeadCommit()
+          .then(function(headCommit) {
+            return headCommit.id().toString().indexOf(version) !== 0;
+          }, function() {
+            // tag, branch, unknown commit
+            return true;
+          });
       });
   };
 

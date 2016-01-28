@@ -74,7 +74,14 @@ var installModuleFromURL = function(baseDir, name, url, version, opts) {
 
   var modulePath = path.join(baseDir, 'modules', name);
 
-  return Promise.resolve()
+  return cache.doesLocalNeedUpdate(modulePath, version)
+    .then(function(needsUpdate) {
+      if (!needsUpdate) {
+        logger.debug('Local module already at correct version');
+        logger.debug('Checking for sub dependencies');
+        return exports.runInDirectory(modulePath);
+      }
+    })
     .then(function() {
       if (cache.has(name)) {
         return cache.update(name, version);
@@ -91,6 +98,9 @@ var installModuleFromURL = function(baseDir, name, url, version, opts) {
     })
     .then(function() {
       logger.log('Installation complete for:', name);
+    })
+    .catch(function(err) {
+      if (err) { throw err; }
     });
 };
 
@@ -150,12 +160,8 @@ exports.runInDirectory = function(dir, opts) {
       return installAll(dir, this.manifest.dependencies, { colorLog: hasLock });
     })
     .catch(function(err) {
-      // if no error, silently fail
-      if (!err) {
-        return;
-      }
       // raise any errors
-      throw err;
+      if (err) { throw err; }
     })
     .finally(function() {
       if (hasLock) {
