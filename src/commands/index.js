@@ -129,7 +129,7 @@ exports.initCommands = function() {
   exports.run = function(name, args) {
     logger.debug('running commaned', name, args);
     var command = exports.get(name);
-    return Promise.promisify(command.exec)(name, args);
+    return Promise.promisify(command.exec, command)(name, args);
   };
 
   return Promise.resolve();
