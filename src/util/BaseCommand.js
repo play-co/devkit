@@ -13,9 +13,7 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-var exec = require('child_process').exec;
 var logging = require('./logging');
-var fs = require('fs');
 var path = require('path');
 
 exports.BaseCommand = Class(function () {
@@ -24,14 +22,13 @@ exports.BaseCommand = Class(function () {
   this.description = '';
 
   this.init = function () {
-
     // strip off executable if it matches node|nodejs
     var executable = path.basename(process.argv[0]);
     if (executable === 'node' || executable === 'nodejs') {
       process.argv.shift();
     }
 
-    this.opts = require('yargs')(process.argv);
+    this.opts = require('yargs')();
     this.logger = logging.get(this.name);
   };
 

@@ -38,4 +38,5 @@ if (process.env.DEVKIT_TRACE) {
   trace = function () {};
 }
 
+// FIXME: Why did we stop believing in `require`?
 Promise = require('bluebird');

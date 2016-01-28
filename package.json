@@ -16,6 +16,7 @@
   "dependencies": {
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
+    "callsite": "^1.0.0",
     "chalk": "^1.1.1",
     "chokidar": "^1.0.5",
     "compression": "^1.5.2",

@@ -128,5 +128,5 @@ exports.has = function (name) {
 exports.run = function(name, args) {
   logger.debug('running commaned', name, args);
   var command = exports.get(name);
-  return command.exec(name, args);
+  return Promise.promisify(command.exec, command)(name, args);
 };

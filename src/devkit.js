@@ -43,7 +43,7 @@ function main () {
 
   var logging = require('./util/logging');
   var commands = require('./commands');
-  var cache = require('./install/cache');
+  // var cache = require('./install/cache');
   var apps = require('./apps');
 
   var argv = commands.argv;
@@ -57,7 +57,7 @@ function main () {
   logger.debug('Main called; getting command:\nargv', argv,'\nargs ', args);
 
   return Promise.all([
-    cache.loadCache(),
+    // cache.loadCache(),
     commands.initCommands(),
     apps.reload()
   ]).then(function() {
@@ -74,6 +74,12 @@ function main () {
       name = 'help';
     }
 
-    return commands.run(name, args);
+    return commands.run(name, args).then(function() {
+      // TODO: shouldnt need this...
+      // Possibly a result of https://github.com/nodegit/nodegit/issues/866
+      process.exit(0);
+    }, function(e) {
+      logger.error('Uncaught error in command execution', e);
+    });
   });
 }
