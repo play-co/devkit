@@ -43,7 +43,7 @@ var AppManager = Class(EventEmitter, function () {
   };
 
   this.reload = function () {
-    trace('reload');
+    logger.debug('reloading');
     var persistedApps = config.get('apps');
     if (!persistedApps) {
       persistedApps = {};
@@ -71,7 +71,7 @@ var AppManager = Class(EventEmitter, function () {
         dir, lastLoadTime
       ).catch(ApplicationNotFoundError, function (err) {
         // Remove missing apps from cache
-        trace(err);
+        logger.silly(err);
         delete appCache[err.message];
         return Promise.resolve(false);
       });

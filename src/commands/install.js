@@ -25,28 +25,21 @@ var InstallCommand = Class(BaseCommand, function (supr) {
   };
 
   this.exec = function (command, args, cb) {
+    var Promise = require('bluebird');
     var fs = require('fs');
     var chalk = require('chalk');
-
-    var apps = require('../apps');
-    var install = require('../install');
-    var Module = require('../modules/Module');
-    var lockfile = require('../util/lockfile');
-    var logger = require('../util/logging').get('devkit');
-
     var url = require('url');
 
-    var gitClient = require('../util/gitClient');
-
-    var UnknownGitRevision = gitClient.UnknownGitRevision;
-    var FatalGitError = gitClient.FatalGitError;
-    var UnknownGitOption = gitClient.UnknownGitOption;
-    var ApplicationNotFoundError = apps.ApplicationNotFoundError;
-    var InvalidManifestError = apps.InvalidManifestError;
-    var FileLockerError = lockfile.FileLockerError;
+    var logger = require('../util/logging').get('command.install');
+    var apps = require('../apps');
+    var lockfile = require('../util/lockfile');
+    var Module = require('../modules/Module');
+    var install = require('../install');
 
     var argv = this.opts.argv;
     var module = args.shift();
+
+    logger.debug('Devkit install running', command, args, argv);
 
     function printErrorAndExit (msg, err, code) {
       console.log();
@@ -63,26 +56,27 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     };
 
     return apps.get('.').then(function (app) {
-      // ensure modules directory exists
+      logger.debug('ensure modules directory exists');
       if (!fs.existsSync(app.paths.modules)) {
         fs.mkdirSync(app.paths.modules);
-      }
-
-      if (!fs.statSync(app.paths.modules).isDirectory()) {
-        return Promise.reject(
-          new Error('`your-app/modules` must be a directory')
-        );
+      } else {
+        logger.debug('ensure modules directory is directory');
+        if (!fs.statSync(app.paths.modules).isDirectory()) {
+          return Promise.reject(
+            new Error('`your-app/modules` must be a directory')
+          );
+        }
       }
 
       if (module) {
-        // single module provided, install it
+        logger.debug('single module provided, installing: ', module);
         var moduleUrl = url.parse(module);
         if (moduleUrl.protocol && moduleUrl.host && moduleUrl.href) {
           opts.url = moduleUrl.href;
           opts.protocol = moduleUrl.protocol.replace(':', '');
         } else {
           var pieces = module.split(/[@#]/);
-          if (pieces.length == 2) {
+          if (pieces.length === 2) {
             module = pieces[0];
             opts.version = pieces[1];
           }
@@ -105,36 +99,24 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       return app;
     }).then(function installDependenciesIfNeeded (app) {
       // if we installed a single module, we're done
-      if (!module) {
-        // otherwise, need to install all dependencies
-        return install.installDependencies(app, opts);
+      if (module) {
+        return;
       }
-    }).catch(UnknownGitRevision, function (err) {
-      return printErrorAndExit([
-        'The module version you asked for doesn\'t seem to be a',
-        'valid ref. The error message from git is:', err.message
-      ], err);
-    }).catch(FatalGitError, function (err) {
-      return printErrorAndExit([
-        'Git exited unexpectedly while installing a module. The',
-        'message from git was', err.message
-      ], err);
-    }).catch(UnknownGitOption, function (err) {
-      return printErrorAndExit([
-        'devkit ran an invalid git command. This can sometimes happen when a',
-        'module URL specifier is malformatted.'
-      ], err);
-    }).catch(ApplicationNotFoundError, function (err) {
+      // otherwise, need to install all dependencies
+      return install.runInDirectory(app.paths.root, { useLockfile: true });
+    })
+    // TODO: handle git errors
+    .catch(apps.ApplicationNotFoundError, function (err) {
       return printErrorAndExit([
         'Could not find a valid devkit application. Are you in a devkit',
         'application directory?'
       ], err);
-    }).catch(InvalidManifestError, function (err) {
+    }).catch(apps.InvalidManifestError, function (err) {
       return printErrorAndExit([
         'Could not parse manifest.json. Are you in a devkit',
         'application directory? Is your manifest a valid json file?'
       ], err);
-    }).catch(FileLockerError, function (err) {
+    }).catch(lockfile.FileLockerError, function (err) {
       return printErrorAndExit([
         'Could not get a lock on this app. Is there a build or other devkit',
         'process running?'

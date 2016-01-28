@@ -2,33 +2,16 @@ var fs = require('fs');
 var chalk = require('chalk');
 var path = require('path');
 
+var lockFile = require('../util/lockfile');
 var logger = require('../util/logging').get('install');
-var Module = require('../modules/Module');
 
 var cache = require('./cache');
 
-/** serially install all dependencies in the manifest */
-exports.installDependencies = function (app, opts) {
-  var deps = app.manifest.dependencies;
-  var names = Object.keys(deps);
-  return Promise.map(names, function (name) {
-    if (!name) {
-      logger.warn('Skipping dependency, name undefined');
-      return;
-    }
-    if (name === 'devkit') {
-      logger.warn('Skipping dependency "devkit"');
-      return;
-    }
 
-    var installOpts = merge({
-      url: deps[name]
-    }, opts);
-    return exports.installModule(app, name, installOpts);
-  }, {concurrency: 1});
-};
+var PROTOCOL_PATTERN = /^[a-z][a-z0-9+\-\.]*:/;
 
-function parseURL (url, protocol) {
+
+var parseURL = function(url, protocol) {
   // find version in url
   var i = url.indexOf('#');
   var version;
@@ -50,244 +33,133 @@ function parseURL (url, protocol) {
     url: url,
     version: version
   };
-}
-
-/**
- * Figure out which version the user wishes to be installed.
- */
-function resolveRequestedModuleVersion (app, moduleName, version, opts) {
-  if (opts.latest || version === 'latest') {
-    opts.latest = true;
-    return void 0;
-  } else if (!version) {
-    // Not latest and no version provided, look up in manifest
-    var dep = app.getDependency(moduleName);
-    if (dep) {
-      return dep.version;
-    }
-  } else {
-    // The version was explicitly requested
-    return version;
-  }
-}
-
-exports.installModule = function (app, moduleName, opts, cb) {
-  logger.debug('Running install for', moduleName, ': ', opts);
-  if (!opts) { opts = {}; }
-
-  var url = opts.url;
-  var version = opts.version;
-
-  if (opts.url) {
-    var urlInfo = parseURL(url, opts.protocol);
-    url = urlInfo.url;
-    version = urlInfo.version;
-  }
-
-  version = resolveRequestedModuleVersion(app, moduleName, version, opts);
-
-  var protocolPattern = /^[a-z][a-z0-9+\-\.]*:/;
-  var isURL = !!url || moduleName && protocolPattern.test(moduleName);
-
-  logger.log(
-    chalk.cyan('Installing'),
-    chalk.yellow(
-      moduleName + (version ? '@' + version : '')
-    ) + chalk.cyan('...')
-  );
-
-  logger.debug('moduleName:', moduleName);
-  logger.debug('version:', version);
-  logger.debug('url:', url);
-  logger.debug('isURL:', isURL);
-
-  return Promise.bind({}).then(function () {
-    this.hasLock = false;
-    return app.acquireLock();
-  }).then(function () {
-    this.hasLock = true;
-
-    if (moduleName) {
-      var modulePath = path.join(app.paths.modules, moduleName);
-      if (fs.existsSync(modulePath)) {
-        logger.debug('module path exists', modulePath, ', getting current version from filesystem');
-        return Module.describeVersion(modulePath);
-      }
-    }
-
-    return Promise.resolve();
-  }).then(function passOrInstallModule (currentVersion) {
-    logger.debug('currentVersion', currentVersion);
-    // if there is no current version, use version from manifest or fetch latest
-    // if there is a current version,
-    //    - if you request latest, version is not defined
-    //    - if you request a version, version is defined
-    //    - if you don't provide a version, version is defined if present in the
-    //      manifest, undefined otherwise
-    var hasRequestedVersion;
-    if (!currentVersion) {
-      hasRequestedVersion = false;
-    } else if (!version && !opts.latest) {
-      // no version provided and latest not requested, then don't do anything
-      hasRequestedVersion = true;
-    } else {
-      // does requested version match current version?
-      hasRequestedVersion = currentVersion.hash === version
-        || currentVersion.tag === version;
-    }
-
-    if (hasRequestedVersion) {
-      return Promise.resolve();
-    }
-    if (isURL) {
-      return installModuleFromURL(app, moduleName, url, version, opts);
-    }
-    return installModuleFromName(app, moduleName, version, opts);
-  }).tap(function (installedVersion) {
-    if (installedVersion) {
-      logger.log(
-        chalk.yellow(moduleName + '@' + installedVersion),
-        chalk.cyan('install completed')
-      );
-    } else {
-      logger.debug('No installedVersion...');
-    }
-  }).finally(function () {
-    // Unlock the app for future use
-    if (this.hasLock) {
-      return app.releaseLock();
-    }
-  }).nodeify(cb);
 };
 
-function updateCache(name, url, version) {
-  return cache.has(name)
-    ? cache.add(name, version)
-    : cache.add(url, version);
-}
+/** @returns {Promise} */
+var getManifest = function(dir) {
+  var manifestPath = path.join(dir, 'manifest.json');
 
-/**
- * Lookup URL for module by name then defer to installModuleFromURL
- *
- * @return {Promise<string>} resolves with installed version
- */
-function installModuleFromName (app, name, version, opts) {
-  if (name == 'devkit-core') {
-    return installModuleFromURL(app, name, 'git@github:gameclosure/devkit-core', version, opts);
+  if (!fs.existsSync(manifestPath)) {
+    logger.silly('no manifest here!');
+    return Promise.reject();
   }
-  // TODO
-  return Promise.reject(
-    new Error('Installing module by name is not [yet] supported')
-  );
-}
 
-/**
- * Install a module in an app given a URL
- *
- * @return {Promise<string>} resolves with installed version
- */
-function installModuleFromURL (app, name, url, version, opts) {
-  // we can't silence a clone/fetch in case the user has to enter credentials
-  logger.log(chalk.cyan('Adding ' + name + (version ? '@' + version : '')));
+  var contents = fs.readFileSync(manifestPath, 'utf8');
 
-  var modulePath = path.join(app.paths.modules, name);
-  var exists = fs.existsSync(modulePath);
-
-  return Promise
-    .bind({})
-    .then(function () {
-      if (!exists) {
-        // if destination path doesn't exist, add module to cache then add
-        // module to app
-        return updateCache(name, url, version)
-          .bind(this)
-          .then(function (cacheEntry) {
-            this.cacheEntry = cacheEntry;
-            return addModuleToApp(app, cacheEntry, name, opts);
-          });
-      }
-    })
-    .then(function () {
-      // modulePath may be invalid if name is a URL, use the cacheEntry for the
-      // latest values
-      if (this.cacheEntry) {
-        name = this.cacheEntry.name;
-        modulePath = path.join(app.paths.modules, this.cacheEntry.name);
-      }
-
-      if (opts.link) {
-        displayLinkWarning(app, modulePath);
-      }
-
-      return Module.setVersion(modulePath, version, {
-        forceInstall: true,
-        unsafe: opts.unsafe
-      });
-    })
-    .then(function (installedVersion) {
-      this.installedVersion = installedVersion;
-
-      app.reloadModules(); // synchronous
-      return app.addDependency(name, {
-        url: this.cacheEntry && this.cacheEntry.url,
-        version: this.installedVersion
-      });
-    })
-    .then(function () {
-      // Return value for installModuleFromURL
-      return this.installedVersion;
-    });
-}
-
-/**
- * Link module into app's moudles folder
- *
- * @return {Promise}
- */
-
-function linkModuleIntoApp (app, cacheEntry) {
-  logger.log(chalk.cyan('Linking ' + app.paths.modules));
-  return cache.link(cacheEntry, app.paths.modules);
-}
-
-/**
- * Copy module into app's modules folder
- *
- * @return {Promise}
- */
-
-function copyModuleIntoApp (app, cacheEntry) {
-  logger.log(chalk.cyan('Copying ' + app.paths.modules));
-  return cache.copy(cacheEntry, app.paths.modules);
-}
-
-/**
- * Add module to app's `./modules` folder. Default action is to copy. If
- * opts.link is truthy, create a symlink instead.
- *
- * @return {Promise}
- */
-
-function addModuleToApp (app, cacheEntry, moduleName, opts) {
-  trace('addModuleToApp cacheEntry:', cacheEntry);
-  moduleName = cacheEntry && cacheEntry.name || moduleName;
-
-  if (opts.link) {
-    return linkModuleIntoApp(app, cacheEntry);
-  } else {
-    return copyModuleIntoApp(app, cacheEntry);
-  }
-}
-
-/**
- * The module installation for this app is a symlink. Remind the user :)
- */
-
-function displayLinkWarning (app, modulePath) {
   try {
-    logger.warn(app.paths.root, '-->', fs.readlinkSync(modulePath));
-  } catch (e) {
-    logger.error('Unexpected error reading link', modulePath);
-    logger.error(e);
+    var manifest = JSON.parse(contents);
+    return Promise.resolve(manifest);
+  } catch(e) {
+    logger.warn('Malformed manifest at:', manifestPath);
+    return Promise.reject();
   }
-}
+};
+
+/**
+ * Install a module in a folder given a URL and version
+ *
+ * @return {Promise<string>} resolves with installed version
+ */
+var installModuleFromURL = function(baseDir, name, url, version, opts) {
+  opts = opts || {};
+
+  if (opts.colorLog) {
+    logger.log(
+      chalk.cyan('Installing:'),
+      chalk.yellow(name + (version ? '@' + version : '')) + chalk.cyan('...')
+    );
+  } else {
+    logger.log('Installing:', name + (version ? '@' + version : ''));
+  }
+
+  var modulePath = path.join(baseDir, 'modules', name);
+
+  return Promise.resolve()
+    .then(function() {
+      if (cache.has(name)) {
+        return cache.update(name, version);
+      } else {
+        return cache.add(name, url);
+      }
+    })
+    .then(function(entry) {
+      return cache.localUpdate(name, modulePath, version);
+    })
+    .then(function() {
+      logger.debug('Checking for sub dependencies');
+      return exports.runInDirectory(modulePath);
+    })
+    .then(function() {
+      logger.log('Installation complete for:', name);
+    });
+};
+
+var installAll = function(dir, deps, opts) {
+  opts = opts || {};
+
+  return Promise.map(
+    Object.keys(deps),
+    function(moduleName) {
+      var rawURL = deps[moduleName];
+      var parsed = parseURL(rawURL);
+
+      var version = parsed.version;
+      var url = parsed.url;
+      var isURL = !!url || PROTOCOL_PATTERN.test(moduleName);
+
+      logger.silly('isURL:', isURL);
+
+      if (isURL) {
+        return installModuleFromURL(dir, moduleName, url, version, opts);
+      }
+      console.error('Installing by name is not yet supported. Please use URL/');
+      throw new Error('installing by name not yet supported');
+      // return installModuleFromName(dir, moduleName, version, opts);
+    },
+    { concurrency: 1}
+  );
+};
+
+/**
+ * @param  {String} dir
+ * @param  {Object} [opts]
+ * @param  {Boolean} [opts.useLockfile=false]
+ * @return {Promise}
+ */
+exports.runInDirectory = function(dir, opts) {
+  opts = opts || {};
+  var hasLock = false;
+
+  logger.debug('installing in', dir);
+  return getManifest(dir)
+    .bind({})
+    .then(function(manifest) {
+      this.manifest = manifest;
+      if (!manifest.dependencies) {
+        logger.silly('no dependencies in the manifest');
+        return Promise.reject();
+      }
+    })
+    .then(function() {
+      if (opts.useLockfile) {
+        return lockFile.lock(dir).then(function() {
+          hasLock = true;
+        });
+      }
+    }).then(function() {
+      return installAll(dir, this.manifest.dependencies, { colorLog: hasLock });
+    })
+    .catch(function(err) {
+      // if no error, silently fail
+      if (!err) {
+        return;
+      }
+      // raise any errors
+      throw err;
+    })
+    .finally(function() {
+      if (hasLock) {
+        return lockFile.unlock(dir);
+      }
+    });
+};

@@ -35,7 +35,7 @@ var MANIFEST = 'manifest.json';
 var App = module.exports = Class(function () {
 
   this.init = function (root, manifest, lastOpened) {
-    logger.debug('Instantiating App with root path:', root);
+    logger.silly('Instantiating App with root path:', root);
 
     var loggerName = (manifest && manifest.shortName) || ('!' + path.basename(root));
     this.logger = logging.get('App.' + loggerName);
