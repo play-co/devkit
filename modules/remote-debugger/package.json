@@ -29,10 +29,10 @@
     }
   },
   "dependencies": {
-    "history": "=1.13",
+    "history": "=1.17.0",
     "qrcode.react": "^0.5.2",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
-    "react-router": "^1.0.0"
+    "react-router": "=1.0.3"
   }
 }
