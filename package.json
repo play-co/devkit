@@ -20,6 +20,7 @@
     "chalk": "^1.1.1",
     "chokidar": "^1.0.5",
     "compression": "^1.5.2",
+    "devkit-logging": "^1.0.0",
     "devkit-plugin-builder": "git+https://github.com/gameclosure/devkit-plugin-builder.git#v0.0.2",
     "devkit-remote-debugger-server": "git+ssh://git@github.com:gameclosure/devkit-remote-debugger-server",
     "expand-tilde": "^1.2.0",

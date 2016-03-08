@@ -38,7 +38,7 @@ var main = function() {
 
   var logging = require('./util/logging');
   if (argv.verbose > 0) {
-    logging.defaultLogLevel += argv.verbose;
+    logging.setDefaultLevel(logging.getDefaultLevel() + argv.verbose);
   }
 
   var logger = logging.get('devkit.main');
