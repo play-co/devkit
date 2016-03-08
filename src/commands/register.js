@@ -24,7 +24,7 @@ var RegisterCommand = Class(BaseCommand, function (supr) {
     var logger = this.logger;
     var argv = this.argv;
     var args = argv._;
-    var appPath = args[3] || process.cwd() || argv.recursive;
+    var appPath = args[2] || process.cwd() || argv.recursive;
 
     apps.get(appPath, function (err, app) {
       if (err) {

@@ -329,8 +329,14 @@ function checkoutVersion(git, version, opts) {
     });
 }
 
-Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
+Module.runInstallScripts = function runInstallScripts (modulePath) {
   logger.log('running install scripts...');
+
+  // Check for package.json
+  var packagePath = path.join(modulePath, 'package.json');
+  if (!fs.existsSync(packagePath)) {
+    return Promise.reject('No package.json at: ' + packagePath);
+  }
 
   var npmArgs = ['install'];
   if (process.getuid && process.getuid() === 0) {
@@ -338,7 +344,10 @@ Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
   }
 
   var command = 'npm';
-  var options = {stdio: 'inherit', cwd: modulePath};
+  var options = {
+    stdio: 'inherit',
+    cwd: modulePath
+  };
 
   // detect windows
   var windows = (os.platform() === 'win32');
@@ -362,7 +371,7 @@ Module.runInstallScripts = function runInstallScripts (modulePath, cb) {
         resolve();
       }
     });
-  }).nodeify(cb);
+  });
 };
 
 function createError(cls) {

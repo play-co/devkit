@@ -17,6 +17,11 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         'skip-fetch',
         'if version is not specified, server query for the latest version'
       )
+      .describe(
+        'app-path',
+        'The app to run install for'
+      )
+        .default('app-path', '.')
       .describe('unsafe', 'attempts to switch versions even if there is a potential conflict')
       .describe(
         'skip-defaults',
@@ -62,7 +67,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       skipFetch: argv['skip-fetch']
     };
 
-    return apps.get('.').then(function (app) {
+    return apps.get(argv.appPath).then(function (app) {
       // ensure modules directory exists
       if (!fs.existsSync(app.paths.modules)) {
         fs.mkdirSync(app.paths.modules);

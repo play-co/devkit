@@ -6,7 +6,7 @@ var apps = require('../apps');
 
 exports.build = function (appPath, argv, cb) {
   var startTime = Date.now();
-  logger.log(chalk.cyan("starting build at", new Date()));
+  logger.log(chalk.cyan('starting build at', new Date()));
 
   logging.install();
 

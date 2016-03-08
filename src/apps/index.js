@@ -86,7 +86,6 @@ var AppManager = Class(EventEmitter, function () {
     }).then(function () {
       this.persist();
       this._isLoaded = true;
-      return Promise.resolve();
     }).finally(function () {
       this._reloadPromise = null;
       this.emit('update');
@@ -206,27 +205,11 @@ var AppManager = Class(EventEmitter, function () {
       return Promise.resolve(this._apps).nodeify(cb);
     }
 
-    return this.waitForUpdateEvent().bind(this).then(function () {
+    return this.reload().bind(this).then(function () {
       trace('resolving with this._apps');
       return this._apps;
     }).nodeify(cb);
   };
-
-  this.waitForUpdateEvent = function () {
-    if (this._isLoaded) {
-      return Promise.resolve();
-    }
-
-    var self = this;
-    return new Promise(function (resolve, reject) {
-      trace('waiting for `update` event');
-      self.once('update', function () {
-        trace('got update event');
-        resolve(void 0);
-      });
-    });
-  };
-
 });
 
 module.exports = new AppManager();
