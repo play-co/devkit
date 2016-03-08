@@ -9,14 +9,16 @@ var HelpCommand = Class(BaseCommand, function (supr) {
   this.exec = function (command, args, cb) {
     var cmd = args.shift();
 
+    trace('running help:', cmd, args);
+
     if (commands.has(cmd)) {
       commands.get(cmd).showHelp(args);
     } else {
-      require('yargs').help();
+      commands._yargsObj.showHelp();
     }
 
     cb && cb();
-  }
+  };
 });
 
 module.exports = HelpCommand;

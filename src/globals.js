@@ -16,13 +16,48 @@ process.on('SIGINT', function () {
 });
 
 if (process.env.DEVKIT_TRACE) {
+  var callsite = require('callsite');
+
+  var herePath = __dirname;
+
+  var matchesTraceName = function(testStr) {
+    var traceNames = process.DEVKIT_TRACE_NAMES;
+    if (traceNames.length === 0) {
+      return true;
+    }
+
+    for (var i = 0, j = traceNames.length; i < j; i++) {
+      if (testStr.indexOf(traceNames[i]) === 0) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   trace = function devkitTrace () {
-    console.log.apply(console, arguments);
+    var stack = callsite();
+    var callSite = stack[1];
+    var callerPath = callSite.getFileName();
+
+    if (callerPath.indexOf(herePath) === 0) {
+      callerPath = callerPath.substring(herePath.length + 1, callerPath.length);
+    }
+
+    if (!matchesTraceName(callerPath)) {
+      return;
+    }
+
+    var args = Array.prototype.map.call(arguments, function(arg) {
+      return arg;
+    });
+
+    var prefix = callerPath + ':' + callSite.getLineNumber() + '|';
+    args.unshift(prefix);
+
+    console.log.apply(console, args);
   };
 
   process.env.BLUEBIRD_DEBUG = 1;
-
-  var version = require(__dirname + '/../package.json').version;
 
   /**
    * Show devkit trace information
@@ -30,10 +65,8 @@ if (process.env.DEVKIT_TRACE) {
   trace('--------------------------------------------------------------------------------');
   trace('------------------------- GAME CLOSURE DEVKIT TRACE ----------------------------');
   trace('--------------------------------------------------------------------------------');
+  var version = require(__dirname + '/../package.json').version;
   trace('  VERSION =>', version, '\n\n');
-
-  var logging = require('./util/logging');
-  logging.get('git').setLevel(logging.DEBUG);
 } else {
   trace = function () {};
 }

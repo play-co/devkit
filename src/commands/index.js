@@ -1,10 +1,4 @@
-var fs = require('fs');
 var yargs = require('yargs');
-var path = require('path');
-var printf = require('printf');
-var Promise = require('bluebird');
-
-var logger = require('../util/logging').get('commands');
 
 var commandNames = [];
 var _usage = [];
@@ -13,13 +7,23 @@ var commandUsages = [];
 
 // Let commands update args
 var _yargsObj = yargs
-  .boolean('v')
-  .help('h')
-  .alias('h', 'help');
+  .count('verbose')
+  .alias('v', 'verbose')
+  .array('trace');
+
+exports._yargsObj = _yargsObj;
 exports.argv = _yargsObj.argv;
 
 /** get all commands and their descriptions */
 exports.initCommands = function() {
+  var fs = require('fs');
+  var path = require('path');
+  var printf = require('printf');
+  var Promise = require('bluebird');
+
+  var logger = require('../util/logging').get('commands');
+
+
   fs.readdirSync(__dirname).forEach(function (item) {
     var extname = path.extname(item);
     if (extname === '.js' && item !== 'index.js') {
@@ -114,19 +118,19 @@ exports.initCommands = function() {
     }
   }
 
+  exports.get = function (name) {
+    return _commands[name];
+  };
+
+  exports.has = function (name) {
+    return name && !!_commands[name];
+  };
+
+  exports.run = function(name, args) {
+    logger.debug('running commaned', name, args);
+    var command = exports.get(name);
+    return Promise.promisify(command.exec, command)(name, args);
+  };
+
   return Promise.resolve();
-};
-
-exports.get = function (name) {
-  return _commands[name];
-};
-
-exports.has = function (name) {
-  return name && !!_commands[name];
-};
-
-exports.run = function(name, args) {
-  logger.debug('running commaned', name, args);
-  var command = exports.get(name);
-  return Promise.promisify(command.exec, command)(name, args);
 };

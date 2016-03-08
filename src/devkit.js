@@ -19,48 +19,44 @@
 
 process.title = 'devkit';
 
-/**
- * Command line interface.
- */
-
 /* jshint -W020 */
 require('jsio');
 /* jshint +W020 */
 
-require('./globals');
-
-/**
- * Module API.
- */
-
-// Command line invocation.
-if (require.main === module) {
-  main();
-}
-
-function main () {
-  var Promise = require('bluebird');
-
-  var logging = require('./util/logging');
+var main = function() {
+  // preliminary logging and globals setup //
   var commands = require('./commands');
-  // var cache = require('./install/cache');
-  var apps = require('./apps');
-
   var argv = commands.argv;
   var args = argv._;
 
-  if (argv.v) {
-    logging.defaultLogLevel = logging.DEBUG;
+  if (argv.trace) {
+    process.env.DEVKIT_TRACE = true;
+    process.DEVKIT_TRACE_NAMES = argv.trace;
+  }
+
+  require('./globals');
+
+  var logging = require('./util/logging');
+  if (argv.verbose > 0) {
+    logging.defaultLogLevel += argv.verbose;
   }
 
   var logger = logging.get('devkit.main');
-  logger.debug('Main called; getting command:\nargv', argv,'\nargs ', args);
+  logger.silly('Main called; getting command:\nargv', argv, '\nargs ', args);
+  // ---- //
+
+  // import all initilizers and run
+  var Promise = require('bluebird');
+
+  var cache = require('./install/cache');
+  var apps = require('./apps');
 
   return Promise.all([
-    // cache.loadCache(),
+    cache.loadCache(),
     commands.initCommands(),
     apps.reload()
   ]).then(function() {
+    // Now kick off command handling
     var name;
     if (argv.help) {
       name = 'help';
@@ -82,4 +78,13 @@ function main () {
       logger.error('Uncaught error in command execution', e);
     });
   });
+};
+
+
+if (require.main === module) {
+  // Command line invocation.
+  main();
+} else {
+  // Import setup
+  require('./globals');
 }
