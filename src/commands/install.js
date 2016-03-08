@@ -1,3 +1,15 @@
+var lazy = require('lazy-cache')(require);
+
+lazy('bluebird', 'Promise');
+lazy('fs');
+lazy('url');
+
+lazy('../apps');
+lazy('../util/logging');
+lazy('../util/lockfile');
+lazy('../install');
+lazy('../install/cacheErrors', 'cacheErrors');
+
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var InstallCommand = Class(BaseCommand, function (supr) {
@@ -29,21 +41,10 @@ var InstallCommand = Class(BaseCommand, function (supr) {
   };
 
   this.exec = function (command, args, cb) {
-    var Promise = require('bluebird');
-    var fs = require('fs');
-    var chalk = require('chalk');
-    var url = require('url');
-
-    var logger = require('../util/logging').get('command.install');
-    var apps = require('../apps');
-    var lockfile = require('../util/lockfile');
-    var Module = require('../modules/Module');
-    var install = require('../install');
-    var cacheErrors = require('../install/cacheErrors');
-
     var argv = this.argv;
     var module = args.shift();
 
+    var logger = lazy.utilLogging.get('command.install');
     logger.debug('Devkit install running', command, args, argv);
 
     function printErrorAndExit (msg, err, code) {
@@ -62,14 +63,14 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       skipFetch: argv['skip-fetch']
     };
 
-    return apps.get(argv.appPath).then(function (app) {
+    return lazy.apps.get(argv.appPath).then(function (app) {
       logger.debug('ensure modules directory exists');
-      if (!fs.existsSync(app.paths.modules)) {
-        fs.mkdirSync(app.paths.modules);
+      if (!lazy.fs.existsSync(app.paths.modules)) {
+        lazy.fs.mkdirSync(app.paths.modules);
       } else {
         logger.debug('ensure modules directory is directory');
-        if (!fs.statSync(app.paths.modules).isDirectory()) {
-          return Promise.reject(
+        if (!lazy.fs.statSync(app.paths.modules).isDirectory()) {
+          return lazy.Promise.reject(
             new Error('`your-app/modules` must be a directory')
           );
         }
@@ -77,7 +78,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
 
       if (module) {
         logger.debug('single module provided, installing: ', module);
-        var moduleUrl = url.parse(module);
+        var moduleUrl = lazy.url.parse(module);
         if (moduleUrl.protocol && moduleUrl.host && moduleUrl.href) {
           opts.url = moduleUrl.href;
           opts.protocol = moduleUrl.protocol.replace(':', '');
@@ -89,7 +90,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
           }
         }
 
-        return install.installModule(app, module, opts).return(app);
+        return lazy.install.installModule(app, module, opts).return(app);
       }
 
       // no module provided, install all dependencies after we ensure we
@@ -110,20 +111,20 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         return;
       }
       // otherwise, need to install all dependencies
-      return install.runInDirectory(app.paths.root, { useLockfile: true });
+      return lazy.install.runInDirectory(app.paths.root, { useLockfile: true });
     })
     // TODO: handle git errors
-    .catch(apps.ApplicationNotFoundError, function (err) {
+    .catch(lazy.apps.ApplicationNotFoundError, function (err) {
       return printErrorAndExit([
         'Could not find a valid devkit application. Are you in a devkit',
         'application directory?'
       ], err);
-    }).catch(apps.InvalidManifestError, function (err) {
+    }).catch(lazy.apps.InvalidManifestError, function (err) {
       return printErrorAndExit([
         'Could not parse manifest.json. Are you in a devkit',
         'application directory? Is your manifest a valid json file?'
       ], err);
-    }).catch(lockfile.FileLockerError, function (err) {
+    }).catch(lazy.utilLockfile.FileLockerError, function (err) {
       return printErrorAndExit([
         'Could not get a lock on this app. Is there a build or other devkit',
         'process running?'
@@ -131,9 +132,9 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     })
     // Cache errors
     .catch(
-      cacheErrors.DirectoryCollision,
-      cacheErrors.DirtyRepo,
-      cacheErrors.UnknownLocalCommit,
+      lazy.cacheErrors.DirectoryCollision,
+      lazy.cacheErrors.DirtyRepo,
+      lazy.cacheErrors.UnknownLocalCommit,
     function (err) {
       return printErrorAndExit([
         'Cache error:', err.message

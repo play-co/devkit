@@ -1,4 +1,11 @@
+var lazy = require('lazy-cache')(require);
 
+lazy('path');
+lazy('chalk');
+lazy('./index', 'commands');
+lazy('../apps');
+
+var UsageError = require('../util/BaseCommand').UsageError;
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var InitCommand = Class(BaseCommand, function (supr) {
@@ -17,17 +24,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
   };
 
   this.exec = function (command, args, cb) {
-    var fs = require('fs');
-    var ff = require('ff');
-    var path = require('path');
-
-    var chalk = require('chalk');
-
-    var commands = require('./index');
-    var apps = require('../apps');
-
-    var UsageError = require('../util/BaseCommand').UsageError;
-    var DestinationExistsError = apps.DestinationExistsError;
+    var DestinationExistsError = lazy.apps.DestinationExistsError;
 
     var argv = this.argv;
 
@@ -43,7 +40,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
         return Promise.reject(new UsageError(errorMessage));
       }
 
-      var appName = path.basename(appPath);
+      var appName = lazy.path.basename(appPath);
       if (!appName) {
         // TODO: refactor and print usage
         errorMessage = 'No app name provided';
@@ -60,7 +57,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
         return Promise.reject(new UsageError(errorMessage));
       }
 
-      this.appPath = appPath = path.resolve(process.cwd(), appPath);
+      this.appPath = appPath = lazy.path.resolve(process.cwd(), appPath);
 
       var template = {type: void 0};
 
@@ -76,13 +73,13 @@ var InitCommand = Class(BaseCommand, function (supr) {
       }
 
       // create the app
-      return apps.create(appPath, template);
+      return lazy.apps.create(appPath, template);
     }).then(function (app) {
 
       if (!argv['skip-install']) {
         // change to app root and run install command
         process.chdir(app.paths.root);
-        return commands.get('install').exec('install', []);
+        return lazy.commands.get('install').exec('install', []);
       }
 
     }).then(function () {
@@ -93,8 +90,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
       );
 
       return new Promise(function (resolve) {
-        commands
-          .get('instructions')
+        lazy.commands.get('instructions')
           .exec('instructions', ['new_application'], resolve);
       });
 

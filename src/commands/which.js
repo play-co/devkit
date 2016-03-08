@@ -1,3 +1,7 @@
+var lazy = require('lazy-cache')(require);
+
+lazy('path');
+
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var VersionCommand = Class(BaseCommand, function (supr) {
@@ -10,8 +14,7 @@ var VersionCommand = Class(BaseCommand, function (supr) {
   };
 
   this.getLocation = function () {
-    var path = require('path');
-    return path.join(__dirname, '..', '..');
+    return lazy.path.join(__dirname, '..', '..');
   };
 });
 

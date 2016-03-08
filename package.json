@@ -33,6 +33,7 @@
     "http-fs": "git+https://github.com/weebygames/http-fs.git",
     "js-yaml": "^3.4.0",
     "jsio": "^2.2.4",
+    "lazy-cache": "^1.0.3",
     "lockfile": "^1.0.0",
     "mime": "^1.3.4",
     "nodegit": "=0.11.8",

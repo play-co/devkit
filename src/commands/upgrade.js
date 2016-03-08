@@ -1,3 +1,8 @@
+var lazy = require('lazy-cache')(require);
+
+lazy('../apps');
+lazy('../install');
+
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var UpgradeCommand = Class(BaseCommand, function (supr) {
@@ -13,12 +18,8 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
   };
 
   this.exec = function (command, args, cb) {
-
-    var apps = require('../apps');
-    var install = require('../install');
-
     var moduleName = args.shift() || 'devkit-core';
-    apps.get('.', function (err, app) {
+    lazy.apps.get('.', function (err, app) {
       if (err) { throw err; }
 
       var opts = {};
@@ -29,7 +30,7 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
         opts.latest = true;
       }
 
-      install.installModule(app, moduleName, opts, cb);
+      lazy.install.installModule(app, moduleName, opts, cb);
     }.bind(this));
   };
 

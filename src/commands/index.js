@@ -1,3 +1,11 @@
+var lazy = require('lazy-cache')(require);
+lazy('fs');
+lazy('path');
+lazy('printf');
+lazy('bluebird', 'Promise');
+
+lazy('../util/logging');
+
 var yargs = require('yargs');
 
 var commandNames = [];
@@ -16,18 +24,13 @@ exports.argv = _yargsObj.argv;
 
 /** get all commands and their descriptions */
 exports.initCommands = function() {
-  var fs = require('fs');
-  var path = require('path');
-  var printf = require('printf');
-  var Promise = require('bluebird');
-
-  var logger = require('../util/logging').get('commands');
+  var logger = lazy.utilLogging.get('commands');
 
 
-  fs.readdirSync(__dirname).forEach(function (item) {
-    var extname = path.extname(item);
+  lazy.fs.readdirSync(__dirname).forEach(function (item) {
+    var extname = lazy.path.extname(item);
     if (extname === '.js' && item !== 'index.js') {
-      commandNames.push(path.basename(item, extname));
+      commandNames.push(lazy.path.basename(item, extname));
     }
   });
 
@@ -100,7 +103,7 @@ exports.initCommands = function() {
   var format = '  %-' + (commandLength + 1) + 's %s';
   for (var i = 0; i < commandUsages.length; i++) {
     _usage.push(
-      printf(
+      lazy.printf(
         format, commandUsages[i].name, commandUsages[i].description
       )
     );
@@ -129,8 +132,8 @@ exports.initCommands = function() {
   exports.run = function(name, args) {
     logger.debug('running commaned', name, args);
     var command = exports.get(name);
-    return Promise.promisify(command.exec, command)(name, args);
+    return lazy.Promise.promisify(command.exec, command)(name, args);
   };
 
-  return Promise.resolve();
+  return lazy.Promise.resolve();
 };

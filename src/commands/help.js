@@ -1,4 +1,6 @@
-var commands = require('./index');
+var lazy = require('lazy-cache')(require);
+
+lazy('./index', 'commands');
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var HelpCommand = Class(BaseCommand, function (supr) {
@@ -11,10 +13,10 @@ var HelpCommand = Class(BaseCommand, function (supr) {
 
     trace('running help:', cmd, args);
 
-    if (commands.has(cmd)) {
-      commands.get(cmd).showHelp(args);
+    if (lazy.commands.has(cmd)) {
+      lazy.commands.get(cmd).showHelp(args);
     } else {
-      commands._yargsObj.showHelp();
+      lazy.commands._yargsObj.showHelp();
     }
 
     cb && cb();

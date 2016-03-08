@@ -1,18 +1,21 @@
 var EventEmitter = require('events').EventEmitter;
-var path = require('path');
-var childProcess = require('child_process');
-var pathExtra = require('path-extra');
-var nodegit = require('nodegit');
-var Promise = require('bluebird');
 
-var fs = require('../util/fs');
+var lazy = require('lazy-cache')(require);
+lazy('path');
+lazy('path-extra');
+lazy('nodegit');
+lazy('bluebird', 'Promise');
 
-var logger = require('../util/logging').get('cache');
-var nodegitCredentialHelper = require('./nodegitCredentialHelper');
-var cacheErrors = require('./cacheErrors');
-var Module = require('../modules/Module');
+lazy('../util/fs', 'fs');
 
-var MODULE_CACHE = path.join(pathExtra.datadir(process.title), 'cache');
+lazy('../util/logging', 'logging');
+lazy('./nodegitCredentialHelper');
+lazy('./cacheErrors');
+lazy('../modules/Module', 'Module');
+
+
+var logger = lazy.logging.get('cache');
+var MODULE_CACHE = lazy.path.join(lazy.pathExtra.datadir(process.title), 'cache');
 
 
 var ModuleCache = Class(EventEmitter, function () {
@@ -26,10 +29,10 @@ var ModuleCache = Class(EventEmitter, function () {
 
   this.loadCache = function() {
     logger.debug('initializing module cache at', MODULE_CACHE);
-    return fs.ensureDirAsync(MODULE_CACHE)
+    return lazy.fs.ensureDirAsync(MODULE_CACHE)
       .bind(this)
       .then(function () {
-        return fs.readdirAsync(MODULE_CACHE);
+        return lazy.fs.readdirAsync(MODULE_CACHE);
       })
       .map(function (entryName) {
         // Manually exclude anything starting with a '.'
@@ -39,11 +42,11 @@ var ModuleCache = Class(EventEmitter, function () {
 
         var cachePath = this.getPath(entryName);
         logger.silly('discovered entry', entryName, cachePath);
-        return nodegit.Repository.open(cachePath).then(function(repo) {
+        return lazy.nodegit.Repository.open(cachePath).then(function(repo) {
           return {
             repo: repo,
             path: cachePath,
-            name: path.basename(cachePath),
+            name: lazy.path.basename(cachePath),
             loaded: false
           };
         });
@@ -89,8 +92,8 @@ var ModuleCache = Class(EventEmitter, function () {
   this.remove = function(name) {
     // Remove from filesystem
     var cachePath = this.getPath(name);
-    if (fs.existsSync(cachePath)) {
-      fs.removeSync(cachePath);
+    if (lazy.fs.existsSync(cachePath)) {
+      lazy.fs.removeSync(cachePath);
     }
     // Remove from entries
     delete this._entries[name];
@@ -101,32 +104,32 @@ var ModuleCache = Class(EventEmitter, function () {
    */
   this.getPath = function () {
     if (arguments.length) {
-      return path.join(MODULE_CACHE, path.join.apply(path, arguments));
+      return lazy.path.join(MODULE_CACHE, lazy.path.join.apply(lazy.path, arguments));
     }
 
     return MODULE_CACHE;
   };
 
   this._safeGetLocalRepo = function(repoPath) {
-    if (!fs.existsSync(repoPath)) {
+    if (!lazy.fs.existsSync(repoPath)) {
       // Initialize the new repository
       var isBare = 0;
-      return nodegit.Repository.init(repoPath, isBare);
+      return lazy.nodegit.Repository.init(repoPath, isBare);
     }
 
     var repo = null;
-    return nodegit.Repository.open(repoPath)
+    return lazy.nodegit.Repository.open(repoPath)
       .then(function(_repo) {
         repo = _repo;
         return repo.getStatus();
       }, function(err) {
         logger.debug('error opening for local update:', err);
         // If the directory exists, error to user
-        if (fs.existsSync(repoPath)) {
+        if (lazy.fs.existsSync(repoPath)) {
           logger.warn('Directory exists at:', repoPath);
           logger.warn('Please remove this directory if you want the devkit to manage the module');
           logger.warn('Cache exiting for safety of local files');
-          throw new cacheErrors.DirectoryCollision('local directory collision at ' + repoPath);
+          throw new lazy.cacheErrors.DirectoryCollision('local directory collision at ' + repoPath);
         }
       })
       .then(function(statusArray) {
@@ -149,7 +152,7 @@ var ModuleCache = Class(EventEmitter, function () {
           logger.warn('You have made local changes to the module:', repoPath);
           logger.warn('Please remove the existing repository (after saving changes)');
           logger.warn('Cache exiting for safety of local files');
-          throw new cacheErrors.DirtyRepo('local repository not clean ' + repoPath, changedFileNames);
+          throw new lazy.cacheErrors.DirtyRepo('local repository not clean ' + repoPath, changedFileNames);
         }
       })
       .then(function() {
@@ -173,7 +176,7 @@ var ModuleCache = Class(EventEmitter, function () {
             logger.warn('Local repository on an unknown commit:', headCommitHash);
             logger.warn('Please make sure to push your local commits before running devkit install.');
             logger.warn('Cache exiting for safety of local files');
-            throw new cacheErrors.UnknownLocalCommit('local repository on unknown commit ' + testRepo.path());
+            throw new lazy.cacheErrors.UnknownLocalCommit('local repository on unknown commit ' + testRepo.path());
           });
       }, function() {
         logger.silly('local repo has no head, all good');
@@ -187,13 +190,13 @@ var ModuleCache = Class(EventEmitter, function () {
     // Make sure we have an entry for this
     var entry = this._get(entryName);
     if (!entry) {
-      return Promise.reject('No entry for: ' + entryName);
+      return lazy.Promise.reject('No entry for: ' + entryName);
     }
 
     var repo = null;
     var remoteCache = null;
 
-    return Promise.resolve()
+    return lazy.Promise.resolve()
       .bind(this)
       .then(function() {
         return this._safeGetLocalRepo(destPath);
@@ -204,7 +207,7 @@ var ModuleCache = Class(EventEmitter, function () {
       })
       .then(function() {
         // ensure proper remotes are in place
-        return Promise.all([
+        return lazy.Promise.all([
           this._ensureRemote(repo, 'origin', entry.origin.url()),
           this._ensureRemote(repo, 'cache', entry.path)
         ]);
@@ -241,16 +244,16 @@ var ModuleCache = Class(EventEmitter, function () {
       })
       .then(function(targetCommit) {
         logger.silly('resetting repository to cache contents:', targetCommit.id());
-        return nodegit.Reset.reset(repo, targetCommit, nodegit.Reset.TYPE.HARD);
+        return lazy.nodegit.Reset.reset(repo, targetCommit, lazy.nodegit.Reset.TYPE.HARD);
       })
       .then(function() {
-        var packagePath = path.join(destPath, 'package.json');
-        if (!fs.existsSync(packagePath)) {
+        var packagePath = lazy.path.join(destPath, 'package.json');
+        if (!lazy.fs.existsSync(packagePath)) {
           return;
         }
 
         logger.debug('package.json found, running npm install');
-        return Module.runInstallScripts(destPath);
+        return lazy.Module.runInstallScripts(destPath);
       })
       .then(function() {
         logger.debug('local update complete for', destPath);
@@ -278,7 +281,7 @@ var ModuleCache = Class(EventEmitter, function () {
         var currentUrl = remote.url();
         if (currentUrl !== remoteUrl) {
           logger.debug('remote url mismatch (setting to desired)', currentUrl, remoteUrl);
-          return nodegit.Remote.setUrl(repo, remoteName, remoteUrl)
+          return lazy.nodegit.Remote.setUrl(repo, remoteName, remoteUrl)
             .then(function() {
               // Return the new remote
               return repo.getRemote(remoteName);
@@ -287,7 +290,7 @@ var ModuleCache = Class(EventEmitter, function () {
         return remote;
       }, function(err) {
         logger.silly('remote missing, making new:', remoteName, remoteUrl);
-        return nodegit.Remote.create(repo, remoteName, remoteUrl);
+        return lazy.nodegit.Remote.create(repo, remoteName, remoteUrl);
       });
   };
 
@@ -296,15 +299,16 @@ var ModuleCache = Class(EventEmitter, function () {
     logger.debug('adding', name, url);
     // Make the new entry
     var cachePath = this.getPath(name);
+    logger.silly('> cachePath', cachePath);
     var isBare = 1;
-    return nodegit.Repository.init(cachePath, isBare)
+    return lazy.nodegit.Repository.init(cachePath, isBare)
       .then(function(repo) {
         var entry = {
           repo: repo,
           path: cachePath,
-          name: path.basename(cachePath),
+          name: lazy.path.basename(cachePath),
           url: url,
-          origin: nodegit.Remote.create(repo, 'origin', url)
+          origin: lazy.nodegit.Remote.create(repo, 'origin', url)
         };
         this._entries[name] = entry;
         return entry;
@@ -318,7 +322,7 @@ var ModuleCache = Class(EventEmitter, function () {
       .catch(function(err) {
         logger.error('Error while adding to cache:', name, url);
         // Remove the folder
-        this.remove(name);
+        // this.remove(name);
       }.bind(this));
   };
 
@@ -336,7 +340,7 @@ var ModuleCache = Class(EventEmitter, function () {
     return entry.repo.getCommit(version)
       .then(function(commit) {
         logger.silly('commit present in cache, no fetch required');
-        return Promise.resolve();
+        return lazy.Promise.resolve();
       }, function() {
         logger.silly('no commit present in cache, fetch required');
         return this._updateEntry(entryName);
@@ -349,7 +353,7 @@ var ModuleCache = Class(EventEmitter, function () {
     var entry = this._get(name);
 
     var remote = entry.origin;
-    var fetchOpts = nodegitCredentialHelper.getFetchOpts();
+    var fetchOpts = lazy.nodegitCredentialHelper.getFetchOpts();
 
     // Manually call fetch... this is some internal nodegit magic.
     // This properly connects, while remote.connect() results in error: Must call UPLOADPACK_LS before UPLOADPACK
@@ -363,7 +367,7 @@ var ModuleCache = Class(EventEmitter, function () {
 
   this.link = function (cacheEntry, destPath, cb) {
     var src = this.getPath(cacheEntry.name);
-    var dest = path.join(destPath, cacheEntry.name);
+    var dest = lazy.path.join(destPath, cacheEntry.name);
     return createLink(src, dest, cb);
   };
 
@@ -376,21 +380,21 @@ var ModuleCache = Class(EventEmitter, function () {
   };
 });
 
-var unlink = Promise.promisify(fs.unlink);
-var symlink = Promise.promisify(fs.symlink);
-var lstat = Promise.promisify(fs.lstat);
+var unlink = lazy.Promise.promisify(lazy.fs.unlink);
+var symlink = lazy.Promise.promisify(lazy.fs.symlink);
+var lstat = lazy.Promise.promisify(lazy.fs.lstat);
 
 function createLink(src, dest, cb) {
   return lstat(dest).catch(function (err) {
     if (err.code !== 'ENOENT') {
-      return Promise.reject(err);
+      return lazy.Promise.reject(err);
     }
   }).then(function (stat) {
     if (stat) {
       if (stat.isSymbolicLink()) {
         return unlink(dest);
       } else {
-        return Promise.reject(
+        return lazy.Promise.reject(
           new Error('Please remove existing module before using --link')
         );
       }

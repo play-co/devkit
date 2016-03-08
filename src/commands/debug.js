@@ -1,3 +1,8 @@
+var lazy = require('lazy-cache')(require);
+
+lazy('../build');
+lazy('../apps');
+
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var DebugCommand = Class(BaseCommand, function (supr) {
@@ -21,14 +26,14 @@ var DebugCommand = Class(BaseCommand, function (supr) {
       .describe('scheme', 'debug | release')
       .describe('version', 'override the version provided in the manifest')
       .describe('get-config', 'output ONLY the build configuration to stdout')
-  }
+  };
 
   this.showHelp = function (args) {
     supr(this, 'showHelp', arguments);
 
     process.argv.push('--help');
     this.exec(this.name, args);
-  }
+  };
 
   this.exec = function (command, args, cb) {
     var argv = this.argv;
@@ -40,8 +45,6 @@ var DebugCommand = Class(BaseCommand, function (supr) {
       }
     }
 
-    var build = require('../build');
-    var apps = require('../apps');
     var appPath = argv.app || null;
 
     if (!argv.target) {
@@ -55,13 +58,13 @@ var DebugCommand = Class(BaseCommand, function (supr) {
     }
 
     if (argv.help) {
-      apps.get(appPath, function (err, app) {
+      lazy.apps.get(appPath, function (err, app) {
         if (err) { return console.log(err); }
         console.log(getHelp(app, argv.target));
         cb && cb();
       });
     } else {
-      build.build(appPath, argv, function (err, res) {
+      lazy.build.build(appPath, argv, function (err, res) {
         require('../jvmtools').stop();
         cb && cb();
       });

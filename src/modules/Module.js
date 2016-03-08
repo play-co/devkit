@@ -1,17 +1,20 @@
-var path = require('path');
-var fs = require('fs');
-var chalk = require('chalk');
-var printf = require('printf');
-var spawn = require('child_process').spawn;
-var os = require('os');
+var lazy = require('lazy-cache')(require);
 
-var gitClient = require('../util/gitClient');
-var _logger = require('../util/logging')
-var logger = _logger.get('module');
+lazy('path');
+lazy('fs');
+lazy('chalk');
+lazy('printf');
+lazy('child_process');
+lazy('os');
+
+lazy('../util/gitClient', 'gitClient');
+lazy('../util/logging', 'logging');
+
+var logger = lazy.logging.get('module');
 
 var exists = function (filePath) {
   return new Promise(function (resolve, reject) {
-    fs.exists(filePath, function (pathExists) {
+    lazy.fs.exists(filePath, function (pathExists) {
       if (pathExists) {
         return resolve(pathExists);
       }
@@ -39,7 +42,7 @@ var Module = module.exports = Class(function () {
     this.version = info.version || info.packageContents.version;
     this.parent = info.parent;
     this.isDependency = info.isDependency;
-    this._logger = _logger.get('mod:' + this.name);
+    this._logger = lazy.logging.get('mod:' + this.name);
 
     // game-side js.io path for importing client code from this module
     this._clientPaths = {};
@@ -55,7 +58,7 @@ var Module = module.exports = Class(function () {
     if (devkit.buildTargets) {
       for (var target in devkit.buildTargets) {
         this._buildTargets[target] =
-          path.resolve(this.path, devkit.buildTargets[target]);
+          lazy.path.resolve(this.path, devkit.buildTargets[target]);
       }
     }
 
@@ -65,7 +68,7 @@ var Module = module.exports = Class(function () {
         this._logger.debug('extension registered: ' + name);
         var extInfo = devkit.extensions[name];
         if (typeof extInfo == 'string') {
-          extInfo = path.join(this.path, devkit.extensions[name]);
+          extInfo = lazy.path.join(this.path, devkit.extensions[name]);
         }
 
         this._extensions[name] = extInfo;
@@ -125,9 +128,9 @@ function strip(str) {
 
 Module.load = function (modulePath, /* optional */ opts) {
 
-  var packageFile = path.join(modulePath, 'package.json');
+  var packageFile = lazy.path.join(modulePath, 'package.json');
 
-  if (!fs.existsSync(packageFile)) { return; }
+  if (!lazy.fs.existsSync(packageFile)) { return; }
 
   var packageContents;
   try {
@@ -138,7 +141,7 @@ Module.load = function (modulePath, /* optional */ opts) {
 
   if (!packageContents.devkit) { return; }
 
-  var name = path.basename(modulePath);
+  var name = lazy.path.basename(modulePath);
 
   opts = opts || {};
 
@@ -153,7 +156,7 @@ Module.load = function (modulePath, /* optional */ opts) {
 };
 
 Module.getURL = function (modulePath, cb) {
-  var git = gitClient.get(modulePath);
+  var git = lazy.gitClient.get(modulePath);
   return git('remote', '-v', {extraSilent: true}).then(function (remotes) {
     return remotes.split('\n').map(function (line) {
       return line.match(/^origin\s+(.*?)\s+\(fetch\)/);
@@ -167,7 +170,7 @@ Module.getURL = function (modulePath, cb) {
 
 Module.describeVersion = function (modulePath, cb) {
   trace('Module.describeVersion');
-  var git = gitClient.get(modulePath);
+  var git = lazy.gitClient.get(modulePath);
 
   return exists(modulePath)
     .then(function () {
@@ -187,7 +190,7 @@ Module.describeVersion = function (modulePath, cb) {
 };
 
 Module.getVersions = function (modulePath, cb) {
-  var git = gitClient.get(modulePath);
+  var git = lazy.gitClient.get(modulePath);
   return Promise.all([
     git.getLocalTags(),
     git('describe', '--tags', {extraSilent: true})
@@ -205,8 +208,8 @@ Module.setVersion = function (modulePath, version, opts) {
 
   trace('modulePath', modulePath);
 
-  var git = gitClient.get(modulePath);
-  var moduleName = path.basename(modulePath);
+  var git = lazy.gitClient.get(modulePath);
+  var moduleName = lazy.path.basename(modulePath);
   var forceInstall = opts.forceInstall;
 
   return exists(modulePath)
@@ -223,7 +226,7 @@ Module.setVersion = function (modulePath, version, opts) {
 
       return version;
     })
-    .catch(gitClient.UnknownGitRevision, function (e) {
+    .catch(lazy.gitClient.UnknownGitRevision, function (e) {
       // check if version exists locally and try to fetch it if not
       if (!opts.skipFetch) {
         return git
@@ -265,8 +268,8 @@ Module.setVersion = function (modulePath, version, opts) {
 
       if (!forceInstall && alreadyOnRequestedVersion) {
         logger.log(
-          chalk.cyan('set version'),
-          chalk.yellow(moduleName + '@' + this.name)
+          lazy.chalk.cyan('set version'),
+          lazy.chalk.yellow(moduleName + '@' + this.name)
         );
         return this.requestedVersion;
       } else {
@@ -282,8 +285,8 @@ Module.setVersion = function (modulePath, version, opts) {
           })
           .then(function () {
             logger.log(
-              chalk.cyan('set version'),
-              chalk.yellow(moduleName + '@' + this.requestedVersion)
+              lazy.chalk.cyan('set version'),
+              lazy.chalk.yellow(moduleName + '@' + this.requestedVersion)
             );
             return this.requestedVersion;
           });
@@ -324,7 +327,7 @@ function checkoutVersion(git, version, opts) {
       return git
         .checkoutRef(version)
         .catch(function (e) {
-          throw new CheckoutError(path.basename(git.path), version, e.stderr);
+          throw new CheckoutError(lazy.path.basename(git.path), version, e.stderr);
         });
     });
 }
@@ -333,8 +336,8 @@ Module.runInstallScripts = function runInstallScripts (modulePath) {
   logger.log('running install scripts...');
 
   // Check for package.json
-  var packagePath = path.join(modulePath, 'package.json');
-  if (!fs.existsSync(packagePath)) {
+  var packagePath = lazy.path.join(modulePath, 'package.json');
+  if (!lazy.fs.existsSync(packagePath)) {
     return Promise.reject('No package.json at: ' + packagePath);
   }
 
@@ -350,7 +353,7 @@ Module.runInstallScripts = function runInstallScripts (modulePath) {
   };
 
   // detect windows
-  var windows = (os.platform() === 'win32');
+  var windows = (lazy.os.platform() === 'win32');
 
   // on windows, process.spawn can only call executables on the path
   // this is an ugly workaround to allow calling npm install inside
@@ -362,7 +365,8 @@ Module.runInstallScripts = function runInstallScripts (modulePath) {
     options.windowsVerbatimArguments = true;
   }
 
-  var npm = spawn(command, npmArgs, options);
+  console.log('> Spawning:', command, npmArgs, options);
+  var npm = lazy.childProcess.spawn(command, npmArgs, options);
   return new Promise(function (resolve, reject) {
     npm.on('close', function (code) {
       if (code) {
@@ -382,8 +386,8 @@ function createError(cls) {
 
 function ModifiedTreeError(modulePath, changes) {
   var msg = 'you have made modifications to the module %(name)s (%(path)s)';
-  this.message = printf(msg, {
-                   name: path.basename(modulePath),
+  this.message = lazy.printf(msg, {
+                   name: lazy.path.basename(modulePath),
                    path: modulePath
                  });
 
@@ -398,7 +402,7 @@ Module.ModifiedTreeError = createError(ModifiedTreeError);
 function CheckoutError(name, version, stderr) {
   var msg = 'checkout of module %(name)s at version %(version)s failed.'
           + '\n\n%(stderr)';
-  this.message = printf(msg, {
+  this.message = lazy.printf(msg, {
                    name: name,
                    version: version,
                    stderr: stderr
@@ -413,8 +417,8 @@ Module.CheckoutError = createError(CheckoutError);
 function NpmInstallError(modulePath, code) {
   var msg = 'npm install for module %(module)s failed (exit code %(code)s).';
 
-  this.message = printf(msg, {
-                   module: path.basename(modulePath),
+  this.message = lazy.printf(msg, {
+                   module: lazy.path.basename(modulePath),
                    code: code
                  });
 

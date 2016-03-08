@@ -1,3 +1,8 @@
+var lazy = require('lazy-cache')(require);
+
+lazy('../apps');
+lazy('../install/cache');
+
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var RemoveCommand = Class(BaseCommand, function (supr) {
@@ -14,19 +19,17 @@ var RemoveCommand = Class(BaseCommand, function (supr) {
   };
 
   this.exec = function (command, args, cb) {
-    var apps = require('../apps');
-    var cache = require('../install/cache');
     var argv = this.argv;
     var module = args.shift();
 
-    apps.get('.')
+    lazy.apps.get('.')
       .then(function (app) {
         return app.removeDependency(module);
       })
       .then(function () {
         if (argv.cache) {
           this.logger.log('removing from cache...');
-          return cache.remove(module);
+          return lazy.installCache.remove(module);
         }
       })
       .nodeify(cb);

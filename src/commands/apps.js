@@ -1,3 +1,13 @@
+var lazy = require('lazy-cache')(require);
+
+lazy('fs');
+lazy('printf');
+lazy('chalk');
+
+lazy('../apps', 'apps');
+lazy('../util/stringify', 'stringify');
+lazy('../util/obj', 'obj');
+
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var AppsCommand = Class(BaseCommand, function (supr) {
@@ -11,20 +21,11 @@ var AppsCommand = Class(BaseCommand, function (supr) {
     this.opts
       .alias('s', 'short').describe('short', 'skip details')
       .alias('j', 'json').describe('json', 'prints details with json to stdout')
-      .describe('set-config')
-  }
+      .describe('set-config');
+  };
 
   this.exec = function (name, args) {
     var argv = this.argv;
-
-    var fs = require('fs');
-    var path = require('path');
-    var printf = require('printf');
-    var chalk = require('chalk');
-
-    var apps = require('../apps');
-    var stringify = require('../util/stringify');
-    var obj = require('../util/obj');
 
     var MAX_LENGTH = 120;
     function truncate(str) {
@@ -37,7 +38,7 @@ var AppsCommand = Class(BaseCommand, function (supr) {
 
     // sub-commands are for scripting, so set an exit code and exit on
     // completion
-    function handleCmdError(err) {
+    var handleCmdError = function(err) {
       if (err) {
         console.error(err);
         process.exit(1);
@@ -48,7 +49,7 @@ var AppsCommand = Class(BaseCommand, function (supr) {
     if (subcmd == 'set-config') {
       var key = args.shift();
       var value = args.shift();
-      apps.get('.', function (err, app) {
+      lazy.apps.get('.', function (err, app) {
         var manifest;
         var manifestPath;
 
@@ -57,10 +58,10 @@ var AppsCommand = Class(BaseCommand, function (supr) {
           manifestPath = app.paths.manifest;
         }
 
-        if (err instanceof apps.ApplicationNotFoundError && fs.existsSync('manifest.json')) {
+        if (err instanceof lazy.apps.ApplicationNotFoundError && lazy.fs.existsSync('manifest.json')) {
           try {
             manifestPath = 'manifest.json';
-            manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+            manifest = JSON.parse(lazy.fs.readFileSync('manifest.json', 'utf8'));
             err = null;
           } catch (e) {
             err = e;
@@ -70,9 +71,9 @@ var AppsCommand = Class(BaseCommand, function (supr) {
         handleCmdError(err);
 
         console.log(key, '<--', value);
-        obj.setVal(manifest, key, value);
+        lazy.obj.setVal(manifest, key, value);
 
-        fs.writeFile(manifestPath, stringify(manifest), function (err) {
+        lazy.fs.writeFile(manifestPath, lazy.stringify(manifest), function (err) {
           handleCmdError(err);
           process.exit(0);
         });
@@ -80,15 +81,15 @@ var AppsCommand = Class(BaseCommand, function (supr) {
       return;
     } else if (subcmd == 'get-config') {
       var key = args.shift();
-      apps.get('.', function (err, app) {
+      lazy.apps.get('.', function (err, app) {
         handleCmdError(err);
-        console.log(obj.getVal(app.manifest, key));
+        console.log(lazy.obj.getVal(app.manifest, key));
         process.exit(0);
       });
       return;
     }
 
-    apps.getApps(function (err, apps) {
+    lazy.apps.getApps(function (err, apps) {
       if (err) { throw err; }
 
       if (argv.json) {
@@ -100,7 +101,7 @@ var AppsCommand = Class(BaseCommand, function (supr) {
             appList.push(apps[appPath].toJSON());
           }
         }
-        console.log(stringify(appList));
+        console.log(lazy.stringify(appList));
       } else {
         var keyMap = {
           title: 'title',
@@ -116,30 +117,30 @@ var AppsCommand = Class(BaseCommand, function (supr) {
         };
 
         for (var appPath in apps) {
-          console.log(chalk.yellow(printf('%17s', appPath)));
+          console.log(lazy.chalk.yellow(lazy.printf('%17s', appPath)));
           var app = apps[appPath].toJSON();
           var map = (argv.short ? shortKeyMap : keyMap);
           for (var key in map) {
             if (key == 'modules') {
-              console.log(chalk.yellow(printf('%21s', map[key] + ':')));
+              console.log(lazy.chalk.yellow(lazy.printf('%21s', map[key] + ':')));
               var modules = app.modules;
               for (var name in modules) {
                 if (modules[name].isDependency) {
-                  console.log(chalk.green(printf('%28s', name + ':')), modules[name].version);
+                  console.log(lazy.chalk.green(lazy.printf('%28s', name + ':')), modules[name].version);
                 }
               }
             } else if (key == 'lastOpened') {
-              console.log(chalk.yellow(printf('%21s', map[key] + ':')), d.toLocaleDateString() + ',', d.toLocaleTimeString());
+              console.log(lazy.chalk.yellow(lazy.printf('%21s', map[key] + ':')), d.toLocaleDateString() + ',', d.toLocaleTimeString());
             } else {
               var d = new Date(app.lastOpened);
               strValue = typeof app[key] == 'object' ? JSON.stringify(app[key]) : '' + app[key];
-              console.log(chalk.yellow(printf('%21s', map[key] + ':')), truncate(strValue));
+              console.log(lazy.chalk.yellow(lazy.printf('%21s', map[key] + ':')), truncate(strValue));
             }
           }
         }
       }
     });
-  }
+  };
 });
 
 module.exports = AppsCommand;

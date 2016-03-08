@@ -1,14 +1,16 @@
-var ff = require('ff');
-var chalk = require('chalk');
-var logging = require('../util/logging');
-var logger = logging.get('build');
-var apps = require('../apps');
+var lazy = require('lazy-cache')(require);
+
+lazy('ff');
+lazy('chalk');
+lazy('../util/logging', 'logging');
+lazy('../apps');
 
 exports.build = function (appPath, argv, cb) {
+  var logger = lazy.logging.get('build');
   var startTime = Date.now();
-  logger.log(chalk.cyan('starting build at', new Date()));
+  logger.log(lazy.chalk.cyan('starting build at', new Date()));
 
-  logging.install();
+  lazy.logging.install();
 
   var config;
   var elapsed = 0;
@@ -23,11 +25,11 @@ exports.build = function (appPath, argv, cb) {
 
   var app;
   var _hasLock = false;
-  var f = ff(function () {
-    apps.has(appPath, f());
+  var f = lazy.ff(function () {
+    lazy.apps.has(appPath, f());
   }, function (appLoaded) {
     var next = f.wait();
-    apps.get(appPath, function (err, res) {
+    lazy.apps.get(appPath, function (err, res) {
       if (err && !argv.help) {
         if (err.code == 'ENOENT') {
           logger.error('the current directory is not a devkit app');

@@ -1,3 +1,11 @@
+var lazy = require('lazy-cache')(require);
+
+lazy('chalk');
+
+lazy('../apps');
+lazy('../modules/Module', 'Module');
+lazy('../util/stringify');
+
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
 var ModulesCommand = Class(BaseCommand, function (supr) {
@@ -16,22 +24,15 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
   };
 
   this.exec = function (command, args, cb) {
-    var path = require('path');
-    var chalk = require('chalk');
-
-    var apps = require('../apps');
-    var Module = require('../modules/Module');
-    var stringify = require('../util/stringify');
-
     var argv = this.argv;
     var moduleName = args.shift();
     var isJSON = argv.json;
     var allModules = argv.r || argv.recursive || argv.all;
 
-    apps.get('.')
+    lazy.apps.get('.')
       .then(function (app) {
         if (!isJSON) {
-          console.log(chalk.yellow(app.paths.root));
+          console.log(lazy.chalk.yellow(app.paths.root));
         }
 
         var modules = app.getModules();
@@ -43,7 +44,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
           return onModule(app, modules[moduleName])
             .then(function (info) {
               if (info) {
-                console.log(stringify(res));
+                console.log(lazy.utilStringify(res));
               }
             });
         } else {
@@ -65,7 +66,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
             })
             .then(function () {
               if (isJSON) {
-                console.log(stringify(res));
+                console.log(lazy.utilStringify(res));
               }
             });
         }
@@ -77,18 +78,18 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
     }
 
     function listVersions(app, module) {
-      return Module.getVersions(module.path)
+      return lazy.Module.getVersions(module.path)
         .then(function (info) {
           if (isJSON) {
             return info.versions;
           } else {
-            console.log(chalk.cyan('available versions'),
-                module.name ? chalk.cyan('for module ')
-                              + chalk.yellow(module.name)
+            console.log(lazy.chalk.cyan('available versions'),
+                module.name ? lazy.chalk.cyan('for module ')
+                              + lazy.chalk.yellow(module.name)
                             : '');
 
             console.log(info.versions.map(function (version) {
-              return version == info.current ? chalk.yellow(version) : version;
+              return version == info.current ? lazy.chalk.yellow(version) : version;
             }).join('\t'));
           }
         });
@@ -96,13 +97,13 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
 
     function describeVersion(app, module) {
       var version = module.version;
-      return Module.describeVersion(module.path)
+      return lazy.Module.describeVersion(module.path)
         .then(function (currentVersion) {
           if (argv['save-current']) {
             if (version != currentVersion.tag && version != currentVersion.hash) {
               // prefer tag names over hashes
               var name = currentVersion.tag || currentVersion.hash;
-              console.log(chalk.yellow(module.name) + ':', chalk.red(version), "-->", chalk.cyan(name));
+              console.log(lazy.chalk.yellow(module.name) + ':', lazy.chalk.red(version), "-->", lazy.chalk.cyan(name));
               app.addDependency(module.name, {
                 version: name
               });
