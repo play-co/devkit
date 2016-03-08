@@ -1,4 +1,3 @@
-/* globals trace */
 var EventEmitter = require('events').EventEmitter;
 var path = require('path');
 var childProcess = require('child_process');
@@ -11,6 +10,7 @@ var fs = require('../util/fs');
 var logger = require('../util/logging').get('cache');
 var nodegitCredentialHelper = require('./nodegitCredentialHelper');
 var cacheErrors = require('./cacheErrors');
+var Module = require('../modules/Module');
 
 var MODULE_CACHE = path.join(pathExtra.datadir(process.title), 'cache');
 
@@ -233,7 +233,11 @@ var ModuleCache = Class(EventEmitter, function () {
           });
       })
       .then(function(hash) {
-        return repo.getCommit(hash);
+        return repo.getCommit(hash).then(function(targetCommit) {
+          return targetCommit;
+        }, function(err) {
+          throw new Error('Could not get target commit: ' + targetCommit);
+        });
       })
       .then(function(targetCommit) {
         logger.silly('resetting repository to cache contents:', targetCommit.id());
@@ -246,11 +250,7 @@ var ModuleCache = Class(EventEmitter, function () {
         }
 
         logger.debug('package.json found, running npm install');
-        var cmd = 'npm install';
-        var execOpts = {
-          cwd: destPath
-        };
-        return Promise.promisify(childProcess.exec)(cmd, execOpts);
+        return Module.runInstallScripts(destPath);
       })
       .then(function() {
         logger.debug('local update complete for', destPath);
@@ -309,9 +309,12 @@ var ModuleCache = Class(EventEmitter, function () {
         this._entries[name] = entry;
         return entry;
       }.bind(this))
-      .then(function(entry) {
+      .then(function() {
         return this._updateEntry(name);
       }.bind(this))
+      .then(function() {
+        return this._entries[name];
+      })
       .catch(function(err) {
         logger.error('Error while adding to cache:', name, url);
         // Remove the folder
@@ -330,12 +333,12 @@ var ModuleCache = Class(EventEmitter, function () {
     logger.debug('updating', entryName, version);
     var entry = this._get(entryName);
 
-    entry.repo.getCommit(version)
+    return entry.repo.getCommit(version)
       .then(function(commit) {
-        logger.silly('commit present, no fetch required');
+        logger.silly('commit present in cache, no fetch required');
         return Promise.resolve();
       }, function() {
-        logger.silly('no commit present, fetch required');
+        logger.silly('no commit present in cache, fetch required');
         return this._updateEntry(entryName);
       }.bind(this));
   };
@@ -353,10 +356,8 @@ var ModuleCache = Class(EventEmitter, function () {
     return remote.fetch(['+refs/heads/*:refs/heads/*'], fetchOpts, '')
       .then(function() {
         // Manually disconnect the remote
+        logger.debug('> Update complete');
         return remote.disconnect();
-      })
-      .then(function() {
-        return entry;
       });
   };
 

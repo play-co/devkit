@@ -73,9 +73,11 @@ var main = function() {
     return commands.run(name, args).then(function() {
       // TODO: shouldnt need this...
       // Possibly a result of https://github.com/nodegit/nodegit/issues/866
+      logger.silly('Command run complete', arguments);
       process.exit(0);
     }, function(e) {
       logger.error('Uncaught error in command execution', e);
+      process.exit(1);
     });
   });
 };
