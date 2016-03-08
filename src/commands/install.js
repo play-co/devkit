@@ -45,7 +45,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     var InvalidManifestError = apps.InvalidManifestError;
     var FileLockerError = lockfile.FileLockerError;
 
-    var argv = this.opts.argv;
+    var argv = this.argv;
     var module = args.shift();
 
     function printErrorAndExit (msg, err, code) {

@@ -30,6 +30,16 @@ exports.BaseCommand = Class(function () {
 
     this.opts = require('yargs')();
     this.logger = logging.get(this.name);
+
+    Object.defineProperty(this, 'argv', {
+      get: this.getArgv.bind(this),
+      configurable: true,
+      enumerable: true
+    });
+  };
+
+  this.getArgv = function() {
+    return this.opts.parse(process.argv);
   };
 
   this.showHelp = function () {

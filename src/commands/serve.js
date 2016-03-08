@@ -33,7 +33,7 @@ var ServeCommand = Class(BaseCommand, function (supr) {
     }
 
     var serve = require('../serve');
-    var argv = this.opts.argv;
+    var argv = this.argv;
 
     serve.serveWeb({
       port: argv.port,

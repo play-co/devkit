@@ -31,7 +31,7 @@ var DebugCommand = Class(BaseCommand, function (supr) {
   }
 
   this.exec = function (command, args, cb) {
-    var argv = this.opts.argv;
+    var argv = this.argv;
     if (command === 'release') {
       argv.scheme = 'release';
       // unless overriden with --debug, debug is false for release builds

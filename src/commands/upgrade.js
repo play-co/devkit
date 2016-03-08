@@ -22,7 +22,7 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
       if (err) { throw err; }
 
       var opts = {};
-      var argv = this.opts.argv;
+      var argv = this.argv;
       if (argv.version) {
         opts.version = argv.version;
       } else {

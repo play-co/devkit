@@ -22,7 +22,7 @@ var RegisterCommand = Class(BaseCommand, function (supr) {
     var walk = require('../util/walk').walk;
 
     var logger = this.logger;
-    var argv = this.opts.argv;
+    var argv = this.argv;
     var args = argv._;
     var appPath = args[3] || process.cwd() || argv.recursive;
 

@@ -16,7 +16,7 @@ var RemoveCommand = Class(BaseCommand, function (supr) {
   this.exec = function (command, args, cb) {
     var apps = require('../apps');
     var cache = require('../install/cache');
-    var argv = this.opts.argv;
+    var argv = this.argv;
     var module = args.shift();
 
     apps.get('.')

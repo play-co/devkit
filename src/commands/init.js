@@ -29,6 +29,8 @@ var InitCommand = Class(BaseCommand, function (supr) {
     var UsageError = require('../util/BaseCommand').UsageError;
     var DestinationExistsError = apps.DestinationExistsError;
 
+    var argv = this.argv;
+
     return Promise.bind(this).then(function () {
       // check the app name
       var appPath = args.shift();
@@ -62,22 +64,22 @@ var InitCommand = Class(BaseCommand, function (supr) {
 
       var template = {type: void 0};
 
-      if (this.opts.argv.template !== void 0) {
+      if (argv.template !== void 0) {
         template.type = 'none';
         template.path = '';
-      } else if (this.opts.argv['local-template']) {
+      } else if (argv['local-template']) {
         template.type = 'local';
-        template.path = this.opts.argv['local-template'];
-      } else if (this.opts.argv['git-template']) {
+        template.path = argv['local-template'];
+      } else if (argv['git-template']) {
         template.type = 'git';
-        template.path = this.opts.argv['git-template'];
+        template.path = argv['git-template'];
       }
 
       // create the app
       return apps.create(appPath, template);
     }).then(function (app) {
 
-      if (!this.opts.argv['skip-install']) {
+      if (!argv['skip-install']) {
         // change to app root and run install command
         process.chdir(app.paths.root);
         return commands.get('install').exec('install', []);

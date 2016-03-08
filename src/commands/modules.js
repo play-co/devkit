@@ -23,7 +23,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
     var Module = require('../modules/Module');
     var stringify = require('../util/stringify');
 
-    var argv = this.opts.argv;
+    var argv = this.argv;
     var moduleName = args.shift();
     var isJSON = argv.json;
     var allModules = argv.r || argv.recursive || argv.all;

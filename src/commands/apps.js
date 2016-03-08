@@ -15,7 +15,7 @@ var AppsCommand = Class(BaseCommand, function (supr) {
   }
 
   this.exec = function (name, args) {
-    var argv = this.opts.argv;
+    var argv = this.argv;
 
     var fs = require('fs');
     var path = require('path');
