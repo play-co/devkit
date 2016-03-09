@@ -317,9 +317,10 @@ var ModuleCache = Class(EventEmitter, function () {
       }.bind(this))
       .then(function() {
         return this._entries[name];
-      })
+      }.bind(this))
       .catch(function(err) {
-        logger.error('Error while adding to cache:', name, url);
+        logger.error('Error while adding to cache(' + name + '):', err);
+        throw err;
         // Remove the folder
         // this.remove(name);
         // TODO: should this raise an error?
