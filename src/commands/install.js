@@ -1,6 +1,5 @@
 var lazy = require('lazy-cache')(require);
 
-lazy('bluebird', 'Promise');
 lazy('fs');
 lazy('url');
 
@@ -70,7 +69,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       } else {
         logger.debug('ensure modules directory is directory');
         if (!lazy.fs.statSync(app.paths.modules).isDirectory()) {
-          return lazy.Promise.reject(
+          return Promise.reject(
             new Error('`your-app/modules` must be a directory')
           );
         }

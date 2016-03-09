@@ -1,17 +1,16 @@
-var EventEmitter = require('events').EventEmitter;
-
 var lazy = require('lazy-cache')(require);
 lazy('path');
 lazy('path-extra');
 lazy('nodegit');
-lazy('bluebird', 'Promise');
 
 lazy('../util/fs', 'fs');
 
 lazy('../util/logging', 'logging');
-lazy('./nodegitCredentialHelper');
-lazy('./cacheErrors');
+lazy('./nodegitCredentialHelper', 'nodegitCredentialHelper');
+lazy('./cacheErrors', 'cacheErrors');
 lazy('../modules/Module', 'Module');
+
+var EventEmitter = require('events').EventEmitter;
 
 
 var logger = lazy.logging.get('cache');
@@ -190,13 +189,13 @@ var ModuleCache = Class(EventEmitter, function () {
     // Make sure we have an entry for this
     var entry = this._get(entryName);
     if (!entry) {
-      return lazy.Promise.reject('No entry for: ' + entryName);
+      return Promise.reject('No entry for: ' + entryName);
     }
 
     var repo = null;
     var remoteCache = null;
 
-    return lazy.Promise.resolve()
+    return Promise.resolve()
       .bind(this)
       .then(function() {
         return this._safeGetLocalRepo(destPath);
@@ -207,7 +206,7 @@ var ModuleCache = Class(EventEmitter, function () {
       })
       .then(function() {
         // ensure proper remotes are in place
-        return lazy.Promise.all([
+        return Promise.all([
           this._ensureRemote(repo, 'origin', entry.origin.url()),
           this._ensureRemote(repo, 'cache', entry.path)
         ]);
@@ -340,7 +339,7 @@ var ModuleCache = Class(EventEmitter, function () {
     return entry.repo.getCommit(version)
       .then(function(commit) {
         logger.silly('commit present in cache, no fetch required');
-        return lazy.Promise.resolve();
+        return Promise.resolve();
       }, function() {
         logger.silly('no commit present in cache, fetch required');
         return this._updateEntry(entryName);
@@ -365,6 +364,30 @@ var ModuleCache = Class(EventEmitter, function () {
       });
   };
 
+  this.createLink = function(src, dest, cb) {
+    var unlink = Promise.promisify(lazy.fs.unlink);
+    var symlink = Promise.promisify(lazy.fs.symlink);
+    var lstat = Promise.promisify(lazy.fs.lstat);
+
+    return lstat(dest).catch(function (err) {
+      if (err.code !== 'ENOENT') {
+        return Promise.reject(err);
+      }
+    }).then(function (stat) {
+      if (stat) {
+        if (stat.isSymbolicLink()) {
+          return unlink(dest);
+        } else {
+          return Promise.reject(
+            new Error('Please remove existing module before using --link')
+          );
+        }
+      }
+    }).then(function () {
+      return symlink(src, dest, 'junction');
+    }).nodeify(cb);
+  };
+
   this.link = function (cacheEntry, destPath, cb) {
     var src = this.getPath(cacheEntry.name);
     var dest = lazy.path.join(destPath, cacheEntry.name);
@@ -379,30 +402,6 @@ var ModuleCache = Class(EventEmitter, function () {
     return this._entries[name];
   };
 });
-
-var unlink = lazy.Promise.promisify(lazy.fs.unlink);
-var symlink = lazy.Promise.promisify(lazy.fs.symlink);
-var lstat = lazy.Promise.promisify(lazy.fs.lstat);
-
-function createLink(src, dest, cb) {
-  return lstat(dest).catch(function (err) {
-    if (err.code !== 'ENOENT') {
-      return lazy.Promise.reject(err);
-    }
-  }).then(function (stat) {
-    if (stat) {
-      if (stat.isSymbolicLink()) {
-        return unlink(dest);
-      } else {
-        return lazy.Promise.reject(
-          new Error('Please remove existing module before using --link')
-        );
-      }
-    }
-  }).then(function () {
-    return symlink(src, dest, 'junction');
-  }).nodeify(cb);
-}
 
 module.exports = new ModuleCache();
 module.exports.CACHE_PATH = MODULE_CACHE;

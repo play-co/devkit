@@ -21,10 +21,11 @@ var AppsCommand = Class(BaseCommand, function (supr) {
     this.opts
       .alias('s', 'short').describe('short', 'skip details')
       .alias('j', 'json').describe('json', 'prints details with json to stdout')
-      .describe('set-config');
+      .describe('set-config')
+      .describe('get-config');
   };
 
-  this.exec = function (name, args) {
+  this.exec = function (name, args, cb) {
     var argv = this.argv;
 
     var MAX_LENGTH = 120;
@@ -36,17 +37,7 @@ var AppsCommand = Class(BaseCommand, function (supr) {
       return str;
     }
 
-    // sub-commands are for scripting, so set an exit code and exit on
-    // completion
-    var handleCmdError = function(err) {
-      if (err) {
-        console.error(err);
-        process.exit(1);
-      }
-    };
-
-    var subcmd = args.shift();
-    if (subcmd == 'set-config') {
+    if (argv.setConfig) {
       var key = args.shift();
       var value = args.shift();
       lazy.apps.get('.', function (err, app) {
@@ -68,41 +59,41 @@ var AppsCommand = Class(BaseCommand, function (supr) {
           }
         }
 
-        handleCmdError(err);
+        if (err) { throw err; }
 
         console.log(key, '<--', value);
         lazy.obj.setVal(manifest, key, value);
 
         lazy.fs.writeFile(manifestPath, lazy.stringify(manifest), function (err) {
-          handleCmdError(err);
-          process.exit(0);
+          if (err) { throw err; }
+          cb();
         });
       });
-      return;
-    } else if (subcmd == 'get-config') {
+    } else if (argv.getConfig) {
       var key = args.shift();
       lazy.apps.get('.', function (err, app) {
-        handleCmdError(err);
+        if (err) { throw err; }
         console.log(lazy.obj.getVal(app.manifest, key));
-        process.exit(0);
+        cb();
       });
-      return;
-    }
+    } else {
 
-    lazy.apps.getApps(function (err, apps) {
-      if (err) { throw err; }
+      lazy.apps.getApps(function (err, apps) {
+        if (err) { throw err; }
 
-      if (argv.json) {
-        var appList = [];
-        for (var appPath in apps) {
-          if (argv.short) {
-            appList.push(appPath);
-          } else {
-            appList.push(apps[appPath].toJSON());
+        if (argv.json) {
+          var appList = [];
+          for (var appPath in apps) {
+            if (argv.short) {
+              appList.push(appPath);
+            } else {
+              appList.push(apps[appPath].toJSON());
+            }
           }
+          console.log(lazy.stringify(appList));
+          return cb();
         }
-        console.log(lazy.stringify(appList));
-      } else {
+
         var keyMap = {
           title: 'title',
           lastOpened: 'last opened',
@@ -138,8 +129,10 @@ var AppsCommand = Class(BaseCommand, function (supr) {
             }
           }
         }
-      }
-    });
+        cb();
+      });
+
+    }
   };
 });
 

@@ -19,9 +19,7 @@
 
 process.title = 'devkit';
 
-/* jshint -W020 */
 require('jsio');
-/* jshint +W020 */
 
 var main = function() {
   // preliminary logging and globals setup //
@@ -44,9 +42,6 @@ var main = function() {
   var logger = logging.get('devkit.main');
   logger.silly('Main called; getting command:\nargv', argv, '\nargs ', args);
   // ---- //
-
-  // import all initilizers and run
-  var Promise = require('bluebird');
 
   var cache = require('./install/cache');
   var apps = require('./apps');

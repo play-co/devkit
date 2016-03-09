@@ -12,24 +12,25 @@
  * You should have received a copy of the Mozilla Public License v. 2.0 along
  * with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
+var lazy = require('lazy-cache')(require);
+lazy('fs');
+lazy('path');
+lazy('../util/logging', 'logging');
 
-var EventEmitter = require('events').EventEmitter;
-var fs = require('fs');
-var path = require('path');
+lazy('../config');
+lazy('./App', 'App');
 
-var logger = require('../util/logging').get('apps');
+lazy('./functions', 'appFunctions');
 
-var config = require('../config');
-var App = require('./App');
-
-var appFunctions = require('./functions');
-var resolveAppPath = appFunctions.resolveAppPath;
+var logger = lazy.logging.get('apps');
 
 var errorTypes = require('./errors');
 
 var ApplicationNotFoundError = errorTypes.ApplicationNotFoundError;
 var InvalidManifestError = errorTypes.InvalidManifestError;
 var DestinationExistsError = errorTypes.DestinationExistsError;
+
+var EventEmitter = require('events').EventEmitter;
 
 var MANIFEST = 'manifest.json';
 
@@ -41,12 +42,12 @@ var AppManager = Class(EventEmitter, function () {
 
     this._reloadPromise = null;
 
-    config.on('change', bind(this, 'reload'));
+    lazy.config.on('change', bind(this, 'reload'));
   };
 
   this.reload = function () {
     logger.debug('reloading');
-    var persistedApps = config.get('apps');
+    var persistedApps = lazy.config.get('apps');
     if (!persistedApps) {
       persistedApps = {};
     }
@@ -67,7 +68,7 @@ var AppManager = Class(EventEmitter, function () {
     this._reloadPromise = Promise.map(appDirs, function (dir) {
       trace('loading dir', dir);
       var lastLoadTime = persistedApps[dir];
-      return App.loadFromPath(
+      return lazy.App.loadFromPath(
         dir, lastLoadTime
       ).catch(ApplicationNotFoundError, function (err) {
         // Remove missing apps from cache
@@ -99,7 +100,7 @@ var AppManager = Class(EventEmitter, function () {
       apps[app] = this._apps[app].lastOpened;
     }, this);
 
-    config.set('apps', apps);
+    lazy.config.set('apps', apps);
   };
 
   this.getAppDirs = function (cb) {
@@ -112,8 +113,8 @@ var AppManager = Class(EventEmitter, function () {
     trace('AppManager#create');
 
     // create the app directory
-    if (!fs.existsSync(appPath)) {
-      fs.mkdirSync(appPath);
+    if (!lazy.fs.existsSync(appPath)) {
+      lazy.fs.mkdirSync(appPath);
     } else {
       return Promise.reject(new DestinationExistsError(appPath)).nodeify(cb);
     }
@@ -126,12 +127,12 @@ var AppManager = Class(EventEmitter, function () {
       trace('creating application');
 
       // app not found, create a new one
-      var manifestPath = path.join(appPath, MANIFEST);
-      var app = new App(appPath, manifestPath);
+      var manifestPath = lazy.path.join(appPath, MANIFEST);
+      var app = new lazy.App(appPath, manifestPath);
 
       return app.createFromTemplate(template).then(function () {
         trace('validating application');
-        return app.validate({shortName: path.basename(appPath)});
+        return app.validate({shortName: lazy.path.basename(appPath)});
       }).then(function () {
         return app;
       });
@@ -150,7 +151,7 @@ var AppManager = Class(EventEmitter, function () {
 
   this.has = function (appPath, cb) {
     trace('AppManager#has');
-    appPath = resolveAppPath(appPath);
+    appPath = lazy.appFunctions.resolveAppPath(appPath);
 
     return this.getApps().bind(this).then(function () {
       return appPath in this._apps;
@@ -170,11 +171,11 @@ var AppManager = Class(EventEmitter, function () {
 
     if (!opts) { opts = {}; }
 
-    appPath = resolveAppPath(appPath);
+    appPath = lazy.appFunctions.resolveAppPath(appPath);
 
     return this.getApps().bind(this).then(function () {
       trace('Getting', appPath);
-      return App.loadFromPath(appPath, null);
+      return lazy.App.loadFromPath(appPath, null);
     }).catch(ApplicationNotFoundError, function (err) {
       trace('got app not found error');
       if (err.message) {
