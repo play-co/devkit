@@ -322,6 +322,7 @@ var ModuleCache = Class(EventEmitter, function () {
         logger.error('Error while adding to cache:', name, url);
         // Remove the folder
         // this.remove(name);
+        // TODO: should this raise an error?
       }.bind(this));
   };
 
@@ -348,18 +349,48 @@ var ModuleCache = Class(EventEmitter, function () {
 
   /** @returns {Promise} */
   this._updateEntry = function(name) {
-    logger.debug('_updating entry', name);
+    logger.info('Updating cache entry', name);
     var entry = this._get(name);
 
     var remote = entry.origin;
-    var fetchOpts = lazy.nodegitCredentialHelper.getFetchOpts();
+    var helperCallbacks = lazy.nodegitCredentialHelper.callbacks;
+    var minPrintTimeDiff = 1000;
+    var lastPrintTime = 0;
+    var fetchOpts = {
+      callbacks: {
+        certificateCheck: helperCallbacks.certificateCheck,
+        credentials: helperCallbacks.credentials,
+        transferProgress: function(transferProgress) {
+          var now = Date.now();
+          if (now - lastPrintTime < minPrintTimeDiff) {
+            return;
+          }
+          lastPrintTime = now;
+
+          var receivedObjects = transferProgress.receivedObjects();
+          var totalObjects = transferProgress.totalObjects();
+          var recvProgress = receivedObjects / totalObjects;
+          if (recvProgress > 0 && recvProgress < 1) {
+            logger.info('> ' + receivedObjects + '/' + totalObjects + ' objects, ' + transferProgress.receivedBytes() + ' bytes');
+            return;
+          }
+          var indexedDeltas = transferProgress.indexedDeltas();
+          var totalDeltas = transferProgress.totalDeltas();
+          var indexProgress = indexedDeltas / totalDeltas;
+          if (indexProgress > 0 && indexProgress < 1) {
+            logger.info('> ' + indexedDeltas + '/' + totalDeltas + ' deltas');
+            return;
+          }
+        }
+      }
+    };
 
     // Manually call fetch... this is some internal nodegit magic.
     // This properly connects, while remote.connect() results in error: Must call UPLOADPACK_LS before UPLOADPACK
     return remote.fetch(['+refs/heads/*:refs/heads/*'], fetchOpts, '')
       .then(function() {
         // Manually disconnect the remote
-        logger.debug('> Update complete');
+        logger.info('> Update complete');
         return remote.disconnect();
       });
   };
