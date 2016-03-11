@@ -1,3 +1,4 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('fs');
@@ -5,15 +6,14 @@ lazy('../util/logging');
 lazy('../apps');
 lazy('../serve');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var ServeCommand = Class(BaseCommand, function (supr) {
+class ServeCommand extends BaseCommand {
+  constructor () {
+    super();
 
-  this.name = 'serve';
-  this.description = 'starts the web simulator';
-
-  this.init = function () {
-    supr(this, 'init', arguments);
+    this.name = 'serve';
+    this.description = 'starts the web simulator';
 
     this.opts
       .describe('port', 'port on which to run the DevKit server')
@@ -29,9 +29,9 @@ var ServeCommand = Class(BaseCommand, function (supr) {
                 'starts the built in remote debugging proxy. See https://github.com/gameclosure/devkit-remote-debugger-server')
       .describe('remote-debugging-host',
                 'Sets the host for the remote debugging connection to use (overrides the client just guessing the URL that devkit is served on)');
-  };
+  }
 
-  this.exec = function () {
+  exec () {
     lazy.utilLogging.install();
 
     if (lazy.fs.existsSync('manifest.json')) {
@@ -47,7 +47,7 @@ var ServeCommand = Class(BaseCommand, function (supr) {
       remoteDebugging: !!argv['remote-debugging'],
       remoteDebuggingHost: argv['remote-debugging-host']
     });
-  };
-});
+  }
+}
 
 module.exports = ServeCommand;

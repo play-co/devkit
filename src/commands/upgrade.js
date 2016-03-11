@@ -1,23 +1,23 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('../apps');
 lazy('../install');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var UpgradeCommand = Class(BaseCommand, function (supr) {
+class UpgradeCommand extends BaseCommand {
+  constructor () {
+    super();
 
-  this.name = 'update';
-  this.description = "update the specified module (or the game's devkit module if none is provided) to the latest version";
-
-  this.init = function () {
-    supr(this, 'init', arguments);
+    this.name = 'update';
+    this.description = 'update the specified module (or the game\'s devkit module if none is provided) to the latest version';
 
     this.opts
       .describe('version', 'set a specific version');
-  };
+  }
 
-  this.exec = function (command, args, cb) {
+  exec (command, args, cb) {
     var moduleName = args.shift() || 'devkit-core';
     return lazy.apps.get('.', function (err, app) {
       if (err) { throw err; }
@@ -33,8 +33,7 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
       // FIXME: i dont think this exists anymore
       return lazy.install.installModule(app, moduleName, opts);
     }.bind(this));
-  };
-
-});
+  }
+}
 
 module.exports = UpgradeCommand;

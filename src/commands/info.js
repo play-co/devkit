@@ -1,21 +1,24 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('./index', 'commands');
 lazy('../install/cache');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var InfoCommand = Class(BaseCommand, function (supr) {
+class InfoCommand extends BaseCommand {
+  constructor() {
+    super();
+    this.name = 'info';
+    this.description = 'displays information about this devkit installation';
+  }
 
-  this.name = 'info';
-  this.description = 'displays information about this devkit installation';
-
-  this.exec = function (command, args) {
+  exec (command, args) {
     console.log('devkit version', lazy.commands.get('version').getVersion());
     console.log('devkit location', lazy.commands.get('which').getLocation());
     console.log('cache location', lazy.installCache.getPath());
     return Promise.resolve();
-  };
-});
+  }
+}
 
 module.exports = InfoCommand;

@@ -1,21 +1,21 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('../build');
 lazy('../apps');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var DebugCommand = Class(BaseCommand, function (supr) {
+class DebugCommand extends BaseCommand {
+  constructor () {
+    super();
 
-  this.name = 'debug';
-  this.alias = [{
-    name: 'release',
-    description: 'creates a release build'
-  }];
-  this.description = 'creates a debug build';
-
-  this.init = function () {
-    supr(this, 'init', arguments);
+    this.name = 'debug';
+    this.alias = [{
+      name: 'release',
+      description: 'creates a release build'
+    }];
+    this.description = 'creates a debug build';
 
     this.opts
       .describe('simulated', 'build for the devkit simulator')
@@ -26,16 +26,16 @@ var DebugCommand = Class(BaseCommand, function (supr) {
       .describe('scheme', 'debug | release')
       .describe('version', 'override the version provided in the manifest')
       .describe('get-config', 'output ONLY the build configuration to stdout');
-  };
+  }
 
-  this.showHelp = function (args) {
+  showHelp (args) {
     supr(this, 'showHelp', arguments);
 
     process.argv.push('--help');
     this.exec(this.name, args);
-  };
+  }
 
-  this.getHelp = function(app, target) {
+  getHelp (app, target) {
     if (target) {
       var buildModule = this.getBuildModule(app, target);
       if (buildModule) {
@@ -53,9 +53,9 @@ var DebugCommand = Class(BaseCommand, function (supr) {
         return '  ' + this.getHelpText(target, modules[target]);
       }).join('\n');
     }
-  };
+  }
 
-  this.getHelpText = function(target, buildModule) {
+  getHelpText (target, buildModule) {
     if (buildModule.opts) {
       return target + ':\n' +
         buildModule.opts.help().replace(/^Options:/, '')
@@ -68,9 +68,9 @@ var DebugCommand = Class(BaseCommand, function (supr) {
       return target + ':\n' +
         '\n  Sorry! No help is available for this build target\n';
     }
-  };
+  }
 
-  this.getBuildModules = function(app) {
+  getBuildModules (app) {
     var buildModules = {};
     var modules = app.getModules();
     Object.keys(modules).forEach(function (moduleName) {
@@ -80,9 +80,9 @@ var DebugCommand = Class(BaseCommand, function (supr) {
       });
     });
     return buildModules;
-  };
+  }
 
-  this.getBuildModule = function(app, target) {
+  getBuildModule (app, target) {
     var modules = app.getModules();
     for (var moduleName in modules) {
       var module = modules[moduleName];
@@ -91,9 +91,9 @@ var DebugCommand = Class(BaseCommand, function (supr) {
         return buildModule;
       }
     }
-  };
+  }
 
-  this.exec = function (command, args) {
+  exec (command, args) {
     var defer = Promise.defer();
 
     var argv = this.argv;
@@ -131,7 +131,7 @@ var DebugCommand = Class(BaseCommand, function (supr) {
     }
 
     return defer.promise;
-  };
-});
+  }
+}
 
 module.exports = DebugCommand;

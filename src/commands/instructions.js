@@ -1,15 +1,18 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('chalk');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var InstructionsCommand = Class(BaseCommand, function (supr) {
+class InstructionsCommand extends BaseCommand {
+  constructor () {
+    super();
+    this.name = 'instructions';
+    this.description = 'prints some basic getting started instructions';
+  }
 
-  this.name = 'instructions';
-  this.description = 'prints some basic getting started instructions';
-
-  this.exec = function (command, args) {
+  exec (command, args) {
     var target = args.shift();
 
     // TODO: make context based coloring and remove all of this cruft
@@ -67,7 +70,7 @@ var InstructionsCommand = Class(BaseCommand, function (supr) {
     ));
     console.log('-----------------------------------------------');
     return Promise.resolve();
-  };
-});
+  }
+}
 
 module.exports = InstructionsCommand;

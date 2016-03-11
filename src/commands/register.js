@@ -1,24 +1,25 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('../apps');
 lazy('../util/walk');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var RegisterCommand = Class(BaseCommand, function (supr) {
-  this.name = 'register';
-  this.description = "adds the current directory to devkit's list of apps";
+class RegisterCommand extends BaseCommand {
+  constructor () {
+    super();
 
-  this.init = function () {
-    supr(this, 'init', arguments);
+    this.name = 'register';
+    this.description = "adds the current directory to devkit's list of apps";
 
     this.opts
       .describe('recursive', 'searches directories recursively for devkit apps (nested apps are not allowed)')
       .alias('recursive', 'r')
       .boolean('recursive');
-  };
+  }
 
-  this.exec = function (command, args) {
+  exec (command, args) {
     var logger = this.logger;
     var argv = this.argv;
     var _args = argv._;
@@ -59,7 +60,7 @@ var RegisterCommand = Class(BaseCommand, function (supr) {
         logger.log('registered', appPath);
       }
     });
-  };
-});
+  }
+}
 
 module.exports = RegisterCommand;

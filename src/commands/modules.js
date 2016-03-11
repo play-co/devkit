@@ -1,3 +1,4 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('chalk');
@@ -6,24 +7,23 @@ lazy('../apps');
 lazy('../modules/Module', 'Module');
 lazy('../util/stringify');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var ModulesCommand = Class(BaseCommand, function (supr) {
+class ModulesCommand extends BaseCommand {
+  constructor () {
+    super();
 
-  this.name = 'modules';
-  this.description = "prints information about the current app's modules";
-
-  this.init = function () {
-    supr(this, 'init', arguments);
+    this.name = 'modules';
+    this.description = "prints information about the current app's modules";
 
     this.opts
       .alias('j', 'json').describe('json', 'print output in json')
       .alias('p', 'project').describe('project', 'location of project (defaults to current directory)')
       .describe('save-current', 'save the current versions in the game\'s manifest')
       .describe('list-versions', 'prints all available versions (does not update anything)');
-  };
+  }
 
-  this.exec = function (command, args) {
+  exec (command, args) {
     var argv = this.argv;
     var moduleName = args.shift();
     var isJSON = argv.json;
@@ -127,8 +127,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
         });
       }
     });
-  };
-
-});
+  }
+}
 
 module.exports = ModulesCommand;

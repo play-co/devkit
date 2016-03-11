@@ -1,14 +1,18 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('./index', 'commands');
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var HelpCommand = Class(BaseCommand, function (supr) {
+class HelpCommand extends BaseCommand {
+  constructor () {
+    super();
 
-  this.name = 'help';
-  this.description = 'prints this help message';
+    this.name = 'help';
+    this.description = 'prints this help message';
+  }
 
-  this.exec = function (command, args) {
+  exec (command, args) {
     var cmd = args.shift();
 
     trace('running help:', cmd, args);
@@ -19,7 +23,7 @@ var HelpCommand = Class(BaseCommand, function (supr) {
       lazy.commands._yargsObj.showHelp();
     }
     return Promise.resolve();
-  };
-});
+  }
+}
 
 module.exports = HelpCommand;

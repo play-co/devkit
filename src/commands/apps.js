@@ -1,3 +1,4 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('fs');
@@ -9,24 +10,23 @@ lazy('../util/stringify', 'stringify');
 lazy('../util/obj', 'obj');
 lazy('../util/logging', 'logging');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var AppsCommand = Class(BaseCommand, function (supr) {
+class AppsCommand extends BaseCommand {
+  constructor() {
+    super();
 
-  this.name = 'apps';
-  this.description = 'prints devkit apps on this system. Set or get a value from an app manifest with the command "devkit apps [set|get]-config key [value]" ';
-
-  this.init = function () {
-    supr(this, 'init', arguments);
+    this.name = 'apps';
+    this.description = 'prints devkit apps on this system. Set or get a value from an app manifest with the command "devkit apps [set|get]-config key [value]" ';
 
     this.opts
       .alias('s', 'short').describe('short', 'skip details')
       .alias('j', 'json').describe('json', 'prints details with json to stdout')
       .describe('set-config')
       .describe('get-config');
-  };
+  }
 
-  this.exec = function (name, args) {
+  exec (name, args) {
     var defer = Promise.defer();
     var argv = this.argv;
 
@@ -137,7 +137,7 @@ var AppsCommand = Class(BaseCommand, function (supr) {
     }
 
     return defer.promise;
-  };
-});
+  }
+}
 
 module.exports = AppsCommand;

@@ -1,24 +1,23 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('../apps');
 lazy('../install/cache');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var RemoveCommand = Class(BaseCommand, function (supr) {
+class RemoveCommand extends BaseCommand {
+  constructor () {
+    super();
 
-  this.name = 'remove';
-  this.alias = 'rm';
-  this.description = 'removes a dependency from your app';
+    this.name = 'remove';
+    this.alias = 'rm';
+    this.description = 'removes a dependency from your app';
 
-  this.init = function () {
-    supr(this, 'init', arguments);
+    this.opts.describe('--cache', 'removes the module from the DevKit module cache');
+  }
 
-    this.opts
-      .describe('--cache', 'removes the module from the DevKit module cache');
-  };
-
-  this.exec = function (command, args) {
+  exec (command, args) {
     var argv = this.argv;
     var module = args.shift();
 
@@ -32,7 +31,7 @@ var RemoveCommand = Class(BaseCommand, function (supr) {
           return lazy.installCache.remove(module);
         }
       });
-  };
-});
+  }
+}
 
 module.exports = RemoveCommand;

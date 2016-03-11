@@ -23,7 +23,7 @@ require('jsio');
 
 var main = function() {
   // preliminary logging and globals setup //
-  var commands = require('./commands');
+  var commands = require('devkit-commands');
   var argv = commands.argv;
   var args = argv._;
 
@@ -43,12 +43,13 @@ var main = function() {
   logger.silly('Main called; getting command:\nargv', argv, '\nargs ', args);
   // ---- //
 
+  var path = require('path');
   var cache = require('./install/cache');
   var apps = require('./apps');
 
   return Promise.all([
     cache.loadCache(),
-    commands.initCommands(),
+    commands.initCommands(path.join(__dirname, 'commands')),
     apps.reload()
   ]).then(function() {
     // Now kick off command handling

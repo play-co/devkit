@@ -1,3 +1,4 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('fs');
@@ -9,16 +10,15 @@ lazy('../util/lockfile');
 lazy('../install');
 lazy('../install/cacheErrors', 'cacheErrors');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var InstallCommand = Class(BaseCommand, function (supr) {
+class InstallCommand extends BaseCommand {
+  constructor () {
+    super();
 
-  this.name = 'install';
-  this.description = 'installs (or updates) devkit dependencies ' +
-    'for an app or a specific dependency if one is provided';
-
-  this.init = function () {
-    supr(this, 'init', arguments);
+    this.name = 'install';
+    this.description = 'installs (or updates) devkit dependencies ' +
+      'for an app or a specific dependency if one is provided';
 
     this.opts
       .describe('ssh', 'switches git protocol to ssh, default: false (https)')
@@ -36,9 +36,9 @@ var InstallCommand = Class(BaseCommand, function (supr) {
         'skip-defaults',
         'if default dependencies are missing from the manifest, do NOT insert them'
       );
-  };
+  }
 
-  this.exec = function (command, args) {
+  exec (command, args) {
     var argv = this.argv;
     var module = args.shift();
 
@@ -142,7 +142,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       console.error('Unexpected error');
       console.error(err && err.stack || err);
     });
-  };
-});
+  }
+}
 
 module.exports = InstallCommand;

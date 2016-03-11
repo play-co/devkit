@@ -1,3 +1,4 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('path');
@@ -5,25 +6,23 @@ lazy('chalk');
 lazy('./index', 'commands');
 lazy('../apps');
 
-var UsageError = require('../util/BaseCommand').UsageError;
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
+var UsageError = require('devkit-commands/UsageError');
 
-var InitCommand = Class(BaseCommand, function (supr) {
-
-  this.name = 'init';
-  this.description = 'creates a new devkit app';
-
-  this.init = function () {
-    supr(this, 'init', arguments);
+class InitCommand extends BaseCommand {
+  constructor () {
+    super();
+    this.name = 'init';
+    this.description = 'creates a new devkit app';
     this.opts
       .boolean('no-template')
       .describe('no-template', 'copy no files other than manifest.json')
       .describe('local-template', 'path to local application template')
       .describe('git-template', 'path to git repository')
       .describe('skip-install', "don't autorun devkit install");
-  };
+  }
 
-  this.exec = function (command, args) {
+  exec (command, args) {
     var DestinationExistsError = lazy.apps.DestinationExistsError;
 
     var argv = this.argv;
@@ -102,8 +101,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
     }).catch(function (err) {
       console.error(err);
     });
-  };
-});
-
+  }
+}
 
 module.exports = InitCommand;

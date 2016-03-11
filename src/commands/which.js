@@ -1,22 +1,25 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('path');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var VersionCommand = Class(BaseCommand, function (supr) {
+class VersionCommand extends BaseCommand {
+  constructor () {
+    super();
+    this.name = 'which';
+    this.description = 'prints the full path to DevKit';
+  }
 
-  this.name = 'which';
-  this.description = 'prints the full path to DevKit';
-
-  this.exec = function () {
+  exec () {
     console.log(this.getLocation());
     return Promise.resolve();
-  };
+  }
 
-  this.getLocation = function () {
+  getLocation () {
     return lazy.path.join(__dirname, '..', '..');
-  };
-});
+  }
+}
 
 module.exports = VersionCommand;

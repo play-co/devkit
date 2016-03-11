@@ -1,25 +1,28 @@
+'use strict';
 var lazy = require('lazy-cache')(require);
 
 lazy('fs');
 lazy('path');
 
-var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var BaseCommand = require('devkit-commands/BaseCommand');
 
-var VersionCommand = Class(BaseCommand, function (supr) {
+class VersionCommand extends BaseCommand {
+  constructor () {
+    super();
+    this.name = 'version';
+    this.description = 'prints the version of DevKit';
+  }
 
-  this.name = 'version';
-  this.description = 'prints the version of DevKit';
-
-  this.exec = function () {
+  exec () {
     console.log(this.getVersion());
     return Promise.resolve();
-  };
+  }
 
-  this.getVersion = function () {
+  getVersion () {
     var packageJson = lazy.path.join(__dirname, '..', '..', 'package.json');
     var packageInfo = JSON.parse(lazy.fs.readFileSync(packageJson));
     return packageInfo.version;
-  };
-});
+  }
+}
 
 module.exports = VersionCommand;
