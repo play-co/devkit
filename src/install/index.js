@@ -73,6 +73,18 @@ var installModuleFromURL = function(baseDir, name, url, version, opts) {
 
   var modulePath = path.join(baseDir, 'modules', name);
 
+  // Skip links
+  if (fs.existsSync(modulePath)) {
+    var stat = fs.statSync(modulePath);
+    if (!stat.isDirectory()) {
+      return Promise.reject('File exists at: ' + modulePath);
+    }
+    if (stat.isSymbolicLink()) {
+      logger.log('Skipping install for symlink:', modulePath);
+      return Promise.resolve();
+    }
+  }
+
   return cache.doesLocalNeedUpdate(modulePath, version)
     .then(function(needsUpdate) {
       if (!needsUpdate) {

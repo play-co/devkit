@@ -138,10 +138,18 @@ var App = module.exports = Class(function () {
         try {
           return fs.readdirSync(basePath)
             .map(function (item) {
+              var itempath = path.join(basePath, item);
+              var stat = fs.statSync(itempath);
+              if (!stat.isDirectory()) {
+                return null;
+              }
               return {
-                path: path.join(basePath, item),
+                path: itempath,
                 parent: parentPath
               };
+            })
+            .filter(function (item) {
+              return !!item;
             });
 
         } catch (e) {}
@@ -173,10 +181,10 @@ var App = module.exports = Class(function () {
           logger.warn(chalk.red(
             module.name +
             ' included twice with different versions:\n\t') +
-            existingModule.name + '@' + existingModule.version + ' from '
-              + path.relative(rootPath, existingModule.path) + '\n\t' +
-            module.name + '@' + module.version + ' from '
-              + path.relative(rootPath, modulePath));
+            existingModule.name + '@' + existingModule.version + ' from ' +
+              path.relative(rootPath, existingModule.path) + '\n\t' +
+            module.name + '@' + module.version + ' from ' +
+              path.relative(rootPath, modulePath));
 
           if (semver.gt(module.version, existingModule.version)) {
             this._modules[module.name] = module;

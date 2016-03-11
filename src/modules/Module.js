@@ -127,21 +127,31 @@ function strip(str) {
 }
 
 Module.load = function (modulePath, /* optional */ opts) {
-
   var packageFile = lazy.path.join(modulePath, 'package.json');
 
-  if (!lazy.fs.existsSync(packageFile)) { return; }
+  if (!lazy.fs.existsSync(packageFile)) {
+    // logger.warn('Module', modulePath, 'failed to load, does not exist:', packageFile);
+    return null;
+  }
 
   var packageContents;
   try {
     packageContents = require(packageFile);
   } catch (e) {
-    return logger.warn('Module', modulePath, 'failed to load, invalid package.json');
+    logger.warn('Module', modulePath, 'failed to load, invalid package.json');
+    return null;
   }
 
-  if (!packageContents.devkit) { return; }
+  if (!packageContents.devkit) {
+    // logger.warn('Module', modulePath, 'failed to load, no "devkit" in package.json');
+    return null;
+  }
 
-  var name = lazy.path.basename(modulePath);
+  var name = packageContents.name;
+  if (!name) {
+    logger.warn('Module', modulePath, 'failed to load, no "name" in package.json');
+    return null;
+  }
 
   opts = opts || {};
 
