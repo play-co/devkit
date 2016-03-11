@@ -12,6 +12,7 @@ var VersionCommand = Class(BaseCommand, function (supr) {
 
   this.exec = function () {
     console.log(this.getVersion());
+    return Promise.resolve();
   };
 
   this.getVersion = function () {

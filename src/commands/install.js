@@ -22,7 +22,6 @@ var InstallCommand = Class(BaseCommand, function (supr) {
 
     this.opts
       .describe('ssh', 'switches git protocol to ssh, default: false (https)')
-      .describe('link', 'uses symlinks to the module cache (development only)')
       .describe(
         'skip-fetch',
         'if version is not specified, server query for the latest version'
@@ -39,24 +38,23 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       );
   };
 
-  this.exec = function (command, args, cb) {
+  this.exec = function (command, args) {
     var argv = this.argv;
     var module = args.shift();
 
     var logger = lazy.utilLogging.get('command.install');
     logger.debug('Devkit install running', command, args, argv);
 
-    function printErrorAndExit (msg, err, code) {
+    var printErrorAndExit = function(msg, err, code) {
       console.log();
       logger.error.apply(logger, msg);
       if (err) {
         logger.debug(err.stack);
       }
-      process.exit(code || 1);
-    }
+      throw new Error('Install error: ' + msg);
+    };
 
     var opts = {
-      link: argv.link,
       protocol: argv.ssh ? 'ssh' : 'https',
       unsafe: argv.unsafe,
       skipFetch: argv['skip-fetch']
@@ -143,7 +141,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     .catch(function installErrorHandler (err) {
       console.error('Unexpected error');
       console.error(err && err.stack || err);
-    }).nodeify(cb);
+    });
   };
 });
 

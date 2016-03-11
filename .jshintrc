@@ -1,5 +1,15 @@
 {
+  "camelcase": false,
+  "indent": 2,
+  "undef": true,
+  "latedef": true,
+  "quotmark": "single",
+  "trailing": true,
+  "node": true,
+  "devel": true,
+  "esnext": true,
   "globals": {
-    "trace": false
+    "trace": false,
+    "Class": false
   }
 }

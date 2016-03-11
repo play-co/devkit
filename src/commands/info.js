@@ -10,14 +10,12 @@ var InfoCommand = Class(BaseCommand, function (supr) {
   this.name = 'info';
   this.description = 'displays information about this devkit installation';
 
-  this.exec = function (command, args, cb) {
+  this.exec = function (command, args) {
     console.log('devkit version', lazy.commands.get('version').getVersion());
     console.log('devkit location', lazy.commands.get('which').getLocation());
     console.log('cache location', lazy.installCache.getPath());
-
-    if (cb) { cb(); }
+    return Promise.resolve();
   };
-
 });
 
 module.exports = InfoCommand;

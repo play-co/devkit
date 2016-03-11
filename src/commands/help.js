@@ -8,7 +8,7 @@ var HelpCommand = Class(BaseCommand, function (supr) {
   this.name = 'help';
   this.description = 'prints this help message';
 
-  this.exec = function (command, args, cb) {
+  this.exec = function (command, args) {
     var cmd = args.shift();
 
     trace('running help:', cmd, args);
@@ -18,8 +18,7 @@ var HelpCommand = Class(BaseCommand, function (supr) {
     } else {
       lazy.commands._yargsObj.showHelp();
     }
-
-    cb && cb();
+    return Promise.resolve();
   };
 });
 

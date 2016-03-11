@@ -18,11 +18,11 @@ var RemoveCommand = Class(BaseCommand, function (supr) {
       .describe('--cache', 'removes the module from the DevKit module cache');
   };
 
-  this.exec = function (command, args, cb) {
+  this.exec = function (command, args) {
     var argv = this.argv;
     var module = args.shift();
 
-    lazy.apps.get('.')
+    return lazy.apps.get('.')
       .then(function (app) {
         return app.removeDependency(module);
       })
@@ -31,8 +31,7 @@ var RemoveCommand = Class(BaseCommand, function (supr) {
           this.logger.log('removing from cache...');
           return lazy.installCache.remove(module);
         }
-      })
-      .nodeify(cb);
+      });
   };
 });
 

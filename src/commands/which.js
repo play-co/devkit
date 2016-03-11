@@ -11,6 +11,7 @@ var VersionCommand = Class(BaseCommand, function (supr) {
 
   this.exec = function () {
     console.log(this.getLocation());
+    return Promise.resolve();
   };
 
   this.getLocation = function () {

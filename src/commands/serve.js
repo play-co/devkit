@@ -40,7 +40,7 @@ var ServeCommand = Class(BaseCommand, function (supr) {
 
     var argv = this.argv;
 
-    lazy.serve.serveWeb({
+    return lazy.serve.serveWeb({
       port: argv.port,
       singlePort: !!argv['single-port'],
       separateBuildProcess: !!argv['separate-build-process'],

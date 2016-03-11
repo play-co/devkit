@@ -19,7 +19,7 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
 
   this.exec = function (command, args, cb) {
     var moduleName = args.shift() || 'devkit-core';
-    lazy.apps.get('.', function (err, app) {
+    return lazy.apps.get('.', function (err, app) {
       if (err) { throw err; }
 
       var opts = {};
@@ -30,7 +30,8 @@ var UpgradeCommand = Class(BaseCommand, function (supr) {
         opts.latest = true;
       }
 
-      lazy.install.installModule(app, moduleName, opts, cb);
+      // FIXME: i dont think this exists anymore
+      return lazy.install.installModule(app, moduleName, opts);
     }.bind(this));
   };
 

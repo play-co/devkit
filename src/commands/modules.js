@@ -19,83 +19,41 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
     this.opts
       .alias('j', 'json').describe('json', 'print output in json')
       .alias('p', 'project').describe('project', 'location of project (defaults to current directory)')
-      .describe('save-current', "save the current versions in the game's manifest")
+      .describe('save-current', 'save the current versions in the game\'s manifest')
       .describe('list-versions', 'prints all available versions (does not update anything)');
   };
 
-  this.exec = function (command, args, cb) {
+  this.exec = function (command, args) {
     var argv = this.argv;
     var moduleName = args.shift();
     var isJSON = argv.json;
     var allModules = argv.r || argv.recursive || argv.all;
 
-    lazy.apps.get('.')
-      .then(function (app) {
-        if (!isJSON) {
-          console.log(lazy.chalk.yellow(app.paths.root));
-        }
-
-        var modules = app.getModules();
-        if (moduleName) {
-          if (!modules[moduleName]) {
-            throw new Error("no module found with name " + moduleName);
-          }
-
-          return onModule(app, modules[moduleName])
-            .then(function (info) {
-              if (info) {
-                console.log(lazy.utilStringify(res));
-              }
-            });
-        } else {
-          var res = {};
-          return Promise.map(Object.keys(modules), function (name) {
-              if (modules[name].isDependency || allModules) {
-                return onModule(app, modules[name])
-                  .then(function (info) {
-                    res[name] = info;
-                  })
-                  .catch(function (e) {
-                    if (e.code == 'ENOENT') {
-                      console.error('Module', name, 'does not exist');
-                    } else {
-                      throw e;
-                    }
-                  });
-              }
-            })
-            .then(function () {
-              if (isJSON) {
-                console.log(lazy.utilStringify(res));
-              }
-            });
-        }
-      })
-      .nodeify(cb);
-
-    function onModule(app, module) {
+    var onModule = function(app, module) {
       return (argv['list-versions'] ? listVersions : describeVersion)(app, module);
-    }
+    };
 
-    function listVersions(app, module) {
+    var listVersions = function(app, module) {
       return lazy.Module.getVersions(module.path)
         .then(function (info) {
           if (isJSON) {
             return info.versions;
           } else {
-            console.log(lazy.chalk.cyan('available versions'),
-                module.name ? lazy.chalk.cyan('for module ')
-                              + lazy.chalk.yellow(module.name)
-                            : '');
+            var moduleName = '';
+            if (module.name) {
+              moduleName = lazy.chalk.cyan('for module ') +
+                lazy.chalk.yellow(module.name);
+            }
+            console.log(lazy.chalk.cyan('available versions'), moduleName);
 
             console.log(info.versions.map(function (version) {
               return version == info.current ? lazy.chalk.yellow(version) : version;
             }).join('\t'));
           }
         });
-    }
+    };
 
-    function describeVersion(app, module) {
+    var describeVersion = function(app, module) {
       var version = module.version;
       return lazy.Module.describeVersion(module.path)
         .then(function (currentVersion) {
@@ -103,7 +61,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
             if (version != currentVersion.tag && version != currentVersion.hash) {
               // prefer tag names over hashes
               var name = currentVersion.tag || currentVersion.hash;
-              console.log(lazy.chalk.yellow(module.name) + ':', lazy.chalk.red(version), "-->", lazy.chalk.cyan(name));
+              console.log(lazy.chalk.yellow(module.name) + ':', lazy.chalk.red(version), '-->', lazy.chalk.cyan(name));
               app.addDependency(module.name, {
                 version: name
               });
@@ -116,8 +74,8 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
                 path: module.path
               };
             } else {
-              var name = currentVersion.tag
-                ? currentVersion.tag + ' (' + currentVersion.hash + ')'
+              var name = currentVersion.tag ?
+                currentVersion.tag + ' (' + currentVersion.hash + ')'
                 : currentVersion.hash;
 
               console.log(module.name + ':');
@@ -126,10 +84,49 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
               console.log('\trequested version:', version, '(in manifest.json)');
             }
           }
-
-          cb && cb();
         });
-    }
+    };
+
+    return lazy.apps.get('.').then(function (app) {
+      if (!isJSON) {
+        console.log(lazy.chalk.yellow(app.paths.root));
+      }
+
+      var modules = app.getModules();
+      if (moduleName) {
+        if (!modules[moduleName]) {
+          throw new Error('no module found with name: ' + moduleName);
+        }
+
+        return onModule(app, modules[moduleName]).then(function (info) {
+          if (info) {
+            console.log(lazy.utilStringify(res));
+          }
+        });
+      } else {
+        var res = {};
+        return Promise.map(Object.keys(modules), function (name) {
+          if (modules[name].isDependency || allModules) {
+            return onModule(app, modules[name])
+              .then(function (info) {
+                res[name] = info;
+              })
+              .catch(function (e) {
+                if (e.code == 'ENOENT') {
+                  console.error('Module', name, 'does not exist');
+                } else {
+                  throw e;
+                }
+              });
+          }
+        })
+        .then(function () {
+          if (isJSON) {
+            console.log(lazy.utilStringify(res));
+          }
+        });
+      }
+    });
   };
 
 });

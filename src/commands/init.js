@@ -23,7 +23,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
       .describe('skip-install', "don't autorun devkit install");
   };
 
-  this.exec = function (command, args, cb) {
+  this.exec = function (command, args) {
     var DestinationExistsError = lazy.apps.DestinationExistsError;
 
     var argv = this.argv;
@@ -101,7 +101,7 @@ var InitCommand = Class(BaseCommand, function (supr) {
       );
     }).catch(function (err) {
       console.error(err);
-    }).nodeify(cb);
+    });
   };
 });
 

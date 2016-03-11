@@ -10,7 +10,7 @@ var DebugCommand = Class(BaseCommand, function (supr) {
   this.name = 'debug';
   this.alias = [{
     name: 'release',
-    description: "creates a release build"
+    description: 'creates a release build'
   }];
   this.description = 'creates a debug build';
 
@@ -25,7 +25,7 @@ var DebugCommand = Class(BaseCommand, function (supr) {
       .describe('debug', 'creates a debug build')
       .describe('scheme', 'debug | release')
       .describe('version', 'override the version provided in the manifest')
-      .describe('get-config', 'output ONLY the build configuration to stdout')
+      .describe('get-config', 'output ONLY the build configuration to stdout');
   };
 
   this.showHelp = function (args) {
@@ -35,7 +35,67 @@ var DebugCommand = Class(BaseCommand, function (supr) {
     this.exec(this.name, args);
   };
 
-  this.exec = function (command, args, cb) {
+  this.getHelp = function(app, target) {
+    if (target) {
+      var buildModule = this.getBuildModule(app, target);
+      if (buildModule) {
+        return this.getHelpText(target, buildModule);
+      } else {
+        if (target) {
+         return 'The build target ' + target + ' is not valid (it may not be installed)';
+        }
+
+        return 'Valid targets are ' + Object.keys(this.getBuildModules(app)).join(', ');
+      }
+    } else {
+      var modules = this.getBuildModules(app);
+      return 'Build Targets:\n\n' + Object.keys(modules).map(function (target) {
+        return '  ' + this.getHelpText(target, modules[target]);
+      }).join('\n');
+    }
+  };
+
+  this.getHelpText = function(target, buildModule) {
+    if (buildModule.opts) {
+      return target + ':\n' +
+        buildModule.opts.help().replace(/^Options:/, '')
+        .split('\n')
+        .map(function (line) {
+          return '  ' + line;
+        })
+        .join('\n');
+    } else {
+      return target + ':\n' +
+        '\n  Sorry! No help is available for this build target\n';
+    }
+  };
+
+  this.getBuildModules = function(app) {
+    var buildModules = {};
+    var modules = app.getModules();
+    Object.keys(modules).forEach(function (moduleName) {
+      var module = modules[moduleName];
+      Object.keys(module.getBuildTargets()).forEach(function (target) {
+        buildModules[target] = module.loadBuildTarget(target);
+      });
+    });
+    return buildModules;
+  };
+
+  this.getBuildModule = function(app, target) {
+    var modules = app.getModules();
+    for (var moduleName in modules) {
+      var module = modules[moduleName];
+      var buildModule = module.loadBuildTarget(target);
+      if (buildModule) {
+        return buildModule;
+      }
+    }
+  };
+
+  this.exec = function (command, args) {
+    var defer = Promise.defer();
+
     var argv = this.argv;
     if (command === 'release') {
       argv.scheme = 'release';
@@ -60,75 +120,18 @@ var DebugCommand = Class(BaseCommand, function (supr) {
     if (argv.help) {
       lazy.apps.get(appPath, function (err, app) {
         if (err) { return console.log(err); }
-        console.log(getHelp(app, argv.target));
-        cb && cb();
+        console.log(this.getHelp(app, argv.target));
+        defer.resolve();
       });
     } else {
       lazy.build.build(appPath, argv, function (err, res) {
         require('../jvmtools').stop();
-        cb && cb();
+        defer.resolve();
       });
     }
+
+    return defer.promise;
   };
 });
-
-
-function getHelp(app, target) {
-  if (target) {
-    var buildModule = getBuildModule(app, target);
-    if (buildModule) {
-      return getHelpText(target, buildModule);
-    } else {
-      if (target) {
-       return "The build target " + target + " is not valid (it may not be installed)";
-      }
-
-      return "Valid targets are " + Object.keys(getBuildModules(app)).join(', ');
-    }
-  } else {
-    var modules = getBuildModules(app);
-    return 'Build Targets:\n\n' + Object.keys(modules).map(function (target) {
-      return '  ' + getHelpText(target, modules[target]);
-    }).join('\n');
-  }
-}
-
-function getHelpText(target, buildModule) {
-  if (buildModule.opts) {
-    return target + ':\n'
-      + buildModule.opts.help().replace(/^Options:/, '')
-          .split('\n')
-          .map(function (line) {
-            return '  ' + line;
-          })
-          .join('\n');
-  } else {
-    return target + ':\n'
-      + "\n  Sorry! No help is available for this build target\n";
-  }
-}
-
-function getBuildModules(app) {
-  var buildModules = {};
-  var modules = app.getModules();
-  Object.keys(modules).forEach(function (moduleName) {
-    var module = modules[moduleName];
-    Object.keys(module.getBuildTargets()).forEach(function (target) {
-      buildModules[target] = module.loadBuildTarget(target);
-    });
-  });
-  return buildModules;
-}
-
-function getBuildModule(app, target) {
-  var modules = app.getModules();
-  for (var moduleName in modules) {
-    var module = modules[moduleName];
-    var buildModule = module.loadBuildTarget(target);
-    if (buildModule) {
-      return buildModule;
-    }
-  }
-}
 
 module.exports = DebugCommand;

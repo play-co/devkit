@@ -7,6 +7,7 @@ lazy('chalk');
 lazy('../apps', 'apps');
 lazy('../util/stringify', 'stringify');
 lazy('../util/obj', 'obj');
+lazy('../util/logging', 'logging');
 
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
 
@@ -25,17 +26,20 @@ var AppsCommand = Class(BaseCommand, function (supr) {
       .describe('get-config');
   };
 
-  this.exec = function (name, args, cb) {
+  this.exec = function (name, args) {
+    var defer = Promise.defer();
     var argv = this.argv;
 
+    var logger = lazy.logging.get('command.apps');
+
     var MAX_LENGTH = 120;
-    function truncate(str) {
+    var truncate = function(str) {
       if (str.length > MAX_LENGTH) {
         return str.substring(0, MAX_LENGTH) + ' …';
       }
 
       return str;
-    }
+    };
 
     if (argv.setConfig) {
       var key = args.shift();
@@ -61,12 +65,12 @@ var AppsCommand = Class(BaseCommand, function (supr) {
 
         if (err) { throw err; }
 
-        console.log(key, '<--', value);
+        logger.log(key, '<--', value);
         lazy.obj.setVal(manifest, key, value);
 
         lazy.fs.writeFile(manifestPath, lazy.stringify(manifest), function (err) {
           if (err) { throw err; }
-          cb();
+          defer.resolve();
         });
       });
     } else if (argv.getConfig) {
@@ -74,10 +78,9 @@ var AppsCommand = Class(BaseCommand, function (supr) {
       lazy.apps.get('.', function (err, app) {
         if (err) { throw err; }
         console.log(lazy.obj.getVal(app.manifest, key));
-        cb();
+        defer.resolve();
       });
     } else {
-
       lazy.apps.getApps(function (err, apps) {
         if (err) { throw err; }
 
@@ -91,7 +94,7 @@ var AppsCommand = Class(BaseCommand, function (supr) {
             }
           }
           console.log(lazy.stringify(appList));
-          return cb();
+          return defer.resolve();
         }
 
         var keyMap = {
@@ -121,18 +124,19 @@ var AppsCommand = Class(BaseCommand, function (supr) {
                 }
               }
             } else if (key == 'lastOpened') {
+              var d = new Date(app.lastOpened);
               console.log(lazy.chalk.yellow(lazy.printf('%21s', map[key] + ':')), d.toLocaleDateString() + ',', d.toLocaleTimeString());
             } else {
-              var d = new Date(app.lastOpened);
-              strValue = typeof app[key] == 'object' ? JSON.stringify(app[key]) : '' + app[key];
+              var strValue = typeof app[key] == 'object' ? JSON.stringify(app[key]) : '' + app[key];
               console.log(lazy.chalk.yellow(lazy.printf('%21s', map[key] + ':')), truncate(strValue));
             }
           }
         }
-        cb();
+        defer.resolve();
       });
-
     }
+
+    return defer.promise;
   };
 });
 
