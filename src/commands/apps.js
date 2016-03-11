@@ -1,5 +1,5 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('fs');
 lazy('printf');
@@ -10,7 +10,7 @@ lazy('../util/stringify', 'stringify');
 lazy('../util/obj', 'obj');
 lazy('../util/logging', 'logging');
 
-var BaseCommand = require('devkit-commands/BaseCommand');
+let BaseCommand = require('devkit-commands/BaseCommand');
 
 class AppsCommand extends BaseCommand {
   constructor() {
@@ -27,26 +27,25 @@ class AppsCommand extends BaseCommand {
   }
 
   exec (name, args) {
-    var defer = Promise.defer();
-    var argv = this.argv;
+    let defer = Promise.defer();
+    let argv = this.argv;
 
-    var logger = lazy.logging.get('command.apps');
+    let logger = lazy.logging.get('command.apps');
 
-    var MAX_LENGTH = 120;
-    var truncate = function(str) {
+    let MAX_LENGTH = 120;
+    let truncate = str => {
       if (str.length > MAX_LENGTH) {
         return str.substring(0, MAX_LENGTH) + ' …';
       }
-
       return str;
     };
 
     if (argv.setConfig) {
-      var key = args.shift();
-      var value = args.shift();
-      lazy.apps.get('.', function (err, app) {
-        var manifest;
-        var manifestPath;
+      let key = args.shift();
+      let value = args.shift();
+      lazy.apps.get('.', (err, app) => {
+        let manifest;
+        let manifestPath;
 
         if (!err && app) {
           manifest = app.manifest;
@@ -68,25 +67,25 @@ class AppsCommand extends BaseCommand {
         logger.log(key, '<--', value);
         lazy.obj.setVal(manifest, key, value);
 
-        lazy.fs.writeFile(manifestPath, lazy.stringify(manifest), function (err) {
+        lazy.fs.writeFile(manifestPath, lazy.stringify(manifest), err => {
           if (err) { throw err; }
           defer.resolve();
         });
       });
     } else if (argv.getConfig) {
-      var key = args.shift();
-      lazy.apps.get('.', function (err, app) {
+      let key = args.shift();
+      lazy.apps.get('.', (err, app) => {
         if (err) { throw err; }
         console.log(lazy.obj.getVal(app.manifest, key));
         defer.resolve();
       });
     } else {
-      lazy.apps.getApps(function (err, apps) {
+      lazy.apps.getApps((err, apps) => {
         if (err) { throw err; }
 
         if (argv.json) {
-          var appList = [];
-          for (var appPath in apps) {
+          let appList = [];
+          for (let appPath in apps) {
             if (argv.short) {
               appList.push(appPath);
             } else {
@@ -97,7 +96,7 @@ class AppsCommand extends BaseCommand {
           return defer.resolve();
         }
 
-        var keyMap = {
+        let keyMap = {
           title: 'title',
           lastOpened: 'last opened',
           appId: 'app id',
@@ -105,29 +104,29 @@ class AppsCommand extends BaseCommand {
           modules: 'modules'
         };
 
-        var shortKeyMap = {
+        let shortKeyMap = {
           title: 'title',
           appId: 'app id'
         };
 
-        for (var appPath in apps) {
+        for (let appPath in apps) {
           console.log(lazy.chalk.yellow(lazy.printf('%17s', appPath)));
-          var app = apps[appPath].toJSON();
-          var map = (argv.short ? shortKeyMap : keyMap);
-          for (var key in map) {
+          let app = apps[appPath].toJSON();
+          let map = (argv.short ? shortKeyMap : keyMap);
+          for (let key in map) {
             if (key == 'modules') {
               console.log(lazy.chalk.yellow(lazy.printf('%21s', map[key] + ':')));
-              var modules = app.modules;
-              for (var name in modules) {
+              let modules = app.modules;
+              for (let name in modules) {
                 if (modules[name].isDependency) {
                   console.log(lazy.chalk.green(lazy.printf('%28s', name + ':')), modules[name].version);
                 }
               }
             } else if (key == 'lastOpened') {
-              var d = new Date(app.lastOpened);
+              let d = new Date(app.lastOpened);
               console.log(lazy.chalk.yellow(lazy.printf('%21s', map[key] + ':')), d.toLocaleDateString() + ',', d.toLocaleTimeString());
             } else {
-              var strValue = typeof app[key] == 'object' ? JSON.stringify(app[key]) : '' + app[key];
+              let strValue = typeof app[key] == 'object' ? JSON.stringify(app[key]) : '' + app[key];
               console.log(lazy.chalk.yellow(lazy.printf('%21s', map[key] + ':')), truncate(strValue));
             }
           }

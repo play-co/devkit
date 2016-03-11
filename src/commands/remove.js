@@ -1,10 +1,10 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('../apps');
 lazy('../install/cache');
 
-var BaseCommand = require('devkit-commands/BaseCommand');
+let BaseCommand = require('devkit-commands/BaseCommand');
 
 class RemoveCommand extends BaseCommand {
   constructor () {
@@ -18,14 +18,14 @@ class RemoveCommand extends BaseCommand {
   }
 
   exec (command, args) {
-    var argv = this.argv;
-    var module = args.shift();
+    let argv = this.argv;
+    let module = args.shift();
 
     return lazy.apps.get('.')
-      .then(function (app) {
+      .then(app => {
         return app.removeDependency(module);
       })
-      .then(function () {
+      .then(() => {
         if (argv.cache) {
           this.logger.log('removing from cache...');
           return lazy.installCache.remove(module);

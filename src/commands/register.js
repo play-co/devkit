@@ -1,10 +1,10 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('../apps');
 lazy('../util/walk');
 
-var BaseCommand = require('devkit-commands/BaseCommand');
+let BaseCommand = require('devkit-commands/BaseCommand');
 
 class RegisterCommand extends BaseCommand {
   constructor () {
@@ -20,18 +20,18 @@ class RegisterCommand extends BaseCommand {
   }
 
   exec (command, args) {
-    var logger = this.logger;
-    var argv = this.argv;
-    var _args = argv._;
-    var appPath = _args[2] || process.cwd() || argv.recursive;
+    let logger = this.logger;
+    let argv = this.argv;
+    let _args = argv._;
+    let appPath = _args[2] || process.cwd() || argv.recursive;
 
-    var recursiveSearch = function(basePath) {
-      var walk = lazy.utilWalk.walk;
-      return new Promise(function(resolve, reject) {
+    let recursiveSearch = basePath => {
+      let walk = lazy.utilWalk.walk;
+      return new Promise((resolve, reject) => {
         // FIXME: walk doesnt handle early exit
         walk(basePath, {
-          onDirectory: function (dir, stat, cb) {
-            lazy.apps.get(dir, function (err, app) {
+          onDirectory: (dir, stat, cb) => {
+            lazy.apps.get(dir, (err, app) => {
               if (err instanceof lazy.apps.ApplicationNotFoundError) {
                 // app not found, keep recursing
                 resolve();
@@ -48,7 +48,7 @@ class RegisterCommand extends BaseCommand {
       });
     };
 
-    return lazy.apps.get(appPath, function (err, app) {
+    return lazy.apps.get(appPath, (err, app) => {
       if (err) {
         if (!(err instanceof lazy.apps.ApplicationNotFoundError)) {
           logger.error(err);

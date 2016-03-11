@@ -1,12 +1,12 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('fs');
 lazy('../util/logging');
 lazy('../apps');
 lazy('../serve');
 
-var BaseCommand = require('devkit-commands/BaseCommand');
+let BaseCommand = require('devkit-commands/BaseCommand');
 
 class ServeCommand extends BaseCommand {
   constructor () {
@@ -38,7 +38,7 @@ class ServeCommand extends BaseCommand {
       lazy.apps.get('.');
     }
 
-    var argv = this.argv;
+    let argv = this.argv;
 
     return lazy.serve.serveWeb({
       port: argv.port,

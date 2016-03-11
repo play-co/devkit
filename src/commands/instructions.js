@@ -1,9 +1,9 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('chalk');
 
-var BaseCommand = require('devkit-commands/BaseCommand');
+let BaseCommand = require('devkit-commands/BaseCommand');
 
 class InstructionsCommand extends BaseCommand {
   constructor () {
@@ -13,7 +13,7 @@ class InstructionsCommand extends BaseCommand {
   }
 
   exec (command, args) {
-    var target = args.shift();
+    let target = args.shift();
 
     // TODO: make context based coloring and remove all of this cruft
     console.log('-----------------------------------------------');

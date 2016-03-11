@@ -1,5 +1,5 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('chalk');
 
@@ -7,7 +7,7 @@ lazy('../apps');
 lazy('../modules/Module', 'Module');
 lazy('../util/stringify');
 
-var BaseCommand = require('devkit-commands/BaseCommand');
+let BaseCommand = require('devkit-commands/BaseCommand');
 
 class ModulesCommand extends BaseCommand {
   constructor () {
@@ -24,43 +24,43 @@ class ModulesCommand extends BaseCommand {
   }
 
   exec (command, args) {
-    var argv = this.argv;
-    var moduleName = args.shift();
-    var isJSON = argv.json;
-    var allModules = argv.r || argv.recursive || argv.all;
+    let argv = this.argv;
+    let moduleName = args.shift();
+    let isJSON = argv.json;
+    let allModules = argv.r || argv.recursive || argv.all;
 
-    var onModule = function(app, module) {
+    let onModule = (app, module) => {
       return (argv['list-versions'] ? listVersions : describeVersion)(app, module);
     };
 
-    var listVersions = function(app, module) {
+    let listVersions = (app, module) => {
       return lazy.Module.getVersions(module.path)
-        .then(function (info) {
+        .then(info => {
           if (isJSON) {
             return info.versions;
           } else {
-            var moduleName = '';
+            let moduleName = '';
             if (module.name) {
               moduleName = lazy.chalk.cyan('for module ') +
                 lazy.chalk.yellow(module.name);
             }
             console.log(lazy.chalk.cyan('available versions'), moduleName);
 
-            console.log(info.versions.map(function (version) {
+            console.log(info.versions.map(version => {
               return version == info.current ? lazy.chalk.yellow(version) : version;
             }).join('\t'));
           }
         });
     };
 
-    var describeVersion = function(app, module) {
-      var version = module.version;
+    let describeVersion = (app, module) => {
+      let version = module.version;
       return lazy.Module.describeVersion(module.path)
-        .then(function (currentVersion) {
+        .then(currentVersion => {
           if (argv['save-current']) {
             if (version != currentVersion.tag && version != currentVersion.hash) {
               // prefer tag names over hashes
-              var name = currentVersion.tag || currentVersion.hash;
+              let name = currentVersion.tag || currentVersion.hash;
               console.log(lazy.chalk.yellow(module.name) + ':', lazy.chalk.red(version), '-->', lazy.chalk.cyan(name));
               app.addDependency(module.name, {
                 version: name
@@ -74,7 +74,7 @@ class ModulesCommand extends BaseCommand {
                 path: module.path
               };
             } else {
-              var name = currentVersion.tag ?
+              let name = currentVersion.tag ?
                 currentVersion.tag + ' (' + currentVersion.hash + ')'
                 : currentVersion.hash;
 
@@ -87,31 +87,31 @@ class ModulesCommand extends BaseCommand {
         });
     };
 
-    return lazy.apps.get('.').then(function (app) {
+    return lazy.apps.get('.').then(app => {
       if (!isJSON) {
         console.log(lazy.chalk.yellow(app.paths.root));
       }
 
-      var modules = app.getModules();
+      let modules = app.getModules();
       if (moduleName) {
         if (!modules[moduleName]) {
           throw new Error('no module found with name: ' + moduleName);
         }
 
-        return onModule(app, modules[moduleName]).then(function (info) {
+        return onModule(app, modules[moduleName]).then(info => {
           if (info) {
             console.log(lazy.utilStringify(res));
           }
         });
       } else {
-        var res = {};
-        return Promise.map(Object.keys(modules), function (name) {
+        let res = {};
+        return Promise.map(Object.keys(modules), name => {
           if (modules[name].isDependency || allModules) {
             return onModule(app, modules[name])
-              .then(function (info) {
+              .then(info => {
                 res[name] = info;
               })
-              .catch(function (e) {
+              .catch(e => {
                 if (e.code == 'ENOENT') {
                   console.error('Module', name, 'does not exist');
                 } else {
@@ -120,7 +120,7 @@ class ModulesCommand extends BaseCommand {
               });
           }
         })
-        .then(function () {
+        .then(() => {
           if (isJSON) {
             console.log(lazy.utilStringify(res));
           }

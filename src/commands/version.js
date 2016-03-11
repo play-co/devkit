@@ -1,10 +1,10 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('fs');
 lazy('path');
 
-var BaseCommand = require('devkit-commands/BaseCommand');
+let BaseCommand = require('devkit-commands/BaseCommand');
 
 class VersionCommand extends BaseCommand {
   constructor () {
@@ -19,8 +19,8 @@ class VersionCommand extends BaseCommand {
   }
 
   getVersion () {
-    var packageJson = lazy.path.join(__dirname, '..', '..', 'package.json');
-    var packageInfo = JSON.parse(lazy.fs.readFileSync(packageJson));
+    let packageJson = lazy.path.join(__dirname, '..', '..', 'package.json');
+    let packageInfo = JSON.parse(lazy.fs.readFileSync(packageJson));
     return packageInfo.version;
   }
 }

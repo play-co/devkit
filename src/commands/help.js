@@ -1,8 +1,8 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('./index', 'commands');
-var BaseCommand = require('devkit-commands/BaseCommand');
+let BaseCommand = require('devkit-commands/BaseCommand');
 
 class HelpCommand extends BaseCommand {
   constructor () {
@@ -13,7 +13,7 @@ class HelpCommand extends BaseCommand {
   }
 
   exec (command, args) {
-    var cmd = args.shift();
+    let cmd = args.shift();
 
     trace('running help:', cmd, args);
 

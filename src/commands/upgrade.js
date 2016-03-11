@@ -1,10 +1,10 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('../apps');
 lazy('../install');
 
-var BaseCommand = require('devkit-commands/BaseCommand');
+let BaseCommand = require('devkit-commands/BaseCommand');
 
 class UpgradeCommand extends BaseCommand {
   constructor () {
@@ -18,12 +18,12 @@ class UpgradeCommand extends BaseCommand {
   }
 
   exec (command, args, cb) {
-    var moduleName = args.shift() || 'devkit-core';
-    return lazy.apps.get('.', function (err, app) {
+    let moduleName = args.shift() || 'devkit-core';
+    return lazy.apps.get('.', (err, app) => {
       if (err) { throw err; }
 
-      var opts = {};
-      var argv = this.argv;
+      let opts = {};
+      let argv = this.argv;
       if (argv.version) {
         opts.version = argv.version;
       } else {
@@ -32,7 +32,7 @@ class UpgradeCommand extends BaseCommand {
 
       // FIXME: i dont think this exists anymore
       return lazy.install.installModule(app, moduleName, opts);
-    }.bind(this));
+    });
   }
 }
 

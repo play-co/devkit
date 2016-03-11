@@ -1,13 +1,13 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('path');
 lazy('chalk');
 lazy('./index', 'commands');
 lazy('../apps');
 
-var BaseCommand = require('devkit-commands/BaseCommand');
-var UsageError = require('devkit-commands/UsageError');
+let BaseCommand = require('devkit-commands/BaseCommand');
+let UsageError = require('devkit-commands/UsageError');
 
 class InitCommand extends BaseCommand {
   constructor () {
@@ -23,14 +23,14 @@ class InitCommand extends BaseCommand {
   }
 
   exec (command, args) {
-    var DestinationExistsError = lazy.apps.DestinationExistsError;
+    let DestinationExistsError = lazy.apps.DestinationExistsError;
 
-    var argv = this.argv;
+    let argv = this.argv;
 
-    return Promise.bind(this).then(function () {
+    return Promise.then(() => {
       // check the app name
-      var appPath = args.shift();
-      var errorMessage;
+      let appPath = args.shift();
+      let errorMessage;
 
       if (typeof(appPath) === 'undefined') {
         // TODO: print usage
@@ -39,7 +39,7 @@ class InitCommand extends BaseCommand {
         return Promise.reject(new UsageError(errorMessage));
       }
 
-      var appName = lazy.path.basename(appPath);
+      let appName = lazy.path.basename(appPath);
       if (!appName) {
         // TODO: refactor and print usage
         errorMessage = 'No app name provided';
@@ -58,7 +58,7 @@ class InitCommand extends BaseCommand {
 
       this.appPath = appPath = lazy.path.resolve(process.cwd(), appPath);
 
-      var template = {type: void 0};
+      let template = {type: void 0};
 
       if (argv.template !== void 0) {
         template.type = 'none';
@@ -73,7 +73,7 @@ class InitCommand extends BaseCommand {
 
       // create the app
       return lazy.apps.create(appPath, template);
-    }).then(function (app) {
+    }).then(app => {
 
       if (!argv['skip-install']) {
         // change to app root and run install command
@@ -81,24 +81,24 @@ class InitCommand extends BaseCommand {
         return lazy.commands.get('install').exec('install', []);
       }
 
-    }).then(function () {
+    }).then(() => {
 
       // Success message
       this.logger.log(
         chalk.cyan('created new app'), chalk.yellow(this.appName)
       );
 
-      return new Promise(function (resolve) {
+      return new Promise(resolve => {
         lazy.commands.get('instructions')
           .exec('instructions', ['new_application'], resolve);
       });
 
-    }).catch(DestinationExistsError, function (err) {
+    }).catch(DestinationExistsError, err => {
       this.logger.error(
         'The path you specified (' + err.message + ') already exists.',
         'Aborting.'
       );
-    }).catch(function (err) {
+    }).catch(err => {
       console.error(err);
     });
   }

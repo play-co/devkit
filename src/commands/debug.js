@@ -1,10 +1,10 @@
 'use strict';
-var lazy = require('lazy-cache')(require);
+let lazy = require('lazy-cache')(require);
 
 lazy('../build');
 lazy('../apps');
 
-var BaseCommand = require('devkit-commands/BaseCommand');
+let BaseCommand = require('devkit-commands/BaseCommand');
 
 class DebugCommand extends BaseCommand {
   constructor () {
@@ -37,7 +37,7 @@ class DebugCommand extends BaseCommand {
 
   getHelp (app, target) {
     if (target) {
-      var buildModule = this.getBuildModule(app, target);
+      let buildModule = this.getBuildModule(app, target);
       if (buildModule) {
         return this.getHelpText(target, buildModule);
       } else {
@@ -48,8 +48,8 @@ class DebugCommand extends BaseCommand {
         return 'Valid targets are ' + Object.keys(this.getBuildModules(app)).join(', ');
       }
     } else {
-      var modules = this.getBuildModules(app);
-      return 'Build Targets:\n\n' + Object.keys(modules).map(function (target) {
+      let modules = this.getBuildModules(app);
+      return 'Build Targets:\n\n' + Object.keys(modules).map(target => {
         return '  ' + this.getHelpText(target, modules[target]);
       }).join('\n');
     }
@@ -60,7 +60,7 @@ class DebugCommand extends BaseCommand {
       return target + ':\n' +
         buildModule.opts.help().replace(/^Options:/, '')
         .split('\n')
-        .map(function (line) {
+        .map(line => {
           return '  ' + line;
         })
         .join('\n');
@@ -71,11 +71,11 @@ class DebugCommand extends BaseCommand {
   }
 
   getBuildModules (app) {
-    var buildModules = {};
-    var modules = app.getModules();
-    Object.keys(modules).forEach(function (moduleName) {
-      var module = modules[moduleName];
-      Object.keys(module.getBuildTargets()).forEach(function (target) {
+    let buildModules = {};
+    let modules = app.getModules();
+    Object.keys(modules).forEach(moduleName => {
+      let module = modules[moduleName];
+      Object.keys(module.getBuildTargets()).forEach(target => {
         buildModules[target] = module.loadBuildTarget(target);
       });
     });
@@ -83,10 +83,10 @@ class DebugCommand extends BaseCommand {
   }
 
   getBuildModule (app, target) {
-    var modules = app.getModules();
-    for (var moduleName in modules) {
-      var module = modules[moduleName];
-      var buildModule = module.loadBuildTarget(target);
+    let modules = app.getModules();
+    for (let moduleName in modules) {
+      let module = modules[moduleName];
+      let buildModule = module.loadBuildTarget(target);
       if (buildModule) {
         return buildModule;
       }
@@ -94,9 +94,9 @@ class DebugCommand extends BaseCommand {
   }
 
   exec (command, args) {
-    var defer = Promise.defer();
+    let defer = Promise.defer();
 
-    var argv = this.argv;
+    let argv = this.argv;
     if (command === 'release') {
       argv.scheme = 'release';
       // unless overriden with --debug, debug is false for release builds
@@ -105,7 +105,7 @@ class DebugCommand extends BaseCommand {
       }
     }
 
-    var appPath = argv.app || null;
+    let appPath = argv.app || null;
 
     if (!argv.target) {
       if (args[0]) {
@@ -118,13 +118,13 @@ class DebugCommand extends BaseCommand {
     }
 
     if (argv.help) {
-      lazy.apps.get(appPath, function (err, app) {
+      lazy.apps.get(appPath, (err, app) => {
         if (err) { return console.log(err); }
         console.log(this.getHelp(app, argv.target));
         defer.resolve();
       });
     } else {
-      lazy.build.build(appPath, argv, function (err, res) {
+      lazy.build.build(appPath, argv, (err, res) => {
         require('../jvmtools').stop();
         defer.resolve();
       });
