@@ -396,36 +396,6 @@ var ModuleCache = Class(EventEmitter, function () {
       });
   };
 
-  this.createLink = function(src, dest, cb) {
-    var unlink = Promise.promisify(lazy.fs.unlink);
-    var symlink = Promise.promisify(lazy.fs.symlink);
-    var lstat = Promise.promisify(lazy.fs.lstat);
-
-    return lstat(dest).catch(function (err) {
-      if (err.code !== 'ENOENT') {
-        return Promise.reject(err);
-      }
-    }).then(function (stat) {
-      if (stat) {
-        if (stat.isSymbolicLink()) {
-          return unlink(dest);
-        } else {
-          return Promise.reject(
-            new Error('Please remove existing module before using --link')
-          );
-        }
-      }
-    }).then(function () {
-      return symlink(src, dest, 'junction');
-    }).nodeify(cb);
-  };
-
-  this.link = function (cacheEntry, destPath, cb) {
-    var src = this.getPath(cacheEntry.name);
-    var dest = lazy.path.join(destPath, cacheEntry.name);
-    return createLink(src, dest, cb);
-  };
-
   this.has = function (name) {
     return !!this._get(name);
   };
