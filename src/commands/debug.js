@@ -95,14 +95,18 @@ class DebugCommand extends BaseCommand {
 
   exec (command, args) {
     let defer = Promise.defer();
-
     let argv = this.argv;
+
     if (command === 'release') {
       argv.scheme = 'release';
       // unless overriden with --debug, debug is false for release builds
       if (!('debug' in argv)) {
         argv.debug = false;
       }
+    }
+
+    if (argv.scheme === undefined) {
+      argv.scheme = command;
     }
 
     let appPath = argv.app || null;

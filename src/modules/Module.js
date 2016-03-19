@@ -375,7 +375,7 @@ Module.runInstallScripts = function runInstallScripts (modulePath) {
     options.windowsVerbatimArguments = true;
   }
 
-  console.log('> Spawning:', command, npmArgs, options);
+  logger.debug('> Spawning:', command, npmArgs, options);
   var npm = lazy.childProcess.spawn(command, npmArgs, options);
   return new Promise(function (resolve, reject) {
     npm.on('close', function (code) {
