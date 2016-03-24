@@ -54,6 +54,7 @@ exports.build = function (appPath, argv, cb) {
     // app.acquireLock(f());
   }, function () {
     // _hasLock = true;
+    require('./steps/processArgs')(app, argv);
     config = require('./steps/getConfig').getConfig(app, argv);
     require('./steps/createDirectories').createDirectories(app, config, f());
   }, function () {
