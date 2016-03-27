@@ -1,0 +1,12 @@
+{
+  "name": "devkit-localstorage",
+  "version": "0.0.1",
+  "devkit": {
+    "extensions": {
+      "devkit-simulator": "simulator",
+      "serve": {
+        "routes": "routes"
+      }
+    }
+  }
+}
