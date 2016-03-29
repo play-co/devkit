@@ -58,6 +58,29 @@ module.exports = {
       }
     }
 
+    info = module.getExtension('debugger');
+    if (info && appRoutes) {
+
+      if (info.static) {
+        staticPath = path.join(module.path, info.static);
+        expressApp.use(route, express.static(staticPath));
+      }
+
+      // setup a main file
+      if (info.main) {
+        var mainFile = info.main;
+        var ext = path.extname(mainFile).toLowerCase();
+        if (!ext) {
+          mainFile += '.js';
+          ext = '.js';
+        }
+
+        // simulator will init all urls in this.debuggerURLs
+        var routeName = route + '/' + mainFile;
+        appRoutes.debuggerModules[module.name] = '/apps/' + appRoutes.id + routeName;
+      }
+    }
+
     info = module.getExtension('debuggerUI');
     if (info && appRoutes) {
       for (var i = 0; i < info.length; i++) {
