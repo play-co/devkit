@@ -221,8 +221,8 @@ var App = module.exports = Class(function () {
       name: 'devkit-core',
       ssh: 'git@github.com:',
       https: 'https://github.com/',
-      repo: 'gameclosure/devkit-core',
-      tag: ''
+      repo: 'hashcube/devkit-core',
+      tag: 'hc'
     }
   ];
 
