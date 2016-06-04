@@ -25,3 +25,4 @@ build_module() {
 
 build_module $DEVKIT_DIR/modules/devkit-view-inspector
 build_module $DEVKIT_DIR/modules/remote-debugger
+build_module $DEVKIT_DIR/modules/particle-editor
