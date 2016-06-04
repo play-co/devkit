@@ -168,6 +168,13 @@ exports = Class(CenterLayout, function (supr) {
     this.fromJSON(this._opts);
   };
 
+  this.toggleLiveEditEnabled = function () {
+    this._liveEditEnabled = !this._liveEditEnabled;
+    this.emit('change:liveEditEnabled', this._liveEditEnabled);
+    this.logger.log('live edit enabled', this._liveEditEnabled);
+    return this._liveEditEnabled;
+  };
+
   this.setConnected = function (isConnected) {
     if (isConnected) {
       $.removeClass(this.connLostContainer, 'visible');

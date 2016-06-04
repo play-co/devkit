@@ -144,6 +144,18 @@ module.exports = Class(Widget, function () {
           //   }
           // },
           {
+            id: 'liveEdit',
+            text: 'toggle live edit',
+            icon: 'flash',
+            event: 'change:liveEditEnabled',
+            onChange: function (evt, enabled) {
+              this.toggleClass('disabled', !enabled);
+            },
+            onClick: function (simulator) {
+              simulator.toggleLiveEditEnabled();
+            }
+          },
+          {
             id: 'drag',
             text: 'lock simulator position',
             icon: 'move',
