@@ -1,0 +1,283 @@
+@import 'nib'
+
+html, body
+  padding 0
+  margin 0
+  width 100%
+  height 100%
+  overflow hidden
+  font-family 'Helvetica Neue', Helvetica, sans-serif
+  font-weight 200
+  font-size 14px
+
+body, div, span, label
+  -webkit-tap-highlight-color rgba(0,0,0,0)
+  user-select none
+
+div, ul, li, a, i, input, dt, dd
+  box-sizing border-box
+  cursor default
+
+button
+  border-radius 4px
+  border none
+  background #FFF
+  padding 8px 16px
+  font-weight normal
+  font-size 14px
+
+button.primary
+  background #68b743
+  color #FFF
+
+#main
+  width 100%
+  height 100%
+  background #EEE
+  color #444
+
+.flex
+  flex 1
+  flex-shrink 0
+
+.row
+  display flex
+  flex-direction row
+  width 100%
+
+.column
+  display flex
+  width 100%
+  flex-direction column
+
+.full-height
+  position relative
+
+  > *
+    position absolute
+    top 0
+    bottom 0
+
+.MainContainer
+  align-items stretch
+  height 100%
+
+  > .FileTree
+    border-right 1px solid #CCC
+    width 250px
+    flex-shrink 0
+    overflow auto
+
+.FileNode
+  cursor default
+
+  .label
+    padding 8px 5px 5px
+    height 35px
+
+    .file-icon
+      margin-right 5px
+
+  &.selected
+    & > div > .label
+      background-color #D4D4D4
+
+  .file-drop-target.file-drop-dragging-over-target
+    > .label
+      background #AAF
+      color #FFF
+
+      &::after
+        content '\f063'
+        font normal normal normal 14px/1 FontAwesome
+        float right
+        margin-right 3px
+        margin-top 3px
+
+.FolderViewer
+  background #F5F5F4
+  position relative
+
+  > .file-drop-target
+    position absolute
+    top 0
+    bottom 0
+    width 100%
+    display flex
+    flex-direction column
+
+  .toolbar
+    overflow hidden
+    background-image linear-gradient(180deg, #FFF 33px, #E1E1E1 33px, #E1E1E1 34px)
+    background-size 100% 34px
+    min-height 34px
+    width 100%
+
+    .Menu, button
+      display inline-block
+      background #FFF
+      border-radius 0
+      border none
+      border-right 1px solid #E1E1E1
+      padding 0px 14px
+      position relative
+      color #888
+      margin-bottom 1px
+      outline none
+      line-height 33px
+      font-weight 200
+
+      &:active
+        background #EEE
+
+    button
+      .fa
+        margin-right 8px
+        font-size larger
+
+      .icon-move
+        position relative
+
+        i:nth-child(2)
+          position absolute
+          font-size 70%
+          top 0.4em
+          left 0.3em
+
+      &:focus
+        z-index 2
+
+  .contents
+    padding 5px
+    overflow auto
+
+.FilePreview
+  width 202px
+  height 250px
+  margin-right 5px
+  display inline-block
+
+  .thumbnailWrapper
+    padding 10px
+    background white
+    border 1px solid #E1E1E1
+    transition all 0.1s
+
+  &.selected .thumbnailWrapper
+    border-color #AAF
+    box-shadow inset 0px 0px 0px 2px #AAF
+    border-radius 3px
+
+  .thumbnail
+    width 180px
+    height 180px
+    background-size contain
+    background-position center
+    background-repeat no-repeat
+    display inline-flex
+    align-items center
+    justify-content space-around
+
+    .fa
+      font-size 30px
+
+      &.canPlay:hover
+        color #AAF
+
+  &:not(.small) .thumbnail .fa
+    font-size 40px
+
+  label
+    display block
+    margin-top 5px
+    text-align center
+    text-overflow ellipsis
+    overflow hidden
+    white-space nowrap
+
+  &.small
+    width 50px
+    height 50px
+
+    label
+      display none
+
+    .thumbnailWrapper
+      padding 2px
+
+      .thumbnail
+        width 44px
+        height 44px
+
+.PathCrumbs
+  border-bottom 1px solid #CCC
+
+  .crumb
+    display inline-block
+    line-height 20px
+    border-right 1px solid #CCC
+    padding 5px 10px
+
+.FileInspector
+  border-left 1px solid #CCC
+  overflow hidden
+
+  .FilePreview
+    margin -1px -1px 10px -1px
+
+  .metadata
+    padding 8px
+
+.menu-overlay
+  position fixed
+  top 0
+  left 0
+  width 100%
+  height 0
+
+  .MenuDropdown
+    position absolute
+    background #FFF
+    border 1px solid #E1E1E1
+    box-shadow 0px 1px 1px rgba(0, 0, 0, 0.2)
+    display flex
+    flex-direction column
+    align-items stretch
+    border-radius 0px 0px 3px 3px
+    overflow hidden
+
+    > *
+      flex-shrink 0
+      text-align left
+      border-radius 0
+      outline none
+      color #888
+
+      &:hover
+        background #EEE
+
+    hr
+      height 1px
+      width 100%
+      overflow hidden
+      border none
+      background #E1E1E1
+      display block
+
+    .selectMultiple
+      &:before
+        content '\f096'
+        width 1em
+        display inline-block
+        font normal normal normal 14px/1 FontAwesome
+        color #AAA
+        margin-right 10px
+
+      &.enabled
+        color #444
+
+        &:before
+          content '\f046'
+
+@import './modals';
+@import './ContextMenu';

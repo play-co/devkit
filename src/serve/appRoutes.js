@@ -1,5 +1,5 @@
 var path = require('path');
-var fs = require('fs');
+var fs = require('fs-extra');
 var EventEmitter = require('events').EventEmitter;
 var Promise = require('bluebird');
 var readFile = Promise.promisify(fs.readFile);

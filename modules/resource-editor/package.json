@@ -1,0 +1,42 @@
+{
+  "name": "resource-editor",
+  "author": "Martin Hunt",
+  "version": "0.0.1",
+  "devkit": {
+    "extensions": {
+      "debuggerUI": ["debuggerUI"],
+      "standaloneUI": {
+        "ui": {
+          "src": "ui",
+          "html5History": true
+        }
+      }
+    },
+    "pluginBuilder": {
+      "generic": [
+        { "src": "ui" }
+      ],
+      "jsio": [
+        { "src": "debuggerUI" }
+      ]
+    }
+  },
+  "dependencies": {
+    "bluebird": "^3.0.6",
+    "classnames": "^2.2.1",
+    "filesize": "^3.1.4",
+    "history": "=1.13",
+    "http-fs": "git+https://github.com/weebygames/http-fs.git",
+    "html5-upload-reader": "git+https://github.com/weebygames/html5-upload-reader.git#master",
+    "qrcode.react": "^0.5.2",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-file-drop": "^0.1.7",
+    "react-http-fs-file-tree": "git+https://github.com/weebygames/react-http-fs-file-tree.git#v0.0.1",
+    "react-router": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13"
+  }
+}
