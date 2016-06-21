@@ -5,7 +5,7 @@
   "name": "devkit",
   "keywords": "HTML 5 game sdk platform mobile browser javascript ios android",
   "description": "HTML 5 game platform for browser and mobile",
-  "version": "3.1.3-3",
+  "version": "3.1.3-4",
   "homepage": "http://github.com/gameclosure/",
   "repository": {
     "url": "https://github.com/gameclosure/devkit.git"
