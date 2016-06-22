@@ -1,6 +1,8 @@
 The Game Closure DevKit
 =======================
 
+[![Join the chat at https://gitter.im/hashcube/devkit](https://badges.gitter.im/hashcube/devkit.svg)](https://gitter.im/hashcube/devkit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 HTML5 JavaScript game development kit. Run in your browser; build to iOS and
 Android.
 
