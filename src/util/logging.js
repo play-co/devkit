@@ -6,6 +6,7 @@ var errorToString = require('./toString').errorToString;
 
 // save the current console values in case we overwrite them later
 exports.console = console;
+var origConsoleLog = console.log;
 exports.log = console.log;
 exports.error = console.error;
 
@@ -34,6 +35,11 @@ exports.get = function (name, isSilent, buffers) {
 };
 
 exports.install = function () {
+  // Only install once
+  if (console.log !== origConsoleLog) {
+    return false;
+  }
+
   var logger = exports.get('devkit');
   console.log = logger.log.bind(logger);
 };
