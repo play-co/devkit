@@ -92,5 +92,7 @@ exports.getConfig = function(app, argv) {
     config.baseURL = argv.baseURL;
   }
 
+  config.manifest = JSON.parse(JSON.stringify(app.manifest));
+
   return config;
 };
