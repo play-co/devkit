@@ -19,6 +19,13 @@
 
 process.title = 'devkit';
 
+
+const debug = require('debug');
+
+
+const log = debug('devkit:bin');
+
+
 /**
  * Command line interface.
  */
@@ -43,8 +50,11 @@ function main () {
   var argv = commands.argv;
   var args = argv._;
 
-  var name;
+  log('argv=', argv);
+  log('args=', args);
+  // log('process.env=', process.env);
 
+  var name;
   if (argv.help) {
     name = 'help';
   } else if (commands.has(args[0])) {
@@ -56,6 +66,7 @@ function main () {
   } else {
     name = 'help';
   }
+  log('name=', name);
 
   var command = commands.get(name);
   command.exec(name, args);

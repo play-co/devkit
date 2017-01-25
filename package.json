@@ -18,6 +18,7 @@
     "body-parser": "^1.13.3",
     "chalk": "^1.1.1",
     "compression": "^1.5.2",
+    "debug": "^2.6.0",
     "express": "^4.13.3",
     "ff": "^0.2.1",
     "filesize": "^3.1.3",
