@@ -1,5 +1,9 @@
-
+const debug = require('debug');
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
+
+
+const log = debug('devkit:commands:install');
+
 
 var InstallCommand = Class(BaseCommand, function (supr) {
 
@@ -62,9 +66,11 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       skipFetch: argv['skip-fetch']
     };
 
+    log('> getting apps');
     return apps.get('.').then(function (app) {
       // ensure modules directory exists
       if (!fs.existsSync(app.paths.modules)) {
+        log(`> Creating dir app.paths.modules= ${app.paths.modules}`);
         fs.mkdirSync(app.paths.modules);
       }
 
@@ -88,6 +94,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
           }
         }
 
+        log('> Installin single module:', opts);
         return install.installModule(app, module, opts).return(app);
       }
 
@@ -95,6 +102,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
       // have dependencies
       var deps = app.manifest.dependencies;
       if ((!deps || !deps['devkit-core']) && !argv['skip-defaults']) {
+        log('> Adding default dependencies');
         // ensure devkit is a dependency
         logger.log('Adding default dependencies to "manifest.json"...');
         return app
@@ -106,6 +114,7 @@ var InstallCommand = Class(BaseCommand, function (supr) {
     }).then(function installDependenciesIfNeeded (app) {
       // if we installed a single module, we're done
       if (!module) {
+        log('> Installing all dependencies');
         // otherwise, need to install all dependencies
         return install.installDependencies(app, opts);
       }

@@ -1,3 +1,4 @@
+const debug = require('debug');
 var chalk = require('chalk');
 
 var spawn = require('child_process').spawn;
@@ -6,6 +7,10 @@ var logging = require('../logging');
 // gitClient errors and functions
 var errors = require('./errors');
 var gitFunctions = require('./functions');
+
+
+const log = debug('devkit:gitClient');
+
 
 /**
  * @reexport UnknownGitOption
@@ -36,6 +41,7 @@ function spawnWithLogger(args, opts, cb) {
 
   // defaults
   opts = merge(opts, {silent: true, buffer: true});
+  log('spawnWithLogger:', args, opts);
 
   var name = 'git';
   if (!args[0]) {
@@ -109,6 +115,7 @@ function spawnWithLogger(args, opts, cb) {
  */
 exports.get = function (dir, opts) {
   opts = merge(opts, {cwd: dir});
+  log('get:', dir, opts);
 
   var client = function () {
     var last = arguments.length - 1;

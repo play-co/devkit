@@ -1,4 +1,4 @@
-/* globals trace */
+const debug = require('debug');
 var EventEmitter = require('events').EventEmitter;
 var path = require('path');
 var pathExtra = require('path-extra');
@@ -8,6 +8,10 @@ var crypto = require('crypto');
 var gitClient = require('../util/gitClient');
 var Module = require('../modules/Module');
 var logger = require('../util/logging').get('cache');
+
+
+const log = debug('devkit:install:cache');
+
 
 function randomName() {
   return '' + crypto.randomBytes(4).readUInt32LE(0)
@@ -111,23 +115,23 @@ var ModuleCache = Class(EventEmitter, function () {
    */
 
   this.add = function (nameOrURL, version, cb) {
-    trace('cache.add name:', nameOrURL, 'version:', version);
+    log('cache.add name:', nameOrURL, 'version:', version);
     var tempName = this.getPath(randomName());
 
     return Promise.resolve(void 0).bind(this).then(function () {
       if (!this._isLoaded) {
         var self = this;
-        trace('waiting for module cache to load');
+        log('waiting for module cache to load');
         return new Promise(function (resolve) {
           self.once('loaded', resolve);
         });
       }
       return void 0;
     }).then(function () {
-      trace('module cache loaded');
+      log('module cache loaded');
       var entry = this._get(nameOrURL);
       if (entry) {
-        trace('have entry, returning', entry);
+        log('have entry, returning', entry);
         // if we already have the repo cloned, just set the requested version
         // or the latest version
         return [
@@ -139,12 +143,12 @@ var ModuleCache = Class(EventEmitter, function () {
       return [];
     }).all().spread(function (entry, newVersion) {
       if (entry) {
-        trace('updated entry', entry, 'to version', version);
+        log('updated entry', entry, 'to version', version);
         // return the cache info with the version we just set
         entry.version = version;
         return entry;
       } else {
-        trace('module not cached; get it.');
+        log('module not cached; get it.');
         // clone the repo and add it to the cache.
         return this.addNewModuleFromRemote(
           nameOrURL, version, tempName
@@ -162,6 +166,7 @@ var ModuleCache = Class(EventEmitter, function () {
       url = DEFAULT_URL + nameOrURL;
     }
     var git = gitClient.get(MODULE_CACHE);
+    log(`addNewModuleFromRemote: nameOrURL= ${nameOrURL} version= ${version} tempName= ${tempName}`);
     return git('clone', url, tempName, {
       silent: false,
       buffer: false,
@@ -209,7 +214,7 @@ var ModuleCache = Class(EventEmitter, function () {
   };
 
   function cleanURL(url) {
-    trace('cleanURL', url);
+    log('cleanURL', url);
     return url.split('#', 1)[0].replace(/(?:\.git)?\/?$/, '');
   }
 

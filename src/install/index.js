@@ -1,3 +1,4 @@
+const debug = require('debug');
 var fs = require('fs');
 var chalk = require('chalk');
 var path = require('path');
@@ -6,10 +7,15 @@ var Module = require('../modules/Module');
 
 var cache = require('./cache');
 
+
+const log = debug('devkit:install');
+
+
 exports.installDependencies = function (app, opts) {
   // serially install all dependencies in the manifest
   var deps = app.manifest.dependencies;
   var names = Object.keys(deps);
+  log('installDependencies:', deps);
   return Promise.map(names, function (name) {
     if (name && name !== 'devkit') {
       var installOpts = merge({url: deps[name]}, opts);
@@ -63,6 +69,7 @@ function resolveRequestedModuleVersion (app, moduleName, version, opts) {
 }
 
 exports.installModule = function (app, moduleName, opts, cb) {
+  log('installModule:', moduleName, opts);
   if (!opts) { opts = {}; }
 
   var url = opts.url;
@@ -146,9 +153,12 @@ exports.installModule = function (app, moduleName, opts, cb) {
 };
 
 function updateCache(name, url, version) {
-  return cache.has(name)
-    ? cache.add(name, version)
-    : cache.add(url, version);
+  log(`updateCache: name= ${name} url= ${url} version= ${version}`);
+  if (cache.has(name)) {
+    log('> cache has:', name);
+    return cache.add(name, version)
+  }
+  return cache.add(url, version);
 }
 
 /**
@@ -177,6 +187,8 @@ function installModuleFromURL (app, name, url, version, opts) {
 
   var modulePath = path.join(app.paths.modules, name);
   var exists = fs.existsSync(modulePath);
+  log('installModuleFromURL:', modulePath);
+  log('> exists=', exists);
 
   return Promise
     .bind({})
@@ -184,6 +196,7 @@ function installModuleFromURL (app, name, url, version, opts) {
       if (!exists) {
         // if destination path doesn't exist, add module to cache then add
         // module to app
+        log('> Running updateCache');
         return updateCache(name, url, version)
           .bind(this)
           .then(function (cacheEntry) {
@@ -196,9 +209,12 @@ function installModuleFromURL (app, name, url, version, opts) {
       // modulePath may be invalid if name is a URL, use the cacheEntry for the
       // latest values
       if (this.cacheEntry) {
+        log('> Using cacheEntry for name and modulePath');
         name = this.cacheEntry.name;
         modulePath = path.join(app.paths.modules, this.cacheEntry.name);
       }
+
+      log('name=', name, 'modulePath=', modulePath);
 
       if (opts.link) { displayLinkWarning(app, modulePath); }
 

@@ -1,3 +1,4 @@
+const debug = require('debug');
 var path = require('path');
 var errors = require('./errors');
 var semver = require('semver');
@@ -6,6 +7,9 @@ var semver = require('semver');
 var UnknownGitRevision = errors.UnknownGitRevision;
 var FatalGitError = errors.FatalGitError;
 var UnknownGitOption = errors.UnknownGitOption;
+
+
+const log = debug('devkit:gitClient:functions');
 
 
 // the git commands on windows don't return the OS end of line (\r\n)
@@ -152,6 +156,7 @@ exports.isTag = function isTag (ref, cb) {
  */
 
 exports.isHashValidRef = function isHashValidRef (hash, cb) {
+  log('isHashValidRef:', hash);
   // Check that hash format is ok before calling into git
   if (!/^[a-f0-9]{1,40}$/i.test(hash)) {
     return Promise.resolve(false);
@@ -170,6 +175,7 @@ exports.isHashValidRef = function isHashValidRef (hash, cb) {
 };
 
 exports.getRefType = function getRefType (ref, cb) {
+  log('getRefType:', ref);
   return Promise.all([
     this.isTag(ref),
     this.isBranch(ref),
@@ -272,6 +278,7 @@ exports.getPrimaryBranchName = function getPrimaryBranchName (cb) {
  */
 
 exports.validateVersion = function validateVersion (version, cb) {
+  log('validateVersion:', version);
   return Promise
     .resolve()
     .bind(this)
@@ -292,6 +299,7 @@ exports.validateVersion = function validateVersion (version, cb) {
     })
     .all()
     .spread(function (version, isTag, isBranch, isValidHash) {
+      log(`> version= ${version} isTag= ${isTag} isBranch= ${isBranch} isValidHash= ${isValidHash}`);
       var type = isTag ? 'tag'
         : isBranch ? 'branch'
         : isValidHash ? 'hash'
