@@ -165,7 +165,13 @@ exports.isHashValidRef = function isHashValidRef (hash, cb) {
   return this('log', '--pretty=format:%H', '-n', '1', hash)
     .return(true)
     .catch(FatalGitError, function (err) {
+      log('> FatalGitError:', err);
       if (/bad object/.test(err.message)) {
+        log('> > found: "bad object"');
+        return false;
+      }
+      if (/unknown revision or path not in the working tree./.test(err.message)) {
+        log('> > Found: "unknown revision..."');
         return false;
       }
 
