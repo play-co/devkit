@@ -1,5 +1,6 @@
 node_modules/
 .DS_Store
+src/serve/static/Simulator.js
 
 # these are the generated result of gulp
 src/serve/static/
