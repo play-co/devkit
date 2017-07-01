@@ -4,6 +4,7 @@ var chalk = require('chalk');
 var path = require('path');
 var logger = require('../util/logging').get('install');
 var Module = require('../modules/Module');
+var Promise = require('bluebird');
 
 var cache = require('./cache');
 

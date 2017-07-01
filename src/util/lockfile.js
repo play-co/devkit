@@ -1,4 +1,5 @@
 var lockfile = require('lockfile');
+var Promise = require('bluebird');
 
 /**
  * @class FileLockerError

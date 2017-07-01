@@ -4,6 +4,7 @@ var path = require('path');
 var pathExtra = require('path-extra');
 var fs = require('../util/fs');
 var crypto = require('crypto');
+var Promise = require('bluebird');
 
 var gitClient = require('../util/gitClient');
 var Module = require('../modules/Module');

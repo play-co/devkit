@@ -1,5 +1,6 @@
 const debug = require('debug');
 var chalk = require('chalk');
+var Promise = require('bluebird');
 
 var spawn = require('child_process').spawn;
 var logging = require('../logging');

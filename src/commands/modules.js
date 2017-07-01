@@ -1,4 +1,5 @@
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var Promise = require('bluebird');
 
 var ModulesCommand = Class(BaseCommand, function (supr) {
 

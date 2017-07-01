@@ -16,6 +16,7 @@
 var EventEmitter = require('events').EventEmitter;
 var fs = require('fs');
 var path = require('path');
+var Promise = require('bluebird');
 
 var logger = require('../util/logging').get('apps');
 

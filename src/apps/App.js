@@ -4,6 +4,7 @@ var printf = require('printf');
 var path = require('path');
 var semver = require('semver');
 var chalk = require('chalk');
+var Promise = require('bluebird');
 
 var Module = require('../modules/Module');
 

@@ -2,6 +2,7 @@ const debug = require('debug');
 var path = require('path');
 var errors = require('./errors');
 var semver = require('semver');
+var Promise = require('bluebird');
 
 // Can't wait for destructuring assingments...
 var UnknownGitRevision = errors.UnknownGitRevision;

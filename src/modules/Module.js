@@ -4,6 +4,7 @@ var chalk = require('chalk');
 var printf = require('printf');
 var spawn = require('child_process').spawn;
 var os = require('os');
+var Promise = require('bluebird');
 
 var gitClient = require('../util/gitClient');
 var logger = require('../util/logging').get('module');

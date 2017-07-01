@@ -1,5 +1,6 @@
 const debug = require('debug');
 var BaseCommand = require('../util/BaseCommand').BaseCommand;
+var Promise = require('bluebird');
 
 
 const log = debug('devkit:commands:install');
