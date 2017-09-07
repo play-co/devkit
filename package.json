@@ -38,7 +38,7 @@
   "scripts": {
     "postinstall": "sh scripts/postinstall.sh",
     "test": "mocha --reporter spec --recursive -C ./tests",
-    "prepublish": "npm test && gulp publish"
+    "prepublish": "gulp publish"
   },
   "devDependencies": {
     "express-debug": "^1.1.0",

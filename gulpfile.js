@@ -128,7 +128,7 @@ gulp.task('js', function (cb) {
     .nodeify(cb);
 });
 
-gulp.task('stylus', function () {
+gulp.task('stylus', ['js'], function () {
   return gulp
     .src(globs.stylus)
     .pipe(plugins.stylus({
@@ -147,7 +147,7 @@ gulp.task('stylus', function () {
     .pipe(gulp.dest(paths.dest));
 });
 
-gulp.task('static', function () {
+gulp.task('static', ['stylus', 'js'], function () {
   // copy all images and static files to dist/ unmodified
   return gulp
     .src(globs.static)
