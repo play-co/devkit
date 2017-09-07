@@ -476,7 +476,8 @@ var App = module.exports = Class(function () {
     trace('_copyLocalTemplate');
 
     // read every file/folder in the template
-    return fs.copyAsync(templatePath, this.paths.root);
+    fs.copySync(templatePath, this.paths.root);
+    return Promise.resolve();
   };
 
   this._createFromGitTemplate = function (template) {

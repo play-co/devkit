@@ -66,8 +66,8 @@ var AppManager = Class(EventEmitter, function () {
     this._isReloading = true;
 
     var appCache = this._apps;
-
-    Promise.map(appDirs, function (dir) {
+    appDirs.sort();
+    Promise.mapSeries(appDirs, function (dir) {
       trace('loading dir', dir);
       var lastLoadTime = persistedApps[dir];
       return App.loadFromPath(

@@ -49,7 +49,9 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
             });
         } else {
           var res = {};
-          return Promise.map(Object.keys(modules), function (name) {
+          var mKeys = Object.keys(modules);
+          mKeys.sort();
+          return Promise.mapSeries(mKeys, function (name) {
               if (modules[name].isDependency || allModules) {
                 return onModule(app, modules[name])
                   .then(function (info) {

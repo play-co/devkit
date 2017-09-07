@@ -68,8 +68,12 @@ function getCompiler() {
 gulp.task('js', function (cb) {
 
   jsio.path.add(compilerPath);
+  
+  // Ensure consistent order.
+  MAIN_JS_FILES.sort();
 
-  Promise.map(MAIN_JS_FILES, function (file) {
+  // No race conditions please.
+  Promise.mapSeries(MAIN_JS_FILES, function (file) {
       var importString = path.join('.', file);
       return new Promise(function (resolve, reject) {
         getCompiler().start(['jsio_compile', paths.js, importString], {
@@ -124,7 +128,7 @@ gulp.task('js', function (cb) {
     .nodeify(cb);
 });
 
-gulp.task('stylus', function () {
+gulp.task('stylus', ['js'], function () {
   return gulp
     .src(globs.stylus)
     .pipe(plugins.stylus({
@@ -143,7 +147,7 @@ gulp.task('stylus', function () {
     .pipe(gulp.dest(paths.dest));
 });
 
-gulp.task('static', function () {
+gulp.task('static', ['stylus', 'js'], function () {
   // copy all images and static files to dist/ unmodified
   return gulp
     .src(globs.static)
