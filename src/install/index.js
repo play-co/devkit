@@ -16,8 +16,13 @@ exports.installDependencies = function (app, opts) {
   // serially install all dependencies in the manifest
   var deps = app.manifest.dependencies;
   var names = Object.keys(deps);
+
+  // Deterministic order.
+  names.sort();
   log('installDependencies:', deps);
-  return Promise.map(names, function (name) {
+
+  // Do these operations in serial.
+  return Promise.mapSeries(names, function (name) {
     if (name && name !== 'devkit') {
       var installOpts = merge({url: deps[name]}, opts);
       return exports.installModule(app, name, installOpts);

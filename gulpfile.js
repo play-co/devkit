@@ -68,8 +68,12 @@ function getCompiler() {
 gulp.task('js', function (cb) {
 
   jsio.path.add(compilerPath);
+  
+  // Ensure consistent order.
+  MAIN_JS_FILES.sort();
 
-  Promise.map(MAIN_JS_FILES, function (file) {
+  // No race conditions please.
+  Promise.mapSeries(MAIN_JS_FILES, function (file) {
       var importString = path.join('.', file);
       return new Promise(function (resolve, reject) {
         getCompiler().start(['jsio_compile', paths.js, importString], {
