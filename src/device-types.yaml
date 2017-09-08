@@ -57,7 +57,7 @@ facebook:
 
 ipad:
   name: iPad 2
-  target: native-ios
+  target: browser-mobile
   canRotate: true
   canResize: false
   width: 768
@@ -71,7 +71,7 @@ ipad:
 
 ipad3:
   name: iPad 3
-  target: native-ios
+  target: browser-mobile
   devicePixelRatio: 2
   canRotate: true
   canResize: false
@@ -100,7 +100,7 @@ nexus:
 
 iphone:
   name: iPhone 3GS
-  target: native-ios
+  target: browser-mobile
   canRotate: true
   canResize: false
   height: 480
@@ -114,7 +114,7 @@ iphone:
 
 iphone4:
   name: iPhone 4
-  target: native-ios
+  target: browser-mobile
   devicePixelRatio: 2
   canRotate: true
   canResize: false
@@ -129,7 +129,7 @@ iphone4:
 
 iphone5:
   name: iPhone 5
-  target: native-ios
+  target: browser-mobile
   devicePixelRatio: 2
   canRotate: true
   canResize: false
@@ -144,7 +144,7 @@ iphone5:
 
 iphone6:
   name: iPhone 6
-  target: native-ios
+  target: browser-mobile
   devicePixelRatio: 2
   canRotate: true
   canResize: false
