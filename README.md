@@ -17,6 +17,15 @@ DevKit requires that you install few dependencies first:
  * [node.js](http://nodejs.org/) v10 or higher
  * [git](http://git-scm.com/)
 
+Add this to your /.bashrc or /.zshrc
+```
+// X.X = Version No. of your OS.
+
+export CXXFLAGS="-mmacosx-version-min=X.X"
+export LDFLAGS="-mmacosx-version-min=X.X"
+
+```
+
 We recommend using [brew](http://brew.sh/) to install these if you do not have
 them already.
 
