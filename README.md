@@ -46,7 +46,7 @@ global `node_modules` folder.
 Follow the instructions on [the project wiki](https://github.com/gameclosure/devkit/wiki/Install-Instructions---Linux)
 
 ### Windows
-Follow the instructions on [the project wiki](https://github.com/gameclosure/devkit/wiki/Install-Instructions---Windows)
+Windows platform is supported thanks to [WSL](https://docs.microsoft.com/en-us/windows/wsl/about). Please follow the official [WSL installation guide](https://docs.microsoft.com/en-us/windows/wsl/install-win10) if you do not have it installed yet, and then our [Linux install instructions](https://github.com/gameclosure/devkit/wiki/Install-Instructions---Linux).
 
 
 
