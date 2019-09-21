@@ -56,7 +56,7 @@ var InstructionsCommand = Class(BaseCommand, function (supr) {
               );
     }
     console.log(chalk.cyan(
-      "Please report any issues at https://github.com/gameclosure/devkit2."
+      "Please report any issues at https://github.com/hashcube/devkit."
     ));
     console.log(chalk.green(
       "The documentation is available online at http://docs.gameclosure.com"

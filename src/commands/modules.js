@@ -95,7 +95,7 @@ var ModulesCommand = Class(BaseCommand, function (supr) {
     }
 
     function describeVersion(app, module) {
-      var version = module.version;
+      var version = app._dependencies[module.name].version;
       return Module.describeVersion(module.path)
         .then(function (currentVersion) {
           if (argv['save-current']) {

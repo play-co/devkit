@@ -1,6 +1,8 @@
 The Game Closure DevKit
 =======================
 
+[![Join the chat at https://gitter.im/hashcube/devkit](https://badges.gitter.im/hashcube/devkit.svg)](https://gitter.im/hashcube/devkit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 HTML5 JavaScript game development kit. Run in your browser; build to iOS and
 Android.
 
@@ -14,6 +16,15 @@ DevKit requires that you install few dependencies first:
 
  * [node.js](http://nodejs.org/) v10 or higher
  * [git](http://git-scm.com/)
+
+Add this to your /.bashrc or /.zshrc
+```
+// X.X = Version No. of your OS.
+
+export CXXFLAGS="-mmacosx-version-min=X.X"
+export LDFLAGS="-mmacosx-version-min=X.X"
+
+```
 
 We recommend using [brew](http://brew.sh/) to install these if you do not have
 them already.
